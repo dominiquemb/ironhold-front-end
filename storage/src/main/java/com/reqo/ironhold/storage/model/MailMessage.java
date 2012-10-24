@@ -36,7 +36,7 @@ public class MailMessage implements Serializable {
 	private static Logger logger = Logger.getLogger(MailMessage.class);
 
 	private String messageId;
-	private String from;
+	private Recipient from;
 	private List<Recipient> to = new ArrayList<Recipient>();
 	private List<Recipient> cc = new ArrayList<Recipient>();
 	private List<Recipient> bcc = new ArrayList<Recipient>();
@@ -58,8 +58,8 @@ public class MailMessage implements Serializable {
 		this.getSources().add(fileName);
 		this.messageId = pstMessage.getInternetMessageId();
 		this.setRecievedDate(pstMessage.getMessageDeliveryTime());
-		this.from = pstMessage.getSenderName() + " "
-				+ pstMessage.getSenderEmailAddress() + " ";
+		this.from = new Recipient(pstMessage.getSenderName(),
+				pstMessage.getSenderEmailAddress(), pstMessage.getSenderEmailAddress());
 		try {
 			for (int i = 0; i < pstMessage.getNumberOfRecipients(); i++) {
 				PSTRecipient recipient = pstMessage.getRecipient(i);
@@ -126,7 +126,7 @@ public class MailMessage implements Serializable {
 
 		this.messageId = message.getHeader("Message-Id")[0];
 		this.setRecievedDate(message.getReceivedDate());
-		this.from = message.getFrom()[0].toString();
+		this.from = new Recipient(message.getFrom()[0].toString(), message.getFrom()[0].toString(), message.getFrom()[0].toString());
 
 		for (Address recipient : message.getRecipients(RecipientType.TO)) {
 			to.add(new Recipient(recipient.toString(), recipient.toString(),
@@ -217,11 +217,11 @@ public class MailMessage implements Serializable {
 		this.messageId = messageId;
 	}
 
-	public String getFrom() {
+	public Recipient getFrom() {
 		return from;
 	}
 
-	public void setFrom(String from) {
+	public void setFrom(Recipient from) {
 		this.from = from;
 	}
 

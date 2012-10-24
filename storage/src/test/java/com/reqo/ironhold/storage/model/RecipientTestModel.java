@@ -14,4 +14,9 @@ public class RecipientTestModel extends CommonTestModel {
 		return recipients;
 	}
 
+	public static Recipient generateRecipient() {
+		String name = df.getName();
+		return new Recipient(name, name, name);
+	}
+
 }

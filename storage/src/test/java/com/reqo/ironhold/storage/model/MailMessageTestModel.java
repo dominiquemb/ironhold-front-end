@@ -16,7 +16,7 @@ public class MailMessageTestModel extends CommonTestModel {
 		testMessage.setCc(RecipientTestModel.generateRecipients());
 		testMessage.setTo(RecipientTestModel.generateRecipients());
 		testMessage.setBody(generateText());
-		testMessage.setFrom(df.getName());
+		testMessage.setFrom(RecipientTestModel.generateRecipient());
 		testMessage.setMessageId(UUID.randomUUID().toString());
 		testMessage.setRecievedDate(df.getDateBetween(getMinDate(),
 				getMaxDate()));
