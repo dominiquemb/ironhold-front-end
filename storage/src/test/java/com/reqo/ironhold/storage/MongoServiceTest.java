@@ -1,0 +1,227 @@
+package com.reqo.ironhold.storage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import junit.framework.Assert;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.mongodb.DB;
+import com.mongodb.Mongo;
+import com.reqo.ironhold.storage.model.LogMessage;
+import com.reqo.ironhold.storage.model.LogMessageTestModel;
+import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MailMessageTestModel;
+
+import de.flapdoodle.embedmongo.MongoDBRuntime;
+import de.flapdoodle.embedmongo.MongodExecutable;
+import de.flapdoodle.embedmongo.MongodProcess;
+import de.flapdoodle.embedmongo.config.MongodConfig;
+import de.flapdoodle.embedmongo.distribution.Version;
+
+public class MongoServiceTest {
+	private MongodExecutable mongodExe;
+	private MongodProcess mongod;
+
+	private Mongo mongo;
+	private DB db;
+
+	private static final String DATABASENAME = "mongo_test";
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	@Before
+	public void setUp() throws Exception {
+
+		MongoDBRuntime runtime = MongoDBRuntime.getDefaultInstance();
+		mongodExe = runtime
+				.prepare(new MongodConfig(Version.V2_0, 12345, false));
+		mongod = mongodExe.start();
+
+		mongo = new Mongo("localhost", 12345);
+		db = mongo.getDB(DATABASENAME);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		mongod.stop();
+		mongodExe.cleanup();
+	}
+
+	@Test
+	public void testExistsPositive() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		MailMessage inputMessage = MailMessageTestModel.generate();
+
+		storageService.store(inputMessage);
+		
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+		
+		Assert.assertTrue(storageService.exists(inputMessage.getMessageId()));
+	}
+	
+	@Test
+	public void testExistsNegative() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		MailMessage inputMessage = MailMessageTestModel.generate();
+
+		storageService.store(inputMessage);
+
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+		
+		Assert.assertFalse(storageService.exists(UUID.randomUUID().toString()));
+	}
+
+	@Test
+	public void testStore() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		MailMessage inputMessage = MailMessageTestModel.generate();
+
+		storageService.store(inputMessage);
+
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+	}
+
+	@Test
+	public void testFindUnindexedMessages() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		List<MailMessage> messages = new ArrayList<MailMessage>();
+		for (int i = 0; i < 10; i++) {
+			MailMessage inputMessage = MailMessageTestModel.generate();
+
+			storageService.store(inputMessage);
+
+			MailMessage storedMessage = MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+			messages.add(storedMessage);
+		}
+
+		List<MailMessage> unindexedMessages = storageService
+				.findUnindexedMessages(100);
+		int counter = 0;
+		for (MailMessage unindexedMessage : unindexedMessages) {
+			Assert.assertEquals(MailMessage.toJSON(messages.get(counter)),
+					MailMessage.toJSON(unindexedMessage));
+			Assert.assertEquals(messages.get(counter), unindexedMessage);
+			Assert.assertFalse(unindexedMessage.isIndexed());
+
+			counter++;
+		}
+
+	}
+
+	@Test
+	public void testAddSource() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		MailMessage inputMessage = MailMessageTestModel.generate();
+
+		storageService.store(inputMessage);
+
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+		storageService.addSource(inputMessage.getMessageId(), "mailbox.pst");
+
+		inputMessage.getSources().add("mailbox.pst");
+
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+		
+	}
+
+	@Test
+	public void testMarkAsIndexed() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		MailMessage inputMessage = MailMessageTestModel.generate();
+
+		storageService.store(inputMessage);
+
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+		storageService.markAsIndexed(inputMessage.getMessageId());
+
+		inputMessage.setIndexed(true);
+
+		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+	}
+
+	@Test
+	public void testGetTotalMessageCount() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		for (int i = 0; i < 350; i++) {
+			MailMessage inputMessage = MailMessageTestModel.generate();
+
+			storageService.store(inputMessage);
+
+			MailMessageTestModel.verifyStorage(storageService, inputMessage);
+		}
+
+		Assert.assertEquals(350, storageService.getTotalMessageCount());
+	}
+
+	@Test
+	public void testLog() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		LogMessage inputMessage = LogMessageTestModel.generate();
+
+		storageService.log(inputMessage);
+
+		List<LogMessage> storedMessages = storageService
+				.getLogMessages(inputMessage.getMessageId());
+
+		Assert.assertEquals(1, storedMessages.size());
+		LogMessage storedMessage = storedMessages.get(0);
+		Assert.assertEquals(LogMessage.toJSON(inputMessage),
+				LogMessage.toJSON(storedMessage));
+		Assert.assertEquals(inputMessage, storedMessage);
+	}
+
+	@Test
+	public void testGetLogMessages() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+		String messageId = UUID.randomUUID().toString();
+		List<LogMessage> inputMessages = new ArrayList<LogMessage>();
+		for (int i = 0; i < 10; i++) {
+
+			LogMessage inputMessage = LogMessageTestModel.generate();
+			inputMessage.setMessageId(messageId);
+
+			storageService.log(inputMessage);
+
+			inputMessages.add(inputMessage);
+		}
+
+		List<LogMessage> storedMessages = storageService
+				.getLogMessages(messageId);
+
+		Assert.assertEquals(10, storedMessages.size());
+
+		int counter = 0;
+		for (LogMessage storedMessage : storedMessages) {
+			Assert.assertEquals(LogMessage.toJSON(inputMessages.get(counter)),
+					LogMessage.toJSON(storedMessage));
+			Assert.assertEquals(inputMessages.get(counter), storedMessage);
+			counter++;
+		}
+
+	}
+}
