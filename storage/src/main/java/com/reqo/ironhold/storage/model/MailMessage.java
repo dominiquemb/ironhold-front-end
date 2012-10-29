@@ -51,32 +51,37 @@ public class MailMessage {
 			throws JsonParseException, JsonMappingException,
 			JsonGenerationException, IOException, PSTException {
 
-		this.pstMessage = mapper
-				.readValue(mapper.writeValueAsString(originalPSTMessage),
-						ArchivedPSTMessage.class);
+		this.pstMessage = mapper.readValue(
+				mapper.writeValueAsString(originalPSTMessage),
+				ArchivedPSTMessage.class);
 		for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
 			PSTAttachment attachment = originalPSTMessage.getAttachment(i);
-			
+
 			String fileName = attachment.getLongFilename();
 			if (fileName.isEmpty()) {
 				fileName = attachment.getFilename();
 			}
-			
+
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			int bufferSize = 8176;
 			byte[] buffer = new byte[bufferSize];
 			InputStream stream = attachment.getFileInputStream();
 			int count = stream.read(buffer);
-			
+
 			while (count == bufferSize) {
 				out.write(buffer);
 				count = stream.read(buffer);
 			}
-			byte[] endBuffer = new byte[count];
-			System.arraycopy(buffer,  0,  endBuffer,  0,  count);
+			if (count > 0) {
+				byte[] endBuffer = new byte[count];
+				System.arraycopy(buffer, 0, endBuffer, 0, count);
+			}
 			out.write(buffer);
-			
-			this.pstMessage.addAttachment(new Attachment(attachment.getSize(), attachment.getCreationTime(), attachment.getModificationTime(), attachment.getFilename(), Base64.encodeBase64String(out.toByteArray())));
+
+			this.pstMessage.addAttachment(new Attachment(attachment.getSize(),
+					attachment.getCreationTime(), attachment
+							.getModificationTime(), attachment.getFilename(),
+					Base64.encodeBase64String(out.toByteArray())));
 		}
 		this.setMessageId(originalPSTMessage.getInternetMessageId());
 		sources = new MessageSource[] { source };

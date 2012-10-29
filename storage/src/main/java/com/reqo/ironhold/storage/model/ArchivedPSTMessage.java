@@ -925,4 +925,8 @@ public class ArchivedPSTMessage {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
 
+	public void removeAttachments() {
+		this.attachments = new Attachment[0];		
+	}
+
 }

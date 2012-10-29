@@ -3,9 +3,12 @@ package com.reqo.ironhold.search;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.index.mapper.MapperParsingException;
 
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.LogLevel;
+import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 
 public class Indexer {
@@ -26,15 +29,41 @@ public class Indexer {
 
 		while (true) {
 			List<MailMessage> mailMessages = storageService
-			.findUnindexedMessages(10);
+					.findUnindexedMessages(10);
 			for (MailMessage mailMessage : mailMessages) {
-				indexService.store(mailMessage);
+				try {
+					indexService.store(mailMessage);
+
+				} catch (MapperParsingException e) {
+					logger.warn("Failed to index message "
+							+ mailMessage.getMessageId()
+							+ " with attachments, skiping attachments");
+
+					LogMessage logMessage = new LogMessage(LogLevel.Warning,
+							"Failed to index message with attachments, skiping attachments ["
+									+ e.getDetailedMessage() + "]",
+							mailMessage.getMessageId());
+					storageService.log(logMessage);
+					mailMessage.getPstMessage().removeAttachments();
+					indexService.store(mailMessage);
+				}
+
+				LogMessage logMessage = new LogMessage(
+						LogLevel.Success,
+						"Message indexed with "
+								+ mailMessage.getPstMessage().getAttachments().length
+								+ " attachments", mailMessage.getMessageId());
+				storageService.log(logMessage);
+
 				storageService.markAsIndexed(mailMessage.getMessageId());
-				logger.info("Indexed " + mailMessage.getMessageId());
 			}
 			
+			
+
 			if (mailMessages.size() == 0) {
 				Thread.sleep(10000);
+			} else {
+				logger.info("Indexed " + mailMessages.size() + " messages");
 			}
 		}
 	}

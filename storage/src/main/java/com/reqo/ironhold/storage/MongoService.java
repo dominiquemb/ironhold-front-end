@@ -97,7 +97,6 @@ public class MongoService implements IStorageService {
 		List<MailMessage> result = new ArrayList<MailMessage>();
 		DBObject query = QueryBuilder.start().put("indexed").is(false).get();
 
-		logger.info(query.toString());
 		DBCursor cur = db.getCollection(MESSAGE_COLLECTION).find(query)
 				.limit(limit);
 
