@@ -13,34 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package web;
+package com.reqo.ironhold.web;
 
+import com.reqo.ironhold.web.components.SearchWindow;
 import com.vaadin.Application;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
 /**
  * The Application's "main" class
  */
 @SuppressWarnings("serial")
-public class MyVaadinApplication extends Application
+public class IronholdApplication extends Application
 {
     private Window window;
 
     @Override
     public void init()
     {
-        window = new Window("My Vaadin Application");
+    	
+        window = new SearchWindow("IronHold Search");
         setMainWindow(window);
-        Button button = new Button("Click Me");
-        button.addListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                window.addComponent(new Label("Thank you for clicking"));
-            }
-        });
-        window.addComponent(button);
         
     }
     

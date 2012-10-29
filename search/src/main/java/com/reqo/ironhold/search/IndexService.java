@@ -116,4 +116,14 @@ public class IndexService {
 		return results;
 	}
 
+	public long getMatches(String search) {
+
+		SearchRequestBuilder builder = esClient.prepareSearch(client);
+		QueryBuilder qb = QueryBuilders.queryString(search);
+		builder.setQuery(qb);
+		SearchResponse response = builder.execute().actionGet();
+
+		return response.getHits().getTotalHits();
+	}
+
 }
