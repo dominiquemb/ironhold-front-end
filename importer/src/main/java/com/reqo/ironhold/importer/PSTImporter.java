@@ -1,6 +1,8 @@
 package com.reqo.ironhold.importer;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.util.Date;
 import java.util.Vector;
 
 import org.apache.commons.io.FileUtils;
@@ -17,6 +19,7 @@ import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.PSTMessageSource;
 
 
 public class PSTImporter {
@@ -52,7 +55,10 @@ public class PSTImporter {
 	private File file;
 	private IStorageService storageService;
 
-	private void processMessages(File file, String clientName) throws Exception {
+	public PSTImporter() {
+		
+	}
+	public void processMessages(File file, String clientName) throws Exception {
 		this.file = file;
 		PSTFile pstFile = new PSTFile(file);
 
@@ -72,7 +78,7 @@ public class PSTImporter {
 
 		long started = System.currentTimeMillis();
 
-		processFolder(pstFile.getRootFolder());
+		processFolder("", pstFile.getRootFolder());
 		long finished = System.currentTimeMillis();
 
 		String timeTook = DurationFormatUtils.formatDurationWords(finished
@@ -83,7 +89,7 @@ public class PSTImporter {
 		LogMessage finishedMessage = new LogMessage(LogLevel.Success,
 				file.toString(), "Finished pst import: File: ["
 						+ file.toString() + "] File size: [" + fileSizeDisplay
-						+ "] Success count: [" + count + "] Skipped count: ["
+						+ "] Success count: [" + count + "] Duplicate count: ["
 						+ duplicate + "] Fail count: [" + fail
 						+ "] Time taken: [" + timeTook + "] Rate: [" + rate
 						+ " messages per sec]");
@@ -91,13 +97,14 @@ public class PSTImporter {
 		storageService.log(finishedMessage);
 	}
 
-	public void processFolder(PSTFolder folder) throws Exception {
-
+	private void processFolder(String folderPath, PSTFolder folder) throws Exception {
+		LogMessage folderMessage = new LogMessage(LogLevel.Success, file.toString(), "Processing " + folderPath + " [" + folder.getContentCount() + " items]");
+		storageService.log(folderMessage);
 		// go through the folders...
 		if (folder.hasSubfolders()) {
 			Vector<PSTFolder> childFolders = folder.getSubFolders();
 			for (PSTFolder childFolder : childFolders) {
-				processFolder(childFolder);
+				processFolder(folderPath + "/" + childFolder.getDisplayName(), childFolder);
 			}
 		}
 
@@ -108,11 +115,13 @@ public class PSTImporter {
 				String messageId = "unknown";
 
 				messageId = message.getInternetMessageId();
-				MailMessage mailMessage = new MailMessage(storageService, message,
-						file.toString() + ":" + folder.getDisplayName());
+				/*MailMessage mailMessage = new MailMessage(storageService, message,
+						file.toString() + ":" + folder.getDisplayName());*/
+				PSTMessageSource source = new PSTMessageSource(file.toString() + ":" + folderPath, file.length(), new Date(file.lastModified()), new Date(), InetAddress.getLocalHost().getHostName());
+				MailMessage mailMessage = new MailMessage(message, source);
 				if (storageService.exists(messageId)) {
-					storageService.addSource(messageId, file.toString() + ":"
-							+ folder.getDisplayName());
+					System.out.println("Found duplicate " + messageId);
+					storageService.addSource(messageId, source);
 					duplicate++;
 					if (duplicate % 100 == 0) {
 						logger.info("New Messages: " + count + " Duplicates: "
@@ -128,7 +137,7 @@ public class PSTImporter {
 				}
 
 				LogMessage processedMessage = new LogMessage(LogLevel.Success,
-						messageId, "Processed message");
+						messageId, "Processed pst message");
 
 				storageService.log(processedMessage);
 

@@ -1,25 +1,12 @@
 package com.reqo.ironhold.storage.model;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
-import javax.mail.Address;
-import javax.mail.BodyPart;
 import javax.mail.Message;
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -28,176 +15,59 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.pff.PSTAttachment;
 import com.pff.PSTException;
 import com.pff.PSTMessage;
-import com.pff.PSTRecipient;
-import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 
-@SuppressWarnings("serial")
-public class MailMessage implements Serializable {
-	private static Logger logger = Logger.getLogger(MailMessage.class);
+public class MailMessage {
+	private static ObjectMapper mapper = new ObjectMapper();
 
-	private String messageId;
-	private Recipient from;
-	private List<Recipient> to = new ArrayList<Recipient>();
-	private List<Recipient> cc = new ArrayList<Recipient>();
-	private List<Recipient> bcc = new ArrayList<Recipient>();
-	private String subject;
-	private Date recievedDate;
-	private List<Attachment> attachments = new ArrayList<Attachment>();
-	private String body;
+	static {
+		mapper.getSerializationConfig().addMixInAnnotations(PSTMessage.class,
+				PSTMessageMixin.class);
+		mapper.enableDefaultTyping();
+	}
+
+	private ArchivedPSTMessage pstMessage;
+	private Message liveMessage;
+
 	private boolean indexed = false;
-	private List<String> sources = new ArrayList<String>();
 	private Date storedDate;
+	private String messageId;
+	private MessageSource[] sources;
 
 	public MailMessage() {
+
 	}
 
-	public MailMessage(IStorageService storageService, PSTMessage pstMessage,
-			String fileName) throws Exception {
-		this();
-
-		this.getSources().add(fileName);
-		this.messageId = pstMessage.getInternetMessageId();
-		this.setRecievedDate(pstMessage.getMessageDeliveryTime());
-		this.from = new Recipient(pstMessage.getSenderName(),
-				pstMessage.getSenderEmailAddress(), pstMessage.getSenderEmailAddress());
-		try {
-			for (int i = 0; i < pstMessage.getNumberOfRecipients(); i++) {
-				PSTRecipient recipient = pstMessage.getRecipient(i);
-				if (recipient.getRecipientType() == PSTRecipient.MAPI_TO) {
-					to.add(new Recipient(recipient.getDisplayName(), recipient
-							.getEmailAddress(), recipient.getSmtpAddress()));
-				}
-				if (recipient.getRecipientType() == PSTRecipient.MAPI_CC) {
-					cc.add(new Recipient(recipient.getDisplayName(), recipient
-							.getEmailAddress(), recipient.getSmtpAddress()));
-				}
-				if (recipient.getRecipientType() == PSTRecipient.MAPI_BCC) {
-					bcc.add(new Recipient(recipient.getDisplayName(), recipient
-							.getEmailAddress(), recipient.getSmtpAddress()));
-				}
-			}
-		} catch (IndexOutOfBoundsException ignore) {
-			LogMessage warningMessage = new LogMessage(LogLevel.Warning,
-					messageId, ignore.getMessage());
-
-			storageService.log(warningMessage);
+	public MailMessage(PSTMessage pstMessage, PSTMessageSource source)
+			throws JsonParseException, JsonMappingException,
+			JsonGenerationException, IOException, PSTException {
+		
+		this.pstMessage = mapper
+				.readValue(mapper.writeValueAsString(pstMessage),
+						ArchivedPSTMessage.class);
+		for (int i = 0; i < pstMessage.getNumberOfAttachments(); i++) {
+			PSTAttachment attachment = pstMessage.getAttachment(i);
+			System.out.println(mapper.writeValueAsString(attachment));
+		///	pstMessage.addAttachment()
 		}
-		this.subject = pstMessage.getSubject();
-		this.body = pstMessage.getBody();
-		int numberOfAttachments = pstMessage.getNumberOfAttachments();
-		for (int x = 0; x < numberOfAttachments; x++) {
-			try {
-				PSTAttachment attach = pstMessage.getAttachment(x);
-				InputStream attachmentStream = attach.getFileInputStream();
-				// both long and short filenames can be used for attachments
-				String filename = attach.getLongFilename();
-				if (filename.isEmpty()) {
-					filename = attach.getFilename();
-				}
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				// 8176 is the block size used internally and should give the
-				// best
-				// performance
-				int bufferSize = 8176;
-				byte[] buffer = new byte[bufferSize];
-				int count = attachmentStream.read(buffer);
-				while (count == bufferSize) {
-					out.write(buffer);
-					count = attachmentStream.read(buffer);
-				}
-				byte[] endBuffer = new byte[count];
-				System.arraycopy(buffer, 0, endBuffer, 0, count);
-				out.write(buffer);
-
-				this.attachments.add(new Attachment(filename, Base64
-						.encodeBase64String(out.toByteArray())));
-				attachmentStream.close();
-			} catch (Exception e) {
-				LogMessage warningMessage = new LogMessage(LogLevel.Warning,
-						messageId, "Failed to process attachment: " + e.getMessage());
-
-				storageService.log(warningMessage);
-			}
-		}
+		this.setMessageId(pstMessage.getInternetMessageId());
+		sources = new MessageSource[] { source };
 	}
 
-	public MailMessage(Message message) throws MessagingException, IOException {
-		this();
-
-		this.messageId = message.getHeader("Message-Id")[0];
-		this.setRecievedDate(message.getReceivedDate());
-		this.from = new Recipient(message.getFrom()[0].toString(), message.getFrom()[0].toString(), message.getFrom()[0].toString());
-
-		for (Address recipient : message.getRecipients(RecipientType.TO)) {
-			to.add(new Recipient(recipient.toString(), recipient.toString(),
-					recipient.toString()));
-		}
-
-		for (Address recipient : message.getRecipients(RecipientType.CC)) {
-			cc.add(new Recipient(recipient.toString(), recipient.toString(),
-					recipient.toString()));
-		}
-
-		for (Address recipient : message.getRecipients(RecipientType.BCC)) {
-			bcc.add(new Recipient(recipient.toString(), recipient.toString(),
-					recipient.toString()));
-		}
-
-		this.subject = message.getSubject();
-
-		handleMessage(message);
+	public MailMessage(Message liveMessage, MessageSource source)
+			throws MessagingException {
+		this.liveMessage = liveMessage;
+		this.setMessageId(liveMessage.getHeader("Message-Id")[0]);
+		sources = new MessageSource[] { source };
 	}
 
-	private void handleMessage(Message message) throws IOException,
-			MessagingException {
-		Object content = message.getContent();
-		if (content instanceof String) {
-			this.body += (String) content;
-		} else if (content instanceof Multipart) {
-			Multipart mp = (Multipart) content;
-			handleMultipart(mp);
-		}
+
+	public void addSource(MessageSource source) {
+		MessageSource[] copy = Arrays.copyOf(sources, sources.length +1);
+	    copy[sources.length] = source;
+	    sources = copy;
+		
 	}
-
-	public void handleMultipart(Multipart mp) throws MessagingException,
-			IOException {
-		for (int i = 0; i < mp.getCount(); i++) {
-			BodyPart bp = mp.getBodyPart(i);
-			Object content = bp.getContent();
-			if (content instanceof String) {
-				this.body += (String) content;
-			} else if (content instanceof InputStream) {
-				InputStream attachmentStream = (InputStream) content;
-				String filename = bp.getFileName();
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				// 8176 is the block size used internally and should give the
-				// best
-				// performance
-				int bufferSize = 8176;
-				byte[] buffer = new byte[bufferSize];
-				int count = attachmentStream.read(buffer);
-				while (count == bufferSize) {
-					out.write(buffer);
-					count = attachmentStream.read(buffer);
-				}
-				byte[] endBuffer = new byte[count];
-				System.arraycopy(buffer, 0, endBuffer, 0, count);
-				out.write(buffer);
-
-				this.attachments.add(new Attachment(filename, Base64
-						.encodeBase64String(out.toByteArray())));
-				attachmentStream.close();
-			} else if (content instanceof Message) {
-				Message message = (Message) content;
-				handleMessage(message);
-			} else if (content instanceof Multipart) {
-				Multipart mp2 = (Multipart) content;
-				handleMultipart(mp2);
-			}
-		}
-	}
-
-	private static ObjectMapper mapper = new ObjectMapper();
 
 	public static String toJSON(MailMessage message)
 			throws JsonGenerationException, JsonMappingException, IOException {
@@ -209,76 +79,20 @@ public class MailMessage implements Serializable {
 		return mapper.readValue(json, MailMessage.class);
 	}
 
-	public String getMessageId() {
-		return messageId;
+	public ArchivedPSTMessage getPstMessage() {
+		return pstMessage;
 	}
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
+	public void setPstMessage(ArchivedPSTMessage pstMessage) {
+		this.pstMessage = pstMessage;
 	}
 
-	public Recipient getFrom() {
-		return from;
+	public Message getLiveMessage() {
+		return liveMessage;
 	}
 
-	public void setFrom(Recipient from) {
-		this.from = from;
-	}
-
-	public List<Recipient> getTo() {
-		return to;
-	}
-
-	public void setTo(List<Recipient> to) {
-		this.to = to;
-	}
-
-	public List<Recipient> getCc() {
-		return cc;
-	}
-
-	public void setCc(List<Recipient> cc) {
-		this.cc = cc;
-	}
-
-	public List<Recipient> getBcc() {
-		return bcc;
-	}
-
-	public void setBcc(List<Recipient> bcc) {
-		this.bcc = bcc;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-
-	public Date getRecievedDate() {
-		return recievedDate;
-	}
-
-	public void setRecievedDate(Date recievedDate) {
-		this.recievedDate = recievedDate;
-	}
-
-	public List<Attachment> getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
+	public void setLiveMessage(Message liveMessage) {
+		this.liveMessage = liveMessage;
 	}
 
 	public boolean isIndexed() {
@@ -289,12 +103,8 @@ public class MailMessage implements Serializable {
 		this.indexed = indexed;
 	}
 
-	public List<String> getSources() {
+	public MessageSource[] getSources() {
 		return sources;
-	}
-
-	public void setSources(List<String> sources) {
-		this.sources = sources;
 	}
 
 	public Date getStoredDate() {
@@ -305,20 +115,12 @@ public class MailMessage implements Serializable {
 		this.storedDate = storedDate;
 	}
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+	public String getMessageId() {
+		return messageId;
 	}
 
-	@Override
-	public boolean equals(Object rhs) {
-		return EqualsBuilder.reflectionEquals(this, rhs);
-
-	}
-
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
 	}
 
 }

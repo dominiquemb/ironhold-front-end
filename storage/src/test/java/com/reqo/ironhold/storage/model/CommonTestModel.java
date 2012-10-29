@@ -46,4 +46,15 @@ public class CommonTestModel {
 
 		return cal.getTime();
 	}
+	
+
+	protected static Object pickOne(Object ...choices) {
+		return choices[(int) (Math.random()*choices.length)];
+	}
+	
+
+	protected static String generateEmail() {
+		return df.getFirstName() + "@" + df.getRandomWord() + ".com";
+	}
+
 }

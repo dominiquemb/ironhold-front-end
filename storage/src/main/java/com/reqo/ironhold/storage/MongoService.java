@@ -23,19 +23,20 @@ import com.mongodb.QueryBuilder;
 import com.mongodb.util.JSON;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MessageSource;
 
 public class MongoService implements IStorageService {
 
-	
 	private static Logger logger = Logger.getLogger(MongoService.class);
 	private static final String MESSAGE_COLLECTION = "messages";
 	private static final String LOG_COLLECTION = "logs";
 
 	private Mongo mongo;
 	private DB db;
-	
+
 	/**
 	 * Used for testing
+	 * 
 	 * @param mongo
 	 * @param db
 	 */
@@ -43,6 +44,7 @@ public class MongoService implements IStorageService {
 		this.mongo = mongo;
 		this.db = db;
 	}
+
 	public MongoService(String clientName, String purpose) throws IOException {
 		Properties prop = new Properties();
 		prop.load(MongoService.class.getResourceAsStream("mongodb.properties"));
@@ -69,7 +71,7 @@ public class MongoService implements IStorageService {
 	}
 
 	public boolean exists(String messageId) {
-		
+
 		BasicDBObject query = new BasicDBObject();
 
 		query.put("messageId", messageId);
@@ -78,8 +80,10 @@ public class MongoService implements IStorageService {
 
 	public void store(MailMessage mailMessage) throws JsonGenerationException,
 			JsonMappingException, MongoException, IOException {
+		logger.info("Storing " + mailMessage.getMessageId());
 		mailMessage.setStoredDate(new Date());
-		db.getCollection(MESSAGE_COLLECTION).insert((DBObject) JSON.parse(MailMessage.toJSON(mailMessage)));
+		db.getCollection(MESSAGE_COLLECTION).insert(
+				(DBObject) JSON.parse(MailMessage.toJSON(mailMessage)));
 	}
 
 	public void stopSession() {
@@ -93,7 +97,8 @@ public class MongoService implements IStorageService {
 		DBObject query = QueryBuilder.start().put("indexed").is(false).get();
 
 		logger.info(query.toString());
-		DBCursor cur = db.getCollection(MESSAGE_COLLECTION).find(query).limit(limit);
+		DBCursor cur = db.getCollection(MESSAGE_COLLECTION).find(query)
+				.limit(limit);
 
 		while (cur.hasNext()) {
 			DBObject object = cur.next();
@@ -105,10 +110,10 @@ public class MongoService implements IStorageService {
 
 	}
 
-	public void addSource(String messageId, String source)
+	public void addSource(String messageId, MessageSource source)
 			throws JsonParseException, JsonMappingException, IOException {
 		MailMessage message = getMailMessage(messageId, true);
-		message.getSources().add(source);
+		message.addSource(source);
 
 		update(message);
 
@@ -154,7 +159,8 @@ public class MongoService implements IStorageService {
 					.add("recievedDate", 1).add("subject", 1).add("to", 1)
 					.add("bcc", 1).add("indexed", 1).add("sources", 1)
 					.add("storedDate", 1).get();
-			result = db.getCollection(MESSAGE_COLLECTION).findOne(query, fields);
+			result = db.getCollection(MESSAGE_COLLECTION)
+					.findOne(query, fields);
 		} else {
 			result = db.getCollection(MESSAGE_COLLECTION).findOne(query);
 		}
@@ -165,13 +171,14 @@ public class MongoService implements IStorageService {
 
 	public void log(LogMessage logMessage) throws JsonGenerationException,
 			JsonMappingException, MongoException, IOException {
-		db.getCollection(LOG_COLLECTION).insert((DBObject) JSON.parse(LogMessage.toJSON(logMessage)));
+		db.getCollection(LOG_COLLECTION).insert(
+				(DBObject) JSON.parse(LogMessage.toJSON(logMessage)));
 	}
-	
 
 	public List<LogMessage> getLogMessages(String messageId) throws Exception {
 		List<LogMessage> result = new ArrayList<LogMessage>();
-		DBObject query = QueryBuilder.start().put("messageId").is(messageId).get();
+		DBObject query = QueryBuilder.start().put("messageId").is(messageId)
+				.get();
 
 		logger.info(query.toString());
 		DBCursor cur = db.getCollection(LOG_COLLECTION).find(query);

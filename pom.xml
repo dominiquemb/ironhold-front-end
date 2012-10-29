@@ -10,6 +10,7 @@
 	<modules>
 		<module>importer</module>
 		<module>storage</module>
+		<module>search</module>
 	</modules>
 
 	<dependencies>
