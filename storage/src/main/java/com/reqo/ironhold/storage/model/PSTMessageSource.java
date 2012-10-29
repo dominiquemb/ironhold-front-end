@@ -10,20 +10,15 @@ public class PSTMessageSource extends MessageSource {
 	private String pstFileName;
 	private long size;
 	private Date fileTimestamp;
-	private Date loadTimestamp;
-	private String hostname;
 	public PSTMessageSource() {
 		
 	}
 	public PSTMessageSource(String pstFileName, long size, Date fileTimestamp,
 			Date loadTimestamp, String hostname) {
-		super();
+		super(hostname, loadTimestamp);
 		this.pstFileName = pstFileName;
 		this.size = size;
 		this.fileTimestamp = fileTimestamp;
-		this.loadTimestamp = loadTimestamp;
-		this.hostname = hostname;
-		System.out.println("Constructor " + this.loadTimestamp.getTime());
 	}
 	public String getPstFileName() {
 		return pstFileName;
@@ -43,19 +38,7 @@ public class PSTMessageSource extends MessageSource {
 	public void setFileTimestamp(Date fileTimestamp) {
 		this.fileTimestamp = fileTimestamp;
 	}
-	public Date getLoadTimestamp() {
-		return loadTimestamp;
-	}
-	public void setLoadTimestamp(Date loadTimestamp) {
-		System.out.println("Setter " + loadTimestamp.getTime());
-		this.loadTimestamp = loadTimestamp;
-	}
-	public String getHostname() {
-		return hostname;
-	}
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
+	
 	
 
 	@Override

@@ -175,7 +175,6 @@ public class MongoServiceTest {
 
 		List<MailMessage> messages = MailMessageTestModel.generatePSTMessages();
 		for (MailMessage inputMessage : messages) {
-
 			storageService.store(inputMessage);
 
 			MailMessageTestModel.verifyStorage(storageService, inputMessage);

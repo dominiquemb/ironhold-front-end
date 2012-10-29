@@ -80,10 +80,11 @@ public class MongoService implements IStorageService {
 
 	public void store(MailMessage mailMessage) throws JsonGenerationException,
 			JsonMappingException, MongoException, IOException {
-		logger.info("Storing " + mailMessage.getMessageId());
-		mailMessage.setStoredDate(new Date());
+		Date storedDate = new Date();
+		mailMessage.setStoredDate(storedDate);
+		String jsonString = MailMessage.toJSON(mailMessage);
 		db.getCollection(MESSAGE_COLLECTION).insert(
-				(DBObject) JSON.parse(MailMessage.toJSON(mailMessage)));
+				(DBObject) JSON.parse(jsonString));
 	}
 
 	public void stopSession() {

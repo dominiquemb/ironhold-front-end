@@ -37,15 +37,18 @@ public class MailMessageTestModel extends CommonTestModel {
 
 			loadAllMessages("", pstFile.getRootFolder());
 
+			Set<String> uniqueMessages = new HashSet<String>();
 			for (PSTMessage pstMessage : pstMessages) {
-				if ()
-				mailMessages.add(new MailMessage(pstMessage,
-						new PSTMessageSource(file.toString(), file.length(),
-								new Date(file.lastModified()), new Date(),
-								InetAddress.getLocalHost().getHostName())));
+				if (!uniqueMessages.contains(pstMessage.getInternetMessageId())) {
+					mailMessages.add(new MailMessage(pstMessage,
+							new PSTMessageSource(file.toString(),
+									file.length(),
+									new Date(file.lastModified()), new Date(),
+									InetAddress.getLocalHost().getHostName())));
+				}
 			}
 
-			System.out.println("Loaded " + mailMessages.size() + " files");
+			System.out.println("Loaded " + mailMessages.size() + " messages");
 		} catch (PSTException | IOException e) {
 			e.printStackTrace();
 		}
@@ -61,17 +64,18 @@ public class MailMessageTestModel extends CommonTestModel {
 		return mailMessages;
 	}
 
-	private static void loadAllMessages(String folderPath, PSTFolder folder) throws PSTException,
-			IOException {
+	private static void loadAllMessages(String folderPath, PSTFolder folder)
+			throws PSTException, IOException {
 		if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
 			return;
 		}
-		
-		System.out.println(folderPath);
+
 		if (folder.hasSubfolders()) {
 			Vector<PSTFolder> childFolders = folder.getSubFolders();
 			for (PSTFolder childFolder : childFolders) {
-				loadAllMessages(folderPath + "/" + childFolder.getDisplayName(), childFolder);
+				loadAllMessages(
+						folderPath + "/" + childFolder.getDisplayName(),
+						childFolder);
 				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
 					return;
 				}
@@ -81,11 +85,13 @@ public class MailMessageTestModel extends CommonTestModel {
 		if (folder.getContentCount() > 0) {
 			PSTMessage message = (PSTMessage) folder.getNextChild();
 			while (message != null) {
+				System.out.println(message.getInternetMessageId() + " : " + message.getNumberOfAttachments());
+				
 				pstMessages.add(message);
 				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
 					return;
 				}
-
+				message = (PSTMessage) folder.getNextChild();
 			}
 		}
 	}
@@ -95,9 +101,7 @@ public class MailMessageTestModel extends CommonTestModel {
 
 		MailMessage storedMessage = storageService.getMailMessage(
 				inputMessage.getMessageId(), true);
-
-		Assert.assertEquals(MailMessage.toJSON(inputMessage),
-				MailMessage.toJSON(storedMessage));
+		Assert.assertEquals(MailMessage.toJSON(inputMessage), MailMessage.toJSON(storedMessage));
 		Assert.assertNotNull(storedMessage.getStoredDate());
 
 		return storedMessage;

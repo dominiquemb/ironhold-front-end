@@ -1,16 +1,23 @@
 package com.reqo.ironhold.storage.model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 import com.pff.PSTAttachment;
 import com.pff.PSTException;
@@ -24,6 +31,8 @@ public class MailMessage {
 		mapper.getSerializationConfig().addMixInAnnotations(PSTMessage.class,
 				PSTMessageMixin.class);
 		mapper.enableDefaultTyping();
+		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+				false);
 	}
 
 	private ArchivedPSTMessage pstMessage;
@@ -38,19 +47,38 @@ public class MailMessage {
 
 	}
 
-	public MailMessage(PSTMessage pstMessage, PSTMessageSource source)
+	public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source)
 			throws JsonParseException, JsonMappingException,
 			JsonGenerationException, IOException, PSTException {
-		
+
 		this.pstMessage = mapper
-				.readValue(mapper.writeValueAsString(pstMessage),
+				.readValue(mapper.writeValueAsString(originalPSTMessage),
 						ArchivedPSTMessage.class);
-		for (int i = 0; i < pstMessage.getNumberOfAttachments(); i++) {
-			PSTAttachment attachment = pstMessage.getAttachment(i);
-			System.out.println(mapper.writeValueAsString(attachment));
-		///	pstMessage.addAttachment()
+		for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
+			PSTAttachment attachment = originalPSTMessage.getAttachment(i);
+			
+			String fileName = attachment.getLongFilename();
+			if (fileName.isEmpty()) {
+				fileName = attachment.getFilename();
+			}
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			int bufferSize = 8176;
+			byte[] buffer = new byte[bufferSize];
+			InputStream stream = attachment.getFileInputStream();
+			int count = stream.read(buffer);
+			
+			while (count == bufferSize) {
+				out.write(buffer);
+				count = stream.read(buffer);
+			}
+			byte[] endBuffer = new byte[count];
+			System.arraycopy(buffer,  0,  endBuffer,  0,  count);
+			out.write(buffer);
+			
+			this.pstMessage.addAttachment(new Attachment(attachment.getSize(), attachment.getCreationTime(), attachment.getModificationTime(), attachment.getFilename(), Base64.encodeBase64String(out.toByteArray())));
 		}
-		this.setMessageId(pstMessage.getInternetMessageId());
+		this.setMessageId(originalPSTMessage.getInternetMessageId());
 		sources = new MessageSource[] { source };
 	}
 
@@ -61,12 +89,11 @@ public class MailMessage {
 		sources = new MessageSource[] { source };
 	}
 
-
 	public void addSource(MessageSource source) {
-		MessageSource[] copy = Arrays.copyOf(sources, sources.length +1);
-	    copy[sources.length] = source;
-	    sources = copy;
-		
+		MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
+		copy[sources.length] = source;
+		sources = copy;
+
 	}
 
 	public static String toJSON(MailMessage message)
@@ -123,4 +150,19 @@ public class MailMessage {
 		this.messageId = messageId;
 	}
 
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
+
+	@Override
+	public boolean equals(Object rhs) {
+		return EqualsBuilder.reflectionEquals(this, rhs);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 }

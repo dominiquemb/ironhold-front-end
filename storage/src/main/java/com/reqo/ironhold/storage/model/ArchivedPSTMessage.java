@@ -1,14 +1,16 @@
 package com.reqo.ironhold.storage.model;
 
+import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.ObjectMapper;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArchivedPSTMessage {
-	private static ObjectMapper mapper = new ObjectMapper();
-
 	private long priority;
 	private String internetMessageId;
 	private String messageClass;
@@ -106,9 +108,17 @@ public class ArchivedPSTMessage {
 	private String emailAddress;
 	private Date creationTime;
 	private Date lastModificationTime;
+	private Attachment[] attachments = new Attachment[0];
 
 	public ArchivedPSTMessage() {
-		
+
+	}
+
+	public void addAttachment(Attachment attachment) {
+		Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
+		copy[attachments.length] = attachment;
+		attachments = copy;
+
 	}
 
 	public long getPriority() {
@@ -893,6 +903,26 @@ public class ArchivedPSTMessage {
 
 	public void setLastModificationTime(Date lastModificationTime) {
 		this.lastModificationTime = lastModificationTime;
+	}
+
+	public Attachment[] getAttachments() {
+		return attachments;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
+
+	@Override
+	public boolean equals(Object rhs) {
+		return EqualsBuilder.reflectionEquals(this, rhs);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 
 }
