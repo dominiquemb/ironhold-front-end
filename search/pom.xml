@@ -6,11 +6,10 @@
 		<artifactId>ironhold</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.reqo.ironhold.search</groupId>
 	<artifactId>search</artifactId>
 
 	<dependencies>
-	<dependency>
+		<dependency>
 			<groupId>com.reqo.ironhold</groupId>
 			<artifactId>storage</artifactId>
 			<version>${project.version}</version>
