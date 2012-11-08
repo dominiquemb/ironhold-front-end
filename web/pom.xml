@@ -71,23 +71,10 @@
 			</plugin>
 		</plugins>
 	</build>
-<!-- 
-	<repositories>
-		<repository>
-			<id>vaadin-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>vaadin-addons</id>
-			<url>http://maven.vaadin.com/vaadin-addons</url>
-		</repository>
-	</repositories>
- -->
+	<!-- <repositories> <repository> <id>vaadin-snapshots</id> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url> 
+		<releases> <enabled>false</enabled> </releases> <snapshots> </snapshots> 
+		</repository> <repository> <id>vaadin-addons</id> <url>http://maven.vaadin.com/vaadin-addons</url> 
+		</repository> </repositories> -->
 	<!-- <pluginRepositories> <pluginRepository> <id>codehaus-snapshots</id> 
 		<url>http://nexus.codehaus.org/snapshots</url> <snapshots> <enabled>true</enabled> 
 		</snapshots> <releases> <enabled>false</enabled> </releases> </pluginRepository> 
@@ -102,12 +89,36 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.reqo.ironhold</groupId>
+			<artifactId>storage</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>pagingcomponent</artifactId>
+			<version>0.9.3</version>
+		</dependency>
 
+		<dependency>
+			<groupId>java-libpst</groupId>
+			<artifactId>java-libpst</artifactId>
+			<version>0.7</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/java-libpst.0.7.jar</systemPath>
+		</dependency>
 
+		<dependency>
+			<groupId>jcharset</groupId>
+			<artifactId>jcharset</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/jcharset.jar</systemPath>
+		</dependency>
 		<!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId> 
 			<version>${gwt.version}</version> <scope>provided</scope> </dependency> <dependency> 
 			<groupId>javax.validation</groupId> <artifactId>validation-api</artifactId> 
@@ -117,4 +128,11 @@
 			</dependency> -->
 	</dependencies>
 
+	<repositories>
+
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
+	</repositories>
 </project>

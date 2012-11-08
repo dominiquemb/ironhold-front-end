@@ -24,5 +24,6 @@ public interface IStorageService {
 	void log(LogMessage logMessage) throws Exception;
 	
 	List<LogMessage> getLogMessages(String messageId) throws Exception;
+	long getTotalCount();
 
 }

@@ -192,4 +192,9 @@ public class MongoService implements IStorageService {
 		return result;
 	}
 
+	@Override
+	public long getTotalCount() {
+		return db.getCollection(MESSAGE_COLLECTION).count();
+	}
+
 }
