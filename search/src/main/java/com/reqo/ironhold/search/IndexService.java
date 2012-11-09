@@ -1,8 +1,6 @@
 package com.reqo.ironhold.search;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
@@ -19,6 +17,8 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -104,22 +104,62 @@ public class IndexService {
 		return search(criteria, 0, 10);
 	}
 
+	public SearchHit searchAndFilterById(String id, String criteria, int from,
+			int size) {
+
+		SearchRequestBuilder builder = esClient.prepareSearch(client);
+		QueryBuilder qb = QueryBuilders.filteredQuery(
+				QueryBuilders.queryString(criteria),
+				FilterBuilders.idsFilter("message").addIds(id));
+		// QueryBuilder qb = QueryBuilders.fieldQuery("pstMessage.subject",
+		// criteria);
+		builder.setFrom(from).setSize(size);
+		builder.setQuery(qb);
+		// builder.setExplain(true);
+		// builder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		// builder.setHighlighterRequireFieldMatch(false);
+		// builder.setHighlighterEncoder("styled");
+		builder.addHighlightedField("pstMessage.subject", 0, 0);
+		builder.addHighlightedField("pstMessage.body", 0, 0);
+		builder.addHighlightedField("pstMessage.attachments.body");
+
+		builder.addFields("pstMessage.subject", "pstMessage.body",
+				"pstMessage.messageDeliveryTime", "pstMessage.messageSize",
+				"pstMessage.sentRepresentingName",
+				"pstMessage.sentRepresentingEmailAddress",
+				"pstMessage.displayTo", "pstMessage.displayCc");
+		builder.setHighlighterPreTags("<b>").setHighlighterPostTags("</b>");
+
+		String q = builder.toString();
+		SearchResponse response = builder.execute().actionGet();
+
+		SearchHits hits = response.getHits();
+
+		return hits.getHits()[0];
+	}
+
 	public SearchHit[] search(String criteria, int from, int size)
 			throws JsonParseException, JsonMappingException, IOException {
 
 		SearchRequestBuilder builder = esClient.prepareSearch(client);
 		QueryBuilder qb = QueryBuilders.queryString(criteria);
-		//QueryBuilder qb = QueryBuilders.fieldQuery("pstMessage.subject", criteria);
+		// QueryBuilder qb = QueryBuilders.fieldQuery("pstMessage.subject",
+		// criteria);
 		builder.setFrom(from).setSize(size);
 		builder.setQuery(qb);
-		//builder.setExplain(true);
-		//builder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		//builder.setHighlighterRequireFieldMatch(false);
-		//builder.setHighlighterEncoder("styled");
-		builder.addHighlightedField("pstMessage.subject");
+		// builder.setExplain(true);
+		// builder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		// builder.setHighlighterRequireFieldMatch(false);
+		// builder.setHighlighterEncoder("styled");
+		builder.addHighlightedField("pstMessage.subject", 0, 0);
 		builder.addHighlightedField("pstMessage.body");
 		builder.addHighlightedField("pstMessage.attachments.body");
-		builder.addFields("pstMessage.subject","pstMessage.body","pstMessage.messageDeliveryTime","pstMessage.messageSize","pstMessage.sentRepresentingName","pstMessage.sentRepresentingEmailAddress","pstMessage.displayTo","pstMessage.displayCc");
+
+		builder.addFields("pstMessage.subject", "pstMessage.body",
+				"pstMessage.messageDeliveryTime", "pstMessage.messageSize",
+				"pstMessage.sentRepresentingName",
+				"pstMessage.sentRepresentingEmailAddress",
+				"pstMessage.displayTo", "pstMessage.displayCc");
 		builder.setHighlighterPreTags("<b>").setHighlighterPostTags("</b>");
 		String q = builder.toString();
 		SearchResponse response = builder.execute().actionGet();

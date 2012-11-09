@@ -40,6 +40,8 @@ public class SearchBar extends VerticalLayout {
 		});
 		this.addComponent(filterField);
 		this.addComponent(previewLabel);
+		
+		filterField.focus();
 	}
 
 	public String getCriteria() {

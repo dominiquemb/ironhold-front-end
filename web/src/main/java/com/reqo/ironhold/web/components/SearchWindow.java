@@ -16,22 +16,25 @@ import com.vaadin.ui.Window;
 @SuppressWarnings("serial")
 public class SearchWindow extends Window {
 
+	private final SearchWindow me;
+
 	public SearchWindow(String title) throws IOException {
 		super(title);
+		this.me = this;
 		VerticalLayout vl = new VerticalLayout();
 		this.setContent(vl);
 		vl.setSpacing(true);
 		vl.setMargin(true);
-		
+
 		final IndexService indexService = new IndexService("reqo");
 		final IStorageService storageService = new MongoService("reqo", "web");
-		
-		final SearchResults searchResults = new SearchResults(indexService, storageService);
-		final SearchBar searchBar = new SearchBar(this, indexService, storageService, searchResults);
+
+		final SearchResults searchResults = new SearchResults(indexService,
+				storageService);
+		final SearchBar searchBar = new SearchBar(this, indexService,
+				storageService, searchResults);
 		final Button searchButton = new Button("Search");
-		
-		
-		
+
 		searchButton.addListener(new ClickListener() {
 
 			public void buttonClick(ClickEvent event) {
@@ -50,7 +53,7 @@ public class SearchWindow extends Window {
 		topLayout.addComponent(searchButton);
 		addComponent(topLayout);
 		addComponent(searchResults);
-		
+
 		vl.setComponentAlignment(topLayout, Alignment.MIDDLE_CENTER);
 	}
 }

@@ -19,7 +19,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-public class SearchResults extends VerticalLayout {
+public class SearchResults extends HorizontalLayout {
 
 	private final IndexService indexService;
 	private final IStorageService storageService;
@@ -28,6 +28,7 @@ public class SearchResults extends VerticalLayout {
 		this.storageService = storageService;
 		this.setSpacing(true);
 		this.setMargin(true);
+		this.setSizeFull();
 	}
 
 	public void performSearch(final String criteria) {
@@ -36,8 +37,6 @@ public class SearchResults extends VerticalLayout {
 
 		this.removeAllComponents();
 
-		final HorizontalLayout resultsPane = new HorizontalLayout();
-		resultsPane.setSizeFull();
 		final VerticalLayout leftPane = new VerticalLayout();
 		leftPane.setSizeFull();
 		final VerticalLayout rightPane = new VerticalLayout();
@@ -46,7 +45,7 @@ public class SearchResults extends VerticalLayout {
 		messageList.setSpacing(true);
 
 		
-		final EmailPreview emailPreview = new EmailPreview(storageService);
+		final EmailPreview emailPreview = new EmailPreview(storageService, indexService);
 		rightPane.addComponent(emailPreview);
 		
 		final PagingComponent<SearchHit> pager = new PagingComponent<SearchHit>(
@@ -74,17 +73,15 @@ public class SearchResults extends VerticalLayout {
 
 					@Override
 					protected Component displayItem(int index, SearchHit item) {
-						return new SearchHitPanel(item, emailPreview);
+						return new SearchHitPanel(item, emailPreview, criteria);
 					}
 
 				});
 		leftPane.addComponent(messageList);
 		leftPane.addComponent(pager);
 ;
-		resultsPane.addComponent(leftPane);
-		resultsPane.addComponent(rightPane);
-
-		this.addComponent(resultsPane);
+		this.addComponent(leftPane);
+		this.addComponent(rightPane);
 
 	}
 

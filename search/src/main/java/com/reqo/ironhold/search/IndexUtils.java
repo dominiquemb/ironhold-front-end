@@ -139,8 +139,18 @@ public class IndexUtils {
 				}
 
 				return fromString.toString();
-			case ATTACHMENT:
-				break;
+			case TO:
+			case CC:
+			case BCC:
+				
+				String stringValue = hit.getFields().get(key).getValue();
+				String[] tokens = stringValue.split(";");
+				if (preview && tokens.length > 2) {
+					return tokens[0].trim() + "; " + tokens[1].trim() + "; <i>(+"
+							+ (tokens.length - 2) + " more)</i>";
+				} else {
+					return stringValue;
+				}
 			default:
 				if (!preview) {
 					return (String) hit.getFields().get(key).getValue();
