@@ -57,38 +57,8 @@ public class IndexUtils {
 		final SimpleDateFormat sdf = new SimpleDateFormat(
 				"EEE, d MMM yyyy HH:mm:ss z");
 
-		String key = StringUtils.EMPTY;
-		String subKey = StringUtils.EMPTY;
-		switch (field) {
-		case SUBJECT:
-			key = "pstMessage.subject";
-			break;
-		case BODY:
-			key = "pstMessage.body";
-			break;
-		case ATTACHMENT:
-			key = "pstMessage.attachments.body";
-			break;
-		case DATE:
-			key = "pstMessage.messageDeliveryTime";
-			break;
-		case SIZE:
-			key = "pstMessage.messageSize";
-			break;
-		case FROM:
-			key = "pstMessage.sentRepresentingName";
-			subKey = "pstMessage.sentRepresentingEmailAddress";
-			break;
-		case TO:
-			key = "pstMessage.displayTo";
-			break;
-		case CC:
-			key = "pstMessage.displayCc";
-			break;
-		default:
-			break;
-		}
-
+		String key = field.getValue();
+		
 		if (preview && hit.getHighlightFields().containsKey(key)) {
 			return StringUtils.join(hit.getHighlightFields().get(key)
 					.getFragments(), " ... ");
@@ -128,6 +98,7 @@ public class IndexUtils {
 				int size = (Integer) (hit.getFields().get(key).getValue());
 				return FileUtils.byteCountToDisplaySize(size);
 			case FROM:
+				String subKey = "pstMessage.sentRepresentingEmailAddress";
 				StringBuilder fromString = new StringBuilder();
 				String name = hit.getFields().get(key).getValue();
 				String address = hit.getFields().get(subKey).getValue();
@@ -141,7 +112,6 @@ public class IndexUtils {
 				return fromString.toString();
 			case TO:
 			case CC:
-			case BCC:
 				
 				String stringValue = hit.getFields().get(key).getValue();
 				String[] tokens = stringValue.split(";");

@@ -127,8 +127,10 @@ public class EmailPreview extends Panel {
 		this.addComponent(subject);
 
 		final Label body = new Label(IndexUtils.getFieldValue(
-				indexService.searchAndFilterById(item.getId(), criteria, 0, 1),
-				IndexFieldEnum.BODY, true).replaceAll("\r?\n", "<br/>"));
+				indexService.search(indexService.getNewBuilder()
+						.withCriteria(criteria).withId(item.getId())
+						.withFullBody()).getHits().getAt(0), IndexFieldEnum.BODY, true)
+				.replaceAll("\r?\n", "<br/>"));
 		body.setContentMode(Label.CONTENT_RAW);
 		this.addComponent(body);
 

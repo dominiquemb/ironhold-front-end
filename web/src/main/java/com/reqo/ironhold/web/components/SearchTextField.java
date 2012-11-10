@@ -27,11 +27,13 @@ public class SearchTextField extends TextField implements Handler {
 		if (action == action_ok) {
 			String criteria = (String) this.getValue();
 			if (criteria.trim().length() > 0) {
-				searchResults.performSearch(criteria);
+				searchResults.setCriteria(criteria);
 			} else {
 				searchResults.reset();
 			}
 
+
+			getWindow().scrollIntoView(this.getParent().getParent());
 			
 		}
 

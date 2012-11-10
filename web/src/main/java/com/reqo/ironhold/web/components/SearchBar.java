@@ -24,7 +24,7 @@ public class SearchBar extends VerticalLayout {
 
 		filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 		filterField.setTextChangeTimeout(200);
-		filterField.setWidth("300px");
+		filterField.setWidth("400px");
 		filterField.addListener(new TextChangeListener() {
 
 			public void textChange(TextChangeEvent event) {

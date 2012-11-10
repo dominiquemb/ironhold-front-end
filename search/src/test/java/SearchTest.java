@@ -9,14 +9,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
-
 
 public class SearchTest {
 
@@ -33,7 +34,7 @@ public class SearchTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
+
 	}
 
 	@After
@@ -41,19 +42,22 @@ public class SearchTest {
 	}
 
 	@Test
-	public void test() throws JsonParseException, JsonMappingException, IOException {
-		SearchHit[] results = indexService.search("Virus");
+	public void test() throws JsonParseException, JsonMappingException,
+			IOException {
+
+		SearchHit[] results = indexService.search(indexService.getNewBuilder()
+				.withCriteria("Virus")).getHits().getHits();
 		Assert.assertTrue(results.length > 0);
 		for (SearchHit result : results) {
-			
-			
-			//System.out.println(result.getFields().get("pstMessage.subject").getValue().toString());
-			//System.out.println(result.getFields().get("pstMessage.body").getValue().toString());
-			System.out.println(StringUtils.join(result.getHighlightFields().get("pstMessage.subject").getFragments(),","));
-			//System.out.println(StringUtils.join(result.getHighlightFields().get("pstMessage.body").getFragments(),","));
-			
+
+			// System.out.println(result.getFields().get("pstMessage.subject").getValue().toString());
+			// System.out.println(result.getFields().get("pstMessage.body").getValue().toString());
+			System.out.println(StringUtils.join(result.getHighlightFields()
+					.get("pstMessage.subject").getFragments(), ","));
+			// System.out.println(StringUtils.join(result.getHighlightFields().get("pstMessage.body").getFragments(),","));
+
 			System.out.println("*******************");
-			
+
 		}
 	}
 
