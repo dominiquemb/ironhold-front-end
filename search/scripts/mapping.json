@@ -1,0 +1,329 @@
+{
+  "message": {
+    "properties": {
+      "indexed": {
+        "type": "boolean"
+      },
+      "messageId": {
+        "type": "string"
+      },
+      "pstMessage": {
+        "dynamic": "true",
+        "properties": {
+          "acknowledgementMode": {
+            "type": "long"
+          },
+          "actionDate": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "actionFlag": {
+            "type": "long"
+          },
+          "associated": {
+            "type": "boolean"
+          },
+          "attachments": {
+            "dynamic": "true",
+            "properties": {
+              "body": {
+                "type": "string",
+                "store": "yes",
+                "term_vector": "with_positions_offsets"
+              },
+              "creationTime": {
+                "type": "date",
+                "format": "dateOptionalTime"
+              },
+              "fileName": {
+                "type": "string"
+              },
+              "modificationTime": {
+                "type": "date",
+                "format": "dateOptionalTime"
+              },
+              "size": {
+                "type": "long"
+              }
+            }
+          },
+          "attrHidden": {
+            "type": "boolean"
+          },
+          "attrReadonly": {
+            "type": "boolean"
+          },
+          "attrSystem": {
+            "type": "boolean"
+          },
+          "body": {
+            "type": "string",
+            "store": "yes",
+            "term_vector": "with_positions_offsets"
+          },
+          "bodyHTML": {
+            "type": "string"
+          },
+          "bodyPrefix": {
+            "type": "string"
+          },
+          "clientSubmitTime": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "conversationTopic": {
+            "type": "string"
+          },
+          "creationTime": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "deleteAfterSubmit": {
+            "type": "boolean"
+          },
+          "descriptorNodeId": {
+            "type": "long"
+          },
+          "disableFullFidelity": {
+            "type": "boolean"
+          },
+          "displayCC": {
+            "type": "string"
+          },
+          "displayTo": {
+            "type": "string"
+          },
+          "flagged": {
+            "type": "boolean"
+          },
+          "fromMe": {
+            "type": "boolean"
+          },
+          "iconIndex": {
+            "type": "long"
+          },
+          "importance": {
+            "type": "long"
+          },
+          "inReplyToId": {
+            "type": "string"
+          },
+          "internetArticleNumber": {
+            "type": "long"
+          },
+          "internetMessageId": {
+            "type": "string"
+          },
+          "lastModificationTime": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "messageCcMe": {
+            "type": "boolean"
+          },
+          "messageClass": {
+            "type": "string"
+          },
+          "messageDeliveryTime": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "messageSize": {
+            "type": "long"
+          },
+          "messageToMe": {
+            "type": "boolean"
+          },
+          "nextSendAcct": {
+            "type": "string"
+          },
+          "nodeType": {
+            "type": "long"
+          },
+          "nonReceiptNotificationRequested": {
+            "type": "boolean"
+          },
+          "numberOfAttachments": {
+            "type": "long"
+          },
+          "numberOfRecipients": {
+            "type": "long"
+          },
+          "objectType": {
+            "type": "long"
+          },
+          "originalDisplayCc": {
+            "type": "string"
+          },
+          "originalDisplayTo": {
+            "type": "string"
+          },
+          "originalSensitivity": {
+            "type": "long"
+          },
+          "originalSubject": {
+            "type": "string"
+          },
+          "originatorDeliveryReportRequested": {
+            "type": "boolean"
+          },
+          "originatorNonDeliveryReportRequested": {
+            "type": "boolean"
+          },
+          "pidTagSentRepresentingSearchKey": {
+            "type": "string"
+          },
+          "primarySendAccount": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "long"
+          },
+          "rcvdRepresentingAddrtype": {
+            "type": "string"
+          },
+          "rcvdRepresentingEmailAddress": {
+            "type": "string"
+          },
+          "rcvdRepresentingName": {
+            "type": "string"
+          },
+          "read": {
+            "type": "boolean"
+          },
+          "readReceiptRequested": {
+            "type": "boolean"
+          },
+          "receivedByAddress": {
+            "type": "string"
+          },
+          "receivedByAddressType": {
+            "type": "string"
+          },
+          "receivedByName": {
+            "type": "string"
+          },
+          "recipientReassignmentProhibited": {
+            "type": "boolean"
+          },
+          "recipientType": {
+            "type": "long"
+          },
+          "recipientsString": {
+            "type": "string"
+          },
+          "reminderDelta": {
+            "type": "long"
+          },
+          "reminderSet": {
+            "type": "boolean"
+          },
+          "replyRecipientNames": {
+            "type": "string"
+          },
+          "replyRequested": {
+            "type": "boolean"
+          },
+          "resent": {
+            "type": "boolean"
+          },
+          "responseRequested": {
+            "type": "boolean"
+          },
+          "responsibility": {
+            "type": "boolean"
+          },
+          "returnPath": {
+            "type": "string"
+          },
+          "rtfbody": {
+            "type": "string"
+          },
+          "rtfinSync": {
+            "type": "boolean"
+          },
+          "rtfsyncBodyCRC": {
+            "type": "long"
+          },
+          "rtfsyncBodyCount": {
+            "type": "long"
+          },
+          "rtfsyncPrefixCount": {
+            "type": "long"
+          },
+          "rtfsyncTrailingCount": {
+            "type": "long"
+          },
+          "senderAddrtype": {
+            "type": "string"
+          },
+          "senderEmailAddress": {
+            "type": "string"
+          },
+          "senderEntryId": {
+            "type": "string"
+          },
+          "senderName": {
+            "type": "string"
+          },
+          "sensitivity": {
+            "type": "long"
+          },
+          "sentRepresentingAddressType": {
+            "type": "string"
+          },
+          "sentRepresentingAddrtype": {
+            "type": "string"
+          },
+          "sentRepresentingEmailAddress": {
+            "type": "string"
+          },
+          "sentRepresentingName": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string",
+            "store": "yes",
+            "term_vector": "with_positions_offsets"
+          },
+          "submitted": {
+            "type": "boolean"
+          },
+          "taskDueDate": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "taskStartDate": {
+            "type": "date",
+            "format": "dateOptionalTime"
+          },
+          "transportMessageHeaders": {
+            "type": "string"
+          },
+          "unmodified": {
+            "type": "boolean"
+          },
+          "unsent": {
+            "type": "boolean"
+          },
+          "urlcompName": {
+            "type": "string"
+          },
+          "urlcompNamePostfix": {
+            "type": "long"
+          },
+          "urlcompNameSet": {
+            "type": "boolean"
+          }
+        }
+      },
+      "sources": {
+        "type": "string"
+      },
+      "storedDate": {
+        "type": "date",
+        "format": "dateOptionalTime"
+      }
+    }
+  }
+}
