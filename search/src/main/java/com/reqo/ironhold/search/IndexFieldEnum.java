@@ -1,7 +1,7 @@
 package com.reqo.ironhold.search;
 
 public enum IndexFieldEnum {
-    SUBJECT("pstMessage.subject"), DATE("pstMessage.messageDeliveryTime"), FROM("pstMessage.sentRepresentingName"), TO("pstMessage.displayTo"), CC("pstMessage.displayCc"), SIZE("pstMessage.messageSize"), BODY("pstMessage.body"), ATTACHMENT("pstMessage.attachments.body"), SCORE("_score");
+    SUBJECT("subject"), DATE("messageDate"), FROM("sender.name"), TO("to.name"), CC("cc.name"), SIZE("size"), BODY("body"), ATTACHMENT("attachments.body"), SCORE("_score");
 
     private final String value;
 
