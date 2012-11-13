@@ -3,12 +3,14 @@ package com.reqo.ironhold.storage.model;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 
+import com.pff.PSTRecipient;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -54,7 +56,39 @@ public class MailMessage {
 		this.pstMessage = mapper.readValue(
 				mapper.writeValueAsString(originalPSTMessage),
 				ArchivedPSTMessage.class);
-		for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
+
+
+        try {
+            for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
+                PSTRecipient recipient = originalPSTMessage.getRecipient(i);
+                switch (recipient.getRecipientType()) {
+                    case PSTMessage.RECIPIENT_TYPE_TO:
+                        pstMessage.addTo(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
+                        break;
+                    case PSTMessage.RECIPIENT_TYPE_CC:
+                        pstMessage.addCc(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
+                        break;
+                }
+
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            for (String displayTo : pstMessage.getDisplayTo().split(";")) {
+                pstMessage.addTo(new Recipient(displayTo, null));
+            }
+
+            for (String displayCc : pstMessage.getDisplayCC().split(";")) {
+                pstMessage.addCc(new Recipient(displayCc, null));
+            }
+
+
+        }
+
+        for (String displayBcc : pstMessage.getDisplayBCC().split(";")) {
+            pstMessage.addBcc(new Recipient(displayBcc, null));
+        }
+
+
+        for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
 			PSTAttachment attachment = originalPSTMessage.getAttachment(i);
 
 			String fileName = attachment.getLongFilename();

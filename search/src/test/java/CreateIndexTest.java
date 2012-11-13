@@ -29,7 +29,7 @@ public class CreateIndexTest {
 
 	@Test
 	public void test() throws Exception {
-		IndexService indexService = new IndexService("test");
+		IndexService indexService = new IndexService("unittest");
 		indexService.createIndex();
 		indexService.dropIndex();
 	}

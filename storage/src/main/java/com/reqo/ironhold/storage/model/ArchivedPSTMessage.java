@@ -109,6 +109,9 @@ public class ArchivedPSTMessage {
 	private Date creationTime;
 	private Date lastModificationTime;
 	private Attachment[] attachments = new Attachment[0];
+    private Recipient[] to = new Recipient[0];
+    private Recipient[] cc = new Recipient[0];
+    private Recipient[] bcc = new Recipient[0];
 
 	public ArchivedPSTMessage() {
 
@@ -121,7 +124,40 @@ public class ArchivedPSTMessage {
 
 	}
 
-	public long getPriority() {
+    public void addTo(Recipient recipient) {
+        Recipient[] copy = Arrays.copyOf(to, to.length + 1);
+        copy[to.length] = recipient;
+        to = copy;
+
+    }
+
+    public void addCc(Recipient recipient) {
+        Recipient[] copy = Arrays.copyOf(cc, cc.length + 1);
+        copy[cc.length] = recipient;
+        cc = copy;
+
+    }
+
+    public void addBcc(Recipient recipient) {
+        Recipient[] copy = Arrays.copyOf(bcc, bcc.length + 1);
+        copy[bcc.length] = recipient;
+        bcc = copy;
+
+    }
+
+    public Recipient[] getTo() {
+        return to;
+    }
+
+    public Recipient[] getCc() {
+        return cc;
+    }
+
+    public Recipient[] getBcc() {
+        return bcc;
+    }
+
+    public long getPriority() {
 		return priority;
 	}
 

@@ -63,14 +63,14 @@
 			</plugin>
 		</plugins>
 	</build>
-	<!-- <repositories> <repository> <id>vaadin-snapshots</id> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url> 
+	<!-- <repositories> <repository> <messageId>vaadin-snapshots</messageId> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
 		<releases> <enabled>false</enabled> </releases> <snapshots> </snapshots> 
-		</repository> <repository> <id>vaadin-addons</id> <url>http://maven.vaadin.com/vaadin-addons</url> 
+		</repository> <repository> <messageId>vaadin-addons</messageId> <url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository> </repositories> -->
-	<!-- <pluginRepositories> <pluginRepository> <id>codehaus-snapshots</id> 
+	<!-- <pluginRepositories> <pluginRepository> <messageId>codehaus-snapshots</messageId>
 		<url>http://nexus.codehaus.org/snapshots</url> <snapshots> <enabled>true</enabled> 
 		</snapshots> <releases> <enabled>false</enabled> </releases> </pluginRepository> 
-		<pluginRepository> <id>vaadin-snapshots</id> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url> 
+		<pluginRepository> <messageId>vaadin-snapshots</messageId> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
 		<snapshots> <enabled>true</enabled> </snapshots> <releases> <enabled>false</enabled> 
 		</releases> </pluginRepository> </pluginRepositories> -->
 
@@ -128,7 +128,7 @@
 	<repositories>
 
 		<repository>
-			<id>vaadin-addons</id>
+			<messageId>vaadin-addons</messageId>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
 	</repositories>
