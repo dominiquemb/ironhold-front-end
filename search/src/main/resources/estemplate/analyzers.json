@@ -1,0 +1,12 @@
+{
+
+        "analysis": {
+            "analyzer": {
+                "domain": {
+                    "type": "pattern",
+                    "pattern": ".+@"
+                }
+            }
+        }
+
+}
