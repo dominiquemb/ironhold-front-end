@@ -2,9 +2,9 @@ package com.reqo.ironhold.search;
 
 import com.reqo.ironhold.search.model.IndexedMailMessage;
 import org.apache.log4j.Logger;
-import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -20,7 +20,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -33,71 +32,64 @@ public class IndexService {
     private Client esClient;
     private final String indexName;
 
-    public IndexService(String indexName) {
+    public IndexService(String indexName) throws Exception {
         this.indexName = indexName;
         reconnect();
 
     }
 
-    private void reconnect() {
+    private void reconnect() throws Exception {
         if (esClient != null) {
             esClient.close();
         }
-        Settings settings = ImmutableSettings.settingsBuilder()
-                .put("client.transport.ping_timeout", "30s").build();
-        esClient = new TransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(
-                        "localhost", 9300));
+        Settings settings = ImmutableSettings.settingsBuilder().put("client.transport.ping_timeout", "30s").build();
+        esClient = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
 
+        IndicesExistsResponse exists = esClient.admin().indices().prepareExists(indexName).execute().actionGet();
+
+        if (!exists.isExists()) {
+            createIndex();
+        }
     }
 
-    public void createIndex() throws Exception {
-        CreateIndexResponse response1 = esClient.admin().indices()
-                .prepareCreate(indexName).execute().actionGet();
+    private void createIndex() throws Exception {
+        String analyzerDef = readJsonDefinition("analyzers.json");
+        CreateIndexResponse response1 = esClient.admin().indices().prepareCreate(indexName).setSettings(analyzerDef)
+                .execute().actionGet();
         if (!response1.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: "
-                    + response1.toString());
+            throw new Exception("ES Request did not get acknowledged: " + response1.toString());
         }
-        String jsonDef = readJsonDefinition();
-        PutMappingResponse response2 = esClient.admin().indices()
-                .preparePutMapping(indexName).setType("message")
-                .setSource(jsonDef).execute().actionGet();
-        if (!response2.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: "
-                    + response2.toString());
+
+        String messageDef = readJsonDefinition("message.json");
+        PutMappingResponse response3 = esClient.admin().indices().preparePutMapping(indexName).setType("message")
+                .setSource(messageDef).execute().actionGet();
+        if (!response3.acknowledged()) {
+            throw new Exception("ES Request did not get acknowledged: " + response3.toString());
         }
 
     }
 
     public void dropIndex() throws Exception {
-        DeleteIndexResponse response = esClient.admin().indices()
-                .prepareDelete(indexName).execute().actionGet();
+        DeleteIndexResponse response = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
         if (!response.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: "
-                    + response.toString());
+            throw new Exception("ES Request did not get acknowledged: " + response.toString());
         }
     }
 
-    public boolean store(IndexedMailMessage message) throws ElasticSearchException, IOException {
+    public boolean store(IndexedMailMessage message) throws Exception {
         if (!exists(message.getMessageId())) {
             int retry = 1;
             boolean success = false;
             while (!success && retry <= MAX_RETRY_COUNT) {
                 try {
 
-                    esClient.prepareIndex(indexName, "message",
-                            message.getMessageId())
-                            .setSource(IndexedMailMessage.toJSON(message)).execute()
-                            .actionGet();
+                    esClient.prepareIndex(indexName, "message", message.getMessageId()).setSource(IndexedMailMessage
+                            .toJSON(message)).execute().actionGet();
                     success = true;
                     return true;
                 } catch (NoNodeAvailableException e) {
-                    logger.warn("Recieved no node available exception, sleep for "
-                            + RETRY_SLEEP
-                            + " (Attempt "
-                            + retry
-                            + " out of "
-                            + MAX_RETRY_COUNT + ")");
+                    logger.warn("Recieved no node available exception, sleep for " + RETRY_SLEEP + " (Attempt " +
+                            retry + " out of " + MAX_RETRY_COUNT + ")");
                     success = false;
                     retry++;
 
@@ -109,8 +101,7 @@ public class IndexService {
                 }
             }
         } else {
-            logger.info(String.format("Skipped document with id [%s]",
-                    message.getMessageId()));
+            logger.info(String.format("Skipped document with id [%s]", message.getMessageId()));
             return false;
         }
 
@@ -118,19 +109,24 @@ public class IndexService {
     }
 
     private boolean exists(String messageId) {
-        GetResponse response = esClient
-                .prepareGet(indexName, "message", messageId).execute()
-                .actionGet();
+        GetResponse response = esClient.prepareGet(indexName, "message", messageId).execute().actionGet();
         return response.isExists();
     }
 
     public MessageSearchBuilder getNewBuilder() {
-        return MessageSearchBuilder.newBuilder(esClient
-                .prepareSearch(indexName));
+        return MessageSearchBuilder.newBuilder(esClient.prepareSearch(indexName));
+    }
+
+
+    public MessageSearchBuilder getNewBuilder(MessageSearchBuilder oldBuilder) {
+        MessageSearchBuilder newBuilder = MessageSearchBuilder.newBuilder(esClient.prepareSearch(indexName));
+        return newBuilder.buildFrom(oldBuilder);
     }
 
     public SearchResponse search(MessageSearchBuilder builder) {
-        return builder.build().execute().actionGet();
+        SearchResponse response = builder.build().execute().actionGet();
+        // System.out.println(response.toString());
+        return response;
     }
 
     public long getMatchCount(String search) {
@@ -144,8 +140,14 @@ public class IndexService {
         return response.getHits().getTotalHits();
     }
 
-    private static String readJsonDefinition() throws Exception {
-        return readFileInClasspath("/estemplate/message.json");
+    public SearchResponse getMatchCount(MessageSearchBuilder builder) {
+        SearchResponse response = builder.build().setSearchType(SearchType.COUNT).execute().actionGet();
+
+        return response;
+    }
+
+    private static String readJsonDefinition(String fileName) throws Exception {
+        return readFileInClasspath("/estemplate/" + fileName);
     }
 
     /**
