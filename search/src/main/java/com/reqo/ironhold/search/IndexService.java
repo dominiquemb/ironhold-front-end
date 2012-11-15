@@ -10,7 +10,6 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -22,6 +21,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 
 public class IndexService {
@@ -29,11 +29,22 @@ public class IndexService {
     private static final int MAX_RETRY_COUNT = 10;
 
     private static Logger logger = Logger.getLogger(IndexService.class);
-    private Client esClient;
+    private TransportClient esClient;
     private final String indexName;
+    private String[] esHosts;
+    private int esPort;
+    private String timeout;
 
     public IndexService(String indexName) throws Exception {
         this.indexName = indexName;
+
+        Properties prop = new Properties();
+        prop.load(IndexService.class.getResourceAsStream("elasticsearch.properties"));
+
+        esHosts = prop.getProperty("hosts").split(",");
+        esPort = Integer.parseInt(prop.getProperty("port"));
+        timeout = prop.getProperty("timeout");
+
         reconnect();
 
     }
@@ -42,8 +53,12 @@ public class IndexService {
         if (esClient != null) {
             esClient.close();
         }
-        Settings settings = ImmutableSettings.settingsBuilder().put("client.transport.ping_timeout", "30s").build();
-        esClient = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+        Settings settings = ImmutableSettings.settingsBuilder().put("client.transport.ping_timeout", timeout).build();
+        esClient = new TransportClient(settings);
+
+        for (String esHost : esHosts) {
+            esClient.addTransportAddress(new InetSocketTransportAddress(esHost, esPort));
+        }
 
         IndicesExistsResponse exists = esClient.admin().indices().prepareExists(indexName).execute().actionGet();
 

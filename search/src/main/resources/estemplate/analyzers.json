@@ -5,6 +5,10 @@
                 "domain": {
                     "type": "pattern",
                     "pattern": ".+@"
+                },
+                "file": {
+                    "type": "pattern",
+                    "pattern": ".+\\."
                 }
             }
         }

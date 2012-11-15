@@ -41,6 +41,14 @@ public class EmailView extends Panel {
 
         this.removeAllComponents();
 
+        String subjectValue = IndexUtils.getFieldValue(item, IndexFieldEnum.SUBJECT, false);
+        if (subjectValue.equals(StringUtils.EMPTY)) {
+            subjectValue = "&lt;No subject&gt;";
+        }
+        final Label subject = new Label(subjectValue);
+        subject.setStyleName(Reindeer.LABEL_H2);
+        this.addComponent(subject);
+
         final Label date = new Label(IndexUtils.getFieldValue(item, IndexFieldEnum.DATE));
         date.setContentMode(Label.CONTENT_XHTML);
         date.setStyleName(Reindeer.LABEL_SMALL);
@@ -91,13 +99,6 @@ public class EmailView extends Panel {
             }
         }
 
-        String subjectValue = IndexUtils.getFieldValue(item, IndexFieldEnum.SUBJECT, false);
-        if (subjectValue.equals(StringUtils.EMPTY)) {
-            subjectValue = "&lt;No subject&gt;";
-        }
-        final Label subject = new Label(subjectValue);
-        subject.setStyleName(Reindeer.LABEL_H2);
-        this.addComponent(subject);
 
         final HorizontalLayout bodyLayout = new HorizontalLayout();
         bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
@@ -113,13 +114,20 @@ public class EmailView extends Panel {
     }
 
     private void addPartyLabel(SearchHit item, IndexFieldEnum field) {
-        String value = IndexUtils.getFieldValue(item, field, false);
+        String value = IndexUtils.getFieldValue(item, field);
         if (!value.equals(StringUtils.EMPTY)) {
-            final Label from = new Label(String.format("%s: %s", field.getLabel(), value));
-            from.setContentMode(Label.CONTENT_XHTML);
-            this.addComponent(from);
+            HorizontalLayout hl = new HorizontalLayout();
+            final Label typeLabel = new Label(field.getLabel() + ":");
+            hl.addComponent(typeLabel);
+            final Label valueLabel = new Label(value);
+            hl.addComponent(valueLabel);
+
+            typeLabel.setWidth("35px");
+            valueLabel.setWidth(null);
+            hl.setExpandRatio(valueLabel, 1.0f);
+
+            this.addComponent(hl);
         }
 
     }
-
 }

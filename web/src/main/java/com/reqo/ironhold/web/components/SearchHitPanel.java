@@ -2,6 +2,7 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexUtils;
+import com.vaadin.Application;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
@@ -16,19 +17,26 @@ public class SearchHitPanel extends Panel {
 
     private final SearchHitPanel me;
 
-    public SearchHitPanel(final SearchHit item, final EmailPreviewPanel emailPreview, final String criteria) {
+    public SearchHitPanel(final SearchHit item, final EmailPreviewPanel emailPreview, final String criteria,
+                          final Application application) {
         this.me = this;
 
+        VerticalLayout vl = new VerticalLayout();
+        vl.setMargin(true);
+        this.setContent(vl);
         me.setStyleName(Reindeer.PANEL_LIGHT);
         String subjectValue = IndexUtils.getFieldValue(item, IndexFieldEnum.SUBJECT);
         if (subjectValue.equals(StringUtils.EMPTY)) {
             subjectValue = "&lt;No subject&gt;";
         }
 
+
         final HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setSpacing(true);
+        headerLayout.setWidth("100%");
         final NativeButton subject = new NativeButton(subjectValue);
         subject.setHtmlContentAllowed(true);
+        subject.setStyleName(Reindeer.LABEL_H2);
         subject.addListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
@@ -51,12 +59,15 @@ public class SearchHitPanel extends Panel {
             }
         });
         subject.setStyleName(BaseTheme.BUTTON_LINK);
+        subject.setWidth(null);
         headerLayout.addComponent(subject);
 
         final Label size = new Label(IndexUtils.getFieldValue(item, IndexFieldEnum.SIZE));
         size.setContentMode(Label.CONTENT_XHTML);
         size.setStyleName(Reindeer.LABEL_SMALL);
+        size.setWidth(null);
         headerLayout.addComponent(size);
+        headerLayout.setExpandRatio(subject, 1.0f);
         headerLayout.setComponentAlignment(size, Alignment.MIDDLE_CENTER);
 
         this.addComponent(headerLayout);
@@ -77,16 +88,11 @@ public class SearchHitPanel extends Panel {
 
         String attachmentValue = IndexUtils.getFieldValue(item, IndexFieldEnum.ATTACHMENT);
         if (!attachmentValue.equals(StringUtils.EMPTY)) {
-            HorizontalLayout attachmentLayout = new HorizontalLayout();
-            Layout.MarginInfo marginInfo = new Layout.MarginInfo(false, false, false, true);
-            attachmentLayout.setMargin(marginInfo);
-
-            final Label attachment = new Label("Attachment: " + attachmentValue);
+            final Label attachment = new Label(attachmentValue);
             attachment.setContentMode(Label.CONTENT_XHTML);
             attachment.setStyleName(Reindeer.LABEL_SMALL);
 
-            attachmentLayout.addComponent(attachment);
-            this.addComponent(attachmentLayout);
+            this.addComponent(attachment);
         }
 
     }
@@ -94,9 +100,18 @@ public class SearchHitPanel extends Panel {
     private void addPartyLabel(SearchHit item, IndexFieldEnum field) {
         String value = IndexUtils.getFieldValue(item, field);
         if (!value.equals(StringUtils.EMPTY)) {
-            final Label from = new Label(String.format("%s: %s", field.getLabel(), value));
-            from.setContentMode(Label.CONTENT_XHTML);
-            this.addComponent(from);
+            HorizontalLayout hl = new HorizontalLayout();
+            final Label typeLabel = new Label(field.getLabel() + ":");
+            hl.addComponent(typeLabel);
+            final Label valueLabel = new Label(value);
+            valueLabel.setContentMode(Label.CONTENT_XHTML);
+            hl.addComponent(valueLabel);
+
+            typeLabel.setWidth("35px");
+            valueLabel.setWidth(null);
+            hl.setExpandRatio(valueLabel, 1.0f);
+
+            this.addComponent(hl);
         }
 
     }

@@ -13,33 +13,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>6.8.2</vaadin.version>
-        <gwt.version>2.3.0</gwt.version>
-        <gwt.plugin.version>2.2.0</gwt.plugin.version>
+        <vaadin.version>6.8.5</vaadin.version>
     </properties>
 
     <build>
         <plugins>
 
-            <!-- Compile custom GWT components or widget dependencies with the GWT
-                   compiler -->
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>gwt-maven-plugin</artifactId>
-                   <version>${gwt.plugin.version}</version> <configuration> <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
-                   <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs> <runTarget>web</runTarget>
-                   <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-                   <noServer>true</noServer> <port>8080</port> <compileReport>false</compileReport>
-                   </configuration> <executions> <execution> <goals> <goal>resources</goal>
-                   <goal>compile</goal> </goals> </execution> </executions> <dependencies> <dependency>
-                   <groupId>com.google.gwt</groupId> <artifactId>gwt-dev</artifactId> <version>${gwt.version}</version>
-                   </dependency> <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId>
-                   <version>${gwt.version}</version> </dependency> </dependencies> </plugin>
-                   <plugin> <groupId>com.vaadin</groupId> <artifactId>vaadin-maven-plugin</artifactId>
-                   <version>1.0.2</version> <executions> <execution> <configuration> </configuration>
-                   <goals> <goal>update-widgetset</goal> </goals> </execution> </executions>
-                   </plugin> -->
-
-            <!-- A simple Jetty test server at http://localhost:8080/web can be launched
-                   with the Maven goal jetty:run and stopped with jetty:stop -->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
@@ -64,18 +43,9 @@
             </plugin>
         </plugins>
     </build>
-    <!-- <repositories> <repository> <messageId>vaadin-snapshots</messageId> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-         <releases> <enabled>false</enabled> </releases> <snapshots> </snapshots>
-         </repository> <repository> <messageId>vaadin-addons</messageId> <url>http://maven.vaadin.com/vaadin-addons</url>
-         </repository> </repositories> -->
-    <!-- <pluginRepositories> <pluginRepository> <messageId>codehaus-snapshots</messageId>
-         <url>http://nexus.codehaus.org/snapshots</url> <snapshots> <enabled>true</enabled>
-         </snapshots> <releases> <enabled>false</enabled> </releases> </pluginRepository>
-         <pluginRepository> <messageId>vaadin-snapshots</messageId> <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-         <snapshots> <enabled>true</enabled> </snapshots> <releases> <enabled>false</enabled>
-         </releases> </pluginRepository> </pluginRepositories> -->
 
     <dependencies>
+
         <dependency>
             <groupId>com.reqo.ironhold</groupId>
             <artifactId>search</artifactId>
@@ -102,12 +72,13 @@
             <artifactId>commons-codec</artifactId>
             <version>1.7</version>
         </dependency>
+
         <dependency>
             <groupId>java-libpst</groupId>
             <artifactId>java-libpst</artifactId>
             <version>0.7</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/java-libpst.0.7.jar</systemPath>
+            <systemPath>${basedir}/../lib/java-libpst.0.7.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -115,15 +86,8 @@
             <artifactId>jcharset</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/jcharset.jar</systemPath>
+            <systemPath>${basedir}/../lib/jcharset.jar</systemPath>
         </dependency>
-        <!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-user</artifactId>
-              <version>${gwt.version}</version> <scope>provided</scope> </dependency> <dependency>
-              <groupId>javax.validation</groupId> <artifactId>validation-api</artifactId>
-              <version>1.0.0.GA</version> <scope>provided</scope> </dependency> <dependency>
-              <groupId>javax.validation</groupId> <artifactId>validation-api</artifactId>
-              <version>1.0.0.GA</version> <classifier>sources</classifier> <scope>provided</scope>
-              </dependency> -->
     </dependencies>
 
     <repositories>

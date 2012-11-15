@@ -15,8 +15,6 @@
  */
 package com.reqo.ironhold.web;
 
-import java.io.IOException;
-
 import com.reqo.ironhold.web.components.SearchWindow;
 import com.vaadin.Application;
 import com.vaadin.ui.Window;
@@ -26,19 +24,19 @@ import com.vaadin.ui.Window;
  */
 @SuppressWarnings("serial")
 public class IronholdApplication extends Application {
-	private Window window;
+    private Window window;
 
-	@Override
-	public void init() {
+    @Override
+    public void init() {
 
-		try {
-			window = new SearchWindow("IronHold Search");
+        try {
+            window = new SearchWindow("IronHold Search");
 
-			setMainWindow(window);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            setMainWindow(window);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 }

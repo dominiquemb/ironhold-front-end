@@ -17,6 +17,7 @@ public class MessageSearchBuilder {
     public static final String FACET_TO_NAME = "to";
     public static final String FACET_DATE = "date";
     public static final String FACET_TO_DOMAIN = "to_domain";
+    public static final String FACET_FILENAME = "file";
 
 
     public static MessageSearchBuilder newBuilder(SearchRequestBuilder builder) {
@@ -27,6 +28,7 @@ public class MessageSearchBuilder {
     private List<String> fromDomainFacetValues = new ArrayList<String>();
     private List<String> toFacetValues = new ArrayList<String>();
     private List<String> toDomainFacetValues = new ArrayList<String>();
+    private List<String> fileExtFacetValues = new ArrayList<String>();
     private List<Long> dateFacetValues = new ArrayList<Long>();
 
     private final SearchRequestBuilder builder;
@@ -42,6 +44,7 @@ public class MessageSearchBuilder {
     private boolean fromDomainFacet;
     private boolean toFacet;
     private boolean toDomainFacet;
+    private boolean fileExtFacet;
 
 
     private MessageSearchBuilder(SearchRequestBuilder builder) {
@@ -106,6 +109,13 @@ public class MessageSearchBuilder {
     }
 
 
+    public MessageSearchBuilder withFileExtFacet() {
+        this.fileExtFacet = true;
+
+        return this;
+    }
+
+
     public MessageSearchBuilder withFromFacetValue(String term) {
         this.fromFacetValues.add(term);
         return this;
@@ -148,6 +158,17 @@ public class MessageSearchBuilder {
     }
 
 
+    public MessageSearchBuilder withFileExtFacetValue(String term) {
+        this.fileExtFacetValues.add(term);
+        return this;
+    }
+
+    public MessageSearchBuilder withoutFileExtFacetValue(String term) {
+        this.fileExtFacetValues.remove(term);
+        return this;
+    }
+
+
     public MessageSearchBuilder withYearFacetValue(long term) {
         this.dateFacetValues.add(term);
         return this;
@@ -171,7 +192,7 @@ public class MessageSearchBuilder {
 
             if (fromFacetValues.size() > 0 || fromDomainFacetValues.size() > 0 ||
                     toFacetValues.size() > 0 || toDomainFacetValues.size() > 0 ||
-                    dateFacetValues.size() > 0) {
+                    dateFacetValues.size() > 0 || fileExtFacetValues.size() > 0) {
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
                 if (fromFacetValues.size() > 0) {
                     andFilter.add(FilterBuilders.inFilter(IndexFieldEnum.FROM_NAME.getValue(),
@@ -191,6 +212,11 @@ public class MessageSearchBuilder {
                 if (toDomainFacetValues.size() > 0) {
                     andFilter.add(FilterBuilders.inFilter(IndexFieldEnum.TO_ADDRESS.getValue(),
                             toDomainFacetValues.toArray(new String[toDomainFacetValues.size()])));
+                }
+
+                if (fileExtFacetValues.size() > 0) {
+                    andFilter.add(FilterBuilders.inFilter(IndexFieldEnum.FILENAME.getValue(),
+                            fileExtFacetValues.toArray(new String[fileExtFacetValues.size()])));
                 }
 
                 if (dateFacetValues.size() > 0) {
@@ -270,6 +296,11 @@ public class MessageSearchBuilder {
         }
 
 
+        if (fileExtFacet) {
+            builder.addFacet(FacetBuilders.termsFacet(FACET_FILENAME).field(IndexFieldEnum.FILENAME.getValue()));
+        }
+
+
         System.out.println(builder.toString());
 
         return builder;
@@ -284,6 +315,7 @@ public class MessageSearchBuilder {
         this.toFacetValues = oldBuilder.toFacetValues;
         this.toDomainFacetValues = oldBuilder.toDomainFacetValues;
         this.dateFacetValues = oldBuilder.dateFacetValues;
+        this.fileExtFacetValues = oldBuilder.fileExtFacetValues;
 
         return this;
     }

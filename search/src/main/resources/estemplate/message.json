@@ -39,7 +39,8 @@
                         "format": "dateOptionalTime"
                     },
                     "fileName": {
-                        "type": "string"
+                        "type": "string",
+                        "analyzer": "file"
                     },
                     "modificationTime": {
                         "type": "date",
