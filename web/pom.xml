@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ironhold</artifactId>
         <groupId>com.reqo.ironhold</groupId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>web</artifactId>
     <packaging>war</packaging>
