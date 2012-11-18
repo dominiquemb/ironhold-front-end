@@ -1,22 +1,25 @@
-package com.reqo.ironhold.watcher;
+package com.reqo.ironhold.importer.watcher;
 
+import com.reqo.ironhold.importer.PSTImporter;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.File;
 
-public class InboundWatcher extends FileWatcher {
-    private static Logger logger = Logger.getLogger(InboundWatcher.class);
+public class QueueWatcher extends FileWatcher {
 
-    public InboundWatcher(String inputDirName, String outputDirName, String client) throws Exception {
+    private static Logger logger = Logger.getLogger(QueueWatcher.class);
+
+    public QueueWatcher(String inputDirName, String outputDirName, String client) throws Exception {
         super(inputDirName, outputDirName, client);
     }
 
-
     @Override
     protected void processFile(File dataFile) throws Exception {
-        logger.info("Queuing valid file " + dataFile.toString());
+        logger.info("Processing data file " + dataFile.toString());
+        PSTImporter importer = new PSTImporter();
+        importer.processMessages(dataFile, this.getClient());
     }
 
     public static void main(String[] args) {
@@ -30,10 +33,11 @@ public class InboundWatcher extends FileWatcher {
             return;
         }
         try {
-            new InboundWatcher(bean.getIn(), bean.getQueue(), bean.getClient());
+            new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getClient());
         } catch (Exception e) {
             logger.error("Critical error detected. Exiting.", e);
             System.exit(0);
         }
     }
+
 }

@@ -50,7 +50,8 @@ public class MongoService implements IStorageService {
         options.setAutoConnectRetry(true);
         options.setDescription(purpose);
         options.setMaxAutoConnectRetryTime(maxAutoConnectRetry);
-        mongo = new Mongo(mongoHost, options);
+        mongo = new Mongo(new ServerAddress(mongoHost, mongoPort), options);
+
 
         db = mongo.getDB("admin");
         db.authenticate(username, password.toCharArray());

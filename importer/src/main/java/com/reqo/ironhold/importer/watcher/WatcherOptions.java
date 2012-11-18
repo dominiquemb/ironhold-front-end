@@ -1,4 +1,4 @@
-package com.reqo.ironhold.watcher;
+package com.reqo.ironhold.importer.watcher;
 
 import org.kohsuke.args4j.Option;
 
