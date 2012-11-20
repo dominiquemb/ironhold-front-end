@@ -138,9 +138,9 @@ public class MongoServiceTest {
 
         MailMessageTestModel.verifyStorage(storageService, inputMessage);
 
-        storageService.markAsIndexed(inputMessage.getMessageId());
+        storageService.updateIndexStatus(inputMessage.getMessageId(), IndexStatus.INDEXED);
 
-        inputMessage.setIndexed(true);
+        inputMessage.setIndexed(IndexStatus.INDEXED);
 
         MailMessageTestModel.verifyStorage(storageService, inputMessage);
 

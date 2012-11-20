@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage;
 
+import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
@@ -14,7 +15,7 @@ public interface IStorageService {
 
     void addSource(String messageId, MessageSource source) throws Exception;
 
-    void markAsIndexed(String messageId) throws Exception;
+    void updateIndexStatus(String messageId, IndexStatus status) throws Exception;
 
     List<MailMessage> findUnindexedMessages() throws Exception;
 

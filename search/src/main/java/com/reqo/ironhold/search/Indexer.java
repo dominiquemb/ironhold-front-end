@@ -3,6 +3,7 @@ package com.reqo.ironhold.search;
 import com.reqo.ironhold.search.model.IndexedMailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
@@ -40,28 +41,42 @@ public class Indexer {
         IndexService indexService = new IndexService(client);
 
         while (true) {
-            List<MailMessage> mailMessages = storageService.findUnindexedMessages(10);
+            List<MailMessage> mailMessages = storageService.findUnindexedMessages();
+            if (mailMessages.size() > 0) {
+                logger.info("Found " + mailMessages.size() + " unindexed Messages");
+            }
             for (MailMessage mailMessage : mailMessages) {
                 try {
-                    indexService.store(new IndexedMailMessage(mailMessage));
+                    try {
+                        indexService.store(new IndexedMailMessage(mailMessage));
 
-                } catch (MapperParsingException e) {
-                    logger.warn("Failed to index message " + mailMessage.getMessageId() + " with attachments, " +
-                            "skiping attachments");
+                    } catch (MapperParsingException e) {
+                        logger.warn("Failed to index message " + mailMessage.getMessageId() + " with attachments, " +
+                                "skipping attachments", e);
 
-                    LogMessage logMessage = new LogMessage(LogLevel.Warning,
-                            "Failed to index message with attachments, skiping attachments [" + e.getDetailedMessage
-                                    () + "]", mailMessage.getMessageId());
+                        LogMessage logMessage = new LogMessage(LogLevel.Warning,
+                                "Failed to index message with attachments, " +
+                                "skiping attachments [" + e.getDetailedMessage() + "]", mailMessage.getMessageId());
+                        storageService.log(logMessage);
+                        mailMessage.removeAttachments();
+
+                        indexService.store(new IndexedMailMessage(mailMessage));
+                    }
+
+                    LogMessage logMessage = new LogMessage(LogLevel.Success, "Message indexed with " + mailMessage
+                            .getAttachments().length + " attachments", mailMessage.getMessageId());
                     storageService.log(logMessage);
-                    mailMessage.getPstMessage().removeAttachments();
-                    indexService.store(new IndexedMailMessage(mailMessage));
+
+                    storageService.updateIndexStatus(mailMessage.getMessageId(), IndexStatus.INDEXED);
+                } catch (Exception e2) {
+                    logger.error("Failed to index message " + mailMessage.getMessageId(), e2);
+
+                    storageService.updateIndexStatus(mailMessage.getMessageId(), IndexStatus.FAILED);
+
+                    LogMessage logMessage = new LogMessage(LogLevel.Failure, "Failed to index message [" + e2
+                            .getMessage() + "]", mailMessage.getMessageId());
+                    storageService.log(logMessage);
                 }
-
-                LogMessage logMessage = new LogMessage(LogLevel.Success, "Message indexed with " + mailMessage
-                        .getPstMessage().getAttachments().length + " attachments", mailMessage.getMessageId());
-                storageService.log(logMessage);
-
-                storageService.markAsIndexed(mailMessage.getMessageId());
             }
 
 
