@@ -5,10 +5,7 @@ import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import com.mongodb.util.JSON;
-import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MessageSource;
+import com.reqo.ironhold.storage.model.*;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -29,6 +26,7 @@ public class MongoService implements IStorageService {
 
     private Mongo mongo;
     private DB db;
+    private static final int MAX_UNINDEXED_MESSAGES = 20;
 
     /**
      * Used for testing
@@ -92,12 +90,14 @@ public class MongoService implements IStorageService {
 
     public List<MailMessage> findUnindexedMessages() throws JsonParseException, JsonMappingException, IOException {
         List<MailMessage> result = new ArrayList<MailMessage>();
-        DBObject query = QueryBuilder.start().put("metadata.indexed").is(false).get();
+        DBObject query = QueryBuilder.start().put("metadata.indexed").is(IndexStatus.NOT_INDEXED.toString()).get();
+        System.out.println(query.toString());
 
         GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
 
         List<GridFSDBFile> results = fs.find(query);
 
+        int count = 0;
         for (GridFSDBFile object : results) {
 
             MailMessage mailMessage = MailMessage.deserializeMailMessage(object.getMetaData().toString());
@@ -108,6 +108,10 @@ public class MongoService implements IStorageService {
             mailMessage.setAttachments(attachments);
             result.add(mailMessage);
 
+            count++;
+            if (count == MAX_UNINDEXED_MESSAGES) {
+                break;
+            }
         }
 
         return result;
@@ -123,9 +127,10 @@ public class MongoService implements IStorageService {
 
     }
 
-    public void markAsIndexed(String messageId) throws JsonParseException, JsonMappingException, IOException {
+    public void updateIndexStatus(String messageId, IndexStatus status) throws JsonParseException,
+            JsonMappingException, IOException {
         MailMessage message = getMailMessage(messageId);
-        message.setIndexed(true);
+        message.setIndexed(status);
 
         update(message);
     }
