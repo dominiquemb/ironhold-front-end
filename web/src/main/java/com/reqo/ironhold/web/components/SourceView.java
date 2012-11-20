@@ -34,7 +34,7 @@ public class SourceView extends Panel {
 
         MailMessage mailMessage = storageService.getMailMessage(item.getId(), true);
 
-        String rawBody = MailMessage.toPrettyJSON(mailMessage).replaceAll("\r?\n", "<br/>");
+        String rawBody = MailMessage.serializeMailMessagePretty(mailMessage).replaceAll("\r?\n", "<br/>");
 
         final Label body = new Label(rawBody);
 

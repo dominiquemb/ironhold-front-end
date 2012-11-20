@@ -6,17 +6,18 @@ import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 import com.reqo.ironhold.storage.utils.TabIndenter;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
+import org.elasticsearch.common.Base64;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 
+@JsonIgnoreProperties("attachments")
 public class MailMessage {
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -43,6 +45,8 @@ public class MailMessage {
     private String messageId;
     private MessageSource[] sources;
 
+    private Attachment[] attachments = new Attachment[0];
+
     public MailMessage() {
 
     }
@@ -55,14 +59,18 @@ public class MailMessage {
 
         try {
             for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
-                PSTRecipient recipient = originalPSTMessage.getRecipient(i);
-                switch (recipient.getRecipientType()) {
-                    case PSTMessage.RECIPIENT_TYPE_TO:
-                        pstMessage.addTo(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
-                        break;
-                    case PSTMessage.RECIPIENT_TYPE_CC:
-                        pstMessage.addCc(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
-                        break;
+                try {
+                    PSTRecipient recipient = originalPSTMessage.getRecipient(i);
+                    switch (recipient.getRecipientType()) {
+                        case PSTMessage.RECIPIENT_TYPE_TO:
+                            pstMessage.addTo(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
+                            break;
+                        case PSTMessage.RECIPIENT_TYPE_CC:
+                            pstMessage.addCc(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -107,9 +115,8 @@ public class MailMessage {
             }
             out.write(buffer);
 
-            this.pstMessage.addAttachment(new Attachment(attachment.getSize(), attachment.getCreationTime(),
-                    attachment.getModificationTime(), attachment.getFilename(),
-                    Base64.encodeBase64String(out.toByteArray())));
+            this.addAttachment(new Attachment(attachment.getSize(), attachment.getCreationTime(),
+                    attachment.getModificationTime(), attachment.getFilename(), Base64.encodeBytes(out.toByteArray())));
         }
         this.setMessageId(originalPSTMessage.getInternetMessageId());
         sources = new MessageSource[]{source};
@@ -128,13 +135,18 @@ public class MailMessage {
 
     }
 
-    public static String toJSON(MailMessage message) throws JsonGenerationException, JsonMappingException, IOException {
+    public static String serializeAttachments(Attachment[] attachments) throws IOException {
+        return mapper.writeValueAsString(attachments);
+    }
+
+    public static String serializeMailMessage(MailMessage message) throws JsonGenerationException,
+            JsonMappingException, IOException {
         return mapper.writeValueAsString(message);
     }
 
 
-    public static String toPrettyJSON(MailMessage message) throws JsonGenerationException, JsonMappingException,
-            IOException {
+    public static String serializeMailMessagePretty(MailMessage message) throws JsonGenerationException,
+            JsonMappingException, IOException {
 
         DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
         printer.indentArraysWith(new TabIndenter());
@@ -145,9 +157,36 @@ public class MailMessage {
         return writer.writeValueAsString(message);
     }
 
-    public static MailMessage fromJSON(String json) throws JsonParseException, JsonMappingException, IOException {
+    public static Attachment[] deserializeAttachments(String json) throws IOException {
+        return mapper.readValue(json, Attachment[].class);
+    }
+
+    public static MailMessage deserializeMailMessage(String json) throws IOException {
         return mapper.readValue(json, MailMessage.class);
     }
+
+
+    public void addAttachment(Attachment attachment) {
+        Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
+        copy[attachments.length] = attachment;
+        attachments = copy;
+
+    }
+
+
+    public Attachment[] getAttachments() {
+        return attachments;
+    }
+
+
+    public void setAttachments(Attachment[] attachments) {
+        this.attachments = attachments;
+    }
+
+    public void removeAttachments() {
+        this.attachments = new Attachment[0];
+    }
+
 
     public ArchivedPSTMessage getPstMessage() {
         return pstMessage;

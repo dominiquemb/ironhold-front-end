@@ -1,7 +1,11 @@
 package com.reqo.ironhold.storage;
 
 import com.mongodb.*;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSInputFile;
 import com.mongodb.util.JSON;
+import com.reqo.ironhold.storage.model.Attachment;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
@@ -10,6 +14,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,18 +67,22 @@ public class MongoService implements IStorageService {
 
     public boolean exists(String messageId) {
 
-        BasicDBObject query = new BasicDBObject();
+        GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
 
-        query.put("messageId", messageId);
-        return db.getCollection(MESSAGE_COLLECTION).count(query) > 0;
+        return fs.findOne(messageId) != null;
     }
 
     public void store(MailMessage mailMessage) throws JsonGenerationException, JsonMappingException, MongoException,
             IOException {
         Date storedDate = new Date();
         mailMessage.setStoredDate(storedDate);
-        String jsonString = MailMessage.toJSON(mailMessage);
-        db.getCollection(MESSAGE_COLLECTION).insert((DBObject) JSON.parse(jsonString));
+        String jsonString = MailMessage.serializeMailMessage(mailMessage);
+        GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
+        GridFSInputFile fsFile = fs.createFile(mailMessage.getMessageId());
+        DBObject metaData = (DBObject) JSON.parse(jsonString);
+        fsFile.setMetaData(metaData);
+        fsFile.getOutputStream().write(MailMessage.serializeAttachments(mailMessage.getAttachments()).getBytes());
+        fsFile.getOutputStream().close();
     }
 
     public void stopSession() {
@@ -81,17 +90,24 @@ public class MongoService implements IStorageService {
 
     }
 
-    public List<MailMessage> findUnindexedMessages(int limit) throws JsonParseException, JsonMappingException,
-            IOException {
+    public List<MailMessage> findUnindexedMessages() throws JsonParseException, JsonMappingException, IOException {
         List<MailMessage> result = new ArrayList<MailMessage>();
-        DBObject query = QueryBuilder.start().put("indexed").is(false).get();
+        DBObject query = QueryBuilder.start().put("metadata.indexed").is(false).get();
 
-        DBCursor cur = db.getCollection(MESSAGE_COLLECTION).find(query).limit(limit);
+        GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
 
-        while (cur.hasNext()) {
-            DBObject object = cur.next();
-            object.removeField("_id");
-            result.add(MailMessage.fromJSON(object.toString()));
+        List<GridFSDBFile> results = fs.find(query);
+
+        for (GridFSDBFile object : results) {
+
+            MailMessage mailMessage = MailMessage.deserializeMailMessage(object.getMetaData().toString());
+            ByteArrayOutputStream byos = new ByteArrayOutputStream();
+            object.writeTo(byos);
+
+            Attachment[] attachments = MailMessage.deserializeAttachments(new String(byos.toByteArray()));
+            mailMessage.setAttachments(attachments);
+            result.add(mailMessage);
+
         }
 
         return result;
@@ -100,7 +116,7 @@ public class MongoService implements IStorageService {
 
     public void addSource(String messageId, MessageSource source) throws JsonParseException, JsonMappingException,
             IOException {
-        MailMessage message = getMailMessage(messageId, true);
+        MailMessage message = getMailMessage(messageId);
         message.addSource(source);
 
         update(message);
@@ -108,7 +124,7 @@ public class MongoService implements IStorageService {
     }
 
     public void markAsIndexed(String messageId) throws JsonParseException, JsonMappingException, IOException {
-        MailMessage message = getMailMessage(messageId, true);
+        MailMessage message = getMailMessage(messageId);
         message.setIndexed(true);
 
         update(message);
@@ -116,15 +132,18 @@ public class MongoService implements IStorageService {
 
     public void update(MailMessage mailMessage) throws JsonGenerationException, JsonMappingException, MongoException,
             IOException {
-        BasicDBObject query = new BasicDBObject();
+        GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
+        GridFSDBFile fsFile = fs.findOne(mailMessage.getMessageId());
 
-        query.put("messageId", mailMessage.getMessageId());
-        db.getCollection(MESSAGE_COLLECTION).update(query, (DBObject) JSON.parse(MailMessage.toJSON(mailMessage)));
+        String jsonString = MailMessage.serializeMailMessage(mailMessage);
+        fsFile.setMetaData((DBObject) JSON.parse(jsonString));
+        fsFile.save();
 
     }
 
+    @Override
     public long getTotalMessageCount() {
-        return db.getCollection(MESSAGE_COLLECTION).getCount();
+        return db.getCollection(MESSAGE_COLLECTION + ".files").getCount();
     }
 
     public MailMessage getMailMessage(String messageId) throws JsonParseException, JsonMappingException, IOException {
@@ -133,21 +152,22 @@ public class MongoService implements IStorageService {
 
     public MailMessage getMailMessage(String messageId, boolean includeAttachments) throws JsonParseException,
             JsonMappingException, IOException {
-        BasicDBObject query = new BasicDBObject();
+        GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
+        GridFSDBFile fsFile = fs.findOne(messageId);
+        MailMessage matchMessage = MailMessage.deserializeMailMessage(fsFile.getMetaData().toString());
 
-        query.put("messageId", messageId);
-        DBObject result = null;
-        if (!includeAttachments) {
-            DBObject fields = BasicDBObjectBuilder.start().add("body", 1).add("cc", 1).add("from",
-                    1).add("messageId", 1).add("recievedDate", 1).add("subject", 1).add("to", 1).add("bcc",
-                    1).add("indexed", 1).add("sources", 1).add("storedDate", 1).get();
-            result = db.getCollection(MESSAGE_COLLECTION).findOne(query, fields);
-        } else {
-            result = db.getCollection(MESSAGE_COLLECTION).findOne(query);
+
+        if (includeAttachments) {
+
+            ByteArrayOutputStream byos = new ByteArrayOutputStream();
+            fsFile.writeTo(byos);
+
+            Attachment[] attachments = MailMessage.deserializeAttachments(new String(byos.toByteArray()));
+            matchMessage.setAttachments(attachments);
+
         }
-        result.removeField("_id");
-        String match = result.toString();
-        return MailMessage.fromJSON(match);
+
+        return matchMessage;
     }
 
     public void log(LogMessage logMessage) throws JsonGenerationException, JsonMappingException, MongoException,
@@ -171,9 +191,5 @@ public class MongoService implements IStorageService {
         return result;
     }
 
-    @Override
-    public long getTotalCount() {
-        return db.getCollection(MESSAGE_COLLECTION).count();
-    }
 
 }

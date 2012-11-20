@@ -65,7 +65,7 @@ public class EmailView extends Panel {
 
         MailMessage mailMessage = storageService.getMailMessage(item.getId(), true);
 
-        Attachment[] attachments = mailMessage.getPstMessage().getAttachments();
+        Attachment[] attachments = mailMessage.getAttachments();
         if (attachments != null) {
             for (final Attachment attachment : attachments) {
                 final HorizontalLayout attachmentLayout = new HorizontalLayout();

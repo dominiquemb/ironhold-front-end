@@ -87,7 +87,8 @@ public class MailMessageTestModel extends CommonTestModel {
     public static MailMessage verifyStorage(IStorageService storageService, MailMessage inputMessage) throws Exception {
 
         MailMessage storedMessage = storageService.getMailMessage(inputMessage.getMessageId(), true);
-        Assert.assertEquals(MailMessage.toJSON(inputMessage), MailMessage.toJSON(storedMessage));
+        Assert.assertEquals(MailMessage.serializeMailMessage(inputMessage), MailMessage.serializeMailMessage
+                (storedMessage));
         Assert.assertNotNull(storedMessage.getStoredDate());
 
         return storedMessage;

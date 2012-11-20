@@ -19,7 +19,7 @@ public class SearchBar extends VerticalLayout {
 
         filterField = new SearchTextField(window, searchResults);
 
-        final Label previewLabel = new Label(Long.toString(storageService.getTotalCount()) + " total messages");
+        final Label previewLabel = new Label(Long.toString(storageService.getTotalMessageCount()) + " total messages");
 
         filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
         filterField.setTextChangeTimeout(200);
@@ -32,7 +32,7 @@ public class SearchBar extends VerticalLayout {
                     long results = indexService.getMatchCount(event.getText());
                     previewLabel.setValue(String.format("%,d matched messages", results));
                 } else {
-                    previewLabel.setValue(String.format("%,d total messages", storageService.getTotalCount()));
+                    previewLabel.setValue(String.format("%,d total messages", storageService.getTotalMessageCount()));
                 }
             }
         });

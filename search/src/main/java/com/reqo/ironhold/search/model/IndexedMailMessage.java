@@ -46,6 +46,8 @@ public class IndexedMailMessage {
         if (mailMessage.getPstMessage() != null) {
             load(mailMessage.getPstMessage());
         }
+
+        attachments = mailMessage.getAttachments();
     }
 
     private void load(ArchivedPSTMessage pstMessage) {
@@ -57,7 +59,7 @@ public class IndexedMailMessage {
         to = pstMessage.getTo();
         cc = pstMessage.getCc();
         bcc = pstMessage.getBcc();
-        attachments = pstMessage.getAttachments();
+
 
         size = pstMessage.getMessageSize();
         body = pstMessage.getBody();
