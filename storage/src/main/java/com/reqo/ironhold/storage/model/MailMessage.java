@@ -40,7 +40,7 @@ public class MailMessage {
     private ArchivedPSTMessage pstMessage;
     private Message liveMessage;
 
-    private boolean indexed = false;
+    private IndexStatus indexed = IndexStatus.NOT_INDEXED;
     private Date storedDate;
     private String messageId;
     private MessageSource[] sources;
@@ -204,11 +204,11 @@ public class MailMessage {
         this.liveMessage = liveMessage;
     }
 
-    public boolean isIndexed() {
+    public IndexStatus getIndexed() {
         return indexed;
     }
 
-    public void setIndexed(boolean indexed) {
+    public void setIndexed(IndexStatus indexed) {
         this.indexed = indexed;
     }
 

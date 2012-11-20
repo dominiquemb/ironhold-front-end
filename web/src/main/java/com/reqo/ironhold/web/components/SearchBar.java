@@ -19,7 +19,8 @@ public class SearchBar extends VerticalLayout {
 
         filterField = new SearchTextField(window, searchResults);
 
-        final Label previewLabel = new Label(Long.toString(storageService.getTotalMessageCount()) + " total messages");
+        final Label previewLabel = new Label(String.format("%,d total messages", storageService.getTotalMessageCount
+                ()));
 
         filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
         filterField.setTextChangeTimeout(200);

@@ -253,7 +253,7 @@ public class ImapMailMessage implements Serializable {
             this.body = body;
         }
 
-        public boolean isIndexed() {
+        public boolean getIndexed() {
             return indexed;
         }
 
