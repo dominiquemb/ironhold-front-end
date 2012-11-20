@@ -28,7 +28,7 @@ public class Indexer {
             return;
         }
         try {
-            new Indexer(bean.getClient());
+            new Indexer(bean.getClient(), bean.getBatchSize());
         } catch (Exception e) {
             logger.error("Critical error detected. Exiting.", e);
             System.exit(0);
@@ -36,15 +36,12 @@ public class Indexer {
 
     }
 
-    public Indexer(String client) throws Exception {
+    public Indexer(String client, int batchSize) throws Exception {
         IStorageService storageService = new MongoService(client, "indexer");
         IndexService indexService = new IndexService(client);
 
         while (true) {
-            List<MailMessage> mailMessages = storageService.findUnindexedMessages();
-            if (mailMessages.size() > 0) {
-                logger.info("Found " + mailMessages.size() + " unindexed Messages");
-            }
+            List<MailMessage> mailMessages = storageService.findUnindexedMessages(batchSize);
             for (MailMessage mailMessage : mailMessages) {
                 try {
                     try {

@@ -17,7 +17,7 @@ public interface IStorageService {
 
     void updateIndexStatus(String messageId, IndexStatus status) throws Exception;
 
-    List<MailMessage> findUnindexedMessages() throws Exception;
+    List<MailMessage> findUnindexedMessages(int limit) throws Exception;
 
     MailMessage getMailMessage(String messageId) throws Exception;
 

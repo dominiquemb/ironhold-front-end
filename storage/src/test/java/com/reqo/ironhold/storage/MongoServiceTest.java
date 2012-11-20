@@ -104,7 +104,7 @@ public class MongoServiceTest {
             storedCount++;
         }
 
-        List<MailMessage> unindexedMessages = storageService.findUnindexedMessages();
+        List<MailMessage> unindexedMessages = storageService.findUnindexedMessages(100);
         Assert.assertEquals(storedCount, unindexedMessages.size());
 
     }
