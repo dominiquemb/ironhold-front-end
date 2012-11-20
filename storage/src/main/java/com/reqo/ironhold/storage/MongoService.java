@@ -26,7 +26,6 @@ public class MongoService implements IStorageService {
 
     private Mongo mongo;
     private DB db;
-    private static final int MAX_UNINDEXED_MESSAGES = 20;
 
     /**
      * Used for testing
@@ -88,18 +87,27 @@ public class MongoService implements IStorageService {
 
     }
 
-    public List<MailMessage> findUnindexedMessages() throws JsonParseException, JsonMappingException, IOException {
+    public List<MailMessage> findUnindexedMessages(int limit) throws JsonParseException, JsonMappingException,
+            IOException {
         List<MailMessage> result = new ArrayList<MailMessage>();
         DBObject query = QueryBuilder.start().put("metadata.indexed").is(IndexStatus.NOT_INDEXED.toString()).get();
-        System.out.println(query.toString());
 
         GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
 
-        List<GridFSDBFile> results = fs.find(query);
+        DBCursor cur = fs.getFileList(query).limit(limit);
 
-        int count = 0;
-        for (GridFSDBFile object : results) {
+        List<String> toBeReturned = new ArrayList<String>();
 
+        while (cur.hasNext()) {
+            GridFSDBFile object = (GridFSDBFile) cur.next();
+
+            toBeReturned.add(object.getFilename());
+
+        }
+
+        for (String fileName : toBeReturned) {
+
+            GridFSDBFile object = fs.findOne(fileName);
             MailMessage mailMessage = MailMessage.deserializeMailMessage(object.getMetaData().toString());
             ByteArrayOutputStream byos = new ByteArrayOutputStream();
             object.writeTo(byos);
@@ -108,10 +116,6 @@ public class MongoService implements IStorageService {
             mailMessage.setAttachments(attachments);
             result.add(mailMessage);
 
-            count++;
-            if (count == MAX_UNINDEXED_MESSAGES) {
-                break;
-            }
         }
 
         return result;
