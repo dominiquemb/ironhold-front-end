@@ -11,6 +11,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,11 +76,16 @@ public class MongoService implements IStorageService {
         mailMessage.setStoredDate(storedDate);
         String jsonString = MailMessage.serializeMailMessage(mailMessage);
         GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-        GridFSInputFile fsFile = fs.createFile(mailMessage.getMessageId());
+        ByteArrayInputStream bis = new ByteArrayInputStream(MailMessage.serializeAttachments(mailMessage
+                .getAttachments()).getBytes());
+        GridFSInputFile fsFile = fs.createFile(bis, mailMessage.getMessageId());
+
+
         DBObject metaData = (DBObject) JSON.parse(jsonString);
         fsFile.setMetaData(metaData);
-        fsFile.getOutputStream().write(MailMessage.serializeAttachments(mailMessage.getAttachments()).getBytes());
-        fsFile.getOutputStream().close();
+        fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
+        fsFile.saveChunks();
+        fsFile.save();
     }
 
     public void stopSession() {
@@ -143,6 +149,7 @@ public class MongoService implements IStorageService {
             IOException {
         GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
         GridFSDBFile fsFile = fs.findOne(mailMessage.getMessageId());
+
 
         String jsonString = MailMessage.serializeMailMessage(mailMessage);
         fsFile.setMetaData((DBObject) JSON.parse(jsonString));

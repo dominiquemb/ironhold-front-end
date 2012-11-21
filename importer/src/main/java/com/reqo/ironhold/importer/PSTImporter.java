@@ -5,10 +5,7 @@ import com.pff.PSTFolder;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.LogLevel;
-import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.PSTMessageSource;
+import com.reqo.ironhold.storage.model.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
@@ -84,8 +81,8 @@ public class PSTImporter {
 
         LogMessage finishedMessage = new LogMessage(LogLevel.Success, file.toString(),
                 "Finished pst import: File: [" + file.toString() + "] File size: [" + fileSizeDisplay + "] Success " +
-                        "count: [" + count + "] Duplicate count: [" + duplicate + "] Fail count: [" + fail + "] Time " +
-                        "taken: [" + timeTook + "] Rate: [" + rate + " messages per sec]");
+                "count: [" + count + "] Duplicate count: [" + duplicate + "] Fail count: [" + fail + "] Time " +
+                "taken: [" + timeTook + "] Rate: [" + rate + " messages per sec]");
 
         storageService.log(finishedMessage);
     }
@@ -115,8 +112,18 @@ public class PSTImporter {
                         new Date(file.lastModified()), new Date(), InetAddress.getLocalHost().getHostName());
                 MailMessage mailMessage = new MailMessage(message, source);
                 if (storageService.exists(messageId)) {
-                    System.out.println("Found duplicate " + messageId);
-                    storageService.addSource(messageId, source);
+                    logger.warn("Found duplicate " + messageId);
+                    MailMessage storedMessage = storageService.getMailMessage(messageId);
+                    boolean newSource = true;
+                    for (MessageSource existingSource : storedMessage.getSources()) {
+                        if (existingSource.equals(source)) {
+                            newSource = false;
+                            break;
+                        }
+                    }
+                    if (newSource) {
+                        storageService.addSource(messageId, source);
+                    }
                     duplicate++;
                     if (duplicate % 100 == 0) {
                         logger.info("New Messages: " + count + " Duplicates: " + duplicate + " Failures:" + fail);

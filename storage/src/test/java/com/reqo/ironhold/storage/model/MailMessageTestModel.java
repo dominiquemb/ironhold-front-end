@@ -89,6 +89,9 @@ public class MailMessageTestModel extends CommonTestModel {
         MailMessage storedMessage = storageService.getMailMessage(inputMessage.getMessageId(), true);
         Assert.assertEquals(MailMessage.serializeMailMessage(inputMessage), MailMessage.serializeMailMessage
                 (storedMessage));
+        Assert.assertEquals(inputMessage.getAttachments().length, storedMessage.getAttachments().length);
+        Assert.assertEquals(MailMessage.serializeAttachments(inputMessage.getAttachments()),
+                MailMessage.serializeAttachments(storedMessage.getAttachments()));
         Assert.assertNotNull(storedMessage.getStoredDate());
 
         return storedMessage;

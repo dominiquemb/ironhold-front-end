@@ -2,6 +2,7 @@ package com.reqo.ironhold.storage;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
+import com.mongodb.gridfs.GridFS;
 import com.reqo.ironhold.storage.model.*;
 import de.flapdoodle.embedmongo.MongoDBRuntime;
 import de.flapdoodle.embedmongo.MongodExecutable;
@@ -12,6 +13,7 @@ import junit.framework.Assert;
 import org.junit.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,6 +57,38 @@ public class MongoServiceTest {
             IStorageService storageService = new MongoService(mongo, db);
 
             MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
+
+            storageService.store(inputMessage);
+
+            MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+            Assert.assertTrue(storageService.exists(inputMessage.getMessageId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.assertNull(e);
+        }
+    }
+
+    @Test
+    public void testLargeMessage() throws Exception {
+        try {
+            IStorageService storageService = new MongoService(mongo, db);
+
+            MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
+
+            inputMessage.removeAttachments();
+
+            Attachment attachment = new Attachment();
+            StringBuilder sb = new StringBuilder();
+            for (long i = 0; i < GridFS.MAX_CHUNKSIZE * 3; i++) {
+                sb.append('a');
+            }
+            attachment.setBody(sb.toString());
+            attachment.setCreationTime(new Date());
+            attachment.setFileName("test.txt");
+            attachment.setModificationTime(new Date());
+            attachment.setSize((int) (GridFS.MAX_CHUNKSIZE * 3));
+            inputMessage.addAttachment(attachment);
 
             storageService.store(inputMessage);
 
