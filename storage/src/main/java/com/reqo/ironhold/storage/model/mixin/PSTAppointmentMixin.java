@@ -7,5 +7,8 @@ import com.pff.PSTTimeZone;
 public abstract class PSTAppointmentMixin {
 	@JsonIgnore
 	abstract PSTTimeZone getRecurrenceTimeZone();
+	
+	@JsonIgnore
+	abstract PSTTimeZone getStartTimeZone();
 
 }
