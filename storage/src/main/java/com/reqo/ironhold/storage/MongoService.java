@@ -48,7 +48,7 @@ public class MongoService implements IStorageService {
      * @param mongo
      * @param db
      */
-    protected MongoService(Mongo mongo, DB db) {
+    public MongoService(Mongo mongo, DB db) {
         this.mongo = mongo;
         this.db = db;
     }
@@ -102,7 +102,7 @@ public class MongoService implements IStorageService {
         DBObject metaData = (DBObject) JSON.parse(jsonString);
 
         fsFile.setMetaData(metaData);
-        fsFile.setChunkSize(1024*1024);
+        fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
         fsFile.saveChunks();
         fsFile.save();
     }
