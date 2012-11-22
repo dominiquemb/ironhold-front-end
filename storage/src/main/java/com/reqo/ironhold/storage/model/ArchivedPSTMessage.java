@@ -1,13 +1,12 @@
 package com.reqo.ironhold.storage.model;
 
-import com.reqo.ironhold.storage.utils.Compression;
+import java.util.Arrays;
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
-import java.util.Arrays;
-import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArchivedPSTMessage {

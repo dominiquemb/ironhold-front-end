@@ -1,34 +1,34 @@
 package com.reqo.ironhold.storage.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Date;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.elasticsearch.common.Base64;
+
+import com.pff.PSTAppointment;
 import com.pff.PSTAttachment;
 import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
 import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
 import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
+import com.reqo.ironhold.storage.model.mixin.PSTAppointmentMixin;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
-import com.reqo.ironhold.storage.utils.TabIndenter;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
-import org.elasticsearch.common.Base64;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
 
 @JsonIgnoreProperties("attachments")
 public class MailMessage {
@@ -55,6 +55,8 @@ public class MailMessage {
 	static {
 		mapper.getSerializationConfig().addMixInAnnotations(PSTMessage.class,
 				PSTMessageMixin.class);
+		mapper.getSerializationConfig().addMixInAnnotations(
+				PSTAppointment.class, PSTAppointmentMixin.class);
 		mapper.enableDefaultTyping();
 		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
 				false);

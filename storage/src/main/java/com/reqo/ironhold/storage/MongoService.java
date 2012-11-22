@@ -1,25 +1,37 @@
 package com.reqo.ironhold.storage;
 
-import com.mongodb.*;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSInputFile;
-import com.mongodb.util.JSON;
-import com.reqo.ironhold.storage.model.*;
-import org.apache.log4j.Logger;
-import org.bson.io.BasicOutputBuffer;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.zip.GZIPOutputStream;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+
+import com.mongodb.DB;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.MongoException;
+import com.mongodb.MongoOptions;
+import com.mongodb.QueryBuilder;
+import com.mongodb.ServerAddress;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSInputFile;
+import com.mongodb.util.JSON;
+import com.reqo.ironhold.storage.model.Attachment;
+import com.reqo.ironhold.storage.model.IndexStatus;
+import com.reqo.ironhold.storage.model.LogMessage;
+import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MessageSource;
 
 public class MongoService implements IStorageService {
 
@@ -63,7 +75,10 @@ public class MongoService implements IStorageService {
         db = mongo.getDB(clientName);
         logger.info(String.format("Connected to Mongo at %s:%d, db [%s] as [%s]", mongoHost, mongoPort, clientName,
                 username));
+        
+       
     }
+
 
     public boolean exists(String messageId) {
 
