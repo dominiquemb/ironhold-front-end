@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.model.Attachment;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.Recipient;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
+import com.reqo.ironhold.storage.utils.Compression;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

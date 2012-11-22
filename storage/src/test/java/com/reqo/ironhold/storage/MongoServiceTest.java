@@ -4,14 +4,19 @@ import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.gridfs.GridFS;
 import com.reqo.ironhold.storage.model.*;
+
 import de.flapdoodle.embedmongo.MongoDBRuntime;
 import de.flapdoodle.embedmongo.MongodExecutable;
 import de.flapdoodle.embedmongo.MongodProcess;
 import de.flapdoodle.embedmongo.config.MongodConfig;
 import de.flapdoodle.embedmongo.distribution.Version;
 import junit.framework.Assert;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +73,21 @@ public class MongoServiceTest {
             Assert.assertNull(e);
         }
     }
+
+    @Test
+    public void testCompressedSerialization() throws JsonGenerationException, JsonMappingException, IOException {
+    	MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
+       
+        
+        String serializedMessage = MailMessage.serializeCompressedMailMessage(inputMessage);
+        MailMessage deserializedMessage = MailMessage.deserializeCompressedMailMessage(serializedMessage);
+        
+        
+        Assert.assertEquals(inputMessage, deserializedMessage);
+        
+    }
+
+
 
     @Test
     public void testLargeMessage() throws Exception {

@@ -4,6 +4,8 @@ import com.pff.PSTAttachment;
 import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
+import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
+import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 import com.reqo.ironhold.storage.utils.TabIndenter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -11,6 +13,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -29,223 +32,257 @@ import java.util.Date;
 
 @JsonIgnoreProperties("attachments")
 public class MailMessage {
-    private static ObjectMapper mapper = new ObjectMapper();
+	private static ObjectMapper mapper = new ObjectMapper();
+	private static ObjectMapper compressedMapper = new ObjectMapper();
 
-    static {
-        mapper.getSerializationConfig().addMixInAnnotations(PSTMessage.class, PSTMessageMixin.class);
-        mapper.enableDefaultTyping();
-        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
-    }
+	static {
+		compressedMapper.getSerializationConfig().addMixInAnnotations(
+				ArchivedPSTMessage.class, CompressedPSTMessageMixin.class);
 
-    private ArchivedPSTMessage pstMessage;
-    private Message liveMessage;
+		compressedMapper.getSerializationConfig().addMixInAnnotations(
+				Attachment.class, CompressedAttachmentMixin.class);
 
-    private IndexStatus indexed = IndexStatus.NOT_INDEXED;
-    private Date storedDate;
-    private String messageId;
-    private MessageSource[] sources;
+		compressedMapper.getDeserializationConfig().addMixInAnnotations(
+				ArchivedPSTMessage.class, CompressedPSTMessageMixin.class);
 
-    private Attachment[] attachments = new Attachment[0];
+		compressedMapper.getDeserializationConfig().addMixInAnnotations(
+				Attachment.class, CompressedAttachmentMixin.class);
 
-    public MailMessage() {
+		compressedMapper.enableDefaultTyping();
+		compressedMapper.configure(
+				SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+	}
+	static {
+		mapper.getSerializationConfig().addMixInAnnotations(PSTMessage.class,
+				PSTMessageMixin.class);
+		mapper.enableDefaultTyping();
+		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+				false);
+	}
 
-    }
+	private ArchivedPSTMessage pstMessage;
+	private Message liveMessage;
 
-    public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source) throws JsonParseException,
-            JsonMappingException, JsonGenerationException, IOException, PSTException {
+	private IndexStatus indexed = IndexStatus.NOT_INDEXED;
+	private Date storedDate;
+	private String messageId;
+	private MessageSource[] sources;
 
-        this.pstMessage = mapper.readValue(mapper.writeValueAsString(originalPSTMessage), ArchivedPSTMessage.class);
+	private Attachment[] attachments = new Attachment[0];
 
+	public MailMessage() {
 
-        try {
-            for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
-                try {
-                    PSTRecipient recipient = originalPSTMessage.getRecipient(i);
-                    switch (recipient.getRecipientType()) {
-                        case PSTMessage.RECIPIENT_TYPE_TO:
-                            pstMessage.addTo(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
-                            break;
-                        case PSTMessage.RECIPIENT_TYPE_CC:
-                            pstMessage.addCc(new Recipient(recipient.getDisplayName(), recipient.getSmtpAddress()));
-                            break;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+	}
 
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            for (String displayTo : pstMessage.getDisplayTo().split(";")) {
-                pstMessage.addTo(new Recipient(displayTo, null));
-            }
+	public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source)
+			throws JsonParseException, JsonMappingException,
+			JsonGenerationException, IOException, PSTException {
 
-            for (String displayCc : pstMessage.getDisplayCC().split(";")) {
-                pstMessage.addCc(new Recipient(displayCc, null));
-            }
+		this.pstMessage = mapper.readValue(
+				mapper.writeValueAsString(originalPSTMessage),
+				ArchivedPSTMessage.class);
 
+		try {
+			for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
+				try {
+					PSTRecipient recipient = originalPSTMessage.getRecipient(i);
+					switch (recipient.getRecipientType()) {
+					case PSTMessage.RECIPIENT_TYPE_TO:
+						pstMessage.addTo(new Recipient(recipient
+								.getDisplayName(), recipient.getSmtpAddress()));
+						break;
+					case PSTMessage.RECIPIENT_TYPE_CC:
+						pstMessage.addCc(new Recipient(recipient
+								.getDisplayName(), recipient.getSmtpAddress()));
+						break;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-        }
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			for (String displayTo : pstMessage.getDisplayTo().split(";")) {
+				pstMessage.addTo(new Recipient(displayTo, null));
+			}
 
-        for (String displayBcc : pstMessage.getDisplayBCC().split(";")) {
-            pstMessage.addBcc(new Recipient(displayBcc, null));
-        }
+			for (String displayCc : pstMessage.getDisplayCC().split(";")) {
+				pstMessage.addCc(new Recipient(displayCc, null));
+			}
 
+		}
 
-        for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
-            PSTAttachment attachment = originalPSTMessage.getAttachment(i);
+		for (String displayBcc : pstMessage.getDisplayBCC().split(";")) {
+			pstMessage.addBcc(new Recipient(displayBcc, null));
+		}
 
-            String fileName = attachment.getLongFilename();
-            if (fileName.isEmpty()) {
-                fileName = attachment.getFilename();
-            }
+		for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
+			PSTAttachment attachment = originalPSTMessage.getAttachment(i);
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            int bufferSize = 8176;
-            byte[] buffer = new byte[bufferSize];
-            InputStream stream = attachment.getFileInputStream();
-            int count = stream.read(buffer);
+			String fileName = attachment.getLongFilename();
+			if (fileName.isEmpty()) {
+				fileName = attachment.getFilename();
+			}
 
-            while (count == bufferSize) {
-                out.write(buffer);
-                count = stream.read(buffer);
-            }
-            if (count > 0) {
-                byte[] endBuffer = new byte[count];
-                System.arraycopy(buffer, 0, endBuffer, 0, count);
-            }
-            out.write(buffer);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			int bufferSize = 8176;
+			byte[] buffer = new byte[bufferSize];
+			InputStream stream = attachment.getFileInputStream();
+			int count = stream.read(buffer);
 
-            this.addAttachment(new Attachment(attachment.getSize(), attachment.getCreationTime(),
-                    attachment.getModificationTime(), attachment.getFilename(), Base64.encodeBytes(out.toByteArray())));
-        }
-        this.setMessageId(originalPSTMessage.getInternetMessageId());
-        sources = new MessageSource[]{source};
-    }
+			while (count == bufferSize) {
+				out.write(buffer);
+				count = stream.read(buffer);
+			}
+			if (count > 0) {
+				byte[] endBuffer = new byte[count];
+				System.arraycopy(buffer, 0, endBuffer, 0, count);
+			}
+			out.write(buffer);
 
-    public MailMessage(Message liveMessage, MessageSource source) throws MessagingException {
-        this.liveMessage = liveMessage;
-        this.setMessageId(liveMessage.getHeader("Message-Id")[0]);
-        sources = new MessageSource[]{source};
-    }
+			this.addAttachment(new Attachment(attachment.getSize(), attachment
+					.getCreationTime(), attachment.getModificationTime(),
+					attachment.getFilename(), Base64.encodeBytes(out
+							.toByteArray())));
+		}
+		this.setMessageId(originalPSTMessage.getInternetMessageId());
+		sources = new MessageSource[] { source };
+	}
 
-    public void addSource(MessageSource source) {
-        MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
-        copy[sources.length] = source;
-        sources = copy;
+	public MailMessage(Message liveMessage, MessageSource source)
+			throws MessagingException {
+		this.liveMessage = liveMessage;
+		this.setMessageId(liveMessage.getHeader("Message-Id")[0]);
+		sources = new MessageSource[] { source };
+	}
 
-    }
+	public void addSource(MessageSource source) {
+		MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
+		copy[sources.length] = source;
+		sources = copy;
 
-    public static String serializeAttachments(Attachment[] attachments) throws IOException {
-        return mapper.writeValueAsString(attachments);
-    }
+	}
 
-    public static String serializeMailMessage(MailMessage message) throws JsonGenerationException,
-            JsonMappingException, IOException {
-        return mapper.writeValueAsString(message);
-    }
+	public static String serializeAttachments(Attachment[] attachments)
+			throws IOException {
+		return mapper.writeValueAsString(attachments);
+	}
 
+	public static String serializeCompressedAttachments(
+			Attachment[] attachments) throws JsonGenerationException, JsonMappingException, IOException {
+		return compressedMapper.writeValueAsString(attachments);
+	}
 
-    public static String serializeMailMessagePretty(MailMessage message) throws JsonGenerationException,
-            JsonMappingException, IOException {
+	public static String serializeMailMessage(MailMessage message)
+			throws JsonGenerationException, JsonMappingException, IOException {
+		return mapper.writeValueAsString(message);
+	}
 
-        DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
-        printer.indentArraysWith(new TabIndenter());
-        printer.indentObjectsWith(new TabIndenter());
+	public static String serializeCompressedMailMessage(MailMessage message)
+			throws JsonGenerationException, JsonMappingException, IOException {
 
-        ObjectWriter writer = mapper.writer(printer);
+		return compressedMapper.writeValueAsString(message);
+	}
 
-        return writer.writeValueAsString(message);
-    }
+	public static MailMessage deserializeCompressedMailMessage(String json)
+			throws JsonGenerationException, JsonMappingException, IOException {
 
-    public static Attachment[] deserializeAttachments(String json) throws IOException {
-        return mapper.readValue(json, Attachment[].class);
-    }
+		return compressedMapper.readValue(json, MailMessage.class);
+	}
 
-    public static MailMessage deserializeMailMessage(String json) throws IOException {
-        return mapper.readValue(json, MailMessage.class);
-    }
+	public static Attachment[] deserializeAttachments(String json)
+			throws IOException {
+		return mapper.readValue(json, Attachment[].class);
+	}
+	
+	public static Attachment[] deserializeCompressedAttachments(String json)
+			throws IOException {
+		return compressedMapper.readValue(json, Attachment[].class);
+	}
 
+	public static MailMessage deserializeMailMessage(String json)
+			throws IOException {
+		return mapper.readValue(json, MailMessage.class);
+	}
 
-    public void addAttachment(Attachment attachment) {
-        Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
-        copy[attachments.length] = attachment;
-        attachments = copy;
+	public void addAttachment(Attachment attachment) {
+		Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
+		copy[attachments.length] = attachment;
+		attachments = copy;
 
-    }
+	}
 
+	public Attachment[] getAttachments() {
+		return attachments;
+	}
 
-    public Attachment[] getAttachments() {
-        return attachments;
-    }
+	public void setAttachments(Attachment[] attachments) {
+		this.attachments = attachments;
+	}
 
+	public void removeAttachments() {
+		this.attachments = new Attachment[0];
+	}
 
-    public void setAttachments(Attachment[] attachments) {
-        this.attachments = attachments;
-    }
+	public ArchivedPSTMessage getPstMessage() {
+		return pstMessage;
+	}
 
-    public void removeAttachments() {
-        this.attachments = new Attachment[0];
-    }
+	public void setPstMessage(ArchivedPSTMessage pstMessage) {
+		this.pstMessage = pstMessage;
+	}
 
+	public Message getLiveMessage() {
+		return liveMessage;
+	}
 
-    public ArchivedPSTMessage getPstMessage() {
-        return pstMessage;
-    }
+	public void setLiveMessage(Message liveMessage) {
+		this.liveMessage = liveMessage;
+	}
 
-    public void setPstMessage(ArchivedPSTMessage pstMessage) {
-        this.pstMessage = pstMessage;
-    }
+	public IndexStatus getIndexed() {
+		return indexed;
+	}
 
-    public Message getLiveMessage() {
-        return liveMessage;
-    }
+	public void setIndexed(IndexStatus indexed) {
+		this.indexed = indexed;
+	}
 
-    public void setLiveMessage(Message liveMessage) {
-        this.liveMessage = liveMessage;
-    }
+	public MessageSource[] getSources() {
+		return sources;
+	}
 
-    public IndexStatus getIndexed() {
-        return indexed;
-    }
+	public Date getStoredDate() {
+		return storedDate;
+	}
 
-    public void setIndexed(IndexStatus indexed) {
-        this.indexed = indexed;
-    }
+	public void setStoredDate(Date storedDate) {
+		this.storedDate = storedDate;
+	}
 
-    public MessageSource[] getSources() {
-        return sources;
-    }
+	public String getMessageId() {
+		return messageId;
+	}
 
-    public Date getStoredDate() {
-        return storedDate;
-    }
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
 
-    public void setStoredDate(Date storedDate) {
-        this.storedDate = storedDate;
-    }
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 
-    public String getMessageId() {
-        return messageId;
-    }
+	@Override
+	public boolean equals(Object rhs) {
+		return EqualsBuilder.reflectionEquals(this, rhs);
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+	}
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
 
-    @Override
-    public boolean equals(Object rhs) {
-        return EqualsBuilder.reflectionEquals(this, rhs);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
 
 }

@@ -7,6 +7,7 @@ import com.mongodb.gridfs.GridFSInputFile;
 import com.mongodb.util.JSON;
 import com.reqo.ironhold.storage.model.*;
 import org.apache.log4j.Logger;
+import org.bson.io.BasicOutputBuffer;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.GZIPOutputStream;
 
 public class MongoService implements IStorageService {
 
@@ -74,16 +76,18 @@ public class MongoService implements IStorageService {
             IOException {
         Date storedDate = new Date();
         mailMessage.setStoredDate(storedDate);
-        String jsonString = MailMessage.serializeMailMessage(mailMessage);
+        String jsonString = MailMessage.serializeCompressedMailMessage(mailMessage);
         GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-        ByteArrayInputStream bis = new ByteArrayInputStream(MailMessage.serializeAttachments(mailMessage
-                .getAttachments()).getBytes());
+        String attachmentsString = MailMessage.serializeCompressedAttachments(mailMessage
+                .getAttachments());
+        ByteArrayInputStream bis = new ByteArrayInputStream(attachmentsString.getBytes());
         GridFSInputFile fsFile = fs.createFile(bis, mailMessage.getMessageId());
 
 
         DBObject metaData = (DBObject) JSON.parse(jsonString);
+
         fsFile.setMetaData(metaData);
-        fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
+        fsFile.setChunkSize(1024*1024);
         fsFile.saveChunks();
         fsFile.save();
     }
@@ -114,11 +118,11 @@ public class MongoService implements IStorageService {
         for (String fileName : toBeReturned) {
 
             GridFSDBFile object = fs.findOne(fileName);
-            MailMessage mailMessage = MailMessage.deserializeMailMessage(object.getMetaData().toString());
+            MailMessage mailMessage = MailMessage.deserializeCompressedMailMessage(object.getMetaData().toString());
             ByteArrayOutputStream byos = new ByteArrayOutputStream();
             object.writeTo(byos);
 
-            Attachment[] attachments = MailMessage.deserializeAttachments(new String(byos.toByteArray()));
+            Attachment[] attachments = MailMessage.deserializeCompressedAttachments(new String(byos.toByteArray()));
             mailMessage.setAttachments(attachments);
             result.add(mailMessage);
 
@@ -151,7 +155,7 @@ public class MongoService implements IStorageService {
         GridFSDBFile fsFile = fs.findOne(mailMessage.getMessageId());
 
 
-        String jsonString = MailMessage.serializeMailMessage(mailMessage);
+        String jsonString = MailMessage.serializeCompressedMailMessage(mailMessage);
         fsFile.setMetaData((DBObject) JSON.parse(jsonString));
         fsFile.save();
 
@@ -170,7 +174,8 @@ public class MongoService implements IStorageService {
             JsonMappingException, IOException {
         GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
         GridFSDBFile fsFile = fs.findOne(messageId);
-        MailMessage matchMessage = MailMessage.deserializeMailMessage(fsFile.getMetaData().toString());
+        String compressedMessage = fsFile.getMetaData().toString();
+        MailMessage matchMessage = MailMessage.deserializeCompressedMailMessage(compressedMessage);
 
 
         if (includeAttachments) {
@@ -178,7 +183,7 @@ public class MongoService implements IStorageService {
             ByteArrayOutputStream byos = new ByteArrayOutputStream();
             fsFile.writeTo(byos);
 
-            Attachment[] attachments = MailMessage.deserializeAttachments(new String(byos.toByteArray()));
+            Attachment[] attachments = MailMessage.deserializeCompressedAttachments(new String(byos.toByteArray()));
             matchMessage.setAttachments(attachments);
 
         }

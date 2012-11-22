@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.model;
 
+import com.reqo.ironhold.storage.utils.Compression;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -111,6 +112,7 @@ public class ArchivedPSTMessage {
     private Recipient[] to = new Recipient[0];
     private Recipient[] cc = new Recipient[0];
     private Recipient[] bcc = new Recipient[0];
+
 
     public ArchivedPSTMessage() {
 
