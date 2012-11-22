@@ -46,7 +46,7 @@
         <profile>
             <id>production</id>
             <properties>
-                <elasticsearch.hosts>ih650es001,ih650es002,ih650es003</elasticsearch.hosts>
+                <elasticsearch.hosts>ih650es001,ih650es002,ih650es003,ih650es004,ih650es005</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
             </properties>
         </profile>
