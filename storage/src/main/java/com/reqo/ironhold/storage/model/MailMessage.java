@@ -116,34 +116,44 @@ public class MailMessage {
 			pstMessage.addBcc(new Recipient(displayBcc, null));
 		}
 
-		for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
-			PSTAttachment attachment = originalPSTMessage.getAttachment(i);
+		try {
+			for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
+				try {
+					PSTAttachment attachment = originalPSTMessage
+							.getAttachment(i);
 
-			String fileName = attachment.getLongFilename();
-			if (fileName.isEmpty()) {
-				fileName = attachment.getFilename();
+					String fileName = attachment.getLongFilename();
+					if (fileName.isEmpty()) {
+						fileName = attachment.getFilename();
+					}
+
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					int bufferSize = 8176;
+					byte[] buffer = new byte[bufferSize];
+					InputStream stream = attachment.getFileInputStream();
+					int count = stream.read(buffer);
+
+					while (count == bufferSize) {
+						out.write(buffer);
+						count = stream.read(buffer);
+					}
+					if (count > 0) {
+						byte[] endBuffer = new byte[count];
+						System.arraycopy(buffer, 0, endBuffer, 0, count);
+					}
+					out.write(buffer);
+
+					this.addAttachment(new Attachment(attachment.getSize(),
+							attachment.getCreationTime(), attachment
+									.getModificationTime(), attachment
+									.getFilename(), Base64.encodeBytes(out
+									.toByteArray())));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			int bufferSize = 8176;
-			byte[] buffer = new byte[bufferSize];
-			InputStream stream = attachment.getFileInputStream();
-			int count = stream.read(buffer);
-
-			while (count == bufferSize) {
-				out.write(buffer);
-				count = stream.read(buffer);
-			}
-			if (count > 0) {
-				byte[] endBuffer = new byte[count];
-				System.arraycopy(buffer, 0, endBuffer, 0, count);
-			}
-			out.write(buffer);
-
-			this.addAttachment(new Attachment(attachment.getSize(), attachment
-					.getCreationTime(), attachment.getModificationTime(),
-					attachment.getFilename(), Base64.encodeBytes(out
-							.toByteArray())));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		this.setMessageId(originalPSTMessage.getInternetMessageId());
 		sources = new MessageSource[] { source };
@@ -168,8 +178,8 @@ public class MailMessage {
 		return mapper.writeValueAsString(attachments);
 	}
 
-	public static String serializeCompressedAttachments(
-			Attachment[] attachments) throws JsonGenerationException, JsonMappingException, IOException {
+	public static String serializeCompressedAttachments(Attachment[] attachments)
+			throws JsonGenerationException, JsonMappingException, IOException {
 		return compressedMapper.writeValueAsString(attachments);
 	}
 
@@ -194,7 +204,7 @@ public class MailMessage {
 			throws IOException {
 		return mapper.readValue(json, Attachment[].class);
 	}
-	
+
 	public static Attachment[] deserializeCompressedAttachments(String json)
 			throws IOException {
 		return compressedMapper.readValue(json, Attachment[].class);
@@ -283,6 +293,5 @@ public class MailMessage {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
-
 
 }
