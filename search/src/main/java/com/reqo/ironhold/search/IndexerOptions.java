@@ -9,6 +9,9 @@ public class IndexerOptions {
     @Option(name = "-batchSize", usage = "size of batch to process at a time", required = true)
     private int batchSize;
 
+    @Option(name = "-threads", usage = "number of threads to use for concurrent processing of the batch", required = true)
+    private int threads;
+
 
     public String getClient() {
         return client;
@@ -16,6 +19,10 @@ public class IndexerOptions {
 
     public int getBatchSize() {
         return batchSize;
+    }
+    
+    public int getThreads() {
+    	return threads;
     }
 
 }
