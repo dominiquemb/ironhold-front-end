@@ -11,4 +11,6 @@ public abstract class PSTAppointmentMixin {
 	@JsonIgnore
 	abstract PSTTimeZone getStartTimeZone();
 
+	@JsonIgnore
+	abstract PSTTimeZone getEndTimeZone();
 }

@@ -1,16 +1,14 @@
 {
-
-        "analysis": {
-            "analyzer": {
-                "domain": {
-                    "type": "pattern",
-                    "pattern": ".+@"
-                },
-                "file": {
-                    "type": "pattern",
-                    "pattern": ".+\\."
-                }
+    "analysis": {
+        "analyzer": {
+            "domain": {
+                "type": "pattern",
+                "pattern": ".+@"
+            },
+            "file": {
+                "type": "pattern",
+                "pattern": ".+\\."
             }
         }
-
+    }
 }
