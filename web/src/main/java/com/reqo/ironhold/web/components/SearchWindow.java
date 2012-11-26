@@ -25,7 +25,7 @@ public class SearchWindow extends Window {
                 String password = event.getLoginParameter("password");
 
 
-                if (password.equals("ironhold")) {
+                if (password.equals("S0lidC0re12")) {
                     try {
                         login(username);
                     } catch (Exception e) {
