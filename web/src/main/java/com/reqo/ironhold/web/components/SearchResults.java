@@ -74,6 +74,7 @@ public class SearchResults extends HorizontalLayout {
         toDomainFacetPanel.setVisible(true);
         yearFacetPanel.setVisible(true);
         fileExtFacetPanel.setVisible(true);
+        System.out.println("in setCriteria");
         performSearch();
     }
 
@@ -103,8 +104,8 @@ public class SearchResults extends HorizontalLayout {
                 builder = indexService.getNewBuilder(builder);
 
                 if (!facetsSetup) {
-                    builder.withDateFacet().withFromFacet().withFromDomainFacet().withToFacet().withToDomainFacet()
-                            .withFileExtFacet();
+               /*     builder.withDateFacet().withFromFacet().withFromDomainFacet().withToFacet().withToDomainFacet()
+                            .withFileExtFacet();*/
                 }
 
                 builder.withResultsLimit(startIndex, endIndex - startIndex);
@@ -129,6 +130,7 @@ public class SearchResults extends HorizontalLayout {
 
                 }
 
+                System.out.println("in getItemsList with " + startIndex + ", " + endIndex);
                 SearchResponse response = indexService.search(builder);
 
 
@@ -150,6 +152,8 @@ public class SearchResults extends HorizontalLayout {
 
     private void setUpFacets(SearchResponse response) {
 
+    	
+    	/*
         if (!facetsSetup) {
             DateHistogramFacet dateFacet = response.getFacets().facet(MessageSearchBuilder.FACET_DATE);
             yearFacetPanel.removeAllComponents();
@@ -373,7 +377,7 @@ public class SearchResults extends HorizontalLayout {
                     toDomainFacetPanel.addComponent(hl);
                 }
             }
-        }
+        }*/
         facetsSetup = true;
     }
 
@@ -408,6 +412,7 @@ public class SearchResults extends HorizontalLayout {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 builder = indexService.getNewBuilder(builder);
+                System.out.println("in sort field listener");
                 performSearch();
             }
         });
@@ -424,6 +429,7 @@ public class SearchResults extends HorizontalLayout {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 builder = indexService.getNewBuilder(builder);
+                System.out.println("in sort order listener");
                 performSearch();
             }
         });

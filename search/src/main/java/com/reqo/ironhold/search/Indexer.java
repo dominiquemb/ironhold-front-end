@@ -32,7 +32,8 @@ public class Indexer {
 			return;
 		}
 		try {
-			new Indexer(bean.getClient(), bean.getBatchSize(), bean.getThreads());
+			new Indexer(bean.getClient(), bean.getBatchSize(),
+					bean.getThreads());
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
 			System.exit(0);
@@ -44,16 +45,20 @@ public class Indexer {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
 		final IndexService indexService = new IndexService(client);
+		
 		while (true) {
 			List<MailMessage> mailMessages = storageService
 					.findUnindexedMessages(batchSize);
-			ExecutorService executorService = Executors.newFixedThreadPool(threads);
-			
+
+	//		ExecutorService executorService = Executors.newFixedThreadPool(25);
+
 			for (final MailMessage mailMessage : mailMessages) {
-				executorService.execute(new Runnable() {
+/*				executorService.execute(new Runnable() {
 
 					@Override
 					public void run() {
+*/
+				logger.info("Indexing " + mailMessage.getMessageId());
 						try {
 							try {
 								indexService.store(new IndexedMailMessage(
@@ -78,6 +83,10 @@ public class Indexer {
 										mailMessage));
 							}
 
+							logger.info("Message indexed with "
+									+ mailMessage.getAttachments().length
+									+ " attachments");
+
 							LogMessage logMessage = new LogMessage(
 									LogLevel.Success,
 									"Message indexed with "
@@ -89,6 +98,8 @@ public class Indexer {
 							storageService.updateIndexStatus(
 									mailMessage.getMessageId(),
 									IndexStatus.INDEXED);
+							
+							
 						} catch (Exception e2) {
 
 							try {
@@ -113,14 +124,12 @@ public class Indexer {
 						}
 
 					}
-				});
+	/*			});
 			}
-			
 			executorService.shutdown();
-			while (!executorService.isTerminated()) {
-				executorService.awaitTermination(1, TimeUnit.SECONDS);
-			}
-			
+			if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+				executorService.shutdownNow();
+			}*/
 			if (mailMessages.size() == 0) {
 				Thread.sleep(10000);
 			} else {

@@ -23,173 +23,213 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-
 public class IndexService {
-    private static final int RETRY_SLEEP = 10000;
-    private static final int MAX_RETRY_COUNT = 10;
+	private static final int RETRY_SLEEP = 10000;
+	private static final int MAX_RETRY_COUNT = 10;
 
-    private static Logger logger = Logger.getLogger(IndexService.class);
-    private TransportClient esClient;
-    private final String indexName;
-    private String[] esHosts;
-    private int esPort;
-    private String timeout;
+	private static Logger logger = Logger.getLogger(IndexService.class);
+	private TransportClient esClient;
+	private final String indexName;
+	private String[] esHosts;
+	private int esPort;
+	private String timeout;
 
-    public IndexService(String indexName) throws Exception {
-        this.indexName = indexName;
+	public IndexService(String indexName) throws Exception {
+		this.indexName = indexName;
 
-        Properties prop = new Properties();
-        prop.load(IndexService.class.getResourceAsStream("elasticsearch.properties"));
+		Properties prop = new Properties();
+		prop.load(IndexService.class
+				.getResourceAsStream("elasticsearch.properties"));
 
-        esHosts = prop.getProperty("hosts").split(",");
-        esPort = Integer.parseInt(prop.getProperty("port"));
-        timeout = prop.getProperty("timeout");
+		esHosts = prop.getProperty("hosts").split(",");
+		esPort = Integer.parseInt(prop.getProperty("port"));
+		timeout = prop.getProperty("timeout");
 
-        reconnect();
+		reconnect();
 
-    }
+	}
 
-    private void reconnect() throws Exception {
-        if (esClient != null) {
-            esClient.close();
-        }
-        Settings settings = ImmutableSettings.settingsBuilder().put("client.transport.ping_timeout", timeout).build();
-        esClient = new TransportClient(settings);
+	private void reconnect() throws Exception {
+		if (esClient != null) {
+			esClient.close();
+		}
+		Settings settings = ImmutableSettings.settingsBuilder()
+				.put("client.transport.ping_timeout", timeout).build();
+		esClient = new TransportClient(settings);
 
-        for (String esHost : esHosts) {
-            esClient.addTransportAddress(new InetSocketTransportAddress(esHost, esPort));
-        }
+		for (String esHost : esHosts) {
+			esClient.addTransportAddress(new InetSocketTransportAddress(esHost,
+					esPort));
+		}
 
-        IndicesExistsResponse exists = esClient.admin().indices().prepareExists(indexName).execute().actionGet();
+		IndicesExistsResponse exists = esClient.admin().indices()
+				.prepareExists(indexName).execute().actionGet();
 
-        if (!exists.isExists()) {
-            createIndex();
-        }
-    }
+		if (!exists.isExists()) {
+			createIndex();
+		}
+	}
 
-    private void createIndex() throws Exception {
-        String analyzerDef = readJsonDefinition("analyzers.json");
-        CreateIndexResponse response1 = esClient.admin().indices().prepareCreate(indexName).setSettings(analyzerDef)
-                .execute().actionGet();
-        if (!response1.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: " + response1.toString());
-        }
+	private void createIndex() throws Exception {
+		String analyzerDef = readJsonDefinition("analyzers.json");
+		CreateIndexResponse response1 = esClient.admin().indices()
+				.prepareCreate(indexName).setSettings(analyzerDef).execute()
+				.actionGet();
+		if (!response1.acknowledged()) {
+			throw new Exception("ES Request did not get acknowledged: "
+					+ response1.toString());
+		}
 
-        String messageDef = readJsonDefinition("message.json");
-        PutMappingResponse response3 = esClient.admin().indices().preparePutMapping(indexName).setType("message")
-                .setSource(messageDef).execute().actionGet();
-        if (!response3.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: " + response3.toString());
-        }
+		String messageDef = readJsonDefinition("message.json");
+		PutMappingResponse response3 = esClient.admin().indices()
+				.preparePutMapping(indexName).setType("message")
+				.setSource(messageDef).execute().actionGet();
+		if (!response3.acknowledged()) {
+			throw new Exception("ES Request did not get acknowledged: "
+					+ response3.toString());
+		}
 
-    }
+	}
 
-    public void dropIndex() throws Exception {
-        DeleteIndexResponse response = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
-        if (!response.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: " + response.toString());
-        }
-    }
+	public void dropIndex() throws Exception {
+		DeleteIndexResponse response = esClient.admin().indices()
+				.prepareDelete(indexName).execute().actionGet();
+		if (!response.acknowledged()) {
+			throw new Exception("ES Request did not get acknowledged: "
+					+ response.toString());
+		}
+	}
 
-    public boolean store(IndexedMailMessage message) throws Exception {
-        if (!exists(message.getMessageId())) {
-            int retry = 1;
-            boolean success = false;
-            while (!success && retry <= MAX_RETRY_COUNT) {
-                try {
+	public boolean store(IndexedMailMessage message) throws Exception {
 
-                    esClient.prepareIndex(indexName, "message", message.getMessageId()).setSource(IndexedMailMessage
-                            .toJSON(message)).execute().actionGet();
-                    success = true;
-                    return true;
-                } catch (NoNodeAvailableException e) {
-                    logger.warn("Recieved no node available exception, sleep for " + RETRY_SLEEP + " (Attempt " +
-                            retry + " out of " + MAX_RETRY_COUNT + ")");
-                    success = false;
-                    retry++;
+		if (!exists(message.getMessageId())) {
+			long started = System.currentTimeMillis();
+			int retry = 1;
+			boolean success = false;
+			while (!success && retry <= MAX_RETRY_COUNT) {
+				try {
 
-                    try {
-                        Thread.sleep(RETRY_SLEEP);
-                    } catch (InterruptedException ignore) {
-                    }
-                    reconnect();
-                }
-            }
-        } else {
-            logger.info(String.format("Skipped document with id [%s]", message.getMessageId()));
-            return false;
-        }
+					logger.info("Trying to index " + message.getMessageId());
+					esClient.prepareIndex(indexName, "message",
+							message.getMessageId())
+							.setSource(IndexedMailMessage.toJSON(message))
+							.execute().actionGet();
+					logger.info("Returned from ES");
+					success = true;
+					return true;
+				} catch (NoNodeAvailableException e) {
+					logger.warn("Recieved no node available exception, sleep for "
+							+ RETRY_SLEEP
+							+ " (Attempt "
+							+ retry
+							+ " out of "
+							+ MAX_RETRY_COUNT + ")");
+					success = false;
+					retry++;
 
-        return false;
-    }
+					try {
+						Thread.sleep(RETRY_SLEEP);
+					} catch (InterruptedException ignore) {
+					}
+					reconnect();
+				}
+				finally {
+					logger.info("Out of the indexing try catch block");
+				}
+			}
+			long finished = System.currentTimeMillis();
+			logger.info(String.format("Statistics: store %d", finished
+					- started));
 
-    private boolean exists(String messageId) {
-        GetResponse response = esClient.prepareGet(indexName, "message", messageId).execute().actionGet();
-        return response.isExists();
-    }
+		} else {
+			logger.info(String.format("Skipped document with id [%s]",
+					message.getMessageId()));
+			return false;
+		}
 
-    public MessageSearchBuilder getNewBuilder() {
-        return MessageSearchBuilder.newBuilder(esClient.prepareSearch(indexName));
-    }
+		return false;
+	}
 
+	private boolean exists(String messageId) {
+		long started = System.currentTimeMillis();
+		try {
+			GetResponse response = esClient
+					.prepareGet(indexName, "message", messageId).setFields("messageId").execute()
+					.actionGet();
+			return response.isExists();
+		} finally {
+			long finished = System.currentTimeMillis();
+			logger.info(String.format("Statistics: exists %d", finished
+					- started));
 
-    public MessageSearchBuilder getNewBuilder(MessageSearchBuilder oldBuilder) {
-        MessageSearchBuilder newBuilder = MessageSearchBuilder.newBuilder(esClient.prepareSearch(indexName));
-        return newBuilder.buildFrom(oldBuilder);
-    }
+		}
+	}
 
-    public SearchResponse search(MessageSearchBuilder builder) {
-        SearchResponse response = builder.build().execute().actionGet();
-        // System.out.println(response.toString());
-        return response;
-    }
+	public MessageSearchBuilder getNewBuilder() {
+		return MessageSearchBuilder.newBuilder(esClient
+				.prepareSearch(indexName));
+	}
 
-    public long getMatchCount(String search) {
+	public MessageSearchBuilder getNewBuilder(MessageSearchBuilder oldBuilder) {
+		MessageSearchBuilder newBuilder = MessageSearchBuilder
+				.newBuilder(esClient.prepareSearch(indexName));
+		return newBuilder.buildFrom(oldBuilder);
+	}
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName);
-        QueryBuilder qb = QueryBuilders.queryString(search);
-        builder.setQuery(qb);
-        builder.setSearchType(SearchType.COUNT);
-        SearchResponse response = builder.execute().actionGet();
+	public SearchResponse search(MessageSearchBuilder builder) {
+		SearchResponse response = builder.build().execute().actionGet();
+		System.out.println("Searching " + builder.toString());
+		return response;
+	}
 
-        return response.getHits().getTotalHits();
-    }
+	public long getMatchCount(String search) {
 
-    public SearchResponse getMatchCount(MessageSearchBuilder builder) {
-        SearchResponse response = builder.build().setSearchType(SearchType.COUNT).execute().actionGet();
+		SearchRequestBuilder builder = esClient.prepareSearch(indexName);
+		QueryBuilder qb = QueryBuilders.queryString(search);
+		builder.setQuery(qb);
+		builder.setSearchType(SearchType.COUNT);
+		SearchResponse response = builder.execute().actionGet();
 
-        return response;
-    }
+		return response.getHits().getTotalHits();
+	}
 
-    private static String readJsonDefinition(String fileName) throws Exception {
-        return readFileInClasspath("/estemplate/" + fileName);
-    }
+	public SearchResponse getMatchCount(MessageSearchBuilder builder) {
+		SearchResponse response = builder.build()
+				.setSearchType(SearchType.COUNT).execute().actionGet();
 
-    /**
-     * Read a file in classpath and return its content
-     *
-     * @param url File URL Example : /es/twitter/_settings.json
-     * @return File content or null if file doesn't exist
-     * @throws Exception
-     */
-    public static String readFileInClasspath(String url) throws Exception {
-        StringBuffer bufferJSON = new StringBuffer();
+		return response;
+	}
 
-        try {
-            InputStream ips = IndexService.class.getResourceAsStream(url);
-            InputStreamReader ipsr = new InputStreamReader(ips);
-            BufferedReader br = new BufferedReader(ipsr);
-            String line;
+	private static String readJsonDefinition(String fileName) throws Exception {
+		return readFileInClasspath("/estemplate/" + fileName);
+	}
 
-            while ((line = br.readLine()) != null) {
-                bufferJSON.append(line);
-            }
-            br.close();
-        } catch (Exception e) {
-            return null;
-        }
+	/**
+	 * Read a file in classpath and return its content
+	 * 
+	 * @param url
+	 *            File URL Example : /es/twitter/_settings.json
+	 * @return File content or null if file doesn't exist
+	 * @throws Exception
+	 */
+	public static String readFileInClasspath(String url) throws Exception {
+		StringBuffer bufferJSON = new StringBuffer();
 
-        return bufferJSON.toString();
-    }
+		try {
+			InputStream ips = IndexService.class.getResourceAsStream(url);
+			InputStreamReader ipsr = new InputStreamReader(ips);
+			BufferedReader br = new BufferedReader(ipsr);
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				bufferJSON.append(line);
+			}
+			br.close();
+		} catch (Exception e) {
+			return null;
+		}
+
+		return bufferJSON.toString();
+	}
 
 }

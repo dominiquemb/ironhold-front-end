@@ -103,6 +103,7 @@ public class EmailView extends Panel {
         final HorizontalLayout bodyLayout = new HorizontalLayout();
         bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
         bodyLayout.setSizeFull();
+        System.out.println("In EmailView.show");
         final Label body = new Label(IndexUtils.getFieldValue(indexService.search(indexService.getNewBuilder()
                 .withCriteria(criteria).withId(item.getId()).withFullBody()).getHits().getAt(0), IndexFieldEnum.BODY,
                 true).replaceAll("\r?\n", "<br/>"));

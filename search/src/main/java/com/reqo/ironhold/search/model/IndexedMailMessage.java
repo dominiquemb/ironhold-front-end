@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -15,6 +16,7 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.jsoup.Jsoup;
 
 import com.pff.PSTMessage;
+import com.reqo.ironhold.search.Indexer;
 import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
 import com.reqo.ironhold.storage.model.Attachment;
 import com.reqo.ironhold.storage.model.MailMessage;
@@ -22,6 +24,8 @@ import com.reqo.ironhold.storage.model.Recipient;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 
 public class IndexedMailMessage {
+	private static Logger logger = Logger.getLogger(IndexedMailMessage.class);
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	static {
@@ -56,6 +60,7 @@ public class IndexedMailMessage {
 	}
 
 	private void load(ArchivedPSTMessage pstMessage) {
+		logger.info("Loading pst message");
 		messageId = pstMessage.getInternetMessageId();
 		subject = pstMessage.getSubject();
 		messageDate = pstMessage.getMessageDeliveryTime();
@@ -77,12 +82,21 @@ public class IndexedMailMessage {
 		} else {
 			body = StringUtils.EMPTY;
 		}
+		logger.info("Done loading pst message");
 
 	}
 
 	public static String toJSON(IndexedMailMessage message)
 			throws JsonGenerationException, JsonMappingException, IOException {
-		return mapper.writeValueAsString(message);
+		String result = null;
+		logger.info("Starting toJSON serialization");
+		try {
+			result = mapper.writeValueAsString(message);
+		} finally {
+			logger.info("Finished toJSON serialization " + result.length() + " bytes");
+		}
+		
+		return result;
 	}
 
 	public static IndexedMailMessage fromJSON(String json)
