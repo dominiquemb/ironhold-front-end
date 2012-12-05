@@ -1,6 +1,10 @@
 package com.reqo.ironhold.search;
 
-import com.reqo.ironhold.search.model.IndexedMailMessage;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
@@ -12,16 +16,11 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Properties;
+import com.reqo.ironhold.search.model.IndexedMailMessage;
 
 public class IndexService {
 	private static final int RETRY_SLEEP = 10000;
@@ -32,7 +31,6 @@ public class IndexService {
 	private final String indexName;
 	private String[] esHosts;
 	private int esPort;
-	private String timeout;
 
 	public IndexService(String indexName) throws Exception {
 		this.indexName = indexName;
@@ -43,7 +41,6 @@ public class IndexService {
 
 		esHosts = prop.getProperty("hosts").split(",");
 		esPort = Integer.parseInt(prop.getProperty("port"));
-		timeout = prop.getProperty("timeout");
 
 		reconnect();
 
@@ -53,9 +50,8 @@ public class IndexService {
 		if (esClient != null) {
 			esClient.close();
 		}
-		Settings settings = ImmutableSettings.settingsBuilder()
-				.put("client.transport.ping_timeout", timeout).build();
-		esClient = new TransportClient(settings);
+		esClient = new TransportClient();
+		
 
 		for (String esHost : esHosts) {
 			esClient.addTransportAddress(new InetSocketTransportAddress(esHost,

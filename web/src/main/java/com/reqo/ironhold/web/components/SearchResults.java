@@ -106,6 +106,7 @@ public class SearchResults extends HorizontalLayout {
                 if (!facetsSetup) {
                /*     builder.withDateFacet().withFromFacet().withFromDomainFacet().withToFacet().withToDomainFacet()
                             .withFileExtFacet();*/
+                	builder.withFromFacet(); //.withFromDomainFacet().withToFacet().withToDomainFacet();
                 }
 
                 builder.withResultsLimit(startIndex, endIndex - startIndex);
@@ -153,9 +154,9 @@ public class SearchResults extends HorizontalLayout {
     private void setUpFacets(SearchResponse response) {
 
     	
-    	/*
+    	
         if (!facetsSetup) {
-            DateHistogramFacet dateFacet = response.getFacets().facet(MessageSearchBuilder.FACET_DATE);
+          /*  DateHistogramFacet dateFacet = response.getFacets().facet(MessageSearchBuilder.FACET_DATE);
             yearFacetPanel.removeAllComponents();
             for (final DateHistogramFacet.Entry entry : dateFacet.getEntries()) {
                 final HorizontalLayout hl = new HorizontalLayout();
@@ -228,7 +229,7 @@ public class SearchResults extends HorizontalLayout {
 
                 fileExtFacetPanel.addComponent(hl);
             }
-
+*/
             TermsFacet fromFacet = response.getFacets().facet(MessageSearchBuilder.FACET_FROM_NAME);
             fromFacetPanel.removeAllComponents();
             for (final TermsFacet.Entry entry : fromFacet.getEntries()) {
@@ -265,7 +266,7 @@ public class SearchResults extends HorizontalLayout {
 
                 fromFacetPanel.addComponent(hl);
             }
-
+/*
             TermsFacet fromDomainFacet = response.getFacets().facet(MessageSearchBuilder.FACET_FROM_DOMAIN);
             fromDomainFacetPanel.removeAllComponents();
             for (final TermsFacet.Entry entry : fromDomainFacet.getEntries()) {
@@ -376,8 +377,8 @@ public class SearchResults extends HorizontalLayout {
 
                     toDomainFacetPanel.addComponent(hl);
                 }
-            }
-        }*/
+            }*/
+        }
         facetsSetup = true;
     }
 
