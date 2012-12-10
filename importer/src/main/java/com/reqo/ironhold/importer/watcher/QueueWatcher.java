@@ -34,6 +34,7 @@ public class QueueWatcher extends FileWatcher {
         }
         try {
             new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getClient());
+            
         } catch (Exception e) {
             logger.error("Critical error detected. Exiting.", e);
             System.exit(0);
