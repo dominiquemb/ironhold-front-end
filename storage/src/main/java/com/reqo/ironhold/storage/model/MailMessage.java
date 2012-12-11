@@ -72,6 +72,9 @@ public class MailMessage {
 
 	private Attachment[] attachments = new Attachment[0];
 
+	private boolean pstPartialFailure = false;
+	private String pstObjectType;
+
 	public MailMessage() {
 
 	}
@@ -80,6 +83,7 @@ public class MailMessage {
 			throws JsonParseException, JsonMappingException,
 			JsonGenerationException, IOException, PSTException {
 
+		this.pstObjectType = originalPSTMessage.getClass().getSimpleName();
 		this.pstMessage = mapper.readValue(
 				mapper.writeValueAsString(originalPSTMessage),
 				ArchivedPSTMessage.class);
@@ -100,6 +104,7 @@ public class MailMessage {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					this.pstPartialFailure = true;
 				}
 
 			}
@@ -152,10 +157,12 @@ public class MailMessage {
 									.toByteArray())));
 				} catch (Exception e) {
 					e.printStackTrace();
+					this.pstPartialFailure = true;
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			this.pstPartialFailure = true;
 		}
 		this.setMessageId(originalPSTMessage.getInternetMessageId());
 		sources = new MessageSource[] { source };
@@ -278,6 +285,22 @@ public class MailMessage {
 
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
+	}
+
+	public boolean isPstPartialFailure() {
+		return pstPartialFailure;
+	}
+
+	public void setPstPartialFailure(boolean pstPartialFailure) {
+		this.pstPartialFailure = pstPartialFailure;
+	}
+
+	public String getPstObjectType() {
+		return pstObjectType;
+	}
+
+	public void setPstObjectType(String pstObjectType) {
+		this.pstObjectType = pstObjectType;
 	}
 
 	@Override

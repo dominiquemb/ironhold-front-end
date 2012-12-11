@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+
 import java.io.File;
 
 public class InboundWatcher extends FileWatcher {
@@ -15,7 +17,7 @@ public class InboundWatcher extends FileWatcher {
 
 
     @Override
-    protected void processFile(File dataFile) throws Exception {
+    protected void processFile(File dataFile, MD5CheckSum checksumFile) throws Exception {
         logger.info("Queuing valid file " + dataFile.toString());
     }
 

@@ -33,12 +33,14 @@ import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
+import com.reqo.ironhold.storage.model.PSTFileMeta;
 
 public class MongoService implements IStorageService {
 
 	private static Logger logger = Logger.getLogger(MongoService.class);
 	private static final String MESSAGE_COLLECTION = "messages";
 	private static final String LOG_COLLECTION = "logs";
+	private static final String PST_COLLECTION = "pstFiles";
 
 	private Mongo mongo;
 	private DB db;
@@ -257,4 +259,8 @@ public class MongoService implements IStorageService {
 		return result;
 	}
 
+	@Override
+	public void addPSTFile(PSTFileMeta pstFile) throws Exception {
+		db.getCollection(PST_COLLECTION).insert((DBObject) JSON.parse(PSTFileMeta.toJSON(pstFile)));
+	}
 }
