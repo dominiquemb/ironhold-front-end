@@ -40,8 +40,8 @@ public class PSTFileMeta {
 
 	private long messagesWithAttachments;
 	private long messagesWithoutAttachments;
-	private Map<String, Long> typeMap = new HashMap<>();
-	private Map<String, Long> folderMap = new HashMap<>();
+	private Map<String, Long> typeMap = new HashMap<String, Long>();
+	private Map<String, Long> folderMap = new HashMap<String, Long>();
 
 	@JsonIgnore
 	private Mean sizeMean = new Mean();
@@ -308,6 +308,14 @@ public class PSTFileMeta {
 
 	public double getMedianCompressedAttachmentSize() {
 		return medianCompressedAttachmentSize;
+	}
+
+	public Map<String, Long> getTypeMap() {
+		return typeMap;
+	}
+
+	public Map<String, Long> getFolderMap() {
+		return folderMap;
 	}
 
 	@Override
