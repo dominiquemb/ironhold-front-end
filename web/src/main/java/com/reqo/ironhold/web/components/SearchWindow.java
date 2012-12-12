@@ -67,7 +67,7 @@ public class SearchWindow extends Window {
             }
         });
 
-        Header header = new Header(getApplication(), username);
+        Header header = new Header(getApplication(), username, storageService);
         addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();

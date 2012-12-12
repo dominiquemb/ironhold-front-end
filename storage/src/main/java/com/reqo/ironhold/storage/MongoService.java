@@ -261,6 +261,22 @@ public class MongoService implements IStorageService {
 
 	@Override
 	public void addPSTFile(PSTFileMeta pstFile) throws Exception {
-		db.getCollection(PST_COLLECTION).insert((DBObject) JSON.parse(PSTFileMeta.toJSON(pstFile)));
+		db.getCollection(PST_COLLECTION).insert(
+				(DBObject) JSON.parse(PSTFileMeta.toJSON(pstFile)));
+	}
+
+	@Override
+	public List<PSTFileMeta> getPSTFiles() throws Exception {
+		List<PSTFileMeta> result = new ArrayList<PSTFileMeta>();
+
+		DBCursor cur = db.getCollection(PST_COLLECTION).find();
+
+		while (cur.hasNext()) {
+			DBObject object = cur.next();
+			object.removeField("_id");
+			result.add(PSTFileMeta.fromJSON(object.toString()));
+		}
+
+		return result;
 	}
 }

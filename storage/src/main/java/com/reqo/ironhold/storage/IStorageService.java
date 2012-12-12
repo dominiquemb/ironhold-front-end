@@ -33,5 +33,7 @@ public interface IStorageService {
 	List<LogMessage> getLogMessages(String messageId) throws Exception;
 
 	void addPSTFile(PSTFileMeta pstFile) throws Exception;
+	
+	List<PSTFileMeta> getPSTFiles() throws Exception;
 
 }
