@@ -201,7 +201,8 @@ public class PSTFileMetaPanel extends Panel {
 
 		typeTable.setContainerDataSource(types);
 		typeTable.setHeight("100px");
-
+		typeTable.setWidth("100%");
+		
 		final Table folderTable = new Table("Folders");
 		folderTable.setSizeFull();
 		folderTable.setColumnWidth(COUNT, 60);
@@ -225,7 +226,8 @@ public class PSTFileMetaPanel extends Panel {
 
 		folderTable.setContainerDataSource(folders);
 		folderTable.setHeight("200px");
-
+		folderTable.setWidth("100%");
+		
 		VerticalLayout vl = new VerticalLayout();
 		vl.setSpacing(true);
 		vl.setSizeFull();
@@ -234,6 +236,7 @@ public class PSTFileMetaPanel extends Panel {
 
 		hl.addComponent(vl);
 		hl.setComponentAlignment(vl, Alignment.MIDDLE_LEFT);
+		hl.setExpandRatio(vl, 1);
 		layout.addComponent(hl);
 
 	}
