@@ -22,15 +22,16 @@ public class PSTFileMetaPanel extends Panel {
 	private static final Object FOLDER = "Folder";
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat(
-			"EEE, d MMM yyyy HH:mm:ss z");
+			"d MMM yyyy HH:mm:ss");
 
 	public PSTFileMetaPanel(PSTFileMeta pstFile) {
-		super(pstFile.getPstFileName());
+		super(pstFile.getPstFileName() + " [" + pstFile.getOriginalFilePath() + "] [" + pstFile.getMd5() +"]");
+		this.setDescription("PST File Name [Original PST Location] [Checksum]");
 		VerticalLayout layout = (VerticalLayout) getContent();
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setSizeFull();
 		hl.setSpacing(true);
-		final GridLayout grid = new GridLayout(6, 11);
+		final GridLayout grid = new GridLayout(6, 9);
 		grid.setSpacing(true);
 		
 		Label dateLabel = new Label("<b>Date:</b>");
@@ -43,63 +44,56 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(mailBoxLabel, 0, 1);
 		grid.addComponent(new Label(pstFile.getMailBoxName()), 1, 1);
 
-		Label filePathLabel = new Label("<b>Original File Path:</b>");
-		filePathLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(filePathLabel, 0, 2);
-		grid.addComponent(new Label(pstFile.getOriginalFilePath()), 1, 2);
-
-		Label md5Label = new Label("<b>MD5 CheckSum:</b>");
-		md5Label.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(md5Label, 0, 3);
-		grid.addComponent(new Label(pstFile.getMd5()), 1, 3);
 
 		Label commentsLabel = new Label("<b>Comments:</b>");
 		commentsLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(commentsLabel, 0, 4);
-		grid.addComponent(new Label(pstFile.getCommentary()), 1, 4);
+		grid.addComponent(commentsLabel, 0, 2);
+		Label comments = new Label(StringUtils.abbreviate(pstFile.getCommentary(), 20));
+		comments.setDescription(pstFile.getCommentary());
+		grid.addComponent(comments, 1, 2);
 
 		Label pstFileSizeLabel = new Label("<b>PST File Size:</b>");
 		pstFileSizeLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(pstFileSizeLabel, 0, 5);
+		grid.addComponent(pstFileSizeLabel, 0, 3);
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize(pstFile.getSize())),
-				1, 5);
+				1, 3);
 
 		Label messagesLabel = new Label("<b># of Messages:</b>");
 		messagesLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(messagesLabel, 0, 6);
+		grid.addComponent(messagesLabel, 0, 4);
 		grid.addComponent(
-				new Label(String.format("%,d", pstFile.getMessages())), 1, 6);
+				new Label(String.format("%,d", pstFile.getMessages())), 1, 4);
 
 		Label duplicatesLabel = new Label("<b># of Duplicates:</b>");
 		duplicatesLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(duplicatesLabel, 0, 7);
+		grid.addComponent(duplicatesLabel, 0, 5);
 		grid.addComponent(
-				new Label(String.format("%,d", pstFile.getDuplicates())), 1, 7);
+				new Label(String.format("%,d", pstFile.getDuplicates())), 1, 5);
 
 		Label failuresLabel = new Label("<b># of Failures:</b>");
 		failuresLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(failuresLabel, 0, 8);
+		grid.addComponent(failuresLabel, 0, 6);
 		grid.addComponent(
-				new Label(String.format("%,d", pstFile.getFailures())), 1, 8);
+				new Label(String.format("%,d", pstFile.getFailures())), 1, 6);
 
 		Label partialFailuresLabel = new Label("<b># of Partial Failures:</b>");
 		partialFailuresLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(partialFailuresLabel, 0, 9);
+		grid.addComponent(partialFailuresLabel, 0, 7);
 		grid.addComponent(
 				new Label(String.format("%,d", pstFile.getPartialFailures())),
-				1, 9);
+				1, 7);
 
 		Label durationLabel = new Label("<b>Duration:</b>");
 		durationLabel.setContentMode(Label.CONTENT_XHTML);
-		grid.addComponent(durationLabel, 0, 10);
+		grid.addComponent(durationLabel, 0, 8);
 		grid.addComponent(
 				new Label(String.format("%,d secs", (pstFile.getFinished().getTime()-pstFile.getStarted().getTime())/1000)),
-				1, 10);
+				1, 8);
 
-		// Message Statistics
+		// Msg Statistics
 
-		Label averageSizeLabel = new Label("<b>Average Message Size:</b>");
+		Label averageSizeLabel = new Label("<b>Avg Msg Size:</b>");
 		averageSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(averageSizeLabel, 2, 0);
 		grid.addComponent(
@@ -107,14 +101,14 @@ public class PSTFileMetaPanel extends Panel {
 						.getAverageSize())), 3, 0);
 
 		Label averageCompressedSizeLabel = new Label(
-				"<b>Average Compressed Message Size:</b>");
+				"<b>Avg Zipped Msg Size:</b>");
 		averageCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(averageCompressedSizeLabel, 2, 1);
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getCompressedAverageSize())), 3, 1);
 
-		Label medianSizeLabel = new Label("<b>Median Message Size:</b>");
+		Label medianSizeLabel = new Label("<b>Median Msg Size:</b>");
 		medianSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(medianSizeLabel, 2, 2);
 		grid.addComponent(
@@ -122,14 +116,14 @@ public class PSTFileMetaPanel extends Panel {
 						.getMedianSize())), 3, 2);
 
 		Label medianCompressedSizeLabel = new Label(
-				"<b>Median Compressed Message Size:</b>");
+				"<b>Median Zipped Msg Size:</b>");
 		medianCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(medianCompressedSizeLabel, 2, 3);
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getMedianCompressedSize())), 3, 3);
 
-		Label maxSizeLabel = new Label("<b>Max Message Size:</b>");
+		Label maxSizeLabel = new Label("<b>Max Msg Size:</b>");
 		maxSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(maxSizeLabel, 2, 4);
 		grid.addComponent(
@@ -137,7 +131,7 @@ public class PSTFileMetaPanel extends Panel {
 						.getMaxSize())), 3, 4);
 
 		Label maxCompressedSizeLabel = new Label(
-				"<b>Max Compressed Message Size:</b>");
+				"<b>Max Zipped Msg Size:</b>");
 		maxCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(maxCompressedSizeLabel, 2, 5);
 		grid.addComponent(
@@ -145,17 +139,17 @@ public class PSTFileMetaPanel extends Panel {
 						.getCompressedMaxSize())), 3, 5);
 
 		Label noAttachmentsLabel = new Label(
-				"<b># of Messages without Attachments:</b>");
+				"<b># of Msgs w/o Attachs.:</b>");
 		noAttachmentsLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(noAttachmentsLabel, 2, 6);
 		grid.addComponent(
 				new Label(String.format("%,d",
 						pstFile.getMessagesWithoutAttachments())), 3, 6);
 
-		// Attachment statistics
+		// Attach. statistics
 
 		Label averageAttachmentSizeLabel = new Label(
-				"<b>Average Attachment Attachment Size:</b>");
+				"<b>Avg Attach. Attach. Size:</b>");
 		averageAttachmentSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(averageAttachmentSizeLabel, 4, 0);
 		grid.addComponent(
@@ -163,7 +157,7 @@ public class PSTFileMetaPanel extends Panel {
 						.getAverageAttachmentSize())), 5, 0);
 
 		Label averageAttachmentCompressedSizeLabel = new Label(
-				"<b>Average Compressed Attachment Size:</b>");
+				"<b>Avg Zipped Attach. Size:</b>");
 		averageAttachmentCompressedSizeLabel
 				.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(averageAttachmentCompressedSizeLabel, 4, 1);
@@ -172,7 +166,7 @@ public class PSTFileMetaPanel extends Panel {
 						.getCompressedAverageAttachmentSize())), 5, 1);
 
 		Label medianAttachmentSizeLabel = new Label(
-				"<b>Median Attachment Size:</b>");
+				"<b>Median Attach. Size:</b>");
 		medianAttachmentSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(medianAttachmentSizeLabel, 4, 2);
 		grid.addComponent(
@@ -180,14 +174,14 @@ public class PSTFileMetaPanel extends Panel {
 						.getMedianAttachmentSize())), 5, 2);
 
 		Label medianCompressedAttachmentSizeLabel = new Label(
-				"<b>Median Compressed Attachment Size:</b>");
+				"<b>Median Zipped Attach. Size:</b>");
 		medianCompressedAttachmentSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(medianCompressedAttachmentSizeLabel, 4, 3);
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getMedianCompressedAttachmentSize())), 5, 3);
 
-		Label maxAttachmentSizeLabel = new Label("<b>Max Attachment Size:</b>");
+		Label maxAttachmentSizeLabel = new Label("<b>Max Attach. Size:</b>");
 		maxAttachmentSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(maxAttachmentSizeLabel, 4, 4);
 		grid.addComponent(
@@ -195,7 +189,7 @@ public class PSTFileMetaPanel extends Panel {
 						.getMaxAttachmentSize())), 5, 4);
 
 		Label maxCompressedAttachmentSizeLabel = new Label(
-				"<b>Max Compressed Attachment Size:</b>");
+				"<b>Max Zipped Attach. Size:</b>");
 		maxCompressedAttachmentSizeLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(maxCompressedAttachmentSizeLabel, 4, 5);
 		grid.addComponent(
@@ -203,7 +197,7 @@ public class PSTFileMetaPanel extends Panel {
 						.getCompressedMaxAttachmentSize())), 5, 5);
 
 		Label attachmentsLabel = new Label(
-				"<b># of Messages with Attachments:</b>");
+				"<b># of Msgs w/Attachs.:</b>");
 		attachmentsLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(attachmentsLabel, 4, 6);
 		grid.addComponent(
