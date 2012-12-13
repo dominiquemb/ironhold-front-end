@@ -58,7 +58,7 @@ public abstract class FileWatcher {
 		InetAddress addr = InetAddress.getLocalHost();
 
 		hostname = addr.getHostName();
-		
+
 		logger.info("Watching " + inputDirName + " directory for " + client);
 		Path inputDir = Paths.get(inputDirName);
 		WatchService watchService = inputDir.getFileSystem().newWatchService();
@@ -90,15 +90,17 @@ public abstract class FileWatcher {
 						return;
 					}
 
-					MD5CheckSum checkSum = processChecksumFile(inputDirName,
-							fileName);
-					if (checkSum != null) {
-						try {
+					MD5CheckSum checkSum = null;
+					try {
+						checkSum = processChecksumFile(inputDirName, fileName);
+						if (checkSum != null) {
+
 							processFileWrapper(checkSum.getDataFileName(),
 									checkSum);
-						} catch (Exception e) {
-							quarantine(checkSum, e.getMessage());
 						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 
 				}
@@ -121,21 +123,26 @@ public abstract class FileWatcher {
 		if (!checkSum.verifyChecksum()) {
 			logger.warn("Checksum check failed for " + fileName);
 			quarantine(checkSum, "Checksum check failed for " + fileName);
+			return null;
 		}
 
-		return null;
+		return checkSum;
 	}
 
 	private void quarantine(MD5CheckSum checkSum, String reason) {
-		logger.warn("Quarantining file " + checkSum.getDataFileName() + ": "
-				+ reason);
+		if (checkSum.getDataFileName() != null) {
+			logger.warn("Quarantining file " + checkSum.getDataFileName()
+					+ ": " + reason);
 
-		File dataFile = new File(getInputDirName(), checkSum.getDataFileName());
+			File dataFile = new File(getInputDirName(),
+					checkSum.getDataFileName());
 
-		if (!dataFile.renameTo(new File(getQuarantineDirName(), dataFile
-				.getName()))) {
-			logger.warn("Failed to quarantine file " + dataFile.toString()
-					+ " to " + new File(getOutputDirName(), dataFile.getName()));
+			if (!dataFile.renameTo(new File(getQuarantineDirName(), dataFile
+					.getName()))) {
+				logger.warn("Failed to quarantine file " + dataFile.toString()
+						+ " to "
+						+ new File(getOutputDirName(), dataFile.getName()));
+			}
 		}
 		if (!checkSum.getCheckSumFile().renameTo(
 				new File(getQuarantineDirName(), checkSum.getCheckSumFile()
@@ -145,7 +152,7 @@ public abstract class FileWatcher {
 		}
 
 		try {
-			send("Quarantining file " + checkSum.getDataFileName() + ": "
+			send("Quarantining file " + checkSum.getCheckSumFile().toString() + ": "
 					+ reason);
 		} catch (Exception e) {
 			e.printStackTrace();

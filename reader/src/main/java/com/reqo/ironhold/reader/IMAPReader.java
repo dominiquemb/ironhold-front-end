@@ -70,6 +70,9 @@ public class IMAPReader {
 			// Loop over all of the messages
 			for (int messageNumber = 0; messageNumber < messages.length; messageNumber++) {
 				// Retrieve the next message to be read
+				if (messageNumber % 100 == 0) {
+					logger.info("Processed " + messageNumber + " messages");
+				}
 				message = messages[messageNumber];
 
 				// Retrieve the message content
@@ -78,6 +81,8 @@ public class IMAPReader {
 				// Determine email type
 				if (messagecontentObject instanceof Multipart) {
 					withAttachments++;
+					
+					
 				/*	logger.info("Found Email with Attachment");
 					sender = ((InternetAddress) message.getFrom()[0])
 							.getPersonal();
