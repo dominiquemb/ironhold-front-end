@@ -36,7 +36,7 @@
 		<profile>
 			<id>development</id>
 			<properties>
-				<elasticsearch.hosts>localhost</elasticsearch.hosts>
+				<elasticsearch.hosts>192.168.247.128</elasticsearch.hosts>
 				<elasticsearch.port>9300</elasticsearch.port>
 			</properties>
 			<activation>

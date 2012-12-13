@@ -74,11 +74,18 @@ public class MongoService implements IStorageService {
 		mongo = new Mongo(new ServerAddress(mongoHost, mongoPort), options);
 
 		db = mongo.getDB("admin");
-		db.authenticate(username, password.toCharArray());
+		if (!username.equals("${mongo.username}")) {
+			db.authenticate(username, password.toCharArray());
+			logger.info(String.format(
+					"Connected to Mongo at %s:%d, db [%s] as [%s]", mongoHost,
+					mongoPort, clientName, username));
+		} else {
+			logger.info(String.format(
+					"Connected to Mongo at %s:%d, db [%s] without authentication", mongoHost,
+					mongoPort, clientName));
+		}
 		db = mongo.getDB(clientName);
-		logger.info(String.format(
-				"Connected to Mongo at %s:%d, db [%s] as [%s]", mongoHost,
-				mongoPort, clientName, username));
+
 
 	}
 

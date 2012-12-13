@@ -69,11 +69,11 @@ public class SearchResults extends HorizontalLayout {
         sortFieldSelector.setVisible(true);
         sortOrderSelector.setVisible(true);
         fromFacetPanel.setVisible(true);
-        fromDomainFacetPanel.setVisible(true);
+        //fromDomainFacetPanel.setVisible(true);
         toFacetPanel.setVisible(true);
-        toDomainFacetPanel.setVisible(true);
-        yearFacetPanel.setVisible(true);
-        fileExtFacetPanel.setVisible(true);
+        //toDomainFacetPanel.setVisible(true);
+        //yearFacetPanel.setVisible(true);
+        //fileExtFacetPanel.setVisible(true);
         System.out.println("in setCriteria");
         performSearch();
     }

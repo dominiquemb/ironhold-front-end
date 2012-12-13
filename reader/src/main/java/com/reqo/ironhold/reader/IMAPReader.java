@@ -15,6 +15,8 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.log4j.Logger;
 
+import com.sun.mail.imap.IMAPNestedMessage;
+
 public class IMAPReader {
 
 	private static Logger logger = Logger.getLogger(IMAPReader.class);
@@ -23,7 +25,7 @@ public class IMAPReader {
 	}
 
 	private void printData(String data) {
-	//	System.out.println(data);
+		System.out.println(data);
 	}
 
 	public void processMail() {
@@ -70,9 +72,6 @@ public class IMAPReader {
 			// Loop over all of the messages
 			for (int messageNumber = 0; messageNumber < messages.length; messageNumber++) {
 				// Retrieve the next message to be read
-				if (messageNumber % 100 == 0) {
-					logger.info("Processed " + messageNumber + " messages");
-				}
 				message = messages[messageNumber];
 
 				// Retrieve the message content
@@ -81,22 +80,13 @@ public class IMAPReader {
 				// Determine email type
 				if (messagecontentObject instanceof Multipart) {
 					withAttachments++;
-					
-					
-				/*	logger.info("Found Email with Attachment");
+
+					logger.info("Found Email with Attachment");
 					sender = ((InternetAddress) message.getFrom()[0])
 							.getPersonal();
 
-					// If the "personal" information has no entry, check the
-					// address for the sender information
-					printData("If the personal information has no entry, check the address for the sender information.");
-
-					if (sender == null) {
-						sender = ((InternetAddress) message.getFrom()[0])
-								.getAddress();
-						printData("sender in NULL. Printing Address:" + sender);
-					}
-					printData("Sender -." + sender);
+						printData("Sender: " + sender + " <" + ((InternetAddress) message.getFrom()[0])
+							.getAddress() + ">");
 
 					// Get the subject information
 					subject = message.getSubject();
@@ -121,40 +111,47 @@ public class IMAPReader {
 
 						if (contentType.startsWith("text/plain")) {
 							printData("---------reading content type text/plain  mail -------------");
+							printData((String) part.getContent());
+						} else if (contentType.startsWith("message/rfc822")) {
+							IMAPNestedMessage nestedMessage = (IMAPNestedMessage) part.getContent();
+							
+							printData(nestedMessage.getContent().toString());
 						} else {
 							// Retrieve the file name
 							String fileName = part.getFileName();
 							printData("retrive the fileName=" + fileName);
 						}
-					}*/
+					}
 				} else {
 					withoutAttachments++;
-					/*logger.info("Found Mail Without Attachment");
-					sender = ((InternetAddress) message.getFrom()[0])
-							.getPersonal();
-
-					// If the "personal" information has no entry, check the
-					// address for the sender information
-					printData("If the personal information has no entry, check the address for the sender information.");
-
-					if (sender == null) {
-						sender = ((InternetAddress) message.getFrom()[0])
-								.getAddress();
-						printData("sender in NULL. Printing Address:" + sender);
-					}
-
-					// Get the subject information
-					subject = message.getSubject();
-					printData("subject=" + subject);*/
+					/*
+					 * logger.info("Found Mail Without Attachment"); sender =
+					 * ((InternetAddress) message.getFrom()[0]) .getPersonal();
+					 * 
+					 * // If the "personal" information has no entry, check the
+					 * // address for the sender information printData(
+					 * "If the personal information has no entry, check the address for the sender information."
+					 * );
+					 * 
+					 * if (sender == null) { sender = ((InternetAddress)
+					 * message.getFrom()[0]) .getAddress();
+					 * printData("sender in NULL. Printing Address:" + sender);
+					 * }
+					 * 
+					 * // Get the subject information subject =
+					 * message.getSubject(); printData("subject=" + subject);
+					 */
 				}
-				
-			
+
+				break;
 			}
 
 			// Close the folder
 			folder.close(true);
 
-			logger.info(String.format("With attachments: %d\nWithout attachments: %d", withAttachments, withoutAttachments));
+			logger.info(String.format(
+					"With attachments: %d\nWithout attachments: %d",
+					withAttachments, withoutAttachments));
 			// Close the message store
 			store.close();
 		} catch (AuthenticationFailedException e) {

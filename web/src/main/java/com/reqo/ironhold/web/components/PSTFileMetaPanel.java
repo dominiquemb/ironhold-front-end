@@ -26,7 +26,7 @@ public class PSTFileMetaPanel extends Panel {
 			"d MMM yyyy HH:mm:ss");
 
 	public PSTFileMetaPanel(PSTFileMeta pstFile) {
-		super(pstFile.getPstFileName() + " [" + pstFile.getOriginalFilePath()
+		super(pstFile.getPstFileName() + " [" + (pstFile.getOriginalFilePath() == null ? "unknown" : pstFile.getOriginalFilePath())  
 				+ "] [" + pstFile.getMd5() + "]");
 		this.setDescription("PST File Name [Original PST Location] [Checksum]");
 		VerticalLayout layout = (VerticalLayout) getContent();
@@ -44,7 +44,7 @@ public class PSTFileMetaPanel extends Panel {
 		Label mailBoxLabel = new Label("<b>Mail Box:</b>");
 		mailBoxLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(mailBoxLabel, 0, 1);
-		grid.addComponent(new Label(pstFile.getMailBoxName()), 1, 1);
+		grid.addComponent(new Label(pstFile.getMailBoxName() == null ? "unknown" : pstFile.getMailBoxName() ), 1, 1);
 
 		Label commentsLabel = new Label("<b>Comments:</b>");
 		commentsLabel.setContentMode(Label.CONTENT_XHTML);
