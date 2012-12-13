@@ -14,6 +14,9 @@ public class WatcherOptions {
 
     @Option(name = "-out", usage = "location of processed directory", required = true)
     private String out;
+    
+    @Option(name = "-q", usage = "location of quarantine directory", required = true)
+    private String quarantine;
 
     public String getClient() {
         return client;
@@ -30,4 +33,8 @@ public class WatcherOptions {
     public String getQueue() {
         return queue;
     }
+
+	public String getQuarantine() {
+		return quarantine;
+	}
 }

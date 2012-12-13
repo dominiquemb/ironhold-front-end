@@ -200,7 +200,7 @@ public class PSTFileMetaPanel extends Panel {
 		}
 
 		typeTable.setContainerDataSource(types);
-		typeTable.setHeight("100px");
+		typeTable.setHeight("80px");
 		typeTable.setWidth("100%");
 		
 		final Table folderTable = new Table("Folders");
@@ -225,7 +225,7 @@ public class PSTFileMetaPanel extends Panel {
 		}
 
 		folderTable.setContainerDataSource(folders);
-		folderTable.setHeight("200px");
+		folderTable.setHeight("140px");
 		folderTable.setWidth("100%");
 		
 		VerticalLayout vl = new VerticalLayout();

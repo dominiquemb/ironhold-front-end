@@ -13,9 +13,9 @@ public class QueueWatcher extends FileWatcher {
 
 	private static Logger logger = Logger.getLogger(QueueWatcher.class);
 
-	public QueueWatcher(String inputDirName, String outputDirName, String client)
+	public QueueWatcher(String inputDirName, String outputDirName, String quarantineDirName, String client)
 			throws Exception {
-		super(inputDirName, outputDirName, client);
+		super(inputDirName, outputDirName, quarantineDirName, client);
 	}
 
 	@Override
@@ -27,6 +27,9 @@ public class QueueWatcher extends FileWatcher {
 				checksumFile.getOriginalFilePath(),
 				checksumFile.getCommentary(), this.getClient());
 		importer.processMessages();
+		
+		send("Finished processing pst file: " + checksumFile.getDataFileName());
+		
 	}
 
 	public static void main(String[] args) {
@@ -40,7 +43,7 @@ public class QueueWatcher extends FileWatcher {
 			return;
 		}
 		try {
-			new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getClient());
+			new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getQuarantine(), bean.getClient());
 
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
