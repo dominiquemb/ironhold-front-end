@@ -151,29 +151,29 @@ public abstract class FileWatcher {
 					+ checkSum.getCheckSumFile().toString());
 		}
 
+		send("Quarantining file " + checkSum.getCheckSumFile().toString()
+				+ ": " + reason);
+	}
+
+	public void send(String subject)  {
 		try {
-			send("Quarantining file " + checkSum.getCheckSumFile().toString() + ": "
-					+ reason);
+			HtmlEmail email = new HtmlEmail();
+			email.setHostName("10.65.0.78");
+			email.addTo("admins@ironhold.net", "admins@ironhold.net");
+			email.setFrom("admins@ironhold.net", hostname);
+			email.setSubject(subject);
+
+			// set the html message
+			email.setHtmlMsg(subject);
+
+			// set the alternative message
+			email.setTextMsg("Your email client does not support HTML messages");
+
+			// send the email
+			email.send();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void send(String subject) throws Exception {
-		HtmlEmail email = new HtmlEmail();
-		email.setHostName("10.65.0.78");
-		email.addTo("admins@ironhold.net", "admins@ironhold.net");
-		email.setFrom("admins@ironhold.net", hostname);
-		email.setSubject(subject);
-
-		// set the html message
-		email.setHtmlMsg(subject);
-
-		// set the alternative message
-		email.setTextMsg("Your email client does not support HTML messages");
-
-		// send the email
-		email.send();
 	}
 
 	public String getInputDirName() {
