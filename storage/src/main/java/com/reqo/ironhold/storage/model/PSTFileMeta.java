@@ -126,7 +126,7 @@ public class PSTFileMeta {
 
 	public void addFolder(String folderPath, int contentCount) {
 		
-		folderMap.put(folderPath.replaceAll(".", ":"), new Long(contentCount));
+		folderMap.put(folderPath.replace(".", ":"), new Long(contentCount));
 	}
 
 	public void incrementAttachmentStatistics(boolean hasAttachment) {
