@@ -29,7 +29,7 @@ public class MongoServiceTest {
     private Mongo mongo;
     private DB db;
 
-    private static final String DATABASENAME = "mongo_test";
+    private static final String DATABASENAME = "MongoServiceTest";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

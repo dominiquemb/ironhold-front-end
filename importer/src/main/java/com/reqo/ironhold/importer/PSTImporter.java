@@ -1,25 +1,17 @@
 package com.reqo.ironhold.importer;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.util.Date;
 import java.util.Vector;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 
 import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
-import com.reqo.ironhold.importer.mbeans.MongoMBean;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.LogLevel;
@@ -36,16 +28,14 @@ public class PSTImporter {
 	private final PSTFileMeta metaData;
 	private final File file;
 	private final IStorageService storageService;
-	private final String clientName;
 
 	public PSTImporter(File file, String md5, String mailBoxName,
-			String originalFilePath, String commentary, String clientName)
+			String originalFilePath, String commentary, IStorageService storageService)
 			throws Exception {
 		this.file = file;
-		this.clientName = clientName;
 		this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
 				originalFilePath, commentary, md5, file.length(), new Date());
-		this.storageService = new MongoService(clientName, "PST Importer");
+		this.storageService = storageService;
 
 	}
 

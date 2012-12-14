@@ -2,6 +2,8 @@ package com.reqo.ironhold.importer.watcher;
 
 import com.reqo.ironhold.importer.PSTImporter;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MongoService;
 
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
@@ -12,20 +14,22 @@ import java.io.File;
 public class QueueWatcher extends FileWatcher {
 
 	private static Logger logger = Logger.getLogger(QueueWatcher.class);
-
+	private final IStorageService storageService;
 	public QueueWatcher(String inputDirName, String outputDirName, String quarantineDirName, String client)
 			throws Exception {
 		super(inputDirName, outputDirName, quarantineDirName, client);
+		storageService = new MongoService(this.getClient(), "PSTImporter");
 	}
 
 	@Override
 	protected void processFile(File dataFile, MD5CheckSum checksumFile)
 			throws Exception {
 		logger.info("Processing data file " + dataFile.toString());
+		
 		PSTImporter importer = new PSTImporter(dataFile,
 				checksumFile.getCheckSum(), checksumFile.getMailBoxName(),
 				checksumFile.getOriginalFilePath(),
-				checksumFile.getCommentary(), this.getClient());
+				checksumFile.getCommentary(), storageService);
 		String details = importer.processMessages();
 		
 		send("Finished processing pst file: " + checksumFile.getDataFileName(), details);

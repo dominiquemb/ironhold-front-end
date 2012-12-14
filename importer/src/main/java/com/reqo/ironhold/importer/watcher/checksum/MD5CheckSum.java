@@ -61,12 +61,12 @@ public class MD5CheckSum {
 	}
 
 	public boolean verifyChecksum() throws Exception {
-		String actualCheckSum = getMD5Checksum();
+		String actualCheckSum = MD5CheckSum.getMD5Checksum(dataFile);
 		return checkSum.equals(actualCheckSum);
 
 	}
 
-	private byte[] createChecksum(File file) throws Exception {
+	private static byte[] createChecksum(File file) throws Exception {
 		InputStream fis = new FileInputStream(file);
 
 		byte[] buffer = new byte[1024];
@@ -84,8 +84,8 @@ public class MD5CheckSum {
 
 	// see this How-to for a faster way to convert
 	// a byte array to a HEX string
-	private String getMD5Checksum() throws Exception {
-		byte[] b = createChecksum(dataFile);
+	public static String getMD5Checksum(File file) throws Exception {
+		byte[] b = createChecksum(file);
 		String result = "";
 		for (int i = 0; i < b.length; i++) {
 			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);

@@ -7,7 +7,8 @@
 		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>reader</artifactId>
-
+	<name>Reader</name>
+	
 	<dependencies>
 		<dependency>
 			<groupId>javax.mail</groupId>
