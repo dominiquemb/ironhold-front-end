@@ -19,7 +19,7 @@ public class InboundWatcher extends FileWatcher {
     @Override
     protected void processFile(File dataFile, MD5CheckSum checksumFile) throws Exception {
         logger.info("Queuing valid file " + dataFile.toString());
-        send("Queuing pst file: " + checksumFile.getDataFileName());
+        send("Queuing pst file: " + checksumFile.getDataFileName(),"File checksum verified succesfully. ");
     }
 
     public static void main(String[] args) {

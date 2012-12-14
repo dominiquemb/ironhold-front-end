@@ -26,9 +26,9 @@ public class QueueWatcher extends FileWatcher {
 				checksumFile.getCheckSum(), checksumFile.getMailBoxName(),
 				checksumFile.getOriginalFilePath(),
 				checksumFile.getCommentary(), this.getClient());
-		importer.processMessages();
+		String details = importer.processMessages();
 		
-		send("Finished processing pst file: " + checksumFile.getDataFileName());
+		send("Finished processing pst file: " + checksumFile.getDataFileName(), details);
 		
 	}
 

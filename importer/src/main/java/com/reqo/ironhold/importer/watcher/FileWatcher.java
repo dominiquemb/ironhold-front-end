@@ -100,6 +100,7 @@ public abstract class FileWatcher {
 						}
 
 					} catch (Exception e) {
+						send("Failed to process " + fileName, e.getMessage());
 						e.printStackTrace();
 					}
 
@@ -151,11 +152,11 @@ public abstract class FileWatcher {
 					+ checkSum.getCheckSumFile().toString());
 		}
 
-		send("Quarantining file " + checkSum.getCheckSumFile().toString()
-				+ ": " + reason);
+		send("Quarantining file " + checkSum.getCheckSumFile().toString(),
+				reason);
 	}
 
-	public void send(String subject)  {
+	public void send(String subject, String body) {
 		try {
 			HtmlEmail email = new HtmlEmail();
 			email.setHostName("10.65.0.78");
@@ -164,7 +165,7 @@ public abstract class FileWatcher {
 			email.setSubject(subject);
 
 			// set the html message
-			email.setHtmlMsg(subject);
+			email.setHtmlMsg(body);
 
 			// set the alternative message
 			email.setTextMsg("Your email client does not support HTML messages");

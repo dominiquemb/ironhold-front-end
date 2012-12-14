@@ -10,6 +10,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
@@ -48,7 +49,7 @@ public class PSTImporter {
 
 	}
 
-	public void processMessages() throws Exception {
+	public String processMessages() throws Exception {
 		PSTFile pstFile = new PSTFile(file);
 		try {
 			String fileSizeDisplay = FileUtils.byteCountToDisplaySize(file
@@ -73,23 +74,26 @@ public class PSTImporter {
 			float duration = (finished - started) / 1000;
 			float rate = metaData.getMessages() / duration;
 
+			String messageString = "Finished pst import: File: ["
+					+ file.toString() + "] File size: ["
+					+ fileSizeDisplay + "] Success " + "count: ["
+					+ metaData.getMessages() + "] Duplicate count: ["
+					+ metaData.getDuplicates() + "] Fail count: ["
+					+ metaData.getFailures() + "] Time " + "taken: ["
+					+ timeTook + "] Rate: [" + rate
+					+ " messages per sec]";
 			LogMessage finishedMessage = new LogMessage(LogLevel.Success,
-					file.toString(), "Finished pst import: File: ["
-							+ file.toString() + "] File size: ["
-							+ fileSizeDisplay + "] Success " + "count: ["
-							+ metaData.getMessages() + "] Duplicate count: ["
-							+ metaData.getDuplicates() + "] Fail count: ["
-							+ metaData.getFailures() + "] Time " + "taken: ["
-							+ timeTook + "] Rate: [" + rate
-							+ " messages per sec]");
+					file.toString(), messageString);
 
 			storageService.log(finishedMessage);
 
 			storageService.addPSTFile(metaData);
 
+			return messageString;
 		} finally {
 			pstFile.getFileHandle().close();
 		}
+		
 	}
 
 	private void processFolder(String folderPath, PSTFolder folder)
