@@ -34,11 +34,14 @@ public class PSTImporterTest {
 	private static final String DATABASENAME = "TestPSTImporter";
 
 	private static final String PST_TEST_FILE = "/data.pst";
+	private static final String PST_TEST_FILE2 = "/data2.pst";
 	private static final String mailBoxName = "test mailbox";
 	private static final String originalFilePath = "test path";
 	private static final String commentary = "test commentary";
 	private File pstfile;
 	private String md5;
+	private String md52;
+	private File pstfile2;
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,6 +50,11 @@ public class PSTImporterTest {
 
 		md5 = MD5CheckSum.getMD5Checksum(pstfile);
 
+		pstfile2 = FileUtils.toFile(PSTImporterTest.class
+				.getResource(PST_TEST_FILE2));
+
+		md52 = MD5CheckSum.getMD5Checksum(pstfile2);
+
 		MongoDBRuntime runtime = MongoDBRuntime.getDefaultInstance();
 		mongodExe = runtime
 				.prepare(new MongodConfig(Version.V2_0, 12345, false));
@@ -54,6 +62,8 @@ public class PSTImporterTest {
 
 		mongo = new Mongo("localhost", 12345);
 		db = mongo.getDB(DATABASENAME);
+		
+		
 	}
 
 	@After
@@ -91,7 +101,7 @@ public class PSTImporterTest {
 		
 		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/sent test").longValue());
 		Assert.assertEquals(7L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/in person.interview".replace(".", PSTFileMeta.DOT_REPLACEMENT)).longValue());
-		Assert.assertEquals(6L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data").longValue());
+		Assert.assertEquals(7L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data").longValue());
 		Assert.assertEquals(2L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/Withdrew").longValue());
 		Assert.assertEquals(30L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/reject after test").longValue());
 		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/recieved test").longValue());
@@ -105,7 +115,7 @@ public class PSTImporterTest {
 	public void testPSTImporterDupes() throws Exception {
 		testPSTImporter();
 		IStorageService storageService = new MongoService(mongo, db);
-		PSTImporter pstImporter = new PSTImporter(pstfile, md5, mailBoxName,
+		PSTImporter pstImporter = new PSTImporter(pstfile2, md52, mailBoxName,
 				originalFilePath, commentary, storageService);
 
 		String results = pstImporter.processMessages();
@@ -129,7 +139,7 @@ public class PSTImporterTest {
 		
 		MailMessage testMailMessage = storageService.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
 		Assert.assertNotNull(testMailMessage);
-		Assert.assertEquals(1, testMailMessage.getSources().length);
+		Assert.assertEquals(2, testMailMessage.getSources().length);
 
 	}
 

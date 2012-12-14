@@ -320,6 +320,10 @@ public class PSTFileMeta {
 		return folderMap;
 	}
 
+	public boolean sameAs(PSTFileMeta metaData) {
+		return this.getMd5().equals(metaData.getMd5()) && this.getSize() == metaData.getSize();
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
@@ -335,5 +339,6 @@ public class PSTFileMeta {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
+
 
 }

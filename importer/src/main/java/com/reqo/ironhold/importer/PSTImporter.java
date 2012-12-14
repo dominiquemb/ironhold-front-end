@@ -38,8 +38,22 @@ public class PSTImporter {
 		this.storageService = storageService;
 
 	}
+	
+	private boolean wasFileProcessedPreviously() throws Exception {
+		for (PSTFileMeta pstFileMeta : storageService.getPSTFiles()) {
+			if (pstFileMeta.sameAs(this.metaData)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	public String processMessages() throws Exception {
+		if (wasFileProcessedPreviously()) {
+			throw new Exception("This file has been processed already");
+		}
+		
 		PSTFile pstFile = new PSTFile(file);
 		try {
 			String fileSizeDisplay = FileUtils.byteCountToDisplaySize(file
