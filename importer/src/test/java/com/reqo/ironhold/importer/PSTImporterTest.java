@@ -66,20 +66,61 @@ public class PSTImporterTest {
 		IStorageService storageService = new MongoService(mongo, db);
 		PSTImporter pstImporter = new PSTImporter(pstfile, md5, mailBoxName,
 				originalFilePath, commentary, storageService);
-		
+
 		String results = pstImporter.processMessages();
-		
+
 		System.out.println(results);
-		
+
 		List<PSTFileMeta> pstFiles = storageService.getPSTFiles();
-		
+
 		Assert.assertEquals(1, pstFiles.size());
-		
+
 		PSTFileMeta pstFileMeta = pstFiles.get(0);
 		Assert.assertNotNull(pstFileMeta);
 		Assert.assertEquals(0, pstFileMeta.getFailures());
+
+		long totalCount = storageService.getTotalMessageCount();
+		Assert.assertEquals(
+				pstFileMeta.getMessages() - pstFileMeta.getDuplicates(),
+				totalCount);
 		
+	/*	for (String folder : pstFileMeta.getFolderMap().keySet()) {
+			System.out.println(folder + "  : " + pstFileMeta.getFolderMap().get(folder));
+		}*/
 		
+		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/sent test").longValue());
+		Assert.assertEquals(7L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/in person.interview".replace(".", PSTFileMeta.DOT_REPLACEMENT)).longValue());
+		Assert.assertEquals(6L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data").longValue());
+		Assert.assertEquals(2L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/Withdrew").longValue());
+		Assert.assertEquals(30L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/reject after test").longValue());
+		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/recieved test").longValue());
+	}
+
+	@Test
+	public void testPSTImporterDupes() throws Exception {
+		testPSTImporter();
+		IStorageService storageService = new MongoService(mongo, db);
+		PSTImporter pstImporter = new PSTImporter(pstfile, md5, mailBoxName,
+				originalFilePath, commentary, storageService);
+
+		String results = pstImporter.processMessages();
+
+		System.out.println(results);
+
+		List<PSTFileMeta> pstFiles = storageService.getPSTFiles();
+
+		Assert.assertEquals(2, pstFiles.size());
+
+		PSTFileMeta pstFileMeta0 = pstFiles.get(0);
+		PSTFileMeta pstFileMeta1 = pstFiles.get(1);
+		Assert.assertNotNull(pstFileMeta1);
+		Assert.assertEquals(0, pstFileMeta1.getFailures());
+
+		long totalCount = storageService.getTotalMessageCount();
+		
+		Assert.assertEquals(
+				pstFileMeta1.getDuplicates() - pstFileMeta0.getDuplicates(),
+				totalCount);
 	}
 
 }

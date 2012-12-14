@@ -19,6 +19,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class PSTFileMeta {
+	public static final String DOT_REPLACEMENT = Character.toString((char) 182);
+	
 	private String pstFileName = StringUtils.EMPTY;
 	private String mailBoxName = StringUtils.EMPTY;
 	private String originalFilePath = StringUtils.EMPTY;
@@ -125,8 +127,7 @@ public class PSTFileMeta {
 	}
 
 	public void addFolder(String folderPath, int contentCount) {
-		
-		folderMap.put(folderPath.replace(".", ":"), new Long(contentCount));
+		folderMap.put(folderPath.replace(".", DOT_REPLACEMENT), new Long(contentCount));
 	}
 
 	public void incrementAttachmentStatistics(boolean hasAttachment) {

@@ -88,7 +88,7 @@ public class PSTImporter {
 
 	private void processFolder(String folderPath, PSTFolder folder)
 			throws Exception {
-		metaData.addFolder(folderPath, folder.getContentCount());
+		
 		LogMessage folderMessage = new LogMessage(LogLevel.Success,
 				file.toString(), "Processing " + folderPath + " ["
 						+ folder.getContentCount() + " items]");
@@ -104,6 +104,8 @@ public class PSTImporter {
 
 		// and now the emails for this folder
 		if (folder.getContentCount() > 0) {
+			metaData.addFolder(folderPath, folder.getContentCount());
+			
 			PSTMessage message = (PSTMessage) folder.getNextChild();
 			while (message != null) {
 				String messageId = "unknown";
