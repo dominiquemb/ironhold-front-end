@@ -24,7 +24,7 @@ public abstract class FileWatcher {
 	private final String outputDirName;
 	private final String quarantineDirName;
 	private final String client;
-
+		
 	private WatchService watchService;
 
 	protected void processFileWrapper(String dataFileName, MD5CheckSum checksum)
@@ -129,6 +129,11 @@ public abstract class FileWatcher {
 		}
 	}
 
+
+
+	public boolean isStarted() {
+		return watchService != null;
+	}
 	private MD5CheckSum processChecksumFile(String inputDirName,
 			String checkSumfileName) throws Exception {
 

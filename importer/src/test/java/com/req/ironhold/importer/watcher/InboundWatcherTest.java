@@ -34,7 +34,7 @@ public class InboundWatcherTest {
 	public TemporaryFolder quarantineFolder = new TemporaryFolder();
 
 	@Test
-	public void test() throws Exception {
+	public void testInboundWatcherValid() throws Exception {
 		EmailNotification.disableNotification();
 		final InboundWatcher iw = new InboundWatcher(inFolder.getRoot().toString(),
 				queueFolder.getRoot().toString(), quarantineFolder
@@ -54,13 +54,21 @@ public class InboundWatcherTest {
 
 			}
 		});
-
+		
+		/* Make sure watcher is fully started */
+		while (!iw.isStarted()) {
+			Thread.sleep(100);
+		}
+		Thread.sleep(100);
+		
+		
 		File pstFile = FileUtils.toFile(InboundWatcherTest.class
 				.getResource(PST_TEST_FILE));
 
 		FileUtils.copyFileToDirectory(pstFile, inFolder.getRoot());
 		File md5File = MD5CheckSum.createMD5CheckSum(pstFile);
 		FileUtils.copyFileToDirectory(md5File, inFolder.getRoot());
+
 		Thread.sleep(2000);
 
 		Assert.assertEquals(0, inFolder.getRoot().listFiles().length);
