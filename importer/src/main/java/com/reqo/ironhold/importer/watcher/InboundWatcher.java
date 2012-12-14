@@ -1,5 +1,6 @@
 package com.reqo.ironhold.importer.watcher;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -19,7 +20,7 @@ public class InboundWatcher extends FileWatcher {
     @Override
     protected void processFile(File dataFile, MD5CheckSum checksumFile) throws Exception {
         logger.info("Queuing valid file " + dataFile.toString());
-        send("Queuing pst file: " + checksumFile.getDataFileName(),"File checksum verified succesfully. ");
+        send("Queuing pst file: " + checksumFile.getDataFileName(),"File size: " + FileUtils.byteCountToDisplaySize(checksumFile.getDataFile().length()));
     }
 
     public static void main(String[] args) {
