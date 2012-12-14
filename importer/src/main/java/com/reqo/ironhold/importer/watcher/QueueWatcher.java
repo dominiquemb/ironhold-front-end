@@ -16,10 +16,10 @@ public class QueueWatcher extends FileWatcher {
 
 	private static Logger logger = Logger.getLogger(QueueWatcher.class);
 	private final IStorageService storageService;
-	public QueueWatcher(String inputDirName, String outputDirName, String quarantineDirName, String client)
+	public QueueWatcher(String inputDirName, String outputDirName, String quarantineDirName, String client, IStorageService storageService)
 			throws Exception {
 		super(inputDirName, outputDirName, quarantineDirName, client);
-		storageService = new MongoService(this.getClient(), "PSTImporter");
+		this.storageService = storageService;
 	}
 
 	@Override
@@ -48,7 +48,8 @@ public class QueueWatcher extends FileWatcher {
 			return;
 		}
 		try {
-			QueueWatcher qw = new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getQuarantine(), bean.getClient());
+			IStorageService storageService = new MongoService(bean.getClient(), "PSTImporter");
+			QueueWatcher qw = new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getQuarantine(), bean.getClient(), storageService);
 			qw.start();
 
 		} catch (Exception e) {
