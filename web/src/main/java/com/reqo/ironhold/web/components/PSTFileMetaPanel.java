@@ -217,7 +217,7 @@ public class PSTFileMetaPanel extends Panel {
 			if (pstFile.getFolderMap().get(folder).longValue() > 0) {
 				Item folderItem = folders.addItem(folderCount);
 				folderCount++;
-				folderItem.getItemProperty(FOLDER).setValue(folder);
+				folderItem.getItemProperty(FOLDER).setValue(folder.replaceAll(":", "."));
 				folderItem.getItemProperty(COUNT).setValue(
 						pstFile.getFolderMap().get(folder));
 			}
