@@ -30,8 +30,8 @@ public class PSTImporter {
 	private final IStorageService storageService;
 
 	public PSTImporter(File file, String md5, String mailBoxName,
-			String originalFilePath, String commentary, IStorageService storageService)
-			throws Exception {
+			String originalFilePath, String commentary,
+			IStorageService storageService) throws Exception {
 		this.file = file;
 		this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
 				originalFilePath, commentary, md5, file.length(), new Date());
@@ -65,12 +65,11 @@ public class PSTImporter {
 			float rate = metaData.getMessages() / duration;
 
 			String messageString = "Finished pst import: File: ["
-					+ file.toString() + "] File size: ["
-					+ fileSizeDisplay + "] Success " + "count: ["
-					+ metaData.getMessages() + "] Duplicate count: ["
-					+ metaData.getDuplicates() + "] Fail count: ["
-					+ metaData.getFailures() + "] Time " + "taken: ["
-					+ timeTook + "] Rate: [" + rate
+					+ file.toString() + "] File size: [" + fileSizeDisplay
+					+ "] Success " + "count: [" + metaData.getMessages()
+					+ "] Duplicate count: [" + metaData.getDuplicates()
+					+ "] Fail count: [" + metaData.getFailures() + "] Time "
+					+ "taken: [" + timeTook + "] Rate: [" + rate
 					+ " messages per sec]";
 			LogMessage finishedMessage = new LogMessage(LogLevel.Success,
 					file.toString(), messageString);
@@ -83,12 +82,12 @@ public class PSTImporter {
 		} finally {
 			pstFile.getFileHandle().close();
 		}
-		
+
 	}
 
 	private void processFolder(String folderPath, PSTFolder folder)
 			throws Exception {
-		
+
 		LogMessage folderMessage = new LogMessage(LogLevel.Success,
 				file.toString(), "Processing " + folderPath + " ["
 						+ folder.getContentCount() + " items]");
@@ -105,7 +104,7 @@ public class PSTImporter {
 		// and now the emails for this folder
 		if (folder.getContentCount() > 0) {
 			metaData.addFolder(folderPath, folder.getContentCount());
-			
+
 			PSTMessage message = (PSTMessage) folder.getNextChild();
 			while (message != null) {
 				String messageId = "unknown";
@@ -147,9 +146,13 @@ public class PSTImporter {
 						boolean newSource = true;
 						for (MessageSource existingSource : storedMessage
 								.getSources()) {
-							if (existingSource.equals(source)) {
-								newSource = false;
-								break;
+							if (existingSource instanceof PSTMessageSource) {
+								if (PSTMessageSource.sameAs(
+										(PSTMessageSource) existingSource,
+										source)) {
+									newSource = false;
+									break;
+								}
 							}
 						}
 						if (newSource) {

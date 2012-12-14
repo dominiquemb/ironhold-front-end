@@ -15,6 +15,7 @@ import com.mongodb.Mongo;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.PSTFileMeta;
 
 import de.flapdoodle.embedmongo.MongoDBRuntime;
@@ -94,6 +95,10 @@ public class PSTImporterTest {
 		Assert.assertEquals(2L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/Withdrew").longValue());
 		Assert.assertEquals(30L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/reject after test").longValue());
 		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/recieved test").longValue());
+		
+		MailMessage testMailMessage = storageService.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+		Assert.assertNotNull(testMailMessage);
+		Assert.assertEquals(1, testMailMessage.getSources().length);
 	}
 
 	@Test
@@ -121,6 +126,11 @@ public class PSTImporterTest {
 		Assert.assertEquals(
 				pstFileMeta1.getDuplicates() - pstFileMeta0.getDuplicates(),
 				totalCount);
+		
+		MailMessage testMailMessage = storageService.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+		Assert.assertNotNull(testMailMessage);
+		Assert.assertEquals(1, testMailMessage.getSources().length);
+
 	}
 
 }
