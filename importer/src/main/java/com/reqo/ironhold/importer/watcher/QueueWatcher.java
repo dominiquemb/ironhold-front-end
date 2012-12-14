@@ -1,15 +1,16 @@
 package com.reqo.ironhold.importer.watcher;
 
-import com.reqo.ironhold.importer.PSTImporter;
-import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
-import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MongoService;
+import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import java.io.File;
+import com.reqo.ironhold.importer.PSTImporter;
+import com.reqo.ironhold.importer.notification.EmailNotification;
+import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MongoService;
 
 public class QueueWatcher extends FileWatcher {
 
@@ -32,7 +33,7 @@ public class QueueWatcher extends FileWatcher {
 				checksumFile.getCommentary(), storageService);
 		String details = importer.processMessages();
 		
-		send("Finished processing pst file: " + checksumFile.getDataFileName(), details);
+		EmailNotification.send("Finished processing pst file: " + checksumFile.getDataFileName(), details);
 		
 	}
 
@@ -47,7 +48,8 @@ public class QueueWatcher extends FileWatcher {
 			return;
 		}
 		try {
-			new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getQuarantine(), bean.getClient());
+			QueueWatcher qw = new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getQuarantine(), bean.getClient());
+			qw.start();
 
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);

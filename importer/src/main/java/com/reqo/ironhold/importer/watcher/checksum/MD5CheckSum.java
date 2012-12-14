@@ -1,7 +1,9 @@
 package com.reqo.ironhold.importer.watcher.checksum;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -10,7 +12,12 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+
 public class MD5CheckSum {
+	private static Logger logger = Logger.getLogger(MD5CheckSum.class);
+
 	private File checkSumFile;
 	private File dataFile;
 	private String checkSum;
@@ -19,6 +26,17 @@ public class MD5CheckSum {
 	private String mailBoxName;
 	private String originalFilePath;
 
+	public static File createMD5CheckSum(File dataFile) throws Exception {
+		String md5 = MD5CheckSum.getMD5Checksum(dataFile);
+		logger.info("Generated md5: " + md5 + " for " + dataFile.toString());
+		File checkSumFile = new File(dataFile.getParent() + File.separator + FilenameUtils.getBaseName(dataFile.toString()) + ".md5");
+		FileWriter fw = new FileWriter(checkSumFile.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(md5 + " "  + dataFile.getName());
+		bw.close();
+		
+		return checkSumFile;
+	}
 	public MD5CheckSum(File checkSumFile) throws Exception {
 		this.checkSumFile = checkSumFile;
 
@@ -62,6 +80,7 @@ public class MD5CheckSum {
 
 	public boolean verifyChecksum() throws Exception {
 		String actualCheckSum = MD5CheckSum.getMD5Checksum(dataFile);
+		logger.info("Actual CheckSum: " + actualCheckSum + " for " + dataFile.toString());
 		return checkSum.equals(actualCheckSum);
 
 	}

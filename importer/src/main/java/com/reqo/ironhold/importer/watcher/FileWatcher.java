@@ -1,7 +1,9 @@
 package com.reqo.ironhold.importer.watcher;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.ClosedWatchServiceException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
@@ -12,6 +14,7 @@ import java.nio.file.WatchService;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 
+import com.reqo.ironhold.importer.notification.EmailNotification;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 
 public abstract class FileWatcher {
@@ -22,7 +25,7 @@ public abstract class FileWatcher {
 	private final String quarantineDirName;
 	private final String client;
 
-	private String hostname;
+	private WatchService watchService;
 
 	protected void processFileWrapper(String dataFileName, MD5CheckSum checksum)
 			throws Exception {
@@ -55,13 +58,13 @@ public abstract class FileWatcher {
 		this.quarantineDirName = quarantineDirName;
 		this.client = client;
 
-		InetAddress addr = InetAddress.getLocalHost();
+		
+	}
 
-		hostname = addr.getHostName();
-
+	public void start() throws IOException {
 		logger.info("Watching " + inputDirName + " directory for " + client);
 		Path inputDir = Paths.get(inputDirName);
-		WatchService watchService = inputDir.getFileSystem().newWatchService();
+		watchService = inputDir.getFileSystem().newWatchService();
 		inputDir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
 		while (true) {
@@ -69,6 +72,8 @@ public abstract class FileWatcher {
 			try {
 				watckKey = watchService.take();
 			} catch (InterruptedException e) {
+				return;
+			} catch (ClosedWatchServiceException e) {
 				return;
 			}
 
@@ -82,7 +87,7 @@ public abstract class FileWatcher {
 				logger.info("Detected new file: " + fileName);
 
 				if (fileName.endsWith(".md5")) {
-					logger.info("Detected md5 file: " + fileName);
+					logger.info("Processing md5 file: " + fileName);
 
 					try {
 						Thread.sleep(1000);
@@ -100,7 +105,8 @@ public abstract class FileWatcher {
 						}
 
 					} catch (Exception e) {
-						send("Failed to process " + fileName, e.getMessage());
+						EmailNotification.send("Failed to process " + fileName,
+								e.getMessage());
 						e.printStackTrace();
 					}
 
@@ -115,15 +121,24 @@ public abstract class FileWatcher {
 		}
 	}
 
-	private MD5CheckSum processChecksumFile(String inputDirName, String fileName)
-			throws Exception {
+	public void deActivate() {
+		try {
+			watchService.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private MD5CheckSum processChecksumFile(String inputDirName,
+			String checkSumfileName) throws Exception {
 
 		MD5CheckSum checkSum = new MD5CheckSum(new File(getInputDirName(),
-				fileName));
+				checkSumfileName));
 
 		if (!checkSum.verifyChecksum()) {
-			logger.warn("Checksum check failed for " + fileName);
-			quarantine(checkSum, "Checksum check failed for " + fileName);
+			logger.warn("Checksum check failed for " + checkSumfileName);
+			quarantine(checkSum, "Checksum check failed for "
+					+ checkSumfileName);
 			return null;
 		}
 
@@ -152,29 +167,8 @@ public abstract class FileWatcher {
 					+ checkSum.getCheckSumFile().toString());
 		}
 
-		send("Quarantining file " + checkSum.getCheckSumFile().toString(),
-				reason);
-	}
-
-	public void send(String subject, String body) {
-		try {
-			HtmlEmail email = new HtmlEmail();
-			email.setHostName("10.65.0.78");
-			email.addTo("admins@ironhold.net", "admins@ironhold.net");
-			email.setFrom("admins@ironhold.net", hostname);
-			email.setSubject(subject);
-
-			// set the html message
-			email.setHtmlMsg(body);
-
-			// set the alternative message
-			email.setTextMsg("Your email client does not support HTML messages");
-
-			// send the email
-			email.send();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		EmailNotification.send("Quarantining file "
+				+ checkSum.getCheckSumFile().toString(), reason);
 	}
 
 	public String getInputDirName() {
