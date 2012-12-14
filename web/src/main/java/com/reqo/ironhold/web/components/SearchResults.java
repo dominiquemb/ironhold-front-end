@@ -70,7 +70,7 @@ public class SearchResults extends HorizontalLayout {
         sortOrderSelector.setVisible(true);
         fromFacetPanel.setVisible(true);
         //fromDomainFacetPanel.setVisible(true);
-        toFacetPanel.setVisible(true);
+        //toFacetPanel.setVisible(true);
         //toDomainFacetPanel.setVisible(true);
         //yearFacetPanel.setVisible(true);
         //fileExtFacetPanel.setVisible(true);
@@ -106,7 +106,7 @@ public class SearchResults extends HorizontalLayout {
                 if (!facetsSetup) {
                /*     builder.withDateFacet().withFromFacet().withFromDomainFacet().withToFacet().withToDomainFacet()
                             .withFileExtFacet();*/
-                	builder.withToFacet().withFromFacet(); //.withFromDomainFacet().withToFacet().withToDomainFacet();
+                	builder.withFromFacet(); //.withFromDomainFacet().withToFacet().withToDomainFacet();
                 }
 
                 builder.withResultsLimit(startIndex, endIndex - startIndex);
@@ -304,7 +304,7 @@ public class SearchResults extends HorizontalLayout {
                     fromDomainFacetPanel.addComponent(hl);
                 }
             }
-*/
+
             TermsFacet toFacet = response.getFacets().facet(MessageSearchBuilder.FACET_TO_NAME);
             toFacetPanel.removeAllComponents();
             for (final TermsFacet.Entry entry : toFacet.getEntries()) {
@@ -340,7 +340,7 @@ public class SearchResults extends HorizontalLayout {
 
                 toFacetPanel.addComponent(hl);
             }
-/*
+
             TermsFacet toDomainFacet = response.getFacets().facet(MessageSearchBuilder.FACET_TO_DOMAIN);
             toDomainFacetPanel.removeAllComponents();
             for (final TermsFacet.Entry entry : toDomainFacet.getEntries()) {
