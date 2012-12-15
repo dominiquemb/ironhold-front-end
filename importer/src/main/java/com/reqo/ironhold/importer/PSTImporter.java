@@ -2,6 +2,7 @@ package com.reqo.ironhold.importer;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
@@ -32,12 +33,15 @@ public class PSTImporter {
 	private final File file;
 	private final IStorageService storageService;
 
+	private String hostname;
+
 	public PSTImporter(File file, String md5, String mailBoxName,
 			String originalFilePath, String commentary,
-			IStorageService storageService) {
+			IStorageService storageService) throws UnknownHostException {
 		this.file = file;
+		this.hostname = InetAddress.getLocalHost().getHostName();
 		this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
-				originalFilePath, commentary, md5, file.length(), new Date());
+				originalFilePath, commentary, md5, hostname, file.length(), new Date());
 		this.storageService = storageService;
 
 	}
@@ -133,7 +137,7 @@ public class PSTImporter {
 					PSTMessageSource source = new PSTMessageSource(
 							file.toString(), folderPath, file.length(),
 							new Date(file.lastModified()), new Date(),
-							InetAddress.getLocalHost().getHostName());
+							hostname);
 					MailMessage mailMessage = new MailMessage(message, source);
 					if (mailMessage.isPstPartialFailure()) {
 						metaData.incrementPartialFailures();
