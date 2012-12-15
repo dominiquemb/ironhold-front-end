@@ -62,8 +62,7 @@ public class PSTImporterTest {
 
 		mongo = new Mongo("localhost", 12345);
 		db = mongo.getDB(DATABASENAME);
-		
-		
+
 	}
 
 	@After
@@ -94,19 +93,52 @@ public class PSTImporterTest {
 		Assert.assertEquals(
 				pstFileMeta.getMessages() - pstFileMeta.getDuplicates(),
 				totalCount);
-		
-	/*	for (String folder : pstFileMeta.getFolderMap().keySet()) {
-			System.out.println(folder + "  : " + pstFileMeta.getFolderMap().get(folder));
-		}*/
-		
-		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/sent test").longValue());
-		Assert.assertEquals(7L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/in person.interview".replace(".", PSTFileMeta.DOT_REPLACEMENT)).longValue());
-		Assert.assertEquals(7L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data").longValue());
-		Assert.assertEquals(2L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/Withdrew").longValue());
-		Assert.assertEquals(30L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/reject after test").longValue());
-		Assert.assertEquals(1L, pstFileMeta.getFolderMap().get("/Top of Outlook data file/Inbox/Resumes/data/recieved test").longValue());
-		
-		MailMessage testMailMessage = storageService.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+
+		/*
+		 * for (String folder : pstFileMeta.getFolderMap().keySet()) {
+		 * System.out.println(folder + "  : " +
+		 * pstFileMeta.getFolderMap().get(folder)); }
+		 */
+
+		Assert.assertEquals(
+				1L,
+				pstFileMeta
+						.getFolderMap()
+						.get("/Top of Outlook data file/Inbox/Resumes/data/sent test")
+						.longValue());
+		Assert.assertEquals(
+				7L,
+				pstFileMeta
+						.getFolderMap()
+						.get("/Top of Outlook data file/Inbox/Resumes/data/in person.interview"
+								.replace(".", PSTFileMeta.DOT_REPLACEMENT))
+						.longValue());
+		Assert.assertEquals(
+				7L,
+				pstFileMeta.getFolderMap()
+						.get("/Top of Outlook data file/Inbox/Resumes/data")
+						.longValue());
+		Assert.assertEquals(
+				2L,
+				pstFileMeta
+						.getFolderMap()
+						.get("/Top of Outlook data file/Inbox/Resumes/data/Withdrew")
+						.longValue());
+		Assert.assertEquals(
+				30L,
+				pstFileMeta
+						.getFolderMap()
+						.get("/Top of Outlook data file/Inbox/Resumes/data/reject after test")
+						.longValue());
+		Assert.assertEquals(
+				1L,
+				pstFileMeta
+						.getFolderMap()
+						.get("/Top of Outlook data file/Inbox/Resumes/data/recieved test")
+						.longValue());
+
+		MailMessage testMailMessage = storageService
+				.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
 		Assert.assertNotNull(testMailMessage);
 		Assert.assertEquals(1, testMailMessage.getSources().length);
 	}
@@ -132,15 +164,34 @@ public class PSTImporterTest {
 		Assert.assertEquals(0, pstFileMeta1.getFailures());
 
 		long totalCount = storageService.getTotalMessageCount();
-		
+
 		Assert.assertEquals(
 				pstFileMeta1.getDuplicates() - pstFileMeta0.getDuplicates(),
 				totalCount);
-		
-		MailMessage testMailMessage = storageService.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+
+		MailMessage testMailMessage = storageService
+				.getMailMessage("<984867.51882.qm@web30305.mail.mud.yahoo.com>");
 		Assert.assertNotNull(testMailMessage);
 		Assert.assertEquals(2, testMailMessage.getSources().length);
 
+	}
+
+	@Test
+	public void testPSTImporterAlreadyProcessed() throws Exception {
+		testPSTImporter();
+
+		IStorageService storageService = new MongoService(mongo, db);
+		PSTImporter pstImporter = new PSTImporter(pstfile, md5, mailBoxName,
+				originalFilePath, commentary, storageService);
+
+		try {
+			pstImporter.processMessages();
+
+			Assert.assertTrue(false);
+		} catch (Exception e) {
+			Assert.assertEquals("This file has been processed already",
+					e.getMessage());
+		}
 	}
 
 }
