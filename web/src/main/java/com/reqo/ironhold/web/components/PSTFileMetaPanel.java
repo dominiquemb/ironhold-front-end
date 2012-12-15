@@ -4,6 +4,10 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.common.joda.time.DateTime;
+import org.elasticsearch.common.joda.time.Period;
+import org.elasticsearch.common.joda.time.format.PeriodFormatter;
+import org.elasticsearch.common.joda.time.format.PeriodFormatterBuilder;
 
 import com.reqo.ironhold.storage.model.PSTFileMeta;
 import com.vaadin.data.Item;
@@ -20,7 +24,9 @@ public class PSTFileMetaPanel extends Panel {
 	private static final String TYPE = "Type";
 	private static final String COUNT = "Count";
 	private static final Object FOLDER = "Folder";
-
+	
+	private static PeriodFormatter minsAndSecsFormatter = new PeriodFormatterBuilder().appendMinutes().appendSuffix(" min ", " mins ").appendSeconds().appendSuffix(" sec", " secs").toFormatter();
+   
 	private final SimpleDateFormat sdf = new SimpleDateFormat(
 			"d MMM yyyy HH:mm:ss");
 
@@ -88,9 +94,10 @@ public class PSTFileMetaPanel extends Panel {
 		Label durationLabel = new Label("<b>Duration:</b>");
 		durationLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(durationLabel, 0, 8);
+		Period p = new Period(new DateTime(pstFile.getStarted()), new DateTime(pstFile.getFinished()));
+
 		grid.addComponent(
-				new Label(String.format("%,d secs", (pstFile.getFinished()
-						.getTime() - pstFile.getStarted().getTime()) / 1000)),
+				new Label(p.toString(minsAndSecsFormatter)),
 				1, 8);
 
 		Label hostnameLabel = new Label("<b>Hostname:</b>");
@@ -104,16 +111,16 @@ public class PSTFileMetaPanel extends Panel {
 		msgRateLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(msgRateLabel, 0, 10);
 		grid.addComponent(
-				new Label(String.format("%.0f per/sec", (double)pstFile.getMessages()/(pstFile.getFinished()
-						.getTime() - pstFile.getStarted().getTime()) / 1000)),
+				new Label(String.format("%.2f per/sec", (double)pstFile.getMessages()/((pstFile.getFinished()
+						.getTime() - pstFile.getStarted().getTime()) / 1000))),
 				1, 10);
 
-		Label kbRateLabel = new Label("<b>KB Rate:</b>");
+		Label kbRateLabel = new Label("<b>MB Rate:</b>");
 		kbRateLabel.setContentMode(Label.CONTENT_XHTML);
 		grid.addComponent(kbRateLabel, 0, 11);
 		grid.addComponent(
-				new Label(String.format("%.0f per/sec", ((double)pstFile.getSize()/1000)/(pstFile.getFinished()
-						.getTime() - pstFile.getStarted().getTime()) / 1000)),
+				new Label(String.format("%.2f per/sec", (((double)pstFile.getSize()/1024)/1024)/((pstFile.getFinished()
+						.getTime() - pstFile.getStarted().getTime()) / 1000))),
 				1, 11);
 
 		// Msg Statistics
