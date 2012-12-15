@@ -16,7 +16,6 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.jsoup.Jsoup;
 
 import com.pff.PSTMessage;
-import com.reqo.ironhold.search.Indexer;
 import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
 import com.reqo.ironhold.storage.model.Attachment;
 import com.reqo.ironhold.storage.model.MailMessage;

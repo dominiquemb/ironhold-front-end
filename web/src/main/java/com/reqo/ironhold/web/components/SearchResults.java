@@ -1,27 +1,35 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.search.IndexFieldEnum;
-import com.reqo.ironhold.search.IndexService;
-import com.reqo.ironhold.search.MessageSearchBuilder;
-import com.reqo.ironhold.storage.IStorageService;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Reindeer;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 import org.vaadin.pagingcomponent.PagingComponent;
 import org.vaadin.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import org.vaadin.pagingcomponent.utilities.FakeList;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import com.reqo.ironhold.search.IndexFieldEnum;
+import com.reqo.ironhold.search.IndexService;
+import com.reqo.ironhold.search.MessageSearchBuilder;
+import com.reqo.ironhold.storage.IStorageService;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 @SuppressWarnings("serial")
 public class SearchResults extends HorizontalLayout {

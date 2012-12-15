@@ -1,12 +1,12 @@
 package com.reqo.ironhold.storage;
 
+import java.util.List;
+
 import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
 import com.reqo.ironhold.storage.model.PSTFileMeta;
-
-import java.util.List;
 
 public interface IStorageService {
 

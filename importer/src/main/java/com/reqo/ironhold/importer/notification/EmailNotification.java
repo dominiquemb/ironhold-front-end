@@ -7,8 +7,6 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 
-import com.reqo.ironhold.importer.watcher.FileWatcher;
-
 public class EmailNotification {
 	private static Logger logger = Logger.getLogger(EmailNotification.class);
 

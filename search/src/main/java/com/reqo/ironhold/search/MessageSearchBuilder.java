@@ -1,14 +1,18 @@
 package com.reqo.ironhold.search;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.common.joda.time.DateTime;
-import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.facet.FacetBuilders;
-import org.elasticsearch.search.sort.SortOrder;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.common.joda.time.DateTime;
+import org.elasticsearch.index.query.AndFilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
+import org.elasticsearch.index.query.OrFilterBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 
 public class MessageSearchBuilder {
 

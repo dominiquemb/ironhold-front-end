@@ -15,7 +15,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
 public class PSTFileMetaPanel extends Panel {
 	private static final String TYPE = "Type";

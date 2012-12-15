@@ -1,12 +1,16 @@
 package com.reqo.ironhold.web.components;
 
+import java.text.SimpleDateFormat;
+
 import com.reqo.ironhold.storage.IStorageService;
 import com.vaadin.Application;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
-import java.text.SimpleDateFormat;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
 public class Header extends HorizontalLayout {

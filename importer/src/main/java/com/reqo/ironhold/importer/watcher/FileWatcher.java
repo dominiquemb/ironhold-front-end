@@ -2,7 +2,6 @@ package com.reqo.ironhold.importer.watcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.nio.file.ClosedWatchServiceException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,7 +10,6 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
-import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 
 import com.reqo.ironhold.importer.notification.EmailNotification;

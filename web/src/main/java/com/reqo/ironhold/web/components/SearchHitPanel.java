@@ -1,16 +1,22 @@
 package com.reqo.ironhold.web.components;
 
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.SearchHit;
+
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexUtils;
 import com.vaadin.Application;
 import com.vaadin.event.MouseEvents;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.SearchHit;
 
 @SuppressWarnings("serial")
 public class SearchHitPanel extends Panel {

@@ -1,9 +1,6 @@
 package com.reqo.ironhold.search;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.index.mapper.MapperParsingException;

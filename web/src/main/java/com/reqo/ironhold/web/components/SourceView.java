@@ -1,5 +1,8 @@
 package com.reqo.ironhold.web.components;
 
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.SearchHit;
+
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.IndexUtils;
@@ -7,8 +10,6 @@ import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.SearchHit;
 
 @SuppressWarnings("serial")
 public class SourceView extends Panel {

@@ -1,5 +1,11 @@
 package com.reqo.ironhold.web.components;
 
+import java.util.Date;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.SearchHit;
+
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.IndexUtils;
@@ -13,11 +19,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.SearchHit;
-
-import java.util.Date;
 
 @SuppressWarnings("serial")
 public class AuditView extends Panel {

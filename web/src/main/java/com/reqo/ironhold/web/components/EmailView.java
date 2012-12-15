@@ -1,5 +1,13 @@
 package com.reqo.ironhold.web.components;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.SearchHit;
+
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.IndexUtils;
@@ -9,18 +17,16 @@ import com.reqo.ironhold.storage.model.MailMessage;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.SearchHit;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 @SuppressWarnings("serial")
 public class EmailView extends Panel {

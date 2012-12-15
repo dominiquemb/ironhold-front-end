@@ -1,10 +1,11 @@
 package com.reqo.ironhold.web.components;
 
+import org.elasticsearch.search.SearchHit;
+
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
-import org.elasticsearch.search.SearchHit;
 
 @SuppressWarnings("serial")
 public class EmailPreviewPanel extends TabSheet {
