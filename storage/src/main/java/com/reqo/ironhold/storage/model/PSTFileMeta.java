@@ -25,6 +25,7 @@ public class PSTFileMeta {
 	private String originalFilePath = StringUtils.EMPTY;
 	private String commentary = StringUtils.EMPTY;
 	private String md5;
+	private String hostname = StringUtils.EMPTY;
 	private long size;
 	private Date started;
 	private Date finished;
@@ -109,7 +110,7 @@ public class PSTFileMeta {
 	}
 
 	public PSTFileMeta(String pstFileName, String mailBoxName,
-			String originalFilePath, String commentary, String md5, long size,
+			String originalFilePath, String commentary, String md5, String hostname, long size,
 			Date started) {
 		super();
 		this.pstFileName = pstFileName;
@@ -117,6 +118,7 @@ public class PSTFileMeta {
 		this.originalFilePath = originalFilePath;
 		this.commentary = commentary;
 		this.md5 = md5;
+		this.hostname = hostname;
 		this.size = size;
 		this.started = started;
 		this.sizeMean.setData(new double[] {});
@@ -210,6 +212,10 @@ public class PSTFileMeta {
 
 	public long getCompressedMaxSize() {
 		return compressedMaxSize;
+	}
+	
+	public String getHostname() {
+		return hostname;
 	}
 
 	public double getCompressedAverageAttachmentSize() {
@@ -340,5 +346,6 @@ public class PSTFileMeta {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
+
 
 }

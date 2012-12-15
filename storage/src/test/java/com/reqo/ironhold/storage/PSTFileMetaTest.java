@@ -20,7 +20,8 @@ public class PSTFileMetaTest {
 				300, 400, 500, 600, 700, 800, 900, 1000 };
 
 		PSTFileMeta metaData = new PSTFileMeta("pstFileName", "mailBoxName",
-				"originalFilePath", "commentary", "md5", 0, new Date());
+				"originalFilePath", "commentary", "md5", "hostname", 0,
+				new Date());
 		for (double dsize : sizes) {
 			int size = (int) dsize;
 			metaData.updateSizeStatistics(size, size / 10);
@@ -56,7 +57,8 @@ public class PSTFileMetaTest {
 				300, 400, 500, 600, 700, 800, 900, 1000 };
 
 		PSTFileMeta metaData = new PSTFileMeta("pstFileName", "mailBoxName",
-				"originalFilePath", "commentary", "md5", 0, new Date());
+				"originalFilePath", "commentary", "md5", "hostname", 0,
+				new Date());
 		for (double dsize : sizes) {
 			int size = (int) dsize;
 			metaData.updateSizeStatistics(size, size / 10);
@@ -73,22 +75,26 @@ public class PSTFileMetaTest {
 	}
 
 	@Test
-	public void testFolderMap() throws JsonGenerationException, JsonMappingException, IOException {
-			
-		String folders[] = {"a","b","c","d" };
-		int counts[] = {100, 200, 300, 400};
-		PSTFileMeta metaData = new PSTFileMeta("pstFileName", "mailBoxName", "originalFilePath", "commentary", "md5", 0, new Date());
-		for (int i = 0; i<folders.length; i++) {
+	public void testFolderMap() throws JsonGenerationException,
+			JsonMappingException, IOException {
+
+		String folders[] = { "a", "b", "c", "d" };
+		int counts[] = { 100, 200, 300, 400 };
+		PSTFileMeta metaData = new PSTFileMeta("pstFileName", "mailBoxName",
+				"originalFilePath", "commentary", "md5", "hostname", 0,
+				new Date());
+		for (int i = 0; i < folders.length; i++) {
 			metaData.addFolder(folders[i], counts[i]);
 		}
-		String jsonString = PSTFileMeta.toJSON(metaData); 
+		String jsonString = PSTFileMeta.toJSON(metaData);
 		Assert.assertTrue(jsonString.length() > 0);
 		PSTFileMeta metaData2 = PSTFileMeta.fromJSON(jsonString);
 		Assert.assertTrue(metaData2 != null);
 		String jsonString2 = PSTFileMeta.toJSON(metaData2);
 		Assert.assertEquals(jsonString, jsonString2);
 
-		Assert.assertEquals(metaData.getFolderMap().size(), metaData.getFolderMap().size());
+		Assert.assertEquals(metaData.getFolderMap().size(), metaData
+				.getFolderMap().size());
 		System.out.println(jsonString2);
 	}
 }

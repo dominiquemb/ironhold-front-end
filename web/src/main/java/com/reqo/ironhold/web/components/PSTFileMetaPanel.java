@@ -32,7 +32,7 @@ public class PSTFileMetaPanel extends Panel {
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setSizeFull();
 		hl.setSpacing(true);
-		final GridLayout grid = new GridLayout(5, 9);
+		final GridLayout grid = new GridLayout(5, 12);
 		grid.setSpacing(true);
 
 		Label dateLabel = new Label("<b>Date:</b>");
@@ -92,6 +92,29 @@ public class PSTFileMetaPanel extends Panel {
 				new Label(String.format("%,d secs", (pstFile.getFinished()
 						.getTime() - pstFile.getStarted().getTime()) / 1000)),
 				1, 8);
+
+		Label hostnameLabel = new Label("<b>Hostname:</b>");
+		hostnameLabel.setContentMode(Label.CONTENT_XHTML);
+		grid.addComponent(hostnameLabel, 0, 9);
+		grid.addComponent(
+				new Label(pstFile.getHostname()),
+				1, 9);
+
+		Label msgRateLabel = new Label("<b>Message Rate:</b>");
+		msgRateLabel.setContentMode(Label.CONTENT_XHTML);
+		grid.addComponent(msgRateLabel, 0, 10);
+		grid.addComponent(
+				new Label(String.format("%.0f per/sec", (double)pstFile.getMessages()/(pstFile.getFinished()
+						.getTime() - pstFile.getStarted().getTime()) / 1000)),
+				1, 10);
+
+		Label kbRateLabel = new Label("<b>KB Rate:</b>");
+		kbRateLabel.setContentMode(Label.CONTENT_XHTML);
+		grid.addComponent(kbRateLabel, 0, 11);
+		grid.addComponent(
+				new Label(String.format("%.0f per/sec", ((double)pstFile.getSize()/1000)/(pstFile.getFinished()
+						.getTime() - pstFile.getStarted().getTime()) / 1000)),
+				1, 11);
 
 		// Msg Statistics
 
