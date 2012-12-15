@@ -3,19 +3,24 @@ package com.reqo.ironhold.importer.watcher.checksum;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 public class MD5CheckSum {
+	private static final int BUFFER_SIZE = 1024;
+
 	private static Logger logger = Logger.getLogger(MD5CheckSum.class);
 
 	private File checkSumFile;
@@ -26,7 +31,7 @@ public class MD5CheckSum {
 	private String mailBoxName;
 	private String originalFilePath;
 
-	public static File createMD5CheckSum(File dataFile) throws Exception {
+	public static File createMD5CheckSum(File dataFile) throws NoSuchAlgorithmException, IOException  {
 		String md5 = MD5CheckSum.getMD5Checksum(dataFile);
 		logger.info("Generated md5: " + md5 + " for " + dataFile.toString());
 		File checkSumFile = new File(dataFile.getParent() + File.separator + FilenameUtils.getBaseName(dataFile.toString()) + ".md5");
@@ -64,11 +69,9 @@ public class MD5CheckSum {
 						throw new Exception("Error processing " + checkSumFile
 								+ ": '" + line + "' is not in valid format");
 					}
-					if (lineChunks[0].trim().toLowerCase()
-							.equals("mailboxname")) {
+					if (lineChunks[0].trim().equalsIgnoreCase("mailboxname")) {
 						mailBoxName = lineChunks[1].trim();
-					} else if (lineChunks[0].trim().toLowerCase()
-							.equals("originalfilepath")) {
+					} else if (lineChunks[0].trim().equalsIgnoreCase("originalfilepath")) {
 						originalFilePath = lineChunks[1].trim();
 					}
 				} else {
@@ -78,17 +81,17 @@ public class MD5CheckSum {
 		}
 	}
 
-	public boolean verifyChecksum() throws Exception {
+	public boolean verifyChecksum() throws NoSuchAlgorithmException, IOException  {
 		String actualCheckSum = MD5CheckSum.getMD5Checksum(dataFile);
 		logger.info("Actual CheckSum: " + actualCheckSum + " for " + dataFile.toString());
 		return checkSum.equals(actualCheckSum);
 
 	}
 
-	private static byte[] createChecksum(File file) throws Exception {
+	private static byte[] createChecksum(File file) throws NoSuchAlgorithmException, IOException  {
 		InputStream fis = new FileInputStream(file);
 
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[BUFFER_SIZE];
 		MessageDigest complete = MessageDigest.getInstance("MD5");
 		int numRead;
 		do {
@@ -103,7 +106,7 @@ public class MD5CheckSum {
 
 	// see this How-to for a faster way to convert
 	// a byte array to a HEX string
-	public static String getMD5Checksum(File file) throws Exception {
+	public static String getMD5Checksum(File file) throws NoSuchAlgorithmException, IOException  {
 		byte[] b = createChecksum(file);
 		String result = "";
 		for (int i = 0; i < b.length; i++) {

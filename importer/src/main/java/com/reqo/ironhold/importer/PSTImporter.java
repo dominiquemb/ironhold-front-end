@@ -3,7 +3,7 @@ package com.reqo.ironhold.importer;
 import java.io.File;
 import java.net.InetAddress;
 import java.util.Date;
-import java.util.Vector;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -13,7 +13,6 @@ import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
@@ -23,6 +22,10 @@ import com.reqo.ironhold.storage.model.PSTMessageSource;
 
 public class PSTImporter {
 
+	private static final int MILLIS_IN_A_SEC = 1000;
+
+	private static final int INFO_BATCH_SIZE = 100;
+
 	private static Logger logger = Logger.getLogger(PSTImporter.class);
 
 	private final PSTFileMeta metaData;
@@ -31,21 +34,21 @@ public class PSTImporter {
 
 	public PSTImporter(File file, String md5, String mailBoxName,
 			String originalFilePath, String commentary,
-			IStorageService storageService) throws Exception {
+			IStorageService storageService) {
 		this.file = file;
 		this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
 				originalFilePath, commentary, md5, file.length(), new Date());
 		this.storageService = storageService;
 
 	}
-	
+
 	private boolean wasFileProcessedPreviously() throws Exception {
 		for (PSTFileMeta pstFileMeta : storageService.getPSTFiles()) {
 			if (pstFileMeta.sameAs(this.metaData)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -53,7 +56,7 @@ public class PSTImporter {
 		if (wasFileProcessedPreviously()) {
 			throw new Exception("This file has been processed already");
 		}
-		
+
 		PSTFile pstFile = new PSTFile(file);
 		try {
 			String fileSizeDisplay = FileUtils.byteCountToDisplaySize(file
@@ -75,7 +78,7 @@ public class PSTImporter {
 
 			String timeTook = DurationFormatUtils.formatDurationWords(finished
 					- started, true, true);
-			float duration = (finished - started) / 1000;
+			float duration = (finished - started) / MILLIS_IN_A_SEC;
 			float rate = metaData.getMessages() / duration;
 
 			String messageString = "Finished pst import: File: ["
@@ -108,7 +111,7 @@ public class PSTImporter {
 		storageService.log(folderMessage);
 		// go through the folders...
 		if (folder.hasSubfolders()) {
-			Vector<PSTFolder> childFolders = folder.getSubFolders();
+			List<PSTFolder> childFolders = folder.getSubFolders();
 			for (PSTFolder childFolder : childFolders) {
 				processFolder(folderPath + "/" + childFolder.getDisplayName(),
 						childFolder);
@@ -160,20 +163,20 @@ public class PSTImporter {
 						boolean newSource = true;
 						for (MessageSource existingSource : storedMessage
 								.getSources()) {
-							if (existingSource instanceof PSTMessageSource) {
-								if (PSTMessageSource.sameAs(
-										(PSTMessageSource) existingSource,
-										source)) {
-									newSource = false;
-									break;
-								}
+							if (existingSource instanceof PSTMessageSource
+									&& PSTMessageSource.sameAs(
+											(PSTMessageSource) existingSource,
+											source)) {
+								newSource = false;
+								break;
 							}
+
 						}
 						if (newSource) {
 							storageService.addSource(messageId, source);
 						}
 						metaData.incrementDuplicates();
-						if (metaData.getDuplicates() % 100 == 0) {
+						if (metaData.getDuplicates() % INFO_BATCH_SIZE == 0) {
 							logger.info("New Messages: "
 									+ metaData.getMessages() + " Duplicates: "
 									+ metaData.getDuplicates() + " Failures:"
@@ -181,7 +184,7 @@ public class PSTImporter {
 						}
 					} else {
 
-						if (metaData.getMessages() % 100 == 0) {
+						if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
 							logger.info("New Messages: "
 									+ metaData.getMessages() + " Duplicates: "
 									+ metaData.getDuplicates() + " Failures:"

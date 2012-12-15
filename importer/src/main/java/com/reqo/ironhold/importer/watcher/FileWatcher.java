@@ -52,7 +52,7 @@ public abstract class FileWatcher {
 			throws Exception;
 
 	public FileWatcher(String inputDirName, String outputDirName,
-			String quarantineDirName, String client) throws Exception {
+			String quarantineDirName, String client)  {
 		this.inputDirName = inputDirName;
 		this.outputDirName = outputDirName;
 		this.quarantineDirName = quarantineDirName;
@@ -135,7 +135,7 @@ public abstract class FileWatcher {
 		return watchService != null;
 	}
 	private MD5CheckSum processChecksumFile(String inputDirName,
-			String checkSumfileName) throws Exception {
+			String checkSumfileName) throws Exception  {
 
 		MD5CheckSum checkSum = new MD5CheckSum(new File(getInputDirName(),
 				checkSumfileName));

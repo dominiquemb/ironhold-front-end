@@ -20,7 +20,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class PSTFileMeta {
 	public static final String DOT_REPLACEMENT = Character.toString((char) 182);
-	
+
 	private String pstFileName = StringUtils.EMPTY;
 	private String mailBoxName = StringUtils.EMPTY;
 	private String originalFilePath = StringUtils.EMPTY;
@@ -95,13 +95,13 @@ public class PSTFileMeta {
 					.evaluate(compressedSizeMean.getData());
 			this.medianCompressedAttachmentSize = compressedAttachmentSizeMedian
 					.evaluate(compressedAttachmentSizeMean.getData());
-			
+
 			isDirty = false;
 		}
 	}
 
-	public static PSTFileMeta fromJSON(String meta) throws JsonParseException,
-			JsonMappingException, IOException {
+	public static PSTFileMeta fromJSON(String meta)
+			throws JsonMappingException, IOException {
 		return mapper.readValue(meta, PSTFileMeta.class);
 	}
 
@@ -127,7 +127,8 @@ public class PSTFileMeta {
 	}
 
 	public void addFolder(String folderPath, int contentCount) {
-		folderMap.put(folderPath.replace(".", DOT_REPLACEMENT), new Long(contentCount));
+		folderMap.put(folderPath.replace(".", DOT_REPLACEMENT), new Long(
+				contentCount));
 	}
 
 	public void incrementAttachmentStatistics(boolean hasAttachment) {
@@ -321,7 +322,8 @@ public class PSTFileMeta {
 	}
 
 	public boolean sameAs(PSTFileMeta metaData) {
-		return this.getMd5().equals(metaData.getMd5()) && this.getSize() == metaData.getSize();
+		return this.getMd5().equals(metaData.getMd5())
+				&& this.getSize() == metaData.getSize();
 	}
 
 	@Override
@@ -339,6 +341,5 @@ public class PSTFileMeta {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
-
 
 }
