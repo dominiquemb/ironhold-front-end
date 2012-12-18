@@ -90,7 +90,7 @@ public class JournalIMAPReader {
 
 			logger.info("Found " + messages.length + " messages");
 			// Loop over all of the messages
-			for (int messageNumber = 0; messageNumber < 100; messageNumber++) {
+			for (int messageNumber = 0; messageNumber < 2000; messageNumber++) {
 				// Retrieve the next message to be read
 				message = messages[messageNumber];
 
