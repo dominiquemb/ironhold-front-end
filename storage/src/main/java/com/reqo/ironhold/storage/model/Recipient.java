@@ -20,10 +20,10 @@ public class Recipient {
     }
 
     public Recipient(Address address) {
-    	String addressString = address.toString();
+    	String addressString = address.toString().trim();
 		if (addressString.contains("<")) {
-			this.name = addressString.substring(0, addressString.indexOf("<"));
-			this.address = addressString.substring(addressString.indexOf("<"));
+			this.name = addressString.substring(0, addressString.indexOf("<")).trim();
+			this.address = addressString.substring(addressString.indexOf("<")).trim();
 		} else {
 			this.name = addressString;
 			this.address = addressString;
