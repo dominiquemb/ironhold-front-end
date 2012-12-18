@@ -28,6 +28,7 @@ import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
 import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
+import com.reqo.ironhold.storage.model.mixin.CompressedIMAPMailMessage;
 import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
 import com.reqo.ironhold.storage.model.mixin.PSTAppointmentMixin;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
@@ -44,12 +45,18 @@ public class MailMessage {
 		compressedMapper.getSerializationConfig().addMixInAnnotations(
 				Attachment.class, CompressedAttachmentMixin.class);
 
+		compressedMapper.getSerializationConfig().addMixInAnnotations(
+				IMAPMailMessage.class, CompressedIMAPMailMessage.class);
+
 		compressedMapper.getDeserializationConfig().addMixInAnnotations(
 				ArchivedPSTMessage.class, CompressedPSTMessageMixin.class);
 
 		compressedMapper.getDeserializationConfig().addMixInAnnotations(
 				Attachment.class, CompressedAttachmentMixin.class);
-
+		
+		compressedMapper.getDeserializationConfig().addMixInAnnotations(
+				IMAPMailMessage.class, CompressedIMAPMailMessage.class);
+		
 		compressedMapper.enableDefaultTyping();
 		compressedMapper.configure(
 				SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -90,6 +97,9 @@ public class MailMessage {
 	}
 
 	public MailMessage(Message message, IMAPMessageSource source) throws Exception {
+		this.storedDate = new Date();
+		this.messageId = message.getHeader("Message-ID")[0];
+
 		this.imapMailMessage = new IMAPMailMessage(message);
 		
 		addSource(source);
@@ -100,7 +110,7 @@ public class MailMessage {
 	public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source)
 			throws JsonParseException, JsonMappingException,
 			JsonGenerationException, IOException, PSTException {
-
+		this.storedDate = new Date();
 		this.pstObjectType = originalPSTMessage.getClass().getSimpleName();
 		this.pstMessage = mapper.readValue(
 				mapper.writeValueAsString(originalPSTMessage),

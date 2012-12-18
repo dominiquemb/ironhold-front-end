@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage.model;
 
 import javax.mail.Address;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,17 +19,6 @@ public class Recipient {
         this.name = name;
         this.address = address;
     }
-
-    public Recipient(Address address) {
-    	String addressString = address.toString().trim();
-		if (addressString.contains("<")) {
-			this.name = addressString.substring(0, addressString.indexOf("<")).trim();
-			this.address = addressString.substring(addressString.indexOf("<")).trim();
-		} else {
-			this.name = addressString;
-			this.address = addressString;
-		}
-	}
 
 	public String getName() {
         return name;

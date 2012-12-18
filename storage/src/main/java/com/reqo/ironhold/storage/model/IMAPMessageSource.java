@@ -13,15 +13,15 @@ public class IMAPMessageSource extends MessageSource {
 	private String username;
 	private int imapPort;
 	private String protocol;
-	private Header[] journalHeaders = new Header[0];
+	private IMAPHeader[] journalHeaders = new IMAPHeader[0];
 	
 	public IMAPMessageSource() {
 		super();
 	}
 	
 	
-	public void addHeader(Header header) {
-		Header[] copy = Arrays.copyOf(journalHeaders, journalHeaders.length + 1);
+	public void addHeader(IMAPHeader header) {
+		IMAPHeader[] copy = Arrays.copyOf(journalHeaders, journalHeaders.length + 1);
 		copy[journalHeaders.length] = header;
 		journalHeaders = copy;
 
@@ -59,7 +59,7 @@ public class IMAPMessageSource extends MessageSource {
 		this.protocol = protocol;
 	}
 
-	public Header[] getJournalHeaders() {
+	public IMAPHeader[] getJournalHeaders() {
 		return journalHeaders;
 	}
 

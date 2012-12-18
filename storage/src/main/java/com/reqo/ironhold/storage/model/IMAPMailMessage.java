@@ -1,10 +1,9 @@
 package com.reqo.ironhold.storage.model;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -16,7 +15,9 @@ import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -25,24 +26,26 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.common.Base64;
 
 @SuppressWarnings("serial")
 public class IMAPMailMessage implements Serializable {
 	private static Logger logger = Logger.getLogger(IMAPMailMessage.class);
 
-	private String messageId;
 	private Recipient from;
-	private List<Recipient> to = new ArrayList<Recipient>();
-	private List<Recipient> cc = new ArrayList<Recipient>();
-	private List<Recipient> bcc = new ArrayList<Recipient>();
-	private List<Header> headers = new ArrayList<Header>();
-	
 
-	private String subject;
+	private Recipient[] to = new Recipient[0];
+	private Recipient[] cc = new Recipient[0];
+	private Recipient[] bcc = new Recipient[0];
+
+	private IMAPHeader[] headers = new IMAPHeader[0];
+
+	private String subject = StringUtils.EMPTY;
 	private Date messageDate;
-	
-	private String body;
+
+	private String body = StringUtils.EMPTY;
+
+	private int size;
+
 
 	public IMAPMailMessage() {
 	}
@@ -50,32 +53,47 @@ public class IMAPMailMessage implements Serializable {
 	public IMAPMailMessage(Message message) throws Exception {
 		this();
 
-		this.messageId = message.getHeader("Message-ID")[0];
 		this.messageDate = message.getReceivedDate();
+		this.size = message.getSize();
 
+		@SuppressWarnings("unchecked")
 		Enumeration<Header> allHeaders = message.getAllHeaders();
 
 		while (allHeaders.hasMoreElements()) {
 			Header header = allHeaders.nextElement();
-			headers.add(header);
+			addHeader(new IMAPHeader(header));
 		}
-		
-		this.from = new Recipient(message.getFrom()[0]);
-		for (Address address : message.getRecipients(RecipientType.TO)) {
-			this.to.add(new Recipient(address));
+
+		InternetAddress internetAddress = (InternetAddress) message.getFrom()[0];
+
+		this.from = new Recipient(internetAddress.getPersonal(),
+				internetAddress.getAddress());
+		if (message.getRecipients(RecipientType.TO) != null) {
+			for (Address address : message.getRecipients(RecipientType.TO)) {
+				internetAddress = (InternetAddress) address;
+				addTo(new Recipient(internetAddress.getPersonal(),
+						internetAddress.getAddress()));
+			}
 		}
-		for (Address address : message.getRecipients(RecipientType.CC)) {
-			this.cc.add(new Recipient(address));
+		if (message.getRecipients(RecipientType.CC) != null) {
+			for (Address address : message.getRecipients(RecipientType.CC)) {
+				internetAddress = (InternetAddress) address;
+				addCc(new Recipient(internetAddress.getPersonal(),
+						internetAddress.getAddress()));
+			}
 		}
-		for (Address address : message.getRecipients(RecipientType.BCC)) {
-			this.bcc.add(new Recipient(address));
+		if (message.getRecipients(RecipientType.BCC) != null) {
+			for (Address address : message.getRecipients(RecipientType.BCC)) {
+				internetAddress = (InternetAddress) address;
+				addBcc(new Recipient(internetAddress.getPersonal(),
+						internetAddress.getAddress()));
+			}
 		}
 		this.subject = message.getSubject();
-		
-		handleMessage(message);
-		
-	}
 
+		handleMessage(message);
+
+	}
 
 	private void handleMessage(Message message) throws IOException,
 			MessagingException {
@@ -117,12 +135,44 @@ public class IMAPMailMessage implements Serializable {
 		return mapper.readValue(json, IMAPMailMessage.class);
 	}
 
-	public String getMessageId() {
-		return messageId;
+	public void addHeader(IMAPHeader header) {
+		IMAPHeader[] copy = Arrays.copyOf(headers, headers.length + 1);
+		copy[headers.length] = header;
+		headers = copy;
+
 	}
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
+	public void addTo(Recipient recipient) {
+		Recipient[] copy = Arrays.copyOf(to, to.length + 1);
+		copy[to.length] = recipient;
+		to = copy;
+
+	}
+
+	public void addCc(Recipient recipient) {
+		Recipient[] copy = Arrays.copyOf(cc, cc.length + 1);
+		copy[cc.length] = recipient;
+		cc = copy;
+
+	}
+
+	public void addBcc(Recipient recipient) {
+		Recipient[] copy = Arrays.copyOf(bcc, bcc.length + 1);
+		copy[bcc.length] = recipient;
+		bcc = copy;
+
+	}
+
+	public Recipient[] getTo() {
+		return to;
+	}
+
+	public Recipient[] getCc() {
+		return cc;
+	}
+
+	public Recipient[] getBcc() {
+		return bcc;
 	}
 
 	public Recipient getFrom() {
@@ -133,30 +183,6 @@ public class IMAPMailMessage implements Serializable {
 		this.from = from;
 	}
 
-	public List<Recipient> getTo() {
-		return to;
-	}
-
-	public void setTo(List<Recipient> to) {
-		this.to = to;
-	}
-
-	public List<Recipient> getCc() {
-		return cc;
-	}
-
-	public void setCc(List<Recipient> cc) {
-		this.cc = cc;
-	}
-
-	public List<Recipient> getBcc() {
-		return bcc;
-	}
-
-	public void setBcc(List<Recipient> bcc) {
-		this.bcc = bcc;
-	}
-
 	public String getSubject() {
 		return subject;
 	}
@@ -164,7 +190,7 @@ public class IMAPMailMessage implements Serializable {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-	
+
 	public String getBody() {
 		return body;
 	}
@@ -181,12 +207,17 @@ public class IMAPMailMessage implements Serializable {
 		this.messageDate = messageDate;
 	}
 
-	public List<Header> getHeaders() {
+	public IMAPHeader[] getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(List<Header> headers) {
-		this.headers = headers;
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 	
 	@Override

@@ -15,13 +15,16 @@ import javax.mail.ReadOnlyFolderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.StoreClosedException;
-import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.IMAPHeader;
 import com.reqo.ironhold.storage.model.IMAPMessageSource;
+import com.reqo.ironhold.storage.model.LogLevel;
+import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.sun.mail.imap.IMAPNestedMessage;
 
@@ -49,10 +52,6 @@ public class JournalIMAPReader {
 
 	}
 
-	private void printData(String data) {
-		System.out.println(data);
-	}
-
 	public void processMail() {
 		Session session = null;
 		Store store = null;
@@ -60,17 +59,15 @@ public class JournalIMAPReader {
 		Message message = null;
 		Message[] messages = null;
 		Object messagecontentObject = null;
-		String sender = null;
-		String subject = null;
 		Multipart multipart = null;
 		Part part = null;
 		String contentType = null;
 
 		try {
-			logger.info("--------------processing mails started-----------------");
+			logger.info("Journal IMAP Reader started");
 			session = Session.getDefaultInstance(System.getProperties(), null);
 
-			logger.info("getting the session for accessing email.");
+			logger.info("Getting the session for accessing email.");
 			store = session.getStore(protocol);
 
 			store.connect(hostname, port, username, password);
@@ -93,7 +90,7 @@ public class JournalIMAPReader {
 
 			logger.info("Found " + messages.length + " messages");
 			// Loop over all of the messages
-			for (int messageNumber = 0; messageNumber < 1000; messageNumber++) {
+			for (int messageNumber = 0; messageNumber < 100; messageNumber++) {
 				// Retrieve the next message to be read
 				message = messages[messageNumber];
 
@@ -104,6 +101,7 @@ public class JournalIMAPReader {
 				source.setUsername(username);
 				source.setImapSource(hostname);
 				source.setImapPort(port);
+				source.setProtocol(protocol);
 
 				// Retrieve the message content
 				messagecontentObject = message.getContent();
@@ -111,14 +109,11 @@ public class JournalIMAPReader {
 				// Determine email type
 				if (messagecontentObject instanceof Multipart) {
 
-					sender = ((InternetAddress) message.getFrom()[0])
-							.getPersonal();
-
 					Enumeration<Header> headers = message.getAllHeaders();
 
 					while (headers.hasMoreElements()) {
 						Header header = headers.nextElement();
-						source.addHeader(header);
+						source.addHeader(new IMAPHeader(header));
 
 					}
 
@@ -133,8 +128,6 @@ public class JournalIMAPReader {
 						// Get the content type
 						contentType = part.getContentType();
 
-						// Display the content type
-						printData("Content: " + contentType);
 
 						if (contentType.startsWith("message/rfc822")) {
 							nestedMessage = (IMAPNestedMessage) part
@@ -152,8 +145,14 @@ public class JournalIMAPReader {
 							"This reader supports journal messages only, failed to find an IMAPNestedMessage");
 				}
 				MailMessage mailMessage = new MailMessage(nestedMessage, source);
+	//			logger.info(MailMessage.serializeMailMessage(mailMessage));
+//				logger.info(MailMessage.serializeCompressedMailMessage(mailMessage));
 				storageService.store(mailMessage);
-
+				
+				LogMessage logMessage = new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Indexed journaled message from " + source.getProtocol()+ "://" + source.getImapSource() + ":" + source.getImapPort());
+				storageService.log(logMessage);
+				
+				logger.info("Indexed journaled message[" + messageNumber + "] " + mailMessage.getMessageId() + " " + FileUtils.byteCountToDisplaySize(nestedMessage.getSize()));
 			}
 
 			// Close the folder
@@ -161,23 +160,29 @@ public class JournalIMAPReader {
 
 			store.close();
 		} catch (AuthenticationFailedException e) {
-			printData("Not able to process the mail reading.");
+			logger.error("Not able to process the mail reading.", e);
 			e.printStackTrace();
+			System.exit(1);
 		} catch (FolderClosedException e) {
-			printData("Not able to process the mail reading.");
+			logger.error("Not able to process the mail reading.", e);
 			e.printStackTrace();
+			System.exit(1);
 		} catch (FolderNotFoundException e) {
-			printData("Not able to process the mail reading.");
+			logger.error("Not able to process the mail reading.", e);
 			e.printStackTrace();
+			System.exit(1);
 		} catch (ReadOnlyFolderException e) {
-			printData("Not able to process the mail reading.");
+			logger.error("Not able to process the mail reading.", e);
 			e.printStackTrace();
+			System.exit(1);
 		} catch (StoreClosedException e) {
-			printData("Not able to process the mail reading.");
+			logger.error("Not able to process the mail reading.", e);
 			e.printStackTrace();
+			System.exit(1);
 		} catch (Exception e) {
-			printData("Not able to process the mail reading.");
+			logger.error("Not able to process the mail reading.", e);
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
