@@ -136,8 +136,7 @@ public class PSTImporter {
 
 					PSTMessageSource source = new PSTMessageSource(
 							file.toString(), folderPath, file.length(),
-							new Date(file.lastModified()), new Date(),
-							hostname);
+							new Date(file.lastModified()));
 					MailMessage mailMessage = new MailMessage(message, source);
 					if (mailMessage.isPstPartialFailure()) {
 						metaData.incrementPartialFailures();

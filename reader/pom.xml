@@ -11,6 +11,11 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>com.reqo.ironhold</groupId>
+			<artifactId>storage</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4.5</version>

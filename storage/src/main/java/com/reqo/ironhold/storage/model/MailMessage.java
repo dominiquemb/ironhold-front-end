@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -63,7 +65,15 @@ public class MailMessage {
 	}
 
 	private ArchivedPSTMessage pstMessage;
-	private Message liveMessage;
+	private IMAPMailMessage imapMailMessage;
+
+	public IMAPMailMessage getImapMailMessage() {
+		return imapMailMessage;
+	}
+
+	public void setImapMailMessage(IMAPMailMessage imapMailMessage) {
+		this.imapMailMessage = imapMailMessage;
+	}
 
 	private IndexStatus indexed = IndexStatus.NOT_INDEXED;
 	private Date storedDate;
@@ -77,6 +87,14 @@ public class MailMessage {
 
 	public MailMessage() {
 
+	}
+
+	public MailMessage(Message message, IMAPMessageSource source) throws Exception {
+		this.imapMailMessage = new IMAPMailMessage(message);
+		
+		addSource(source);
+
+		handleMessage(message);
 	}
 
 	public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source)
@@ -165,21 +183,62 @@ public class MailMessage {
 			this.pstPartialFailure = true;
 		}
 		this.setMessageId(originalPSTMessage.getInternetMessageId());
-		sources = new MessageSource[] { source };
-	}
 
-	public MailMessage(Message liveMessage, MessageSource source)
-			throws MessagingException {
-		this.liveMessage = liveMessage;
-		this.setMessageId(liveMessage.getHeader("Message-Id")[0]);
-		sources = new MessageSource[] { source };
+		addSource(source);
 	}
 
 	public void addSource(MessageSource source) {
-		MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
-		copy[sources.length] = source;
-		sources = copy;
+		if (sources == null) {
+			sources = new MessageSource[] { source };
+		} else {
+			MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
+			copy[sources.length] = source;
+			sources = copy;
+		}
+	}
 
+	private void handleMessage(Message message) throws IOException,
+			MessagingException {
+		Object content = message.getContent();
+		if (content instanceof Multipart) {
+			Multipart mp = (Multipart) content;
+			handleMultipart(mp);
+		}
+	}
+
+	public void handleMultipart(Multipart mp) throws MessagingException,
+			IOException {
+		for (int i = 0; i < mp.getCount(); i++) {
+			BodyPart bp = mp.getBodyPart(i);
+			Object content = bp.getContent();
+			if (content instanceof InputStream) {
+				InputStream attachmentStream = (InputStream) content;
+				String filename = bp.getFileName();
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				// 8176 is the block size used internally and should give the
+				// best
+				// performance
+				int bufferSize = 8176;
+				byte[] buffer = new byte[bufferSize];
+				int count = attachmentStream.read(buffer);
+				while (count == bufferSize) {
+					out.write(buffer);
+					count = attachmentStream.read(buffer);
+				}
+				byte[] endBuffer = new byte[count];
+				System.arraycopy(buffer, 0, endBuffer, 0, count);
+				out.write(buffer);
+
+				addAttachment(new Attachment(bp.getSize(), new Date(), new Date(), filename, Base64.encodeBytes(out.toByteArray())));
+				attachmentStream.close();
+			} else if (content instanceof Message) {
+				Message message = (Message) content;
+				handleMessage(message);
+			} else if (content instanceof Multipart) {
+				Multipart mp2 = (Multipart) content;
+				handleMultipart(mp2);
+			}
+		}
 	}
 
 	public static String serializeAttachments(Attachment[] attachments)
@@ -249,14 +308,6 @@ public class MailMessage {
 
 	public void setPstMessage(ArchivedPSTMessage pstMessage) {
 		this.pstMessage = pstMessage;
-	}
-
-	public Message getLiveMessage() {
-		return liveMessage;
-	}
-
-	public void setLiveMessage(Message liveMessage) {
-		this.liveMessage = liveMessage;
 	}
 
 	public IndexStatus getIndexed() {

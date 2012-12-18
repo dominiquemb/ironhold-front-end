@@ -34,8 +34,7 @@ public class MailMessageTestModel extends CommonTestModel {
             for (PSTMessage pstMessage : pstMessages) {
                 if (!uniqueMessages.contains(pstMessage.getInternetMessageId())) {
                     mailMessages.add(new MailMessage(pstMessage, new PSTMessageSource(file.toString(), "",
-                            file.length(), new Date(file.lastModified()), new Date(),
-                            InetAddress.getLocalHost().getHostName())));
+                            file.length(), new Date(file.lastModified()))));
                 }
             }
 
@@ -98,7 +97,7 @@ public class MailMessageTestModel extends CommonTestModel {
     }
 
     public static PSTMessageSource generatePSTMessageSource() {
-        return new PSTMessageSource(df.getRandomWord() + ".pst", df.getRandomWord(), df.getNumberBetween(1, 10000), df.getBirthDate(), df.getBirthDate(), df.getRandomWord());
+        return new PSTMessageSource(df.getRandomWord() + ".pst", df.getRandomWord(), df.getNumberBetween(1, 10000), df.getBirthDate());
     }
 
 }

@@ -13,12 +13,12 @@ public class PSTMessageSource extends MessageSource {
 	private Date fileTimestamp;
 
 	public PSTMessageSource() {
-
+		super();
 	}
 
 	public PSTMessageSource(String pstFileName, String folder, long size,
-			Date fileTimestamp, Date loadTimestamp, String hostname) {
-		super(hostname, loadTimestamp);
+			Date fileTimestamp) {
+		super();
 		this.pstFileName = pstFileName;
 		this.folder = folder;
 		this.size = size;
