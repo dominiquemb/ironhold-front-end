@@ -79,5 +79,27 @@ public class IMAPMessageSource extends MessageSource {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
+
+
+	public static boolean sameAs(IMAPMessageSource existingSource,
+			IMAPMessageSource source) {
+		if (existingSource.getHostname().equals(source.getHostname())
+				&& existingSource.getImapPort() == source.getImapPort()
+				&& existingSource.getImapSource().equals(source.getImapSource())
+				&& existingSource.getLoadTimestamp().equals(existingSource.getLoadTimestamp()) 
+				&& existingSource.getProtocol().equals(source.getProtocol())
+				&& existingSource.getUsername().equals(source.getUsername())
+				&& existingSource.getJournalHeaders().length == source.getJournalHeaders().length) {
+			
+			for (int i = 0; i<existingSource.getJournalHeaders().length; i++) {
+				if (!existingSource.getJournalHeaders()[i].getName().equals(source.getJournalHeaders()[i].getName()) ||
+					!existingSource.getJournalHeaders()[i].getValue().equals(source.getJournalHeaders()[i].getValue())) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 	
 }

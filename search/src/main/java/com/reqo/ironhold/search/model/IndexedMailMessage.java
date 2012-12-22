@@ -75,7 +75,7 @@ public class IndexedMailMessage {
 		size = imapMailMessage.getSize();
 
 		if (imapMailMessage.getBody().trim().length() != 0) {
-			body = imapMailMessage.getBody();
+			body =  Jsoup.parse(imapMailMessage.getBody()).text();
 		} else {
 			body = StringUtils.EMPTY;
 		}

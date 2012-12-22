@@ -15,89 +15,121 @@ import java.util.*;
 
 public class MailMessageTestModel extends CommonTestModel {
 
-    private static final String PST_TEST_FILE = "/data.pst";
-    private static List<MailMessage> mailMessages = new ArrayList<MailMessage>();
-    private static List<PSTMessage> pstMessages = new ArrayList<PSTMessage>();
-    private static final int MAX_MESSAGES_TO_LOAD = 10;
+	private static final String PST_TEST_FILE = "/data.pst";
+	private static List<MailMessage> mailMessages = new ArrayList<MailMessage>();
+	private static List<PSTMessage> pstMessages = new ArrayList<PSTMessage>();
+	private static final int MAX_MESSAGES_TO_LOAD = 10;
 
-    static {
-        try {
+	static {
+		try {
 
-            File file = FileUtils.toFile(MailMessageTestModel.class.getResource(PST_TEST_FILE));
-            System.out.println("Loading messages from " + file);
-            PSTFile pstFile;
-            pstFile = new PSTFile(file);
+			File file = FileUtils.toFile(MailMessageTestModel.class
+					.getResource(PST_TEST_FILE));
+			System.out.println("Loading messages from " + file);
+			PSTFile pstFile;
+			pstFile = new PSTFile(file);
 
-            loadAllMessages("", pstFile.getRootFolder());
+			loadAllMessages("", pstFile.getRootFolder());
 
-            Set<String> uniqueMessages = new HashSet<String>();
-            for (PSTMessage pstMessage : pstMessages) {
-                if (!uniqueMessages.contains(pstMessage.getInternetMessageId())) {
-                    mailMessages.add(new MailMessage(pstMessage, new PSTMessageSource(file.toString(), "",
-                            file.length(), new Date(file.lastModified()))));
-                }
-            }
+			Set<String> uniqueMessages = new HashSet<String>();
+			for (PSTMessage pstMessage : pstMessages) {
+				if (!uniqueMessages.contains(pstMessage.getInternetMessageId())) {
+					mailMessages.add(new MailMessage(pstMessage,
+							new PSTMessageSource(file.toString(), "", file
+									.length(), new Date(file.lastModified()))));
+				}
+			}
 
-            System.out.println("Loaded " + mailMessages.size() + " messages");
-        } catch (PSTException | IOException e) {
-            e.printStackTrace();
-        }
-    }
+			System.out.println("Loaded " + mailMessages.size() + " messages");
+		} catch (PSTException | IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public static MailMessage generatePSTMessage() {
+	public static MailMessage generatePSTMessage() {
 
-        return mailMessages.get(0);
-    }
+		return mailMessages.get(0);
+	}
 
-    public static List<MailMessage> generatePSTMessages() {
+	public static List<MailMessage> generatePSTMessages() {
 
-        return mailMessages;
-    }
+		return mailMessages;
+	}
 
-    private static void loadAllMessages(String folderPath, PSTFolder folder) throws PSTException, IOException {
-        if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
-            return;
-        }
+	private static void loadAllMessages(String folderPath, PSTFolder folder)
+			throws PSTException, IOException {
+		if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
+			return;
+		}
 
-        if (folder.hasSubfolders()) {
-            Vector<PSTFolder> childFolders = folder.getSubFolders();
-            for (PSTFolder childFolder : childFolders) {
-                loadAllMessages(folderPath + "/" + childFolder.getDisplayName(), childFolder);
-                if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
-                    return;
-                }
-            }
-        }
+		if (folder.hasSubfolders()) {
+			Vector<PSTFolder> childFolders = folder.getSubFolders();
+			for (PSTFolder childFolder : childFolders) {
+				loadAllMessages(
+						folderPath + "/" + childFolder.getDisplayName(),
+						childFolder);
+				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
+					return;
+				}
+			}
+		}
 
-        if (folder.getContentCount() > 0) {
-            PSTMessage message = (PSTMessage) folder.getNextChild();
-            while (message != null) {
-                System.out.println(message.getInternetMessageId() + " : " + message.getNumberOfAttachments());
+		if (folder.getContentCount() > 0) {
+			PSTMessage message = (PSTMessage) folder.getNextChild();
+			while (message != null) {
+				System.out.println(message.getInternetMessageId() + " : "
+						+ message.getNumberOfAttachments());
 
-                pstMessages.add(message);
-                if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
-                    return;
-                }
-                message = (PSTMessage) folder.getNextChild();
-            }
-        }
-    }
+				pstMessages.add(message);
+				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
+					return;
+				}
+				message = (PSTMessage) folder.getNextChild();
+			}
+		}
+	}
 
-    public static MailMessage verifyStorage(IStorageService storageService, MailMessage inputMessage) throws Exception {
+	public static MailMessage verifyStorage(IStorageService storageService,
+			MailMessage inputMessage) throws Exception {
 
-        MailMessage storedMessage = storageService.getMailMessage(inputMessage.getMessageId(), true);
-        Assert.assertEquals(MailMessage.serializeMailMessage(inputMessage), MailMessage.serializeMailMessage
-                (storedMessage));
-        Assert.assertEquals(inputMessage.getAttachments().length, storedMessage.getAttachments().length);
-        Assert.assertEquals(MailMessage.serializeAttachments(inputMessage.getAttachments()),
-                MailMessage.serializeAttachments(storedMessage.getAttachments()));
-        Assert.assertNotNull(storedMessage.getStoredDate());
+		MailMessage storedMessage = storageService.getMailMessage(
+				inputMessage.getMessageId(), true);
+		Assert.assertEquals(MailMessage.serializeMailMessage(inputMessage),
+				MailMessage.serializeMailMessage(storedMessage));
+		Assert.assertEquals(inputMessage.getAttachments().length,
+				storedMessage.getAttachments().length);
+		Assert.assertEquals(MailMessage.serializeAttachments(inputMessage
+				.getAttachments()), MailMessage
+				.serializeAttachments(storedMessage.getAttachments()));
+		Assert.assertNotNull(storedMessage.getStoredDate());
 
-        return storedMessage;
-    }
+		for (int i = 0; i < inputMessage.getSources().length; i++) {
+			if (inputMessage.getSources()[i] instanceof PSTMessageSource) {
+				Assert.assertTrue(PSTMessageSource.sameAs((PSTMessageSource)inputMessage.getSources()[i], (PSTMessageSource)storedMessage.getSources()[i]));
+			} else if  (inputMessage.getSources()[i] instanceof IMAPMessageSource) {
+				Assert.assertTrue(IMAPMessageSource.sameAs((IMAPMessageSource)inputMessage.getSources()[i], (IMAPMessageSource)storedMessage.getSources()[i]));
+			}
+		}
 
-    public static PSTMessageSource generatePSTMessageSource() {
-        return new PSTMessageSource(df.getRandomWord() + ".pst", df.getRandomWord(), df.getNumberBetween(1, 10000), df.getBirthDate());
-    }
+		return storedMessage;
+	}
+
+	public static PSTMessageSource generatePSTMessageSource() {
+		return new PSTMessageSource(df.getRandomWord() + ".pst",
+				df.getRandomWord(), df.getNumberBetween(1, 10000),
+				df.getBirthDate());
+	}
+
+	public static IMAPMessageSource generateIMAPMessageSource() {
+		IMAPMessageSource source = new IMAPMessageSource();
+		source.setHostname(df.getRandomWord());
+		source.setImapPort(df.getNumber());
+		source.setImapSource(df.getRandomWord());
+		source.setLoadTimestamp(df.getBirthDate());
+		source.setProtocol(df.getRandomWord());
+		source.setUsername(df.getName());
+
+		return source;
+	}
 
 }

@@ -53,10 +53,10 @@ public class MailMessage {
 
 		compressedMapper.getDeserializationConfig().addMixInAnnotations(
 				Attachment.class, CompressedAttachmentMixin.class);
-		
+
 		compressedMapper.getDeserializationConfig().addMixInAnnotations(
 				IMAPMailMessage.class, CompressedIMAPMailMessage.class);
-		
+
 		compressedMapper.enableDefaultTyping();
 		compressedMapper.configure(
 				SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -96,15 +96,24 @@ public class MailMessage {
 
 	}
 
-	public MailMessage(Message message, IMAPMessageSource source) throws Exception {
+	public MailMessage(Message message, IMAPMessageSource source)
+			throws Exception {
 		this.storedDate = new Date();
 		this.messageId = message.getHeader("Message-ID")[0];
 
 		this.imapMailMessage = new IMAPMailMessage(message);
-		
+
 		addSource(source);
 
 		handleMessage(message);
+
+		/* Some messages have -1 as size */
+		if (this.imapMailMessage.getSize() == -1) {
+			this.imapMailMessage.setSize(MailMessage.serializeAttachments(
+					attachments).length()
+					+ IMAPMailMessage.serializeMailMessage(imapMailMessage)
+							.length());
+		}
 	}
 
 	public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source)
@@ -182,7 +191,7 @@ public class MailMessage {
 							attachment.getCreationTime(), attachment
 									.getModificationTime(), attachment
 									.getFilename(), Base64.encodeBytes(out
-									.toByteArray())));
+									.toByteArray()), attachment.getMimeTag(), attachment.getAttachmentContentDisposition()));
 				} catch (Exception e) {
 					e.printStackTrace();
 					this.pstPartialFailure = true;
@@ -195,6 +204,7 @@ public class MailMessage {
 		this.setMessageId(originalPSTMessage.getInternetMessageId());
 
 		addSource(source);
+
 	}
 
 	public void addSource(MessageSource source) {
@@ -239,7 +249,11 @@ public class MailMessage {
 				System.arraycopy(buffer, 0, endBuffer, 0, count);
 				out.write(buffer);
 
-				addAttachment(new Attachment(bp.getSize(), new Date(), new Date(), filename, Base64.encodeBytes(out.toByteArray())));
+				addAttachment(new Attachment(bp.getSize(), new Date(),
+						new Date(), filename, Base64.encodeBytes(out
+								.toByteArray()), bp.getContentType(), bp.getDisposition()));
+				bp.getContentType();
+				bp.getDisposition();
 				attachmentStream.close();
 			} else if (content instanceof Message) {
 				Message message = (Message) content;

@@ -1,26 +1,38 @@
 package com.reqo.ironhold.storage;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import junit.framework.Assert;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.gridfs.GridFS;
-import com.reqo.ironhold.storage.model.*;
+import com.reqo.ironhold.storage.model.Attachment;
+import com.reqo.ironhold.storage.model.IMAPMessageSource;
+import com.reqo.ironhold.storage.model.IndexStatus;
+import com.reqo.ironhold.storage.model.LogMessage;
+import com.reqo.ironhold.storage.model.LogMessageTestModel;
+import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MailMessageTestModel;
+import com.reqo.ironhold.storage.model.PSTMessageSource;
 
 import de.flapdoodle.embedmongo.MongoDBRuntime;
 import de.flapdoodle.embedmongo.MongodExecutable;
 import de.flapdoodle.embedmongo.MongodProcess;
 import de.flapdoodle.embedmongo.config.MongodConfig;
 import de.flapdoodle.embedmongo.distribution.Version;
-import junit.framework.Assert;
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.junit.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 public class MongoServiceTest {
     private MongodExecutable mongodExe;
@@ -164,7 +176,7 @@ public class MongoServiceTest {
     }
 
     @Test
-    public void testAddSource() throws Exception {
+    public void testAddPSTSource() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
 
         MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
@@ -174,6 +186,25 @@ public class MongoServiceTest {
         MailMessageTestModel.verifyStorage(storageService, inputMessage);
 
         PSTMessageSource source = MailMessageTestModel.generatePSTMessageSource();
+        storageService.addSource(inputMessage.getMessageId(), source);
+
+        inputMessage.addSource(source);
+
+        MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+    }
+
+    @Test
+    public void testAddIMAPSource() throws Exception {
+        IStorageService storageService = new MongoService(mongo, db);
+
+        MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
+
+        storageService.store(inputMessage);
+
+        MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+        IMAPMessageSource source = MailMessageTestModel.generateIMAPMessageSource();
         storageService.addSource(inputMessage.getMessageId(), source);
 
         inputMessage.addSource(source);

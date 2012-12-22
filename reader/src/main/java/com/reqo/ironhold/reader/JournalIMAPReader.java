@@ -1,6 +1,7 @@
 package com.reqo.ironhold.reader;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
 import javax.mail.AuthenticationFailedException;
@@ -90,69 +91,91 @@ public class JournalIMAPReader {
 
 			logger.info("Found " + messages.length + " messages");
 			// Loop over all of the messages
-			for (int messageNumber = 0; messageNumber < 2000; messageNumber++) {
-				// Retrieve the next message to be read
-				message = messages[messageNumber];
+			for (int messageNumber = 0; messageNumber < 1000; messageNumber++) {
+				try {
+					// Retrieve the next message to be read
+					message = messages[messageNumber];
 
-				IMAPNestedMessage  nestedMessage = null;
-				IMAPMessageSource source = new IMAPMessageSource();
+					IMAPNestedMessage nestedMessage = null;
+					IMAPMessageSource source = new IMAPMessageSource();
 
-				source.setImapPort(port);
-				source.setUsername(username);
-				source.setImapSource(hostname);
-				source.setImapPort(port);
-				source.setProtocol(protocol);
+					source.setImapPort(port);
+					source.setUsername(username);
+					source.setImapSource(hostname);
+					source.setImapPort(port);
+					source.setProtocol(protocol);
 
-				// Retrieve the message content
-				messagecontentObject = message.getContent();
+					// Retrieve the message content
+					messagecontentObject = message.getContent();
 
-				// Determine email type
-				if (messagecontentObject instanceof Multipart) {
+					// Determine email type
+					if (messagecontentObject instanceof Multipart) {
 
-					Enumeration<Header> headers = message.getAllHeaders();
+						Enumeration<Header> headers = message.getAllHeaders();
 
-					while (headers.hasMoreElements()) {
-						Header header = headers.nextElement();
-						source.addHeader(new IMAPHeader(header));
+						while (headers.hasMoreElements()) {
+							Header header = headers.nextElement();
+							source.addHeader(new IMAPHeader(header));
 
-					}
-
-					// Retrieve the Multipart object from the message
-					multipart = (Multipart) message.getContent();
-
-					// Loop over the parts of the email
-					for (int i = 0; i < multipart.getCount(); i++) {
-						// Retrieve the next part
-						part = multipart.getBodyPart(i);
-
-						// Get the content type
-						contentType = part.getContentType();
-
-
-						if (contentType.startsWith("message/rfc822")) {
-							nestedMessage = (IMAPNestedMessage) part
-									.getContent();
-							
 						}
-					}
-				} else {
-					throw new Exception(
-							"This reader supports journal messages only");
-				}
 
-				if (nestedMessage == null) {
-					throw new Exception(
-							"This reader supports journal messages only, failed to find an IMAPNestedMessage");
+						// Retrieve the Multipart object from the message
+						multipart = (Multipart) message.getContent();
+
+						// Loop over the parts of the email
+						for (int i = 0; i < multipart.getCount(); i++) {
+							// Retrieve the next part
+							part = multipart.getBodyPart(i);
+
+							// Get the content type
+							contentType = part.getContentType();
+
+							if (contentType.startsWith("message/rfc822")) {
+								nestedMessage = (IMAPNestedMessage) part
+										.getContent();
+
+							}
+						}
+					} else {
+						throw new Exception(
+								"This reader supports journal messages only");
+					}
+
+					if (nestedMessage == null) {
+						throw new Exception(
+								"This reader supports journal messages only, failed to find an IMAPNestedMessage");
+					}
+					MailMessage mailMessage = new MailMessage(nestedMessage,
+							source);
+					
+					String messageId = mailMessage.getMessageId();
+					if (storageService.exists(messageId)) {
+						logger.warn("Found duplicate " + messageId);
+
+						storageService.addSource(messageId, source);
+					} else {
+						storageService.store(mailMessage);
+
+						LogMessage logMessage = new LogMessage(
+								LogLevel.Success, mailMessage.getMessageId(),
+								"Stored journaled message from "
+										+ source.getProtocol() + "://"
+										+ source.getImapSource() + ":"
+										+ source.getImapPort());
+						storageService.log(logMessage);
+
+						logger.info("Stored journaled message["
+								+ messageNumber
+								+ "] "
+								+ mailMessage.getMessageId()
+								+ " "
+								+ FileUtils.byteCountToDisplaySize(mailMessage
+										.getImapMailMessage().getSize()));
+					}
+				} catch (Exception e) {
+					logger.error("Failed to process message", e);
+					e.printStackTrace();
 				}
-				MailMessage mailMessage = new MailMessage(nestedMessage, source);
-	//			logger.info(MailMessage.serializeMailMessage(mailMessage));
-//				logger.info(MailMessage.serializeCompressedMailMessage(mailMessage));
-				storageService.store(mailMessage);
-				
-				LogMessage logMessage = new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Indexed journaled message from " + source.getProtocol()+ "://" + source.getImapSource() + ":" + source.getImapPort());
-				storageService.log(logMessage);
-				
-				logger.info("Indexed journaled message[" + messageNumber + "] " + mailMessage.getMessageId() + " " + FileUtils.byteCountToDisplaySize(nestedMessage.getSize()));
 			}
 
 			// Close the folder

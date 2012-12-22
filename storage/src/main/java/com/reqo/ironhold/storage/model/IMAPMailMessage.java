@@ -55,7 +55,6 @@ public class IMAPMailMessage implements Serializable {
 
 		this.messageDate = message.getReceivedDate();
 		this.size = message.getSize();
-
 		@SuppressWarnings("unchecked")
 		Enumeration<Header> allHeaders = message.getAllHeaders();
 
