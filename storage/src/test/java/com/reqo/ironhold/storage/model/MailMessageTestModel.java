@@ -123,7 +123,7 @@ public class MailMessageTestModel extends CommonTestModel {
 	public static IMAPMessageSource generateIMAPMessageSource() {
 		IMAPMessageSource source = new IMAPMessageSource();
 		source.setHostname(df.getRandomWord());
-		source.setImapPort(df.getNumber());
+		source.setImapPort(df.getNumberBetween(1, 10000));
 		source.setImapSource(df.getRandomWord());
 		source.setLoadTimestamp(df.getBirthDate());
 		source.setProtocol(df.getRandomWord());
