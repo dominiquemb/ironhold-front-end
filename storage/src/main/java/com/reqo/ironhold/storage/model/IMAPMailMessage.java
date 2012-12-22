@@ -43,9 +43,9 @@ public class IMAPMailMessage implements Serializable {
 	private Date messageDate;
 
 	private String body = StringUtils.EMPTY;
+	private String bodyHTML = StringUtils.EMPTY;
 
 	private int size;
-
 
 	public IMAPMailMessage() {
 	}
@@ -110,8 +110,13 @@ public class IMAPMailMessage implements Serializable {
 		for (int i = 0; i < mp.getCount(); i++) {
 			BodyPart bp = mp.getBodyPart(i);
 			Object content = bp.getContent();
+
 			if (content instanceof String) {
-				this.body += (String) content;
+				if (bp.getContentType().startsWith("text/html")) {
+					this.bodyHTML += (String) content;
+				} else {
+					this.body += (String) content;
+				}
 			} else if (content instanceof Message) {
 				Message message = (Message) content;
 				handleMessage(message);
@@ -190,6 +195,14 @@ public class IMAPMailMessage implements Serializable {
 		this.subject = subject;
 	}
 
+	public String getBodyHTML() {
+		return bodyHTML;
+	}
+
+	public void setBodyHTML(String bodyHTML) {
+		this.bodyHTML = bodyHTML;
+	}
+
 	public String getBody() {
 		return body;
 	}
@@ -210,7 +223,6 @@ public class IMAPMailMessage implements Serializable {
 		return headers;
 	}
 
-
 	public int getSize() {
 		return size;
 	}
@@ -218,7 +230,7 @@ public class IMAPMailMessage implements Serializable {
 	public void setSize(int size) {
 		this.size = size;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);

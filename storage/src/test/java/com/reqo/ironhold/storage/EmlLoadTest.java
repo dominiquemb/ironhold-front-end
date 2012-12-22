@@ -10,6 +10,7 @@ import javax.mail.Header;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import junit.framework.Assert;
 
@@ -65,8 +66,13 @@ public class EmlLoadTest {
 					mailMessage.getImapMailMessage().getCc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
-				Assert.assertEquals(((InternetAddress)mimeMessage.getRecipients(RecipientType.CC)[i]).getAddress(), mailMessage.getImapMailMessage().getCc()[i].getAddress());
-				Assert.assertEquals(((InternetAddress)mimeMessage.getRecipients(RecipientType.CC)[i]).getPersonal(), mailMessage.getImapMailMessage().getCc()[i].getName());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.CC)[i]).getAddress(),
+						mailMessage.getImapMailMessage().getCc()[i]
+								.getAddress());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.CC)[i]).getPersonal(),
+						mailMessage.getImapMailMessage().getCc()[i].getName());
 			}
 		} else {
 			Assert.assertEquals(0,
@@ -80,8 +86,13 @@ public class EmlLoadTest {
 					mailMessage.getImapMailMessage().getBcc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
-				Assert.assertEquals(((InternetAddress)mimeMessage.getRecipients(RecipientType.BCC)[i]).getAddress(), mailMessage.getImapMailMessage().getBcc()[i].getAddress());
-				Assert.assertEquals(((InternetAddress)mimeMessage.getRecipients(RecipientType.BCC)[i]).getPersonal(), mailMessage.getImapMailMessage().getBcc()[i].getName());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.BCC)[i]).getAddress(),
+						mailMessage.getImapMailMessage().getBcc()[i]
+								.getAddress());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
+						mailMessage.getImapMailMessage().getBcc()[i].getName());
 			}
 		} else {
 			Assert.assertEquals(0,
@@ -98,10 +109,17 @@ public class EmlLoadTest {
 			Assert.assertEquals(mimeHeaders.get(i).getValue(), mailMessage
 					.getImapMailMessage().getHeaders()[i].getValue());
 		}
-		
-		Assert.assertEquals(mimeMessage.getContent().toString(), mailMessage.getImapMailMessage().getBody());
 
-		Assert.assertEquals(mimeMessage.getMessageID(), mailMessage.getMessageId());
+		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
+		
+		Assert.assertTrue(contents.getBodyPart(0).getContent().toString().equals(mailMessage
+				.getImapMailMessage().getBody()));
+
+		Assert.assertTrue(contents.getBodyPart(1).getContent().toString().equals(mailMessage
+				.getImapMailMessage().getBodyHTML()));
+
+		Assert.assertEquals(mimeMessage.getMessageID(),
+				mailMessage.getMessageId());
 	}
 
 }
