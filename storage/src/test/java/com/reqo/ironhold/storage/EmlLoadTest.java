@@ -1,4 +1,4 @@
-package com.reqo.ironhold.reader;
+package com.reqo.ironhold.storage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,6 +101,7 @@ public class EmlLoadTest {
 		
 		Assert.assertEquals(mimeMessage.getContent().toString(), mailMessage.getImapMailMessage().getBody());
 
+		Assert.assertEquals(mimeMessage.getMessageID(), mailMessage.getMessageId());
 	}
 
 }
