@@ -26,11 +26,6 @@ public abstract class MessageSource {
 
 	}
 
-	public MessageSource(String hostname, Date loadTimestamp) {
-		this.hostname = hostname;
-		this.loadTimestamp = loadTimestamp;
-	}
-
 	public Date getLoadTimestamp() {
 		return loadTimestamp;
 	}
