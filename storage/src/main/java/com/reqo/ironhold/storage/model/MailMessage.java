@@ -319,7 +319,7 @@ public class MailMessage {
 	}
 
 	public void setAttachments(Attachment[] attachments) {
-		this.attachments = attachments;
+		this.attachments = attachments.clone();
 	}
 
 	public void removeAttachments() {

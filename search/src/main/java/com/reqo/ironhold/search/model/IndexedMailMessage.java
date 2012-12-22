@@ -165,7 +165,7 @@ public class IndexedMailMessage {
 	}
 
 	public void setTo(Recipient[] to) {
-		this.to = to;
+		this.to = to.clone();
 	}
 
 	public Recipient[] getCc() {
@@ -173,7 +173,7 @@ public class IndexedMailMessage {
 	}
 
 	public void setCc(Recipient[] cc) {
-		this.cc = cc;
+		this.cc = cc.clone();
 	}
 
 	public Recipient[] getBcc() {
@@ -181,7 +181,7 @@ public class IndexedMailMessage {
 	}
 
 	public void setBcc(Recipient[] bcc) {
-		this.bcc = bcc;
+		this.bcc = bcc.clone();
 	}
 
 	public long getSize() {
@@ -205,7 +205,7 @@ public class IndexedMailMessage {
 	}
 
 	public void setAttachments(Attachment[] attachments) {
-		this.attachments = attachments;
+		this.attachments = attachments.clone();
 	}
 
 	@Override
