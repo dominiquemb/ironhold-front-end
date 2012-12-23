@@ -47,6 +47,11 @@ public class IMAPMailMessage implements Serializable {
 
 	private int size;
 
+	private String bodyHTMLContentType;
+
+	private String bodyContentType;
+
+	
 	public IMAPMailMessage() {
 	}
 
@@ -114,8 +119,10 @@ public class IMAPMailMessage implements Serializable {
 			if (content instanceof String) {
 				if (bp.getContentType().startsWith("text/html")) {
 					this.bodyHTML += (String) content;
-				} else {
+					this.setBodyHTMLContentType(bp.getContentType());
+				} else if (bp.getContentType().startsWith("text/plain")){
 					this.body += (String) content;
+					this.setBodyContentType(bp.getContentType());
 				}
 			} else if (content instanceof Message) {
 				Message message = (Message) content;
@@ -245,6 +252,22 @@ public class IMAPMailMessage implements Serializable {
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	public String getBodyContentType() {
+		return bodyContentType;
+	}
+
+	public void setBodyContentType(String bodyContentType) {
+		this.bodyContentType = bodyContentType;
+	}
+
+	public String getBodyHTMLContentType() {
+		return bodyHTMLContentType;
+	}
+
+	public void setBodyHTMLContentType(String bodyHTMLContentType) {
+		this.bodyHTMLContentType = bodyHTMLContentType;
 	}
 
 }

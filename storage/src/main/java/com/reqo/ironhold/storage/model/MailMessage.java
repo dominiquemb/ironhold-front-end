@@ -233,21 +233,15 @@ public class MailMessage {
 			Object content = bp.getContent();
 			if (content instanceof InputStream) {
 				InputStream attachmentStream = (InputStream) content;
-				String filename = bp.getFileName();
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				// 8176 is the block size used internally and should give the
-				// best
-				// performance
-				int bufferSize = 8176;
-				byte[] buffer = new byte[bufferSize];
-				int count = attachmentStream.read(buffer);
-				while (count == bufferSize) {
-					out.write(buffer);
-					count = attachmentStream.read(buffer);
+				
+				String filename = bp.getFileName();
+				
+				byte[] buf = new byte[4096];
+				int bytesRead;
+				while((bytesRead = attachmentStream.read(buf))!=-1) {
+				    out.write(buf, 0, bytesRead);
 				}
-				byte[] endBuffer = new byte[count];
-				System.arraycopy(buffer, 0, endBuffer, 0, count);
-				out.write(buffer);
 
 				addAttachment(new Attachment(bp.getSize(), new Date(),
 						new Date(), filename, Base64.encodeBytes(out
