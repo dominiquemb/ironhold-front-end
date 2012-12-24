@@ -1,7 +1,6 @@
 package com.reqo.ironhold.reader;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
 import javax.mail.AuthenticationFailedException;
@@ -27,6 +26,7 @@ import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.sun.mail.imap.IMAPNestedMessage;
 
 public class JournalIMAPReader {
@@ -145,7 +145,7 @@ public class JournalIMAPReader {
 						throw new Exception(
 								"This reader supports journal messages only, failed to find an IMAPNestedMessage");
 					}
-					MailMessage mailMessage = new MailMessage(nestedMessage,
+					MimeMailMessage mailMessage = new MimeMailMessage(nestedMessage,
 							source);
 					
 					String messageId = mailMessage.getMessageId();
@@ -162,15 +162,14 @@ public class JournalIMAPReader {
 										+ source.getProtocol() + "://"
 										+ source.getImapSource() + ":"
 										+ source.getImapPort());
-						storageService.log(logMessage);
+						storageService.store(logMessage);
 
 						logger.info("Stored journaled message["
 								+ messageNumber
 								+ "] "
 								+ mailMessage.getMessageId()
 								+ " "
-								+ FileUtils.byteCountToDisplaySize(mailMessage
-										.getImapMailMessage().getSize()));
+								+ FileUtils.byteCountToDisplaySize(mailMessage.getSize()));
 					}
 				} catch (Exception e) {
 					logger.error("Failed to process message", e);

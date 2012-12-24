@@ -251,7 +251,7 @@ public class MongoServiceTest {
 
         LogMessage inputMessage = LogMessageTestModel.generate();
 
-        storageService.log(inputMessage);
+        storageService.store(inputMessage);
 
         List<LogMessage> storedMessages = storageService.getLogMessages(inputMessage.getMessageId());
 
@@ -271,7 +271,7 @@ public class MongoServiceTest {
             LogMessage inputMessage = LogMessageTestModel.generate();
             inputMessage.setMessageId(messageId);
 
-            storageService.log(inputMessage);
+            storageService.store(inputMessage);
 
             inputMessages.add(inputMessage);
         }

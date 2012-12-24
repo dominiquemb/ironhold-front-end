@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.PSTFileMeta;
 
 public interface IStorageService {
@@ -14,6 +15,8 @@ public interface IStorageService {
 
 	void store(MailMessage mailMessage) throws Exception;
 
+	void store(MimeMailMessage mailMessage) throws Exception;
+	
 	void addSource(String messageId, MessageSource source) throws Exception;
 
 	void updateIndexStatus(String messageId, IndexStatus status)
@@ -28,7 +31,7 @@ public interface IStorageService {
 
 	long getTotalMessageCount();
 
-	void log(LogMessage logMessage) throws Exception;
+	void store(LogMessage logMessage) throws Exception;
 
 	List<LogMessage> getLogMessages(String messageId) throws Exception;
 

@@ -46,7 +46,7 @@ public class MailMessage {
 				Attachment.class, CompressedAttachmentMixin.class);
 
 		compressedMapper.getSerializationConfig().addMixInAnnotations(
-				IMAPMailMessage.class, CompressedIMAPMailMessage.class);
+				MimeMailMessage.class, CompressedIMAPMailMessage.class);
 
 		compressedMapper.getDeserializationConfig().addMixInAnnotations(
 				ArchivedPSTMessage.class, CompressedPSTMessageMixin.class);
@@ -55,7 +55,7 @@ public class MailMessage {
 				Attachment.class, CompressedAttachmentMixin.class);
 
 		compressedMapper.getDeserializationConfig().addMixInAnnotations(
-				IMAPMailMessage.class, CompressedIMAPMailMessage.class);
+				MimeMailMessage.class, CompressedIMAPMailMessage.class);
 
 		compressedMapper.enableDefaultTyping();
 		compressedMapper.configure(
@@ -72,15 +72,6 @@ public class MailMessage {
 	}
 
 	private ArchivedPSTMessage pstMessage;
-	private IMAPMailMessage imapMailMessage;
-
-	public IMAPMailMessage getImapMailMessage() {
-		return imapMailMessage;
-	}
-
-	public void setImapMailMessage(IMAPMailMessage imapMailMessage) {
-		this.imapMailMessage = imapMailMessage;
-	}
 
 	private IndexStatus indexed = IndexStatus.NOT_INDEXED;
 	private Date storedDate;
@@ -96,25 +87,6 @@ public class MailMessage {
 
 	}
 
-	public MailMessage(Message message, IMAPMessageSource source)
-			throws Exception {
-		this.storedDate = new Date();
-		this.messageId = message.getHeader("Message-ID")[0];
-
-		this.imapMailMessage = new IMAPMailMessage(message);
-
-		addSource(source);
-
-		handleMessage(message);
-
-		/* Some messages have -1 as size */
-		if (this.imapMailMessage.getSize() == -1) {
-			this.imapMailMessage.setSize(MailMessage.serializeAttachments(
-					attachments).length()
-					+ IMAPMailMessage.serializeMailMessage(imapMailMessage)
-							.length());
-		}
-	}
 
 	public MailMessage(PSTMessage originalPSTMessage, PSTMessageSource source)
 			throws JsonParseException, JsonMappingException,

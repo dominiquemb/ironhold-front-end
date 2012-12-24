@@ -73,7 +73,7 @@ public class Indexer {
 												+ "skiping attachments ["
 												+ e.getDetailedMessage() + "]",
 										mailMessage.getMessageId());
-								storageService.log(logMessage);
+								storageService.store(logMessage);
 								mailMessage.removeAttachments();
 
 								indexService.store(new IndexedMailMessage(
@@ -90,7 +90,7 @@ public class Indexer {
 											+ mailMessage.getAttachments().length
 											+ " attachments", mailMessage
 											.getMessageId());
-							storageService.log(logMessage);
+							storageService.store(logMessage);
 
 							storageService.updateIndexStatus(
 									mailMessage.getMessageId(),
@@ -112,7 +112,7 @@ public class Indexer {
 										"Failed to index message ["
 												+ e2.getMessage() + "]",
 										mailMessage.getMessageId());
-								storageService.log(logMessage);
+								storageService.store(logMessage);
 							} catch (Exception e) {
 								logger.error(
 										"Critical error detected. Exiting.", e);

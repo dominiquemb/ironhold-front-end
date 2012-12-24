@@ -30,7 +30,10 @@ import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.PSTFileMeta;
+import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
+import com.reqo.ironhold.storage.utils.Compression;
 
 public class MongoService implements IStorageService {
 
@@ -38,6 +41,7 @@ public class MongoService implements IStorageService {
 	private static final String MESSAGE_COLLECTION = "messages";
 	private static final String LOG_COLLECTION = "logs";
 	private static final String PST_COLLECTION = "pstFiles";
+	private static final String MIME_MESSAGE_COLLECTION = "mimeMessages";
 
 	private Mongo mongo;
 	private DB db;
@@ -240,7 +244,7 @@ public class MongoService implements IStorageService {
 		return matchMessage;
 	}
 
-	public void log(LogMessage logMessage) throws JsonGenerationException,
+	public void store(LogMessage logMessage) throws JsonGenerationException,
 			JsonMappingException, MongoException, IOException {
 		db.getCollection(LOG_COLLECTION).insert(
 				(DBObject) JSON.parse(LogMessage.toJSON(logMessage)));
@@ -282,5 +286,25 @@ public class MongoService implements IStorageService {
 		}
 
 		return result;
+	}
+
+	@Override
+	public void store(MimeMailMessage mailMessage) throws Exception {
+		Date storedDate = new Date();
+		mailMessage.setStoredDate(storedDate);
+		String jsonString = MimeMailMessage
+				.serialize(mailMessage);
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+		String compressedRawContents = Compression.compress(mailMessage.getRawContents());
+		ByteArrayInputStream bis = new ByteArrayInputStream(
+				compressedRawContents.getBytes());
+		GridFSInputFile fsFile = fs.createFile(bis, mailMessage.getMessageId());
+
+		DBObject metaData = (DBObject) JSON.parse(jsonString);
+
+		fsFile.setMetaData(metaData);
+		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
+		fsFile.saveChunks();
+		fsFile.save();
 	}
 }

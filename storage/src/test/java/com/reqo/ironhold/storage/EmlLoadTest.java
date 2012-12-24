@@ -8,6 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -15,6 +19,7 @@ import java.util.List;
 
 import javax.mail.Header;
 import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -31,22 +36,110 @@ import org.junit.rules.TemporaryFolder;
 
 import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MailMessageTestModel;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class EmlLoadTest {
 
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	private static IMAPMessageSource source;
-	private static DataFactory df = new DataFactory();
-	static {
-		source = new IMAPMessageSource();
-		source.setHostname(df.getRandomWord());
-		source.setImapPort(df.getNumberBetween(1, 10000));
-		source.setImapSource(df.getRandomWord());
-		source.setLoadTimestamp(df.getBirthDate());
-		source.setProtocol(df.getRandomWord());
-		source.setUsername(df.getName());
+	private IMAPMessageSource source = MailMessageTestModel
+			.generateIMAPMessageSource();
+
+	@Test
+	public void testGetRawMessage1() throws Exception {
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testMimeMessageWithHTML.eml"));
+		InputStream is = new FileInputStream(file);
+		MimeMessage mimeMessage = new MimeMessage(null, is);
+		File messageFile = new File(tempFolder.getRoot() + File.separator
+				+ "testGetRawMessage1.eml");
+		OutputStream fos = new FileOutputStream(messageFile);
+
+		fos.write(getRawMessage(mimeMessage).getBytes());
+		fos.flush();
+		fos.close();
+
+		List<String> orioginalLines = Files.readAllLines(
+				Paths.get(file.toURI()), Charset.defaultCharset());
+		StringBuilder original = new StringBuilder();
+		for (String line : orioginalLines) {
+			original.append(line + "\n");
+		}
+
+		List<String> messageLines = Files.readAllLines(
+				Paths.get(messageFile.toURI()), Charset.defaultCharset());
+		StringBuilder message = new StringBuilder();
+		for (String line : messageLines) {
+			message.append(line + "\n");
+		}
+
+		Assert.assertEquals(original.toString(), message.toString());
+
+	}
+
+	@Test
+	public void testGetRawMessage2() throws Exception {
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testMimeMessageWithHTMLandAttachment.eml"));
+		InputStream is = new FileInputStream(file);
+		MimeMessage mimeMessage = new MimeMessage(null, is);
+		File messageFile = new File(tempFolder.getRoot() + File.separator
+				+ "testGetRawMessage2.eml");
+		OutputStream fos = new FileOutputStream(messageFile);
+
+		fos.write(getRawMessage(mimeMessage).getBytes());
+		fos.flush();
+		fos.close();
+
+		List<String> orioginalLines = Files.readAllLines(
+				Paths.get(file.toURI()), Charset.defaultCharset());
+		StringBuilder original = new StringBuilder();
+		for (String line : orioginalLines) {
+			original.append(line + "\n");
+		}
+
+		List<String> messageLines = Files.readAllLines(
+				Paths.get(messageFile.toURI()), Charset.defaultCharset());
+		StringBuilder message = new StringBuilder();
+		for (String line : messageLines) {
+			message.append(line + "\n");
+		}
+
+		Assert.assertEquals(original.toString(), message.toString());
+
+	}
+
+	@Test
+	public void testGetRawMessage3() throws Exception {
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testMimeMessageWithImage.eml"));
+		InputStream is = new FileInputStream(file);
+		MimeMessage mimeMessage = new MimeMessage(null, is);
+		File messageFile = new File(tempFolder.getRoot() + File.separator
+				+ "testGetRawMessage3.eml");
+		OutputStream fos = new FileOutputStream(messageFile);
+
+		fos.write(getRawMessage(mimeMessage).getBytes());
+		fos.flush();
+		fos.close();
+
+		List<String> orioginalLines = Files.readAllLines(
+				Paths.get(file.toURI()), Charset.defaultCharset());
+		StringBuilder original = new StringBuilder();
+		for (String line : orioginalLines) {
+			original.append(line + "\n");
+		}
+
+		List<String> messageLines = Files.readAllLines(
+				Paths.get(messageFile.toURI()), Charset.defaultCharset());
+		StringBuilder message = new StringBuilder();
+		for (String line : messageLines) {
+			message.append(line + "\n");
+		}
+
+		Assert.assertEquals(original.toString(), message.toString());
 
 	}
 
@@ -57,89 +150,93 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MailMessage mailMessage = new MailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
 
-		Assert.assertEquals(mimeMessage.getSubject(), mailMessage
-				.getImapMailMessage().getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(), mailMessage
-				.getImapMailMessage().getMessageDate());
+		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
+		Assert.assertEquals(mimeMessage.getReceivedDate(),
+				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-				mailMessage.getImapMailMessage().getFrom().getAddress());
+				mailMessage.getFrom().getAddress());
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-				mailMessage.getImapMailMessage().getFrom().getName());
+				mailMessage.getFrom().getName());
 
 		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
-				mailMessage.getImapMailMessage().getTo().length);
+				mailMessage.getTo().length);
 		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
 
 			Assert.assertEquals(
 					mimeMessage.getRecipients(RecipientType.CC).length,
-					mailMessage.getImapMailMessage().getCc().length);
+					mailMessage.getCc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.CC)[i]).getAddress(),
-						mailMessage.getImapMailMessage().getCc()[i]
-								.getAddress());
+						mailMessage.getCc()[i].getAddress());
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.CC)[i]).getPersonal(),
-						mailMessage.getImapMailMessage().getCc()[i].getName());
+						mailMessage.getCc()[i].getName());
 			}
 		} else {
-			Assert.assertEquals(0,
-					mailMessage.getImapMailMessage().getCc().length);
+			Assert.assertEquals(0, mailMessage.getCc().length);
 		}
 
 		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
 
 			Assert.assertEquals(
 					mimeMessage.getRecipients(RecipientType.BCC).length,
-					mailMessage.getImapMailMessage().getBcc().length);
+					mailMessage.getBcc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.BCC)[i]).getAddress(),
-						mailMessage.getImapMailMessage().getBcc()[i]
-								.getAddress());
+						mailMessage.getBcc()[i].getAddress());
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
-						mailMessage.getImapMailMessage().getBcc()[i].getName());
+						mailMessage.getBcc()[i].getName());
 			}
 		} else {
-			Assert.assertEquals(0,
-					mailMessage.getImapMailMessage().getBcc().length);
-		}
-
-		List<Header> mimeHeaders = Collections
-				.list(mimeMessage.getAllHeaders());
-		Assert.assertEquals(mimeHeaders.size(), mailMessage
-				.getImapMailMessage().getHeaders().length);
-		for (int i = 0; i < mimeHeaders.size(); i++) {
-			Assert.assertEquals(mimeHeaders.get(i).getName(), mailMessage
-					.getImapMailMessage().getHeaders()[i].getName());
-			Assert.assertEquals(mimeHeaders.get(i).getValue(), mailMessage
-					.getImapMailMessage().getHeaders()[i].getValue());
+			Assert.assertEquals(0, mailMessage.getBcc().length);
 		}
 
 		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
 
 		Assert.assertEquals(contents.getBodyPart(0).getContent().toString(),
-				mailMessage.getImapMailMessage().getBody());
+				mailMessage.getBody());
 
 		Assert.assertEquals(contents.getBodyPart(0).getContentType(),
-				mailMessage.getImapMailMessage().getBodyContentType());
+				mailMessage.getBodyContentType());
 
 		Assert.assertEquals(contents.getBodyPart(1).getContent().toString(),
-				mailMessage.getImapMailMessage().getBodyHTML());
+				mailMessage.getBodyHTML());
 
 		Assert.assertEquals(contents.getBodyPart(1).getContentType(),
-				mailMessage.getImapMailMessage().getBodyHTMLContentType());
+				mailMessage.getBodyHTMLContentType());
 
 		Assert.assertEquals(mimeMessage.getMessageID(),
 				mailMessage.getMessageId());
+	}
+
+	private String getRawMessage(MimeMessage mimeMessage)
+			throws MessagingException, IOException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		List<String> lines = Collections.list(mimeMessage.getAllHeaderLines());
+		for (String line : lines) {
+			os.write((line + "\n").getBytes());
+		}
+		os.write("\n".getBytes());
+		InputStream rawStream = mimeMessage.getRawInputStream();
+		int read = 0;
+		byte[] bytes = new byte[1024];
+
+		while ((read = rawStream.read(bytes)) != -1) {
+			os.write(bytes, 0, read);
+		}
+		rawStream.close();
+
+		return os.toString();
 	}
 
 	@Test
@@ -149,102 +246,84 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MailMessage mailMessage = new MailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
 
-		Assert.assertEquals(mimeMessage.getSubject(), mailMessage
-				.getImapMailMessage().getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(), mailMessage
-				.getImapMailMessage().getMessageDate());
+		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
+		Assert.assertEquals(mimeMessage.getReceivedDate(),
+				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-				mailMessage.getImapMailMessage().getFrom().getAddress());
+				mailMessage.getFrom().getAddress());
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-				mailMessage.getImapMailMessage().getFrom().getName());
+				mailMessage.getFrom().getName());
 
 		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
-				mailMessage.getImapMailMessage().getTo().length);
+				mailMessage.getTo().length);
 		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
 
 			Assert.assertEquals(
 					mimeMessage.getRecipients(RecipientType.CC).length,
-					mailMessage.getImapMailMessage().getCc().length);
+					mailMessage.getCc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.CC)[i]).getAddress(),
-						mailMessage.getImapMailMessage().getCc()[i]
-								.getAddress());
+						mailMessage.getCc()[i].getAddress());
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.CC)[i]).getPersonal(),
-						mailMessage.getImapMailMessage().getCc()[i].getName());
+						mailMessage.getCc()[i].getName());
 			}
 		} else {
-			Assert.assertEquals(0,
-					mailMessage.getImapMailMessage().getCc().length);
+			Assert.assertEquals(0, mailMessage.getCc().length);
 		}
 
 		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
 
 			Assert.assertEquals(
 					mimeMessage.getRecipients(RecipientType.BCC).length,
-					mailMessage.getImapMailMessage().getBcc().length);
+					mailMessage.getBcc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.BCC)[i]).getAddress(),
-						mailMessage.getImapMailMessage().getBcc()[i]
-								.getAddress());
+						mailMessage.getBcc()[i].getAddress());
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
-						mailMessage.getImapMailMessage().getBcc()[i].getName());
+						mailMessage.getBcc()[i].getName());
 			}
 		} else {
-			Assert.assertEquals(0,
-					mailMessage.getImapMailMessage().getBcc().length);
+			Assert.assertEquals(0, mailMessage.getBcc().length);
 		}
 
-		List<Header> mimeHeaders = Collections
-				.list(mimeMessage.getAllHeaders());
-		Assert.assertEquals(mimeHeaders.size(), mailMessage
-				.getImapMailMessage().getHeaders().length);
-		for (int i = 0; i < mimeHeaders.size(); i++) {
-			Assert.assertEquals(mimeHeaders.get(i).getName(), mailMessage
-					.getImapMailMessage().getHeaders()[i].getName());
-			Assert.assertEquals(mimeHeaders.get(i).getValue(), mailMessage
-					.getImapMailMessage().getHeaders()[i].getValue());
-		}
+	
 
 		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
 
 		Multipart part1 = (Multipart) contents.getBodyPart(0).getContent();
 
 		Assert.assertEquals(part1.getBodyPart(0).getContent().toString(),
-				mailMessage.getImapMailMessage().getBody());
+				mailMessage.getBody());
 
-		Assert.assertEquals(part1.getBodyPart(0).getContentType(), mailMessage
-				.getImapMailMessage().getBodyContentType());
+		Assert.assertEquals(part1.getBodyPart(0).getContentType(),
+				mailMessage.getBodyContentType());
 
 		Assert.assertEquals(part1.getBodyPart(1).getContent().toString(),
-				mailMessage.getImapMailMessage().getBodyHTML());
+				mailMessage.getBodyHTML());
 
-		Assert.assertEquals(part1.getBodyPart(1).getContentType(), mailMessage
-				.getImapMailMessage().getBodyHTMLContentType());
+		Assert.assertEquals(part1.getBodyPart(1).getContentType(),
+				mailMessage.getBodyHTMLContentType());
 
 		InputStream part2 = (InputStream) contents.getBodyPart(1).getContent();
 		Assert.assertEquals(contents.getBodyPart(1).getFileName(),
 				mailMessage.getAttachments()[0].getFileName());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		// 8176 is the block size used internally and should give the
-		// best
-		// performance
-
 		byte[] buf = new byte[4096];
 		int bytesRead;
-		while((bytesRead = part2.read(buf))!=-1) {
-		    out.write(buf, 0, bytesRead);
+		while ((bytesRead = part2.read(buf)) != -1) {
+			out.write(buf, 0, bytesRead);
 		}
 		out.close();
 
@@ -258,23 +337,24 @@ public class EmlLoadTest {
 		OutputStream fos = new FileOutputStream(tempFolder.getRoot()
 				+ File.separator
 				+ mailMessage.getAttachments()[0].getFileName());
-		
-		InputStream inputStream = new ByteArrayInputStream(Base64.decodeBase64(mailMessage.getAttachments()[0].getBody().getBytes()));
-		
+
+		InputStream inputStream = new ByteArrayInputStream(
+				Base64.decodeBase64(mailMessage.getAttachments()[0].getBody()
+						.getBytes()));
+
 		int read = 0;
 		int total = read;
 		byte[] bytes = new byte[1024];
-	 
+
 		while ((read = inputStream.read(bytes)) != -1) {
-			
+
 			total += read;
 			fos.write(bytes, 0, read);
 		}
 		inputStream.close();
 		fos.flush();
 		fos.close();
-		
-		
+
 		String md5fromAttachment = getMD5Checksum(new File(tempFolder.getRoot()
 				+ File.separator
 				+ mailMessage.getAttachments()[0].getFileName()));
@@ -284,7 +364,6 @@ public class EmlLoadTest {
 		Assert.assertEquals(mimeMessage.getMessageID(),
 				mailMessage.getMessageId());
 	}
-	
 
 	@Test
 	public void testMimeMessageWithImage() throws Exception {
@@ -293,71 +372,55 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MailMessage mailMessage = new MailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
 
-		Assert.assertEquals(mimeMessage.getSubject(), mailMessage
-				.getImapMailMessage().getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(), mailMessage
-				.getImapMailMessage().getMessageDate());
+		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
+		Assert.assertEquals(mimeMessage.getReceivedDate(),
+				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-				mailMessage.getImapMailMessage().getFrom().getAddress());
+				mailMessage.getFrom().getAddress());
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-				mailMessage.getImapMailMessage().getFrom().getName());
+				mailMessage.getFrom().getName());
 
 		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
-				mailMessage.getImapMailMessage().getTo().length);
+				mailMessage.getTo().length);
 		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
 
 			Assert.assertEquals(
 					mimeMessage.getRecipients(RecipientType.CC).length,
-					mailMessage.getImapMailMessage().getCc().length);
+					mailMessage.getCc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.CC)[i]).getAddress(),
-						mailMessage.getImapMailMessage().getCc()[i]
-								.getAddress());
+						mailMessage.getCc()[i].getAddress());
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.CC)[i]).getPersonal(),
-						mailMessage.getImapMailMessage().getCc()[i].getName());
+						mailMessage.getCc()[i].getName());
 			}
 		} else {
-			Assert.assertEquals(0,
-					mailMessage.getImapMailMessage().getCc().length);
+			Assert.assertEquals(0, mailMessage.getCc().length);
 		}
 
 		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
 
 			Assert.assertEquals(
 					mimeMessage.getRecipients(RecipientType.BCC).length,
-					mailMessage.getImapMailMessage().getBcc().length);
+					mailMessage.getBcc().length);
 
 			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.BCC)[i]).getAddress(),
-						mailMessage.getImapMailMessage().getBcc()[i]
-								.getAddress());
+						mailMessage.getBcc()[i].getAddress());
 				Assert.assertEquals(((InternetAddress) mimeMessage
 						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
-						mailMessage.getImapMailMessage().getBcc()[i].getName());
+						mailMessage.getBcc()[i].getName());
 			}
 		} else {
-			Assert.assertEquals(0,
-					mailMessage.getImapMailMessage().getBcc().length);
-		}
-
-		List<Header> mimeHeaders = Collections
-				.list(mimeMessage.getAllHeaders());
-		Assert.assertEquals(mimeHeaders.size(), mailMessage
-				.getImapMailMessage().getHeaders().length);
-		for (int i = 0; i < mimeHeaders.size(); i++) {
-			Assert.assertEquals(mimeHeaders.get(i).getName(), mailMessage
-					.getImapMailMessage().getHeaders()[i].getName());
-			Assert.assertEquals(mimeHeaders.get(i).getValue(), mailMessage
-					.getImapMailMessage().getHeaders()[i].getValue());
+			Assert.assertEquals(0, mailMessage.getBcc().length);
 		}
 
 		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
@@ -365,30 +428,26 @@ public class EmlLoadTest {
 		Multipart part1 = (Multipart) contents.getBodyPart(0).getContent();
 
 		Assert.assertEquals(part1.getBodyPart(0).getContent().toString(),
-				mailMessage.getImapMailMessage().getBody());
+				mailMessage.getBody());
 
-		Assert.assertEquals(part1.getBodyPart(0).getContentType(), mailMessage
-				.getImapMailMessage().getBodyContentType());
+		Assert.assertEquals(part1.getBodyPart(0).getContentType(),
+				mailMessage.getBodyContentType());
 
 		Assert.assertEquals(part1.getBodyPart(1).getContent().toString(),
-				mailMessage.getImapMailMessage().getBodyHTML());
+				mailMessage.getBodyHTML());
 
-		Assert.assertEquals(part1.getBodyPart(1).getContentType(), mailMessage
-				.getImapMailMessage().getBodyHTMLContentType());
+		Assert.assertEquals(part1.getBodyPart(1).getContentType(),
+				mailMessage.getBodyHTMLContentType());
 
 		InputStream part2 = (InputStream) contents.getBodyPart(1).getContent();
 		Assert.assertEquals(contents.getBodyPart(1).getFileName(),
 				mailMessage.getAttachments()[0].getFileName());
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		// 8176 is the block size used internally and should give the
-		// best
-		// performance
-
 		byte[] buf = new byte[4096];
 		int bytesRead;
-		while((bytesRead = part2.read(buf))!=-1) {
-		    out.write(buf, 0, bytesRead);
+		while ((bytesRead = part2.read(buf)) != -1) {
+			out.write(buf, 0, bytesRead);
 		}
 		out.close();
 
@@ -402,23 +461,24 @@ public class EmlLoadTest {
 		OutputStream fos = new FileOutputStream(tempFolder.getRoot()
 				+ File.separator
 				+ mailMessage.getAttachments()[0].getFileName());
-		
-		InputStream inputStream = new ByteArrayInputStream(Base64.decodeBase64(mailMessage.getAttachments()[0].getBody().getBytes()));
-		
+
+		InputStream inputStream = new ByteArrayInputStream(
+				Base64.decodeBase64(mailMessage.getAttachments()[0].getBody()
+						.getBytes()));
+
 		int read = 0;
 		int total = read;
 		byte[] bytes = new byte[1024];
-	 
+
 		while ((read = inputStream.read(bytes)) != -1) {
-			
+
 			total += read;
 			fos.write(bytes, 0, read);
 		}
 		inputStream.close();
 		fos.flush();
 		fos.close();
-		
-		
+
 		String md5fromAttachment = getMD5Checksum(new File(tempFolder.getRoot()
 				+ File.separator
 				+ mailMessage.getAttachments()[0].getFileName()));
@@ -428,8 +488,6 @@ public class EmlLoadTest {
 		Assert.assertEquals(mimeMessage.getMessageID(),
 				mailMessage.getMessageId());
 	}
-	
-	
 
 	private static byte[] createChecksum(File file)
 			throws NoSuchAlgorithmException, IOException {
@@ -459,7 +517,5 @@ public class EmlLoadTest {
 		}
 		return result;
 	}
-
-	
 
 }

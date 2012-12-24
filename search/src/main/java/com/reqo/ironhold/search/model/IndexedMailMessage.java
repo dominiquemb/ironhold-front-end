@@ -18,7 +18,7 @@ import org.jsoup.Jsoup;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
 import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.IMAPMailMessage;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.Recipient;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
@@ -53,16 +53,19 @@ public class IndexedMailMessage {
 
 	public IndexedMailMessage(MailMessage mailMessage) {
 		messageId = mailMessage.getMessageId();
-		if (mailMessage.getPstMessage() != null) {
-			load(mailMessage.getPstMessage());
-		} else if (mailMessage.getImapMailMessage() != null) {
-			load(mailMessage.getImapMailMessage());
-		}
+		load(mailMessage.getPstMessage());
 
 		attachments = mailMessage.getAttachments();
 	}
+	
+	public IndexedMailMessage(MimeMailMessage mimeMessage) {
+		messageId = mimeMessage.getMessageId();
+		load(mimeMessage);
+		
+		attachments = mimeMessage.getAttachments();
+	}
 
-	private void load(IMAPMailMessage imapMailMessage) {
+	private void load(MimeMailMessage imapMailMessage) {
 		logger.info("Loading imap message");
 		subject = imapMailMessage.getSubject();
 		messageDate = imapMailMessage.getMessageDate();
@@ -75,12 +78,12 @@ public class IndexedMailMessage {
 		size = imapMailMessage.getSize();
 
 		if (imapMailMessage.getBody().trim().length() != 0) {
-			body =  Jsoup.parse(imapMailMessage.getBody()).text();
+			body = Jsoup.parse(imapMailMessage.getBody()).text();
 		} else {
 			body = StringUtils.EMPTY;
 		}
 		logger.info("Done loading imap message");
-		
+
 	}
 
 	private void load(ArchivedPSTMessage pstMessage) {
@@ -117,9 +120,10 @@ public class IndexedMailMessage {
 		try {
 			result = mapper.writeValueAsString(message);
 		} finally {
-			logger.info("Finished toJSON serialization " + result.length() + " bytes");
+			logger.info("Finished toJSON serialization " + result.length()
+					+ " bytes");
 		}
-		
+
 		return result;
 	}
 

@@ -71,7 +71,7 @@ public class PSTImporter {
 							+ file.toString() + "] File size: ["
 							+ fileSizeDisplay + "]");
 
-			storageService.log(startedMessage);
+			storageService.store(startedMessage);
 
 			long started = System.currentTimeMillis();
 
@@ -95,7 +95,7 @@ public class PSTImporter {
 			LogMessage finishedMessage = new LogMessage(LogLevel.Success,
 					file.toString(), messageString);
 
-			storageService.log(finishedMessage);
+			storageService.store(finishedMessage);
 
 			storageService.addPSTFile(metaData);
 
@@ -112,7 +112,7 @@ public class PSTImporter {
 		LogMessage folderMessage = new LogMessage(LogLevel.Success,
 				file.toString(), "Processing " + folderPath + " ["
 						+ folder.getContentCount() + " items]");
-		storageService.log(folderMessage);
+		storageService.store(folderMessage);
 		// go through the folders...
 		if (folder.hasSubfolders()) {
 			List<PSTFolder> childFolders = folder.getSubFolders();
@@ -200,13 +200,13 @@ public class PSTImporter {
 							LogLevel.Success, messageId,
 							"Processed pst message");
 
-					storageService.log(processedMessage);
+					storageService.store(processedMessage);
 				} catch (Exception e) {
 					LogMessage processedMessage = new LogMessage(
 							LogLevel.Failure, messageId,
 							"Failed to process message " + e.getMessage());
 
-					storageService.log(processedMessage);
+					storageService.store(processedMessage);
 					metaData.incrementFailures();
 				}
 				message = (PSTMessage) folder.getNextChild();
