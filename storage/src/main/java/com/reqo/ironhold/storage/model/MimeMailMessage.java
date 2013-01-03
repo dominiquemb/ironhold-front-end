@@ -176,7 +176,13 @@ public class MimeMailMessage implements Serializable {
 			MessagingException {
 		Object content = message.getContent();
 		if (content instanceof String) {
-			this.body += (String) content;
+			if (message.getContentType().startsWith("text/html")) {
+				this.bodyHTML += (String) content;
+				this.setBodyHTMLContentType(message.getContentType());
+			} else if (message.getContentType().startsWith("text/plain")) {
+				this.body += (String) content;
+				this.setBodyContentType(message.getContentType());
+			}
 		} else if (content instanceof Multipart) {
 			Multipart mp = (Multipart) content;
 			handleMultipart(mp);

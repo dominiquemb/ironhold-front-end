@@ -1,6 +1,7 @@
 package com.reqo.ironhold.reader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 
 import javax.mail.AuthenticationFailedException;
@@ -15,6 +16,7 @@ import javax.mail.ReadOnlyFolderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.StoreClosedException;
+import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -25,7 +27,6 @@ import com.reqo.ironhold.storage.model.IMAPHeader;
 import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.sun.mail.imap.IMAPNestedMessage;
 
@@ -111,17 +112,32 @@ public class JournalIMAPReader {
 					// Determine email type
 					if (messagecontentObject instanceof Multipart) {
 
+						
 						Enumeration<Header> headers = message.getAllHeaders();
 
 						while (headers.hasMoreElements()) {
 							Header header = headers.nextElement();
 							source.addHeader(new IMAPHeader(header));
 
+							System.out.println(header.getName() + ": " + header.getValue());
+							
 						}
+						
+						MimeMessage mimeMessage = (MimeMessage) message;
+						InputStream rawStream = mimeMessage.getRawInputStream();
+						int read = 0;
+						byte[] bytes = new byte[1024];
+
+						while ((read = rawStream.read(bytes)) != -1) {
+							System.out.write(bytes, 0, read);
+						}
+						rawStream.close();
+
 
 						// Retrieve the Multipart object from the message
 						multipart = (Multipart) message.getContent();
 
+						
 						// Loop over the parts of the email
 						for (int i = 0; i < multipart.getCount(); i++) {
 							// Retrieve the next part
@@ -136,6 +152,7 @@ public class JournalIMAPReader {
 
 							}
 						}
+						System.exit(1);
 					} else {
 						throw new Exception(
 								"This reader supports journal messages only");
