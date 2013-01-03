@@ -106,64 +106,8 @@ public class JournalIMAPReader {
 					source.setImapPort(port);
 					source.setProtocol(protocol);
 
-					// Retrieve the message content
-					messagecontentObject = message.getContent();
 
-					// Determine email type
-					if (messagecontentObject instanceof Multipart) {
-
-						
-						Enumeration<Header> headers = message.getAllHeaders();
-
-						while (headers.hasMoreElements()) {
-							Header header = headers.nextElement();
-							source.addHeader(new IMAPHeader(header));
-
-							System.out.println(header.getName() + ": " + header.getValue());
-							
-						}
-						
-						MimeMessage mimeMessage = (MimeMessage) message;
-						InputStream rawStream = mimeMessage.getRawInputStream();
-						int read = 0;
-						byte[] bytes = new byte[1024];
-
-						while ((read = rawStream.read(bytes)) != -1) {
-							System.out.write(bytes, 0, read);
-						}
-						rawStream.close();
-
-
-						// Retrieve the Multipart object from the message
-						multipart = (Multipart) message.getContent();
-
-						
-						// Loop over the parts of the email
-						for (int i = 0; i < multipart.getCount(); i++) {
-							// Retrieve the next part
-							part = multipart.getBodyPart(i);
-
-							// Get the content type
-							contentType = part.getContentType();
-
-							if (contentType.startsWith("message/rfc822")) {
-								nestedMessage = (IMAPNestedMessage) part
-										.getContent();
-
-							}
-						}
-						System.exit(1);
-					} else {
-						throw new Exception(
-								"This reader supports journal messages only");
-					}
-
-					if (nestedMessage == null) {
-						throw new Exception(
-								"This reader supports journal messages only, failed to find an IMAPNestedMessage");
-					}
-					MimeMailMessage mailMessage = new MimeMailMessage(nestedMessage,
-							source);
+					MimeMailMessage mailMessage = new MimeMailMessage((MimeMessage) message, source);
 					
 					String messageId = mailMessage.getMessageId();
 					if (storageService.exists(messageId)) {
