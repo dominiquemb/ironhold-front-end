@@ -107,7 +107,9 @@ public class JournalIMAPReader {
 					source.setProtocol(protocol);
 
 
-					MimeMailMessage mailMessage = new MimeMailMessage((MimeMessage) message, source);
+					MimeMailMessage mailMessage = new MimeMailMessage();
+					mailMessage.loadMimeMessage((MimeMessage) message);
+					mailMessage.addSource(source);
 					
 					String messageId = mailMessage.getMessageId();
 					if (storageService.exists(messageId)) {

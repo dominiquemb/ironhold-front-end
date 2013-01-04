@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -7,17 +8,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.mail.Header;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -29,14 +29,12 @@ import junit.framework.Assert;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.fluttercode.datafactory.impl.DataFactory;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.reqo.ironhold.storage.model.IMAPMessageSource;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MailMessageTestModel;
+import com.reqo.ironhold.storage.model.MessageSourceTestModel;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class EmlLoadTest {
@@ -44,7 +42,7 @@ public class EmlLoadTest {
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	private IMAPMessageSource source = MailMessageTestModel
+	private IMAPMessageSource source = MessageSourceTestModel
 			.generateIMAPMessageSource();
 
 	@Test
@@ -150,7 +148,96 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessage(mimeMessage);
+		mailMessage.addSource(source);
+
+		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
+		Assert.assertEquals(mimeMessage.getReceivedDate(),
+				mailMessage.getMessageDate());
+
+		Assert.assertEquals(
+				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
+				mailMessage.getFrom().getAddress());
+		Assert.assertEquals(
+				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
+				mailMessage.getFrom().getName());
+
+		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
+				mailMessage.getTo().length);
+		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
+
+			Assert.assertEquals(
+					mimeMessage.getRecipients(RecipientType.CC).length,
+					mailMessage.getCc().length);
+
+			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.CC)[i]).getAddress(),
+						mailMessage.getCc()[i].getAddress());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.CC)[i]).getPersonal(),
+						mailMessage.getCc()[i].getName());
+			}
+		} else {
+			Assert.assertEquals(0, mailMessage.getCc().length);
+		}
+
+		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
+
+			Assert.assertEquals(
+					mimeMessage.getRecipients(RecipientType.BCC).length,
+					mailMessage.getBcc().length);
+
+			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.BCC)[i]).getAddress(),
+						mailMessage.getBcc()[i].getAddress());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
+						mailMessage.getBcc()[i].getName());
+			}
+		} else {
+			Assert.assertEquals(0, mailMessage.getBcc().length);
+		}
+
+		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
+
+		Assert.assertEquals(contents.getBodyPart(0).getContent().toString(),
+				mailMessage.getBody());
+
+		Assert.assertEquals(contents.getBodyPart(0).getContentType(),
+				mailMessage.getBodyContentType());
+
+		Assert.assertEquals(contents.getBodyPart(1).getContent().toString(),
+				mailMessage.getBodyHTML());
+
+		Assert.assertEquals(contents.getBodyPart(1).getContentType(),
+				mailMessage.getBodyHTMLContentType());
+
+		Assert.assertEquals(mimeMessage.getMessageID(),
+				mailMessage.getMessageId());
+	}
+
+	@Test
+	public void testMimeMessageWithHTMLFromString() throws Exception {
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testMimeMessageWithHTML.eml"));
+		InputStream is = new FileInputStream(file);
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		String line;
+		while ((line = br.readLine()) != null) {
+			sb.append(line);
+			sb.append("\n");
+		}
+		InputStream is2 = new FileInputStream(file);
+		MimeMessage mimeMessage = new MimeMessage(null, is2);
+		
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessageFromSource(sb.toString());
+		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
 		Assert.assertEquals(mimeMessage.getReceivedDate(),
@@ -246,7 +333,9 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessage(mimeMessage);
+		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
 		Assert.assertEquals(mimeMessage.getReceivedDate(),
@@ -296,8 +385,6 @@ public class EmlLoadTest {
 		} else {
 			Assert.assertEquals(0, mailMessage.getBcc().length);
 		}
-
-	
 
 		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
 
@@ -372,7 +459,9 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessage(mimeMessage);
+		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
 		Assert.assertEquals(mimeMessage.getReceivedDate(),
@@ -496,7 +585,9 @@ public class EmlLoadTest {
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-		MimeMailMessage mailMessage = new MimeMailMessage(mimeMessage, source);
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessage(mimeMessage);
+		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
 		Assert.assertEquals(mimeMessage.getReceivedDate(),
@@ -547,21 +638,19 @@ public class EmlLoadTest {
 			Assert.assertEquals(0, mailMessage.getBcc().length);
 		}
 
-	
-
 		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
 
-		MimeMessage internalMessage = (MimeMessage) contents.getBodyPart(0).getContent();
-		
-		String internalContents = (String) internalMessage.getContent();
-		
-		Assert.assertEquals(internalContents, mailMessage.getBodyHTML());
+		MimeMessage internalMessage = (MimeMessage) contents.getBodyPart(0)
+				.getContent();
 
+		String internalContents = (String) internalMessage.getContent();
+
+		Assert.assertEquals(internalContents, mailMessage.getBodyHTML());
 
 		Assert.assertEquals(mimeMessage.getMessageID(),
 				mailMessage.getMessageId());
 	}
-	
+
 	private static byte[] createChecksum(File file)
 			throws NoSuchAlgorithmException, IOException {
 		InputStream fis = new FileInputStream(file);

@@ -15,8 +15,8 @@ import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 
-public class Indexer {
-	private static Logger logger = Logger.getLogger(Indexer.class);
+public class IMAPIndexer {
+	private static Logger logger = Logger.getLogger(IMAPIndexer.class);
 
 	public static void main(String[] args) {
 		IndexerOptions bean = new IndexerOptions();
@@ -29,7 +29,7 @@ public class Indexer {
 			return;
 		}
 		try {
-			new Indexer(bean.getClient(), bean.getBatchSize(),
+			new IMAPIndexer(bean.getClient(), bean.getBatchSize(),
 					bean.getThreads());
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
@@ -38,14 +38,14 @@ public class Indexer {
 
 	}
 
-	public Indexer(String client, int batchSize, int threads) throws Exception {
+	public IMAPIndexer(String client, int batchSize, int threads) throws Exception {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
 		final IndexService indexService = new IndexService(client);
 		
 		while (true) {
 			List<MailMessage> mailMessages = storageService
-					.findUnindexedMessages(batchSize);
+					.findUnindexedPSTMessages(batchSize);
 
 	//		ExecutorService executorService = Executors.newFixedThreadPool(25);
 

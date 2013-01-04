@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +44,9 @@ public class MimeMailMessage implements Serializable {
 				false);
 	}
 
+	// Derived fields
 	@JsonIgnore
 	private Recipient from;
-
 	@JsonIgnore
 	private Recipient[] to = new Recipient[0];
 	@JsonIgnore
@@ -56,45 +57,44 @@ public class MimeMailMessage implements Serializable {
 	private String subject = StringUtils.EMPTY;
 	@JsonIgnore
 	private Date messageDate;
-
 	@JsonIgnore
 	private String body = StringUtils.EMPTY;
 	@JsonIgnore
 	private String bodyHTML = StringUtils.EMPTY;
-
 	@JsonIgnore
 	private int size;
-
 	@JsonIgnore
 	private String bodyHTMLContentType;
-
 	@JsonIgnore
 	private String bodyContentType;
-
 	@JsonIgnore
 	private Attachment[] attachments = new Attachment[0];
+	@JsonIgnore
+	private String rawContents;
 
+	
+	
 	private IndexStatus indexed = IndexStatus.NOT_INDEXED;
 	private Date storedDate;
 	private String messageId;
 	private MessageSource[] sources;
 
-	@JsonIgnore
-	private String rawContents;
 
 	public MimeMailMessage() {
 	}
+	
+	public void loadMimeMessageFromSource(String source) throws MessagingException, IOException {
+		InputStream is = new ByteArrayInputStream(source.getBytes());
+		MimeMessage mimeMessage = new MimeMessage(null, is);
 
-	public MimeMailMessage(MimeMessage mimeMessage, IMAPMessageSource source)
-			throws Exception {
-		this();
+		loadMimeMessage(mimeMessage);
+	}
+	
 
+	public void loadMimeMessage(MimeMessage mimeMessage) throws MessagingException, IOException {
 		long started = System.currentTimeMillis();
 		try {
 			this.messageId = mimeMessage.getMessageID();
-			this.storedDate = new Date();
-
-			addSource(source);
 
 			populateRawContents(mimeMessage);
 
@@ -136,11 +136,13 @@ public class MimeMailMessage implements Serializable {
 
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info("Constructed imap mail message in "
+			logger.info("loadMimeMessage in "
 					+ (finished - started) + "ms");
 		}
 
 	}
+	
+
 
 	public void addSource(MessageSource source) {
 		if (sources == null) {
@@ -152,6 +154,8 @@ public class MimeMailMessage implements Serializable {
 		}
 	}
 
+	
+	
 	private void populateRawContents(MimeMessage mimeMessage)
 			throws IOException, MessagingException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();

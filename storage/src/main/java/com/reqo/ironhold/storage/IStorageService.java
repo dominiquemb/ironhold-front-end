@@ -16,18 +16,22 @@ public interface IStorageService {
 	void store(MailMessage mailMessage) throws Exception;
 
 	void store(MimeMailMessage mailMessage) throws Exception;
-	
+
 	void addSource(String messageId, MessageSource source) throws Exception;
 
 	void updateIndexStatus(String messageId, IndexStatus status)
 			throws Exception;
 
-	List<MailMessage> findUnindexedMessages(int limit) throws Exception;
+	List<MailMessage> findUnindexedPSTMessages(int limit) throws Exception;
+
+	List<MimeMailMessage> findUnindexedIMAPMessages(int limit) throws Exception;
 
 	MailMessage getMailMessage(String messageId) throws Exception;
 
 	MailMessage getMailMessage(String messageId, boolean includeAttachments)
 			throws Exception;
+
+	MimeMailMessage getMimeMailMessage(String messageId) throws Exception;
 
 	long getTotalMessageCount();
 
@@ -36,7 +40,7 @@ public interface IStorageService {
 	List<LogMessage> getLogMessages(String messageId) throws Exception;
 
 	void addPSTFile(PSTFileMeta pstFile) throws Exception;
-	
+
 	List<PSTFileMeta> getPSTFiles() throws Exception;
 
 }

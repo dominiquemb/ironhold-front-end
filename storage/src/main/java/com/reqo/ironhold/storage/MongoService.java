@@ -81,12 +81,11 @@ public class MongoService implements IStorageService {
 					"Connected to Mongo at %s:%d, db [%s] as [%s]", mongoHost,
 					mongoPort, clientName, username));
 		} else {
-			logger.info(String.format(
-					"Connected to Mongo at %s:%d, db [%s] without authentication", mongoHost,
-					mongoPort, clientName));
+			logger.info(String
+					.format("Connected to Mongo at %s:%d, db [%s] without authentication",
+							mongoHost, mongoPort, clientName));
 		}
 		db = mongo.getDB(clientName);
-
 
 	}
 
@@ -123,7 +122,7 @@ public class MongoService implements IStorageService {
 
 	}
 
-	public List<MailMessage> findUnindexedMessages(int limit)
+	public List<MailMessage> findUnindexedPSTMessages(int limit)
 			throws JsonParseException, JsonMappingException, IOException {
 		logger.info("Statistics: findUnindexedMessages, phase 1 started");
 
@@ -292,10 +291,10 @@ public class MongoService implements IStorageService {
 	public void store(MimeMailMessage mailMessage) throws Exception {
 		Date storedDate = new Date();
 		mailMessage.setStoredDate(storedDate);
-		String jsonString = MimeMailMessage
-				.serialize(mailMessage);
+		String jsonString = MimeMailMessage.serialize(mailMessage);
 		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
-		String compressedRawContents = Compression.compress(mailMessage.getRawContents());
+		String compressedRawContents = Compression.compress(mailMessage
+				.getRawContents());
 		ByteArrayInputStream bis = new ByteArrayInputStream(
 				compressedRawContents.getBytes());
 		GridFSInputFile fsFile = fs.createFile(bis, mailMessage.getMessageId());
@@ -306,5 +305,66 @@ public class MongoService implements IStorageService {
 		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
 		fsFile.saveChunks();
 		fsFile.save();
+	}
+
+	@Override
+	public List<MimeMailMessage> findUnindexedIMAPMessages(int limit)
+			throws Exception {
+		logger.info("Statistics: findUnindexedIMAPMessages, phase 1 started");
+
+		long started = System.currentTimeMillis();
+		List<MimeMailMessage> result = new ArrayList<MimeMailMessage>();
+			DBObject query = QueryBuilder.start().put("metadata.indexed")
+				.is(IndexStatus.NOT_INDEXED.toString()).get();
+
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+
+		DBCursor cur = fs.getFileList(query).limit(limit);
+
+		List<String> toBeReturned = new ArrayList<String>();
+
+		while (cur.hasNext()) {
+			GridFSDBFile object = (GridFSDBFile) cur.next();
+
+			toBeReturned.add(object.getFilename());
+
+		}
+		long finished = System.currentTimeMillis();
+
+		logger.info(String.format(
+				"Statistics: findUnindexedIMAPMessages, phase 1 %d", finished
+						- started));
+
+		started = System.currentTimeMillis();
+		for (String fileName : toBeReturned) {
+			result.add(getMimeMailMessage(fileName));
+		}
+		finished = System.currentTimeMillis();
+
+		logger.info(String.format(
+				"Statistics: findUnindexedIMAPMessages, phase 2 %d", finished
+						- started));
+
+		
+		return result;
+
+	}
+
+	@Override
+	public MimeMailMessage getMimeMailMessage(String messageId) throws Exception {
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+
+		GridFSDBFile object = fs.findOne(messageId);
+		ByteArrayOutputStream byos = new ByteArrayOutputStream();
+		object.writeTo(byos);
+
+		
+		MimeMailMessage mailMessage = MimeMailMessage
+				.deserialize(object.getMetaData().toString());
+		
+		mailMessage.loadMimeMessageFromSource(Compression.decompress(new String(byos
+				.toByteArray())));
+
+		return mailMessage;
 	}
 }
