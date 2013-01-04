@@ -170,7 +170,7 @@ public class MongoServiceTest {
 	}
 
 	@Test
-	public void testFindUnindexedMessages() throws Exception {
+	public void testFindUnindexedPSTMessages() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
 
 		int storedCount = 0;
