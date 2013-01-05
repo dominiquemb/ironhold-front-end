@@ -41,86 +41,74 @@ public class PSTIndexer {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
 		final IndexService indexService = new IndexService(client);
-		
+
 		while (true) {
 			List<MailMessage> mailMessages = storageService
 					.findUnindexedPSTMessages(batchSize);
 
-
 			for (final MailMessage mailMessage : mailMessages) {
 
 				logger.info("Indexing " + mailMessage.getMessageId());
-						try {
-							try {
-								indexService.store(new IndexedMailMessage(
-										mailMessage));
+				try {
+					try {
+						indexService.store(new IndexedMailMessage(mailMessage));
 
-							} catch (MapperParsingException e) {
-								logger.warn("Failed to index message "
+					} catch (MapperParsingException e) {
+						logger.warn(
+								"Failed to index message "
 										+ mailMessage.getMessageId()
 										+ " with attachments, "
 										+ "skipping attachments", e);
 
-								LogMessage logMessage = new LogMessage(
-										LogLevel.Warning,
-										"Failed to index message with attachments, "
-												+ "skiping attachments ["
-												+ e.getDetailedMessage() + "]",
-										mailMessage.getMessageId());
-								storageService.store(logMessage);
-								mailMessage.removeAttachments();
+						LogMessage logMessage = new LogMessage(
+								LogLevel.Warning,
+								"Failed to index message with attachments, "
+										+ "skiping attachments ["
+										+ e.getDetailedMessage() + "]",
+								mailMessage.getMessageId());
+						storageService.store(logMessage);
+						mailMessage.removeAttachments();
 
-								indexService.store(new IndexedMailMessage(
-										mailMessage));
-							}
+						indexService.store(new IndexedMailMessage(mailMessage));
+					}
 
-							logger.info("Message indexed with "
+					logger.info("Message indexed with "
+							+ mailMessage.getAttachments().length
+							+ " attachments");
+
+					LogMessage logMessage = new LogMessage(LogLevel.Success,
+							"Message indexed with "
 									+ mailMessage.getAttachments().length
-									+ " attachments");
+									+ " attachments",
+							mailMessage.getMessageId());
+					storageService.store(logMessage);
 
-							LogMessage logMessage = new LogMessage(
-									LogLevel.Success,
-									"Message indexed with "
-											+ mailMessage.getAttachments().length
-											+ " attachments", mailMessage
-											.getMessageId());
-							storageService.store(logMessage);
+					storageService.updateIndexStatus(mailMessage,
+							IndexStatus.INDEXED);
 
-							storageService.updateIndexStatus(
-									mailMessage,
-									IndexStatus.INDEXED);
-							
-							
-						} catch (Exception e2) {
+				} catch (Exception e2) {
 
-							try {
-								logger.error("Failed to index message "
+					try {
+						logger.error(
+								"Failed to index message "
 										+ mailMessage.getMessageId(), e2);
 
-								storageService.updateIndexStatus(
-										mailMessage,
-										IndexStatus.FAILED);
+						storageService.updateIndexStatus(mailMessage,
+								IndexStatus.FAILED);
 
-								LogMessage logMessage = new LogMessage(
-										LogLevel.Failure,
-										"Failed to index message ["
-												+ e2.getMessage() + "]",
-										mailMessage.getMessageId());
-								storageService.store(logMessage);
-							} catch (Exception e) {
-								logger.error(
-										"Critical error detected. Exiting.", e);
-								System.exit(0);
-							}
-						}
-
+						LogMessage logMessage = new LogMessage(
+								LogLevel.Failure, "Failed to index message ["
+										+ e2.getMessage() + "]",
+								mailMessage.getMessageId());
+						storageService.store(logMessage);
+					} catch (Exception e) {
+						logger.error("Critical error detected. Exiting.", e);
+						System.exit(0);
 					}
-	/*			});
+				}
+
 			}
-			executorService.shutdown();
-			if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
-				executorService.shutdownNow();
-			}*/
+
 			if (mailMessages.size() == 0) {
 				Thread.sleep(10000);
 			} else {

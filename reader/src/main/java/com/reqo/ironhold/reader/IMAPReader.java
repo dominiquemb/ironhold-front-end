@@ -2,6 +2,9 @@ package com.reqo.ironhold.reader;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.AuthenticationFailedException;
 import javax.mail.Flags.Flag;
@@ -33,7 +36,6 @@ public class IMAPReader {
 
 	private static Logger logger = Logger.getLogger(IMAPReader.class);
 	private final IStorageService storageService;
-	private final String client;
 	private String hostname;
 	private int port;
 	private String username;
@@ -45,7 +47,6 @@ public class IMAPReader {
 	public IMAPReader(String hostname, int port, String username,
 			String password, String protocol, String client, int batchSize,
 			boolean expunge) throws IOException {
-		this.client = client;
 		this.hostname = hostname;
 		this.port = port;
 		this.username = username;
@@ -58,15 +59,12 @@ public class IMAPReader {
 
 	}
 
-	public int processMail() {
+	public int processMail() throws InterruptedException {
 		Session session = null;
 		Store store = null;
 		Folder folder = null;
-		Message message = null;
-		Message[] messages = null;
 		int messageNumber = 0;
-
-		IMAPMessageSource source = new IMAPMessageSource();
+		final IMAPMessageSource source = new IMAPMessageSource();
 
 		source.setImapPort(port);
 		source.setUsername(username);
@@ -74,7 +72,8 @@ public class IMAPReader {
 		source.setImapPort(port);
 		source.setProtocol(protocol);
 
-		IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
+		final IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
 
 		try {
 			logger.info("Journal IMAP Reader started");
@@ -99,20 +98,20 @@ public class IMAPReader {
 			folder.open(Folder.READ_WRITE);
 
 			// Retrieve the messages
-			messages = folder.getMessages();
+			final Message[] messages = folder.getMessages();
 
 			logger.info("Found " + messages.length + " messages");
 			// Loop over all of the messages
-			for (messageNumber = 0; messageNumber < batchSize; messageNumber++) {
 
+			for (messageNumber = 0; messageNumber < batchSize; messageNumber++) {
 				MimeMailMessage mailMessage = null;
 				try {
-
+					final int currentMessageNumber = messageNumber;
 					// Retrieve the next message to be read
-					message = messages[messageNumber];
+					final Message message = messages[currentMessageNumber];
+					mailMessage = new MimeMailMessage();
 
 					source.setLoadTimestamp(new Date());
-					mailMessage = new MimeMailMessage();
 					mailMessage.loadMimeMessage((MimeMessage) message);
 					mailMessage.addSource(source);
 
@@ -134,7 +133,7 @@ public class IMAPReader {
 						storageService.store(logMessage);
 
 						logger.info("Stored journaled message["
-								+ messageNumber
+								+ currentMessageNumber
 								+ "] "
 								+ mailMessage.getMessageId()
 								+ " "
@@ -171,6 +170,7 @@ public class IMAPReader {
 					e.printStackTrace();
 
 				}
+
 			}
 
 			metaData.setFinished(new Date());
@@ -222,23 +222,31 @@ public class IMAPReader {
 		try {
 			IMAPReader readMail = new IMAPReader(bean.getHostname(),
 					bean.getPort(), bean.getUsername(), bean.getPassword(),
-					bean.getProtocol(), bean.getClient(), bean.getBatchSize(), bean.getExpunge());
+					bean.getProtocol(), bean.getClient(), bean.getBatchSize(),
+					bean.getExpunge());
 
 			// "72.0.226.101", 993,
 			// "TWF\\Journal", "J0urn@l!", "imaps", "reqo"
 
 			// Calling processMail Function to read from IMAP Account
-			while (true) {
-				int number = readMail.processMail();
+			try {
+				while (true) {
 
-				if (number < bean.getBatchSize()) {
-					try {
+					long started = System.currentTimeMillis();
+					int number = readMail.processMail();
+					long finished = System.currentTimeMillis();
+					logger.info("Processed batch with " + number + " messages in "
+							+ (finished - started) + "ms");
+					
+					if (number < bean.getBatchSize()) {
+
 						Thread.sleep(60000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+
 					}
 
 				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		} catch (IOException e) {
 			logger.error("Critical error detected, exiting", e);

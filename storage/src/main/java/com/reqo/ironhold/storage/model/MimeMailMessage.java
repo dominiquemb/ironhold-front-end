@@ -203,7 +203,7 @@ public class MimeMailMessage implements Serializable {
 			os.write("\n".getBytes());
 			InputStream rawStream = mimeMessage.getRawInputStream();
 			int read = 0;
-			byte[] bytes = new byte[4096	];
+			byte[] bytes = new byte[4096];
 
 			while ((read = rawStream.read(bytes)) != -1) {
 				os.write(bytes, 0, read);
@@ -271,8 +271,6 @@ public class MimeMailMessage implements Serializable {
 						new Date(), filename, Base64.encodeBytes(out
 								.toByteArray()), bp.getContentType(),
 						bp.getDisposition()));
-				bp.getContentType();
-				bp.getDisposition();
 				attachmentStream.close();
 			} else if (content instanceof Message) {
 				Message message = (Message) content;

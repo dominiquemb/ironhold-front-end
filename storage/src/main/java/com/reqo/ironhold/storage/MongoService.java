@@ -348,8 +348,9 @@ public class MongoService implements IStorageService {
 		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
 		fsFile.saveChunks();
 		fsFile.save();
+		fsFile.getLength();
 	}
-
+	
 	@Override
 	public List<MimeMailMessage> findUnindexedIMAPMessages(int limit)
 			throws Exception {
