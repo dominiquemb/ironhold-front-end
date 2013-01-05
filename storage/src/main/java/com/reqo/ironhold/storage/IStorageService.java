@@ -16,9 +16,9 @@ public interface IStorageService {
 	boolean existsMailMessage(String messageId) throws Exception;
 	boolean existsMimeMailMessage(String messageId) throws Exception;
 
-	void store(MailMessage mailMessage) throws Exception;
+	long store(MailMessage mailMessage) throws Exception;
 
-	void store(MimeMailMessage mailMessage) throws Exception;
+	long store(MimeMailMessage mailMessage) throws Exception;
 
 	void addSource(String messageId, IMAPMessageSource source) throws Exception;
 	

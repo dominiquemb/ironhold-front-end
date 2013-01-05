@@ -39,6 +39,8 @@ import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
 
 @SuppressWarnings("serial")
 public class MimeMailMessage implements Serializable {
+	private static final int BUFFER_SIZE = 20000;
+
 	private static Logger logger = Logger.getLogger(MimeMailMessage.class);
 
 	private static ObjectMapper mapper = new ObjectMapper();
@@ -88,12 +90,14 @@ public class MimeMailMessage implements Serializable {
 	private Attachment[] attachments = new Attachment[0];
 	@JsonIgnore
 	private String rawContents;
+	@JsonIgnore
+	private boolean hasAttachments;
 
 	private IndexStatus indexed = IndexStatus.NOT_INDEXED;
 	private Date storedDate;
 	private String messageId;
 	private MessageSource[] sources;
-
+	
 	public MimeMailMessage() {
 	}
 
@@ -107,6 +111,11 @@ public class MimeMailMessage implements Serializable {
 
 	public void loadMimeMessage(MimeMessage mimeMessage)
 			throws MessagingException, IOException {
+		loadMimeMessage(mimeMessage, true);
+	}
+
+	public void loadMimeMessage(MimeMessage mimeMessage,
+			boolean processAttachments) throws MessagingException, IOException {
 		long started = System.currentTimeMillis();
 		try {
 			this.messageId = mimeMessage.getMessageID();
@@ -170,7 +179,7 @@ public class MimeMailMessage implements Serializable {
 			}
 			this.subject = mimeMessage.getSubject();
 
-			handleMessage(mimeMessage);
+			handleMessage(mimeMessage, processAttachments);
 
 		} finally {
 			long finished = System.currentTimeMillis();
@@ -203,7 +212,7 @@ public class MimeMailMessage implements Serializable {
 			os.write("\n".getBytes());
 			InputStream rawStream = mimeMessage.getRawInputStream();
 			int read = 0;
-			byte[] bytes = new byte[4096];
+			byte[] bytes = new byte[BUFFER_SIZE];
 
 			while ((read = rawStream.read(bytes)) != -1) {
 				os.write(bytes, 0, read);
@@ -214,12 +223,13 @@ public class MimeMailMessage implements Serializable {
 			this.setRawContents(os.toString());
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info("populateRawContents (" + bufferCount +" buffers) in " + (finished - started) + "ms");
+			logger.info("populateRawContents (" + bufferCount + " buffers) in "
+					+ (finished - started) + "ms");
 		}
 	}
 
-	private void handleMessage(Message message) throws IOException,
-			MessagingException {
+	private void handleMessage(Message message, boolean processAttachments)
+			throws IOException, MessagingException {
 		long started = System.currentTimeMillis();
 		try {
 			Object content = message.getContent();
@@ -233,7 +243,7 @@ public class MimeMailMessage implements Serializable {
 				}
 			} else if (content instanceof Multipart) {
 				Multipart mp = (Multipart) content;
-				handleMultipart(mp);
+				handleMultipart(mp, processAttachments);
 			}
 		} finally {
 			long finished = System.currentTimeMillis();
@@ -241,8 +251,8 @@ public class MimeMailMessage implements Serializable {
 		}
 	}
 
-	public void handleMultipart(Multipart mp) throws MessagingException,
-			IOException {
+	public void handleMultipart(Multipart mp, boolean processAttachments)
+			throws MessagingException, IOException {
 		for (int i = 0; i < mp.getCount(); i++) {
 			BodyPart bp = mp.getBodyPart(i);
 			Object content = bp.getContent();
@@ -256,28 +266,31 @@ public class MimeMailMessage implements Serializable {
 					this.setBodyContentType(bp.getContentType());
 				}
 			} else if (content instanceof InputStream) {
-				InputStream attachmentStream = (InputStream) content;
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				this.setHasAttachments(true);
+				if (processAttachments) {
+					InputStream attachmentStream = (InputStream) content;
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-				String filename = bp.getFileName();
+					String filename = bp.getFileName();
 
-				byte[] buf = new byte[4096];
-				int bytesRead;
-				while ((bytesRead = attachmentStream.read(buf)) != -1) {
-					out.write(buf, 0, bytesRead);
+					byte[] buf = new byte[BUFFER_SIZE];
+					int bytesRead;
+					while ((bytesRead = attachmentStream.read(buf)) != -1) {
+						out.write(buf, 0, bytesRead);
+					}
+
+					addAttachment(new Attachment(bp.getSize(), new Date(),
+							new Date(), filename, Base64.encodeBytes(out
+									.toByteArray()), bp.getContentType(),
+							bp.getDisposition()));
+					attachmentStream.close();
 				}
-
-				addAttachment(new Attachment(bp.getSize(), new Date(),
-						new Date(), filename, Base64.encodeBytes(out
-								.toByteArray()), bp.getContentType(),
-						bp.getDisposition()));
-				attachmentStream.close();
 			} else if (content instanceof Message) {
 				Message message = (Message) content;
-				handleMessage(message);
+				handleMessage(message, processAttachments);
 			} else if (content instanceof Multipart) {
 				Multipart mp2 = (Multipart) content;
-				handleMultipart(mp2);
+				handleMultipart(mp2, processAttachments);
 			}
 		}
 	}
@@ -468,6 +481,14 @@ public class MimeMailMessage implements Serializable {
 
 	public void setSources(MessageSource[] sources) {
 		this.sources = sources;
+	}
+
+	public boolean isHasAttachments() {
+		return hasAttachments;
+	}
+
+	public void setHasAttachments(boolean hasAttachments) {
+		this.hasAttachments = hasAttachments;
 	}
 
 }

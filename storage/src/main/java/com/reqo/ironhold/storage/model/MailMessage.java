@@ -35,6 +35,7 @@ import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 
 @JsonIgnoreProperties("attachments")
 public class MailMessage {
+	private static final int BUFFER_SIZE = 20000;
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static ObjectMapper compressedMapper = new ObjectMapper();
 
@@ -209,7 +210,7 @@ public class MailMessage {
 				
 				String filename = bp.getFileName();
 				
-				byte[] buf = new byte[4096];
+				byte[] buf = new byte[BUFFER_SIZE];
 				int bytesRead;
 				while((bytesRead = attachmentStream.read(buf))!=-1) {
 				    out.write(buf, 0, bytesRead);

@@ -114,9 +114,6 @@ public class IMAPBatchMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
 						.getAverageSize())), 3, 1);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
-						.getAverageAttachmentSize())), 4, 1);
 
 		Label averageCompressedSizeLabel = new Label("<b>Avg Zipped Size:</b>");
 		averageCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -124,9 +121,6 @@ public class IMAPBatchMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
 						.getCompressedAverageSize())), 3, 2);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
-						.getCompressedAverageAttachmentSize())), 4, 2);
 
 		Label medianSizeLabel = new Label("<b>Median Size:</b>");
 		medianSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -134,9 +128,6 @@ public class IMAPBatchMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
 						.getMedianSize())), 3, 3);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
-						.getMedianAttachmentSize())), 4, 3);
 
 		Label medianCompressedSizeLabel = new Label(
 				"<b>Median Zipped Size:</b>");
@@ -145,9 +136,6 @@ public class IMAPBatchMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
 						.getMedianCompressedSize())), 3, 4);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
-						.getMedianCompressedAttachmentSize())), 4, 4);
 
 		Label maxSizeLabel = new Label("<b>Max Size:</b>");
 		maxSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -155,9 +143,6 @@ public class IMAPBatchMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
 						.getMaxSize())), 3, 5);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
-						.getMaxAttachmentSize())), 4, 5);
 
 		Label maxCompressedSizeLabel = new Label("<b>Max Zipped Size:</b>");
 		maxCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -165,9 +150,6 @@ public class IMAPBatchMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
 						.getCompressedMaxSize())), 3, 6);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) imapBatch
-						.getCompressedMaxAttachmentSize())), 4, 6);
 
 		Label noAttachmentsLabel = new Label("<b>Count:</b>");
 		noAttachmentsLabel.setContentMode(Label.CONTENT_XHTML);

@@ -97,7 +97,7 @@ public class MongoService implements IStorageService {
 
 		return fs.findOne(messageId) != null;
 	}
-	
+
 	@Override
 	public boolean existsMimeMailMessage(String messageId) throws Exception {
 		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
@@ -105,7 +105,7 @@ public class MongoService implements IStorageService {
 		return fs.findOne(messageId) != null;
 	}
 
-	public void store(MailMessage mailMessage) throws JsonGenerationException,
+	public long store(MailMessage mailMessage) throws JsonGenerationException,
 			JsonMappingException, MongoException, IOException {
 		Date storedDate = new Date();
 		mailMessage.setStoredDate(storedDate);
@@ -124,6 +124,7 @@ public class MongoService implements IStorageService {
 		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
 		fsFile.saveChunks();
 		fsFile.save();
+		return fsFile.getLength();
 	}
 
 	public void stopSession() {
@@ -331,26 +332,34 @@ public class MongoService implements IStorageService {
 	}
 
 	@Override
-	public void store(MimeMailMessage mailMessage) throws Exception {
-		Date storedDate = new Date();
-		mailMessage.setStoredDate(storedDate);
-		String jsonString = MimeMailMessage.serialize(mailMessage);
-		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
-		String compressedRawContents = Compression.compress(mailMessage
-				.getRawContents());
-		ByteArrayInputStream bis = new ByteArrayInputStream(
-				compressedRawContents.getBytes());
-		GridFSInputFile fsFile = fs.createFile(bis, mailMessage.getMessageId());
+	public long store(MimeMailMessage mailMessage) throws Exception {
+		long started = System.currentTimeMillis();
+		try {
+			Date storedDate = new Date();
+			mailMessage.setStoredDate(storedDate);
+			String jsonString = MimeMailMessage.serialize(mailMessage);
+			GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+			String compressedRawContents = Compression.compress(mailMessage
+					.getRawContents());
+			ByteArrayInputStream bis = new ByteArrayInputStream(
+					compressedRawContents.getBytes());
+			GridFSInputFile fsFile = fs.createFile(bis,
+					mailMessage.getMessageId());
 
-		DBObject metaData = (DBObject) JSON.parse(jsonString);
+			DBObject metaData = (DBObject) JSON.parse(jsonString);
 
-		fsFile.setMetaData(metaData);
-		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
-		fsFile.saveChunks();
-		fsFile.save();
-		fsFile.getLength();
+			fsFile.setMetaData(metaData);
+			fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
+			fsFile.saveChunks();
+			fsFile.save();
+			return fsFile.getLength();
+		} finally {
+			long finished = System.currentTimeMillis();
+			logger.info("Stored mime message in " + (finished - started)
+					+ " ms");
+		}
 	}
-	
+
 	@Override
 	public List<MimeMailMessage> findUnindexedIMAPMessages(int limit)
 			throws Exception {
@@ -375,7 +384,8 @@ public class MongoService implements IStorageService {
 		}
 		long finished = System.currentTimeMillis();
 
-		logger.info(String.format("Found %d unindexed messages", toBeReturned.size()));
+		logger.info(String.format("Found %d unindexed messages",
+				toBeReturned.size()));
 		logger.info(String.format(
 				"Statistics: findUnindexedIMAPMessages, phase 1 %d", finished
 						- started));
@@ -416,7 +426,7 @@ public class MongoService implements IStorageService {
 	public void addIMAPBatch(IMAPBatchMeta imapBatchMeta) throws Exception {
 		db.getCollection(IMAP_COLLECTION).insert(
 				(DBObject) JSON.parse(IMAPBatchMeta.toJSON(imapBatchMeta)));
-		
+
 	}
 
 	@Override
@@ -434,5 +444,4 @@ public class MongoService implements IStorageService {
 		return result;
 	}
 
-	
 }

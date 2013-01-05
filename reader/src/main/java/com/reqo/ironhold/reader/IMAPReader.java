@@ -73,7 +73,6 @@ public class IMAPReader {
 		source.setProtocol(protocol);
 
 		final IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
-		ExecutorService executorService = Executors.newFixedThreadPool(1);
 
 		try {
 			logger.info("Journal IMAP Reader started");
@@ -81,7 +80,7 @@ public class IMAPReader {
 
 			logger.info("Getting the session for accessing email.");
 			store = session.getStore(protocol);
-
+			
 			store.connect(hostname, port, username, password);
 
 			logger.info("Connection established with IMAP server.");
@@ -112,7 +111,7 @@ public class IMAPReader {
 					mailMessage = new MimeMailMessage();
 
 					source.setLoadTimestamp(new Date());
-					mailMessage.loadMimeMessage((MimeMessage) message);
+					mailMessage.loadMimeMessage((MimeMessage) message, false);
 					mailMessage.addSource(source);
 
 					String messageId = mailMessage.getMessageId();
@@ -122,7 +121,7 @@ public class IMAPReader {
 						metaData.incrementDuplicates();
 						storageService.addSource(messageId, source);
 					} else {
-						storageService.store(mailMessage);
+						long storedSize = storageService.store(mailMessage);
 
 						LogMessage logMessage = new LogMessage(
 								LogLevel.Success, mailMessage.getMessageId(),
@@ -140,21 +139,13 @@ public class IMAPReader {
 								+ FileUtils.byteCountToDisplaySize(mailMessage
 										.getSize()));
 
+						metaData.updateSizeStatistics(mailMessage.getRawContents()
+								.length(),
+								storedSize);
+
 					}
 
-					metaData.updateSizeStatistics(mailMessage.getRawContents()
-							.length(),
-							Compression.compress(mailMessage.getRawContents())
-									.length());
-					metaData.incrementAttachmentStatistics(mailMessage
-							.getAttachments().length > 0);
-					if (mailMessage.getAttachments().length > 0) {
-						metaData.updateAttachmentSizeStatistics(
-								MimeMailMessage.serializeAttachments(
-										mailMessage.getAttachments()).length(),
-								MimeMailMessage.serializeCompressedAttachments(
-										mailMessage.getAttachments()).length());
-					}
+					metaData.incrementAttachmentStatistics(mailMessage.isHasAttachments());
 					if (expunge) {
 						message.setFlag(Flag.DELETED, true);
 
@@ -237,7 +228,7 @@ public class IMAPReader {
 					long finished = System.currentTimeMillis();
 					logger.info("Processed batch with " + number + " messages in "
 							+ (finished - started) + "ms");
-					
+					System.exit(1);
 					if (number < bean.getBatchSize()) {
 
 						Thread.sleep(60000);

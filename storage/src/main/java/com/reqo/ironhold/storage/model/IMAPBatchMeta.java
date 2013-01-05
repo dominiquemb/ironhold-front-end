@@ -39,36 +39,21 @@ public class IMAPBatchMeta {
 	private long maxSize;
 	private long compressedMaxSize;
 
-	private long maxAttachmentSize;
-	private long compressedMaxAttachmentSize;
-
 	private long messagesWithAttachments;
 	private long messagesWithoutAttachments;
 
 	@JsonIgnore
 	private Mean sizeMean = new Mean();
 	@JsonIgnore
-	private Mean attachmentSizeMean = new Mean();
-	@JsonIgnore
 	private Median sizeMedian = new Median();
-	@JsonIgnore
-	private Median attachmentSizeMedian = new Median();
 	@JsonIgnore
 	private Mean compressedSizeMean = new Mean();
 	@JsonIgnore
-	private Mean compressedAttachmentSizeMean = new Mean();
-	@JsonIgnore
 	private Median compressedSizeMedian = new Median();
-	@JsonIgnore
-	private Median compressedAttachmentSizeMedian = new Median();
 	private double compressedAverageSize;
-	private double compressedAverageAttachmentSize;
 	private double averageSize;
-	private double averageAttachmentSize;
 	private double medianSize;
-	private double medianAttachmentSize;
 	private double medianCompressedSize;
-	private double medianCompressedAttachmentSize;
 	@JsonIgnore
 	private boolean isDirty = false;
 
@@ -81,18 +66,11 @@ public class IMAPBatchMeta {
 	public void persistCalculations() {
 		if (isDirty) {
 			this.averageSize = sizeMean.evaluate();
-			this.averageAttachmentSize = attachmentSizeMean.evaluate();
 			this.compressedAverageSize = compressedSizeMean.evaluate();
-			this.compressedAverageAttachmentSize = compressedAttachmentSizeMean
-					.evaluate();
 
 			this.medianSize = sizeMedian.evaluate(sizeMean.getData());
-			this.medianAttachmentSize = attachmentSizeMedian
-					.evaluate(attachmentSizeMean.getData());
 			this.medianCompressedSize = compressedSizeMedian
 					.evaluate(compressedSizeMean.getData());
-			this.medianCompressedAttachmentSize = compressedAttachmentSizeMedian
-					.evaluate(compressedAttachmentSizeMean.getData());
 
 			isDirty = false;
 		}
@@ -112,9 +90,7 @@ public class IMAPBatchMeta {
 		this.setSource(source);
 		this.started = started;
 		this.sizeMean.setData(new double[] {});
-		this.attachmentSizeMean.setData(new double[] {});
 		this.compressedSizeMean.setData(new double[] {});
-		this.compressedAttachmentSizeMean.setData(new double[] {});
 	}
 
 	public void incrementAttachmentStatistics(boolean hasAttachment) {
@@ -137,7 +113,7 @@ public class IMAPBatchMeta {
 		this.duplicates++;
 	}
 
-	public void updateSizeStatistics(int size, int compressedSize) {
+	public void updateSizeStatistics(long size, long compressedSize) {
 		isDirty = true;
 		double[] sizes = Arrays.copyOf(sizeMean.getData(),
 				sizeMean.getData().length + 1);
@@ -158,41 +134,12 @@ public class IMAPBatchMeta {
 		}
 	}
 
-	public void updateAttachmentSizeStatistics(int size, int compressedSize) {
-		isDirty = true;
-		double[] sizes = Arrays.copyOf(attachmentSizeMean.getData(),
-				attachmentSizeMean.getData().length + 1);
-		sizes[attachmentSizeMean.getData().length] = size;
-		attachmentSizeMean.setData(sizes);
-
-		double[] csizes = Arrays.copyOf(compressedAttachmentSizeMean.getData(),
-				compressedAttachmentSizeMean.getData().length + 1);
-		csizes[compressedAttachmentSizeMean.getData().length] = compressedSize;
-		compressedAttachmentSizeMean.setData(csizes);
-
-		if (size > maxAttachmentSize) {
-			maxAttachmentSize = size;
-		}
-
-		if (compressedSize > compressedMaxAttachmentSize) {
-			compressedMaxAttachmentSize = compressedSize;
-		}
-	}
-
 	public double getCompressedAverageSize() {
 		return compressedAverageSize;
 	}
 
 	public long getCompressedMaxSize() {
 		return compressedMaxSize;
-	}
-
-	public double getCompressedAverageAttachmentSize() {
-		return compressedAverageAttachmentSize;
-	}
-
-	public long getCompressedMaxAttachmentSize() {
-		return compressedMaxAttachmentSize;
 	}
 
 	public Date getStarted() {
@@ -227,14 +174,6 @@ public class IMAPBatchMeta {
 		return maxSize;
 	}
 
-	public double getAverageAttachmentSize() {
-		return averageAttachmentSize;
-	}
-
-	public long getMaxAttachmentSize() {
-		return maxAttachmentSize;
-	}
-
 	public long getMessagesWithAttachments() {
 		return messagesWithAttachments;
 	}
@@ -247,16 +186,8 @@ public class IMAPBatchMeta {
 		return medianSize;
 	}
 
-	public double getMedianAttachmentSize() {
-		return medianAttachmentSize;
-	}
-
 	public double getMedianCompressedSize() {
 		return medianCompressedSize;
-	}
-
-	public double getMedianCompressedAttachmentSize() {
-		return medianCompressedAttachmentSize;
 	}
 
 	@Override
