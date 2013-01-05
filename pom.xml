@@ -12,9 +12,9 @@
 		<module>importer</module>
 		<module>storage</module>
 		<module>search</module>
+		<module>reader</module>
 		<module>web</module>
 		<module>dist</module>
-		<module>reader</module>
 	</modules>
 
 	<scm>
