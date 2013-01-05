@@ -153,7 +153,7 @@ public class EmlLoadTest {
 		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(),
+		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
@@ -240,7 +240,7 @@ public class EmlLoadTest {
 		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(),
+		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
@@ -338,7 +338,7 @@ public class EmlLoadTest {
 		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(),
+		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
@@ -464,7 +464,7 @@ public class EmlLoadTest {
 		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(),
+		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
@@ -590,7 +590,7 @@ public class EmlLoadTest {
 		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(),
+		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
@@ -663,7 +663,7 @@ public class EmlLoadTest {
 		mailMessage.addSource(source);
 
 		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getReceivedDate(),
+		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
