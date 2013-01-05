@@ -249,19 +249,33 @@ public class MongoServiceTest {
 	public void testAddIMAPSource() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
 
-		MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testMimeMessageWithHTML.eml"));
+		InputStream is = new FileInputStream(file);
 
-		storageService.store(inputMessage);
+		List<String> orioginalLines = Files.readAllLines(
+				Paths.get(file.toURI()), Charset.defaultCharset());
+		StringBuilder original = new StringBuilder();
+		for (String line : orioginalLines) {
+			original.append(line + "\n");
+		}
 
-		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+		MimeMailMessage mimeMailMessage = new MimeMailMessage();
+		mimeMailMessage.loadMimeMessageFromSource(original.toString());
+		mimeMailMessage.addSource(MessageSourceTestModel
+				.generateIMAPMessageSource());
+
+		storageService.store(mimeMailMessage);
+
+		MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
 
 		IMAPMessageSource source = MessageSourceTestModel
 				.generateIMAPMessageSource();
-		storageService.addSource(inputMessage.getMessageId(), source);
+		storageService.addSource(mimeMailMessage.getMessageId(), source);
 
-		inputMessage.addSource(source);
+		mimeMailMessage.addSource(source);
 
-		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+		MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
 
 	}
 
