@@ -21,7 +21,7 @@ public class EmailPreviewPanel extends TabSheet {
 
         this.emailView = new EmailView(storageService, indexService);
         this.sourceView = new SourceView(storageService, indexService);
-        this.auditView = new AuditView(storageService, indexService);
+        this.auditView = new AuditView(storageService);
 
         this.addTab(emailView, "Email");
         this.addTab(sourceView, "Source");

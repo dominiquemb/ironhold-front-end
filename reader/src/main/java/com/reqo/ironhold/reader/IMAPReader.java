@@ -1,17 +1,14 @@
 package com.reqo.ironhold.reader;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
+import java.util.Date;
 
 import javax.mail.AuthenticationFailedException;
+import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.FolderClosedException;
 import javax.mail.FolderNotFoundException;
-import javax.mail.Header;
 import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.ReadOnlyFolderException;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -20,19 +17,21 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.IMAPHeader;
+import com.reqo.ironhold.storage.model.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
-import com.sun.mail.imap.IMAPNestedMessage;
+import com.reqo.ironhold.storage.utils.Compression;
 
-public class JournalIMAPReader {
+public class IMAPReader {
 
-	private static Logger logger = Logger.getLogger(JournalIMAPReader.class);
+	private static Logger logger = Logger.getLogger(IMAPReader.class);
 	private final IStorageService storageService;
 	private final String client;
 	private String hostname;
@@ -40,30 +39,42 @@ public class JournalIMAPReader {
 	private String username;
 	private String password;
 	private String protocol;
+	private int batchSize;
+	private boolean expunge;
 
-	public JournalIMAPReader(String hostname, int port, String username,
-			String password, String protocol, String client) throws IOException {
+	public IMAPReader(String hostname, int port, String username,
+			String password, String protocol, String client, int batchSize,
+			boolean expunge) throws IOException {
 		this.client = client;
 		this.hostname = hostname;
 		this.port = port;
 		this.username = username;
 		this.password = password;
 		this.protocol = protocol;
+		this.batchSize = batchSize;
+		this.expunge = expunge;
 
-		this.storageService = new MongoService(client, "journalImapReader");
+		this.storageService = new MongoService(client, "IMAPReader");
 
 	}
 
-	public void processMail() {
+	public int processMail() {
 		Session session = null;
 		Store store = null;
 		Folder folder = null;
 		Message message = null;
 		Message[] messages = null;
-		Object messagecontentObject = null;
-		Multipart multipart = null;
-		Part part = null;
-		String contentType = null;
+		int messageNumber = 0;
+
+		IMAPMessageSource source = new IMAPMessageSource();
+
+		source.setImapPort(port);
+		source.setUsername(username);
+		source.setImapSource(hostname);
+		source.setImapPort(port);
+		source.setProtocol(protocol);
+
+		IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
 
 		try {
 			logger.info("Journal IMAP Reader started");
@@ -92,29 +103,24 @@ public class JournalIMAPReader {
 
 			logger.info("Found " + messages.length + " messages");
 			// Loop over all of the messages
-			for (int messageNumber = 0; messageNumber < 1000; messageNumber++) {
+			for (messageNumber = 0; messageNumber < batchSize; messageNumber++) {
+
+				MimeMailMessage mailMessage = null;
 				try {
+
 					// Retrieve the next message to be read
 					message = messages[messageNumber];
 
-					IMAPNestedMessage nestedMessage = null;
-					IMAPMessageSource source = new IMAPMessageSource();
-
-					source.setImapPort(port);
-					source.setUsername(username);
-					source.setImapSource(hostname);
-					source.setImapPort(port);
-					source.setProtocol(protocol);
-
-
-					MimeMailMessage mailMessage = new MimeMailMessage();
+					source.setLoadTimestamp(new Date());
+					mailMessage = new MimeMailMessage();
 					mailMessage.loadMimeMessage((MimeMessage) message);
 					mailMessage.addSource(source);
-					
-					String messageId = mailMessage.getMessageId();
-					if (storageService.exists(messageId)) {
-						logger.warn("Found duplicate " + messageId);
 
+					String messageId = mailMessage.getMessageId();
+
+					if (storageService.existsMimeMailMessage(messageId)) {
+						logger.warn("Found duplicate " + messageId);
+						metaData.incrementDuplicates();
 						storageService.addSource(messageId, source);
 					} else {
 						storageService.store(mailMessage);
@@ -132,14 +138,43 @@ public class JournalIMAPReader {
 								+ "] "
 								+ mailMessage.getMessageId()
 								+ " "
-								+ FileUtils.byteCountToDisplaySize(mailMessage.getSize()));
+								+ FileUtils.byteCountToDisplaySize(mailMessage
+										.getSize()));
+
 					}
+
+					metaData.updateSizeStatistics(mailMessage.getRawContents()
+							.length(),
+							Compression.compress(mailMessage.getRawContents())
+									.length());
+					metaData.incrementAttachmentStatistics(mailMessage
+							.getAttachments().length > 0);
+					if (mailMessage.getAttachments().length > 0) {
+						metaData.updateAttachmentSizeStatistics(
+								MimeMailMessage.serializeAttachments(
+										mailMessage.getAttachments()).length(),
+								MimeMailMessage.serializeCompressedAttachments(
+										mailMessage.getAttachments()).length());
+					}
+					if (expunge) {
+						message.setFlag(Flag.DELETED, true);
+
+					}
+					metaData.incrementMessages();
+
 				} catch (Exception e) {
+					metaData.incrementFailures();
+					if (mailMessage != null) {
+						logger.info(mailMessage.getRawContents());
+					}
 					logger.error("Failed to process message", e);
 					e.printStackTrace();
+
 				}
 			}
 
+			metaData.setFinished(new Date());
+			storageService.addIMAPBatch(metaData);
 			// Close the folder
 			folder.close(true);
 
@@ -169,24 +204,47 @@ public class JournalIMAPReader {
 			e.printStackTrace();
 			System.exit(1);
 		}
+
+		return messageNumber;
 	}
 
 	// Main Function for The readEmail Class
 	public static void main(String args[]) {
-		// Creating new readEmail Object
-		JournalIMAPReader readMail;
+		ReaderOptions bean = new ReaderOptions();
+		CmdLineParser parser = new CmdLineParser(bean);
 		try {
-			readMail = new JournalIMAPReader("72.0.226.101", 993,
-					"TWF\\Journal", "J0urn@l!", "imaps", "reqo");
+			parser.parseArgument(args);
+		} catch (CmdLineException e) {
+			System.err.println(e.getMessage());
+			parser.printUsage(System.err);
+			return;
+		}
+		try {
+			IMAPReader readMail = new IMAPReader(bean.getHostname(),
+					bean.getPort(), bean.getUsername(), bean.getPassword(),
+					bean.getProtocol(), bean.getClient(), bean.getBatchSize(), bean.getExpunge());
+
+			// "72.0.226.101", 993,
+			// "TWF\\Journal", "J0urn@l!", "imaps", "reqo"
 
 			// Calling processMail Function to read from IMAP Account
-			readMail.processMail();
+			while (true) {
+				int number = readMail.processMail();
 
+				if (number < bean.getBatchSize()) {
+					try {
+						Thread.sleep(60000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.error("Critical error detected, exiting", e);
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 	}
-
 }

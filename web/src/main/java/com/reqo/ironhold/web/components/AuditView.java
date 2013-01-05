@@ -9,9 +9,13 @@ import org.elasticsearch.search.SearchHit;
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.IndexUtils;
+import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.LogMessage;
+import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MessageSource;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.PSTMessageSource;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -30,17 +34,14 @@ public class AuditView extends Panel {
     public static final String FILE_SIZE = "PST File Size";
     public static final String MESSAGE = "Entry";
     public static final String LEVEL = "Level";
+	private static final String IMAP_HOST = "IMAP Host";
+	private static final String IMAP_USER = "IMAP Mailbox";
     private final IStorageService storageService;
-    private final IndexService indexService;
-    private final AuditView me;
-    private SearchHitPanel currentHitPanel;
 
-    public AuditView(IStorageService storageService, IndexService indexService) {
+    public AuditView(IStorageService storageService) {
         this.storageService = storageService;
-        this.indexService = indexService;
         this.setSizeFull();
 
-        this.me = this;
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setSpacing(true);
         verticalLayout.setMargin(true);
@@ -55,45 +56,20 @@ public class AuditView extends Panel {
         final Label messageId = new Label("MessageId: " + item.getId());
         this.addComponent(messageId);
 
-        final Table sourcesTable = new Table("Message Source");
-        sourcesTable.setSizeFull();
-        sourcesTable.setColumnWidth(TIMESTAMP, 150);
-        sourcesTable.setColumnWidth(HOSTNAME, 60);
-        sourcesTable.setColumnWidth(PST_FILE_LOCATION, 100);
-        sourcesTable.setColumnExpandRatio(PST_FILE_LOCATION, 1);
-        sourcesTable.setColumnWidth(FOLDER, 100);
-        sourcesTable.setColumnExpandRatio(FOLDER, 1);
-        sourcesTable.setColumnWidth(FILE_SIZE, 100);
+        
+        
+        MessageSource[] messageSources = null;
+    	if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
+			MailMessage mailMessage = storageService.getMailMessage(item.getId(), true);
+			messageSources = mailMessage.getSources();
+			loadPSTSources(messageSources);
+		} else if (item.getType().equals(
+				IndexedObjectType.MIME_MESSAGE.getValue())) {
+			MimeMailMessage mailMessage = storageService.getMimeMailMessage(item.getId());
+			messageSources = mailMessage.getSources();
+			loadIMAPSources(messageSources);
+		}
 
-        IndexedContainer sources = new IndexedContainer();
-        sources.addContainerProperty(TIMESTAMP, Date.class, "");
-        sources.addContainerProperty(HOSTNAME, String.class, "");
-        sources.addContainerProperty(PST_FILE_LOCATION, String.class, "");
-        sources.addContainerProperty(FOLDER, String.class, "");
-        sources.addContainerProperty(FILE_SIZE, String.class, "");
-
-
-        int sourceCount = 0;
-        for (MessageSource messageSource : storageService.getMailMessage(item.getId()).getSources()) {
-            if (messageSource instanceof PSTMessageSource) {
-                PSTMessageSource pstMessageSource = (PSTMessageSource) messageSource;
-                Item sourceItem = sources.addItem(sourceCount);
-                sourceCount++;
-                sourceItem.getItemProperty(TIMESTAMP).setValue(pstMessageSource.getLoadTimestamp());
-                sourceItem.getItemProperty(HOSTNAME).setValue(pstMessageSource.getHostname());
-                sourceItem.getItemProperty(FOLDER).setValue(pstMessageSource.getFolder());
-                sourceItem.getItemProperty(PST_FILE_LOCATION).setValue(pstMessageSource.getPstFileName());
-                sourceItem.getItemProperty(FILE_SIZE).setValue(FileUtils.byteCountToDisplaySize(pstMessageSource
-                        .getSize()));
-            }
-        }
-
-
-        sourcesTable.setContainerDataSource(sources);
-        sourcesTable.setHeight("100px");
-
-
-        this.addComponent(sourcesTable);
 
 
         final Table logTable = new Table("Message Log");
@@ -127,14 +103,89 @@ public class AuditView extends Panel {
 
     }
 
-    private void addPartyLabel(SearchHit item, IndexFieldEnum field) {
-        String value = IndexUtils.getFieldValue(item, field, false);
-        if (!value.equals(StringUtils.EMPTY)) {
-            final Label from = new Label(String.format("%s: %s", field.getLabel(), value));
-            from.setContentMode(Label.CONTENT_XHTML);
-            this.addComponent(from);
-        }
+   private void loadPSTSources(MessageSource[] messageSources) {
 
-    }
+       final Table sourcesTable = new Table("Message Source");
+       sourcesTable.setSizeFull();
+       sourcesTable.setColumnWidth(TIMESTAMP, 150);
+       sourcesTable.setColumnWidth(HOSTNAME, 60);
+       sourcesTable.setColumnWidth(PST_FILE_LOCATION, 100);
+       sourcesTable.setColumnExpandRatio(PST_FILE_LOCATION, 1);
+       sourcesTable.setColumnWidth(FOLDER, 100);
+       sourcesTable.setColumnExpandRatio(FOLDER, 1);
+       sourcesTable.setColumnWidth(FILE_SIZE, 100);
+
+       IndexedContainer sources = new IndexedContainer();
+       sources.addContainerProperty(TIMESTAMP, Date.class, "");
+       sources.addContainerProperty(HOSTNAME, String.class, "");
+       sources.addContainerProperty(PST_FILE_LOCATION, String.class, "");
+       sources.addContainerProperty(FOLDER, String.class, "");
+       sources.addContainerProperty(FILE_SIZE, String.class, "");
+
+
+       int sourceCount = 0;
+       
+       for (MessageSource messageSource : messageSources) {
+           if (messageSource instanceof PSTMessageSource) {
+               PSTMessageSource pstMessageSource = (PSTMessageSource) messageSource;
+               Item sourceItem = sources.addItem(sourceCount);
+               sourceCount++;
+               sourceItem.getItemProperty(TIMESTAMP).setValue(pstMessageSource.getLoadTimestamp());
+               sourceItem.getItemProperty(HOSTNAME).setValue(pstMessageSource.getHostname());
+               sourceItem.getItemProperty(FOLDER).setValue(pstMessageSource.getFolder());
+               sourceItem.getItemProperty(PST_FILE_LOCATION).setValue(pstMessageSource.getPstFileName());
+               sourceItem.getItemProperty(FILE_SIZE).setValue(FileUtils.byteCountToDisplaySize(pstMessageSource
+                       .getSize()));
+           }
+       }
+
+
+       sourcesTable.setContainerDataSource(sources);
+       sourcesTable.setHeight("100px");
+
+
+       this.addComponent(sourcesTable);
+
+   }
+   
+   private void loadIMAPSources(MessageSource[] messageSources) {
+
+       final Table sourcesTable = new Table("Message Source");
+       sourcesTable.setSizeFull();
+       sourcesTable.setColumnWidth(TIMESTAMP, 150);
+       sourcesTable.setColumnWidth(HOSTNAME, 60);
+       sourcesTable.setColumnWidth(IMAP_HOST, 100);
+       sourcesTable.setColumnWidth(IMAP_USER, 100);
+       sourcesTable.setColumnExpandRatio(IMAP_HOST, 1);
+       
+       IndexedContainer sources = new IndexedContainer();
+       sources.addContainerProperty(TIMESTAMP, Date.class, "");
+       sources.addContainerProperty(HOSTNAME, String.class, "");
+       sources.addContainerProperty(IMAP_HOST, String.class, "");
+       sources.addContainerProperty(IMAP_USER, String.class, "");
+
+
+       int sourceCount = 0;
+       
+       for (MessageSource messageSource : messageSources) {
+           if (messageSource instanceof IMAPMessageSource) {
+        	   IMAPMessageSource imapMessageSource = (IMAPMessageSource) messageSource;
+               Item sourceItem = sources.addItem(sourceCount);
+               sourceCount++;
+               sourceItem.getItemProperty(TIMESTAMP).setValue(imapMessageSource.getLoadTimestamp());
+               sourceItem.getItemProperty(HOSTNAME).setValue(imapMessageSource.getHostname());
+               sourceItem.getItemProperty(IMAP_HOST).setValue(imapMessageSource.getProtocol() + "://" + imapMessageSource.getImapSource() + ":" + imapMessageSource.getImapPort());
+               sourceItem.getItemProperty(IMAP_USER).setValue(imapMessageSource.getUsername());
+           }
+       }
+
+
+       sourcesTable.setContainerDataSource(sources);
+       sourcesTable.setHeight("100px");
+
+
+       this.addComponent(sourcesTable);
+
+   }
 
 }

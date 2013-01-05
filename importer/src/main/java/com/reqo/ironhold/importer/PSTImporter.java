@@ -159,7 +159,7 @@ public class PSTImporter {
 					}
 
 					metaData.incrementMessages();
-					if (storageService.exists(messageId)) {
+					if (storageService.existsMailMessage(messageId)) {
 						logger.warn("Found duplicate " + messageId);
 						MailMessage storedMessage = storageService
 								.getMailMessage(messageId);

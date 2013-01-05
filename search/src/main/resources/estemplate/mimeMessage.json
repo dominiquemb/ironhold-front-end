@@ -1,0 +1,126 @@
+{
+    "mimeMessage": {
+        "properties": {
+            "attachments": {
+                "dynamic": "true",
+                "properties": {
+                    "body": {
+                        "type": "attachment",
+                        "path": "full",
+                        "fields": {
+                            "body": {
+                                "type": "string",
+                                "store": "yes",
+                                "term_vector": "with_positions_offsets"
+                            },
+                            "author": {
+                                "type": "string"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "date": {
+                                "type": "date",
+                                "format": "dateOptionalTime"
+                            },
+                            "keywords": {
+                                "type": "string"
+                            },
+                            "content_type": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "creationTime": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "analyzer": "file"
+                    },
+                    "modificationTime": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                    },
+                    "size": {
+                        "type": "long"
+                    }
+                }
+            },
+            "bcc": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "domain"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            },
+            "body": {
+                "type": "string",	
+                 "term_vector": "with_positions_offsets"
+            },
+            "cc": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "domain"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            },
+            "messageDate": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messageId": {
+                "type": "string"
+            },
+            "sender": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "domain"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            },
+            "size": {
+                "type": "long"
+            },
+            "subject": {
+                "type": "string",
+                "term_vector": "with_positions_offsets"
+            },
+            "to": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "domain"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}

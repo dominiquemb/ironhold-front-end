@@ -29,8 +29,7 @@ public class PSTIndexer {
 			return;
 		}
 		try {
-			new PSTIndexer(bean.getClient(), bean.getBatchSize(),
-					bean.getThreads());
+			new PSTIndexer(bean.getClient(), bean.getBatchSize());
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
 			System.exit(0);
@@ -38,7 +37,7 @@ public class PSTIndexer {
 
 	}
 
-	public PSTIndexer(String client, int batchSize, int threads) throws Exception {
+	public PSTIndexer(String client, int batchSize) throws Exception {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
 		final IndexService indexService = new IndexService(client);
@@ -47,14 +46,9 @@ public class PSTIndexer {
 			List<MailMessage> mailMessages = storageService
 					.findUnindexedPSTMessages(batchSize);
 
-	//		ExecutorService executorService = Executors.newFixedThreadPool(25);
 
 			for (final MailMessage mailMessage : mailMessages) {
-/*				executorService.execute(new Runnable() {
 
-					@Override
-					public void run() {
-*/
 				logger.info("Indexing " + mailMessage.getMessageId());
 						try {
 							try {
@@ -93,7 +87,7 @@ public class PSTIndexer {
 							storageService.store(logMessage);
 
 							storageService.updateIndexStatus(
-									mailMessage.getMessageId(),
+									mailMessage,
 									IndexStatus.INDEXED);
 							
 							
@@ -104,7 +98,7 @@ public class PSTIndexer {
 										+ mailMessage.getMessageId(), e2);
 
 								storageService.updateIndexStatus(
-										mailMessage.getMessageId(),
+										mailMessage,
 										IndexStatus.FAILED);
 
 								LogMessage logMessage = new LogMessage(

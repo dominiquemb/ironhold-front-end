@@ -10,16 +10,18 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jsoup.Jsoup;
 
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
 import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.Recipient;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 
@@ -46,6 +48,9 @@ public class IndexedMailMessage {
 	private long size;
 	private String body;
 	private Attachment[] attachments;
+	
+	@JsonIgnore
+	private IndexedObjectType type;
 
 	public IndexedMailMessage() {
 
@@ -56,6 +61,7 @@ public class IndexedMailMessage {
 		load(mailMessage.getPstMessage());
 
 		attachments = mailMessage.getAttachments();
+		this.setType(IndexedObjectType.PST_MESSAGE);
 	}
 	
 	public IndexedMailMessage(MimeMailMessage mimeMessage) {
@@ -63,6 +69,7 @@ public class IndexedMailMessage {
 		load(mimeMessage);
 		
 		attachments = mimeMessage.getAttachments();
+		this.setType(IndexedObjectType.MIME_MESSAGE);
 	}
 
 	private void load(MimeMailMessage imapMailMessage) {
@@ -78,7 +85,9 @@ public class IndexedMailMessage {
 		size = imapMailMessage.getSize();
 
 		if (imapMailMessage.getBody().trim().length() != 0) {
-			body = Jsoup.parse(imapMailMessage.getBody()).text();
+			body = imapMailMessage.getBody();
+		} else if (imapMailMessage.getBodyHTML().trim().length() != 0) {
+			body = Jsoup.parse(imapMailMessage.getBodyHTML()).text();
 		} else {
 			body = StringUtils.EMPTY;
 		}
@@ -226,5 +235,13 @@ public class IndexedMailMessage {
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	public IndexedObjectType getType() {
+		return type;
+	}
+
+	public void setType(IndexedObjectType type) {
+		this.type = type;
 	}
 }

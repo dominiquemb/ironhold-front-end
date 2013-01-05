@@ -30,14 +30,33 @@ public class Header extends HorizontalLayout {
 		// this.setComponentAlignment(logo, Alignment.TOP_LEFT);
 
 		VerticalLayout vl = new VerticalLayout();
-		Button statistics = new Button("Statistics");
-		statistics.addListener(new ClickListener() {
+		Button pstStatistics = new Button("PST Stats");
+		pstStatistics.addListener(new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				StatisticsWindow window;
+				PSTStatisticsWindow window;
 				try {
-					window = new StatisticsWindow(storageService);
+					window = new PSTStatisticsWindow(storageService);
+					window.setModal(true);
+					getWindow().addWindow(window);
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		});
+
+		Button imapStatistics = new Button("IMAP Stats");
+		imapStatistics.addListener(new ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				IMAPStatisticsWindow window;
+				try {
+					window = new IMAPStatisticsWindow(storageService);
 					window.setModal(true);
 					getWindow().addWindow(window);
 
@@ -59,7 +78,7 @@ public class Header extends HorizontalLayout {
 			}
 		});
 		vl.setSizeFull();
-		vl.setWidth("200");
+		vl.setWidth("300");
 		Label label = new Label("Welcome, " + username);
 		label.setWidth(null);
 
@@ -67,7 +86,8 @@ public class Header extends HorizontalLayout {
 
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setSpacing(true);
-		hl.addComponent(statistics);
+		hl.addComponent(pstStatistics);
+		hl.addComponent(imapStatistics);
 		hl.addComponent(logout);
 
 		vl.addComponent(hl);

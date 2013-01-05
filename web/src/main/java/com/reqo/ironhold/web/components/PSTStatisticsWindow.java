@@ -10,12 +10,12 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-public class StatisticsWindow extends Window {
+public class PSTStatisticsWindow extends Window {
 
-	private final StatisticsWindow me;
+	private final PSTStatisticsWindow me;
 	private final IStorageService storageService;
 
-	public StatisticsWindow(IStorageService storageService) throws Exception {
+	public PSTStatisticsWindow(IStorageService storageService) throws Exception {
 		super("Statistics");
 		this.me = this;
 		this.storageService = storageService;

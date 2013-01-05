@@ -21,6 +21,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.reqo.ironhold.search.model.IndexedMailMessage;
+import com.reqo.ironhold.search.model.IndexedObjectType;
 
 public class IndexService {
 	private static final int RETRY_SLEEP = 10000;
@@ -51,7 +52,6 @@ public class IndexService {
 			esClient.close();
 		}
 		esClient = new TransportClient();
-		
 
 		for (String esHost : esHosts) {
 			esClient.addTransportAddress(new InetSocketTransportAddress(esHost,
@@ -78,11 +78,20 @@ public class IndexService {
 
 		String messageDef = readJsonDefinition("message.json");
 		PutMappingResponse response3 = esClient.admin().indices()
-				.preparePutMapping(indexName).setType("message")
+				.preparePutMapping(indexName).setType(IndexedObjectType.MIME_MESSAGE.getValue())
 				.setSource(messageDef).execute().actionGet();
 		if (!response3.acknowledged()) {
 			throw new Exception("ES Request did not get acknowledged: "
 					+ response3.toString());
+		}
+
+		String mimeMessageDef = readJsonDefinition("mimeMessage.json");
+		PutMappingResponse response4 = esClient.admin().indices()
+				.preparePutMapping(indexName).setType(IndexedObjectType.PST_MESSAGE.getValue())
+				.setSource(mimeMessageDef).execute().actionGet();
+		if (!response4.acknowledged()) {
+			throw new Exception("ES Request did not get acknowledged: "
+					+ response4.toString());
 		}
 
 	}
@@ -98,7 +107,7 @@ public class IndexService {
 
 	public boolean store(IndexedMailMessage message) throws Exception {
 
-		if (!exists(message.getMessageId())) {
+		if (!exists(message.getMessageId(), message.getType())) {
 			long started = System.currentTimeMillis();
 			int retry = 1;
 			boolean success = false;
@@ -106,10 +115,13 @@ public class IndexService {
 				try {
 
 					logger.info("Trying to index " + message.getMessageId());
-					esClient.prepareIndex(indexName, "message",
+
+					esClient.prepareIndex(indexName,
+							message.getType().getValue(),
 							message.getMessageId())
 							.setSource(IndexedMailMessage.toJSON(message))
 							.execute().actionGet();
+
 					logger.info("Returned from ES");
 					success = true;
 					return true;
@@ -128,8 +140,7 @@ public class IndexService {
 					} catch (InterruptedException ignore) {
 					}
 					reconnect();
-				}
-				finally {
+				} finally {
 					logger.info("Out of the indexing try catch block");
 				}
 			}
@@ -146,12 +157,12 @@ public class IndexService {
 		return false;
 	}
 
-	private boolean exists(String messageId) {
+	private boolean exists(String messageId, IndexedObjectType type) {
 		long started = System.currentTimeMillis();
 		try {
 			GetResponse response = esClient
-					.prepareGet(indexName, "message", messageId).setFields("messageId").execute()
-					.actionGet();
+					.prepareGet(indexName, type.getValue(), messageId)
+					.setFields("messageId").execute().actionGet();
 			return response.isExists();
 		} finally {
 			long finished = System.currentTimeMillis();

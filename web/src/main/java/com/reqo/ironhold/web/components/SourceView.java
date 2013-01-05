@@ -6,8 +6,10 @@ import org.elasticsearch.search.SearchHit;
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.IndexUtils;
+import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
@@ -30,28 +32,31 @@ public class SourceView extends Panel {
 
         this.removeAllComponents();
 
-        final Label messageId = new Label("MessageId: " + item.getId());
+        final Label messageId = new Label("<b>MessageId: " + item.getId() + "</b>");
+        messageId.setContentMode(Label.CONTENT_XHTML);
         this.addComponent(messageId);
 
-        MailMessage mailMessage = storageService.getMailMessage(item.getId(), true);
+        
+        Object mailMessage = null;
+        String rawBody = null;
+    	if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
+			mailMessage = storageService.getMailMessage(item.getId(), true);
+			rawBody = MailMessage.serializeMailMessage((MailMessage)mailMessage);	
+		} else if (item.getType().equals(
+				IndexedObjectType.MIME_MESSAGE.getValue())) {
+			mailMessage = storageService.getMimeMailMessage(item.getId());
+			rawBody = ((MimeMailMessage)mailMessage).getRawContents();
+			
+		}
 
-        String rawBody = MailMessage.serializeMailMessage(mailMessage).replaceAll("\r?\n", "<br/>");
+        
 
         final Label body = new Label(rawBody);
 
-        body.setContentMode(Label.CONTENT_RAW);
+        body.setContentMode(Label.CONTENT_PREFORMATTED);
         this.addComponent(body);
 
     }
 
-    private void addPartyLabel(SearchHit item, IndexFieldEnum field) {
-        String value = IndexUtils.getFieldValue(item, field, false);
-        if (!value.equals(StringUtils.EMPTY)) {
-            final Label from = new Label(String.format("%s: %s", field.getLabel(), value));
-            from.setContentMode(Label.CONTENT_XHTML);
-            this.addComponent(from);
-        }
-
-    }
 
 }

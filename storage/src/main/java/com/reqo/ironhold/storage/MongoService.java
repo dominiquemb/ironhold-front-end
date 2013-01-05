@@ -26,13 +26,14 @@ import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import com.mongodb.util.JSON;
 import com.reqo.ironhold.storage.model.Attachment;
+import com.reqo.ironhold.storage.model.IMAPBatchMeta;
+import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MessageSource;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.PSTFileMeta;
-import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
+import com.reqo.ironhold.storage.model.PSTMessageSource;
 import com.reqo.ironhold.storage.utils.Compression;
 
 public class MongoService implements IStorageService {
@@ -42,6 +43,7 @@ public class MongoService implements IStorageService {
 	private static final String LOG_COLLECTION = "logs";
 	private static final String PST_COLLECTION = "pstFiles";
 	private static final String MIME_MESSAGE_COLLECTION = "mimeMessages";
+	private static final String IMAP_COLLECTION = "imapBatches";
 
 	private Mongo mongo;
 	private DB db;
@@ -89,9 +91,16 @@ public class MongoService implements IStorageService {
 
 	}
 
-	public boolean exists(String messageId) {
+	public boolean existsMailMessage(String messageId) {
 
 		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
+
+		return fs.findOne(messageId) != null;
+	}
+	
+	@Override
+	public boolean existsMimeMailMessage(String messageId) throws Exception {
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
 
 		return fs.findOne(messageId) != null;
 	}
@@ -175,7 +184,7 @@ public class MongoService implements IStorageService {
 
 	}
 
-	public void addSource(String messageId, MessageSource source)
+	public void addSource(String messageId, PSTMessageSource source)
 			throws JsonParseException, JsonMappingException, IOException {
 		MailMessage message = getMailMessage(messageId);
 		message.addSource(source);
@@ -184,11 +193,31 @@ public class MongoService implements IStorageService {
 
 	}
 
-	public void updateIndexStatus(String messageId, IndexStatus status)
+	public void addSource(String messageId, IMAPMessageSource source)
+			throws Exception {
+		MimeMailMessage message = getMimeMailMessage(messageId);
+		message.addSource(source);
+
+		update(message);
+
+	}
+
+	public void updateIndexStatus(MailMessage message, IndexStatus status)
 			throws JsonParseException, JsonMappingException, IOException {
 		long started = System.currentTimeMillis();
 
-		MailMessage message = getMailMessage(messageId);
+		message.setIndexed(status);
+
+		update(message);
+		long finished = System.currentTimeMillis();
+		logger.info(String.format("Statistics: updateIndexStatus %d", finished
+				- started));
+	}
+
+	public void updateIndexStatus(MimeMailMessage message, IndexStatus status)
+			throws JsonParseException, JsonMappingException, IOException {
+		long started = System.currentTimeMillis();
+
 		message.setIndexed(status);
 
 		update(message);
@@ -209,9 +238,23 @@ public class MongoService implements IStorageService {
 
 	}
 
+	public void update(MimeMailMessage mailMessage)
+			throws JsonGenerationException, JsonMappingException,
+			MongoException, IOException {
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+		GridFSDBFile fsFile = fs.findOne(mailMessage.getMessageId());
+
+		String jsonString = MimeMailMessage.serialize(mailMessage);
+		fsFile.setMetaData((DBObject) JSON.parse(jsonString));
+		fsFile.save();
+
+	}
+
 	@Override
 	public long getTotalMessageCount() {
-		return db.getCollection(MESSAGE_COLLECTION + ".files").getCount();
+		return db.getCollection(MESSAGE_COLLECTION + ".files").getCount()
+				+ db.getCollection(MIME_MESSAGE_COLLECTION + ".files")
+						.getCount();
 	}
 
 	public MailMessage getMailMessage(String messageId)
@@ -314,7 +357,7 @@ public class MongoService implements IStorageService {
 
 		long started = System.currentTimeMillis();
 		List<MimeMailMessage> result = new ArrayList<MimeMailMessage>();
-			DBObject query = QueryBuilder.start().put("metadata.indexed")
+		DBObject query = QueryBuilder.start().put("metadata.indexed")
 				.is(IndexStatus.NOT_INDEXED.toString()).get();
 
 		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
@@ -331,6 +374,7 @@ public class MongoService implements IStorageService {
 		}
 		long finished = System.currentTimeMillis();
 
+		logger.info(String.format("Found %d unindexed messages", toBeReturned.size()));
 		logger.info(String.format(
 				"Statistics: findUnindexedIMAPMessages, phase 1 %d", finished
 						- started));
@@ -345,26 +389,49 @@ public class MongoService implements IStorageService {
 				"Statistics: findUnindexedIMAPMessages, phase 2 %d", finished
 						- started));
 
-		
 		return result;
 
 	}
 
 	@Override
-	public MimeMailMessage getMimeMailMessage(String messageId) throws Exception {
+	public MimeMailMessage getMimeMailMessage(String messageId)
+			throws Exception {
 		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
 
 		GridFSDBFile object = fs.findOne(messageId);
 		ByteArrayOutputStream byos = new ByteArrayOutputStream();
 		object.writeTo(byos);
 
-		
-		MimeMailMessage mailMessage = MimeMailMessage
-				.deserialize(object.getMetaData().toString());
-		
-		mailMessage.loadMimeMessageFromSource(Compression.decompress(new String(byos
-				.toByteArray())));
+		MimeMailMessage mailMessage = MimeMailMessage.deserialize(object
+				.getMetaData().toString());
+
+		mailMessage.loadMimeMessageFromSource(Compression
+				.decompress(new String(byos.toByteArray())));
 
 		return mailMessage;
 	}
+
+	@Override
+	public void addIMAPBatch(IMAPBatchMeta imapBatchMeta) throws Exception {
+		db.getCollection(IMAP_COLLECTION).insert(
+				(DBObject) JSON.parse(IMAPBatchMeta.toJSON(imapBatchMeta)));
+		
+	}
+
+	@Override
+	public List<IMAPBatchMeta> getIMAPBatches() throws Exception {
+		List<IMAPBatchMeta> result = new ArrayList<IMAPBatchMeta>();
+
+		DBCursor cur = db.getCollection(IMAP_COLLECTION).find();
+
+		while (cur.hasNext()) {
+			DBObject object = cur.next();
+			object.removeField("_id");
+			result.add(IMAPBatchMeta.fromJSON(object.toString()));
+		}
+
+		return result;
+	}
+
+	
 }

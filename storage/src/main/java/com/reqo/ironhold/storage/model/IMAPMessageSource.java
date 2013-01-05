@@ -1,9 +1,5 @@
 package com.reqo.ironhold.storage.model;
 
-import java.util.Arrays;
-
-import javax.mail.Header;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

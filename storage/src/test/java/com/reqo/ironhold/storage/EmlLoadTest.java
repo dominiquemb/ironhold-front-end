@@ -651,6 +651,79 @@ public class EmlLoadTest {
 				mailMessage.getMessageId());
 	}
 
+	@Test
+	public void testInvalidAddress() throws Exception {
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testInvalidAddress.eml"));
+		InputStream is = new FileInputStream(file);
+		MimeMessage mimeMessage = new MimeMessage(null, is);
+
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessage(mimeMessage);
+		mailMessage.addSource(source);
+
+		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
+		Assert.assertEquals(mimeMessage.getReceivedDate(),
+				mailMessage.getMessageDate());
+
+		Assert.assertEquals(
+				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
+				mailMessage.getFrom().getAddress());
+		Assert.assertEquals(
+				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
+				mailMessage.getFrom().getName());
+
+		Assert.assertEquals(1,
+				mailMessage.getTo().length);
+		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
+
+			Assert.assertEquals(
+					mimeMessage.getRecipients(RecipientType.CC).length,
+					mailMessage.getCc().length);
+
+			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.CC)[i]).getAddress(),
+						mailMessage.getCc()[i].getAddress());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.CC)[i]).getPersonal(),
+						mailMessage.getCc()[i].getName());
+			}
+		} else {
+			Assert.assertEquals(0, mailMessage.getCc().length);
+		}
+
+		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
+
+			Assert.assertEquals(
+					mimeMessage.getRecipients(RecipientType.BCC).length,
+					mailMessage.getBcc().length);
+
+			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.BCC)[i]).getAddress(),
+						mailMessage.getBcc()[i].getAddress());
+				Assert.assertEquals(((InternetAddress) mimeMessage
+						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
+						mailMessage.getBcc()[i].getName());
+			}
+		} else {
+			Assert.assertEquals(0, mailMessage.getBcc().length);
+		}
+
+		MimeMultipart contents = (MimeMultipart) mimeMessage.getContent();
+
+		MimeMessage internalMessage = (MimeMessage) contents.getBodyPart(1)
+				.getContent();
+
+		String internalContents = (String) internalMessage.getContent();
+
+		Assert.assertEquals(internalContents, mailMessage.getBodyHTML());
+
+		Assert.assertEquals(mimeMessage.getMessageID(),
+				mailMessage.getMessageId());
+	}
+
 	private static byte[] createChecksum(File file)
 			throws NoSuchAlgorithmException, IOException {
 		InputStream fis = new FileInputStream(file);

@@ -91,7 +91,7 @@ public class MongoServiceTest {
 
 			MailMessageTestModel.verifyStorage(storageService, inputMessage);
 
-			Assert.assertTrue(storageService.exists(inputMessage.getMessageId()));
+			Assert.assertTrue(storageService.existsMailMessage(inputMessage.getMessageId()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.assertNull(e);
@@ -138,7 +138,7 @@ public class MongoServiceTest {
 
 			MailMessageTestModel.verifyStorage(storageService, inputMessage);
 
-			Assert.assertTrue(storageService.exists(inputMessage.getMessageId()));
+			Assert.assertTrue(storageService.existsMailMessage(inputMessage.getMessageId()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.assertNull(e);
@@ -155,7 +155,7 @@ public class MongoServiceTest {
 
 		MailMessageTestModel.verifyStorage(storageService, inputMessage);
 
-		Assert.assertFalse(storageService.exists(UUID.randomUUID().toString()));
+		Assert.assertFalse(storageService.existsMailMessage(UUID.randomUUID().toString()));
 	}
 
 	@Test
@@ -192,7 +192,7 @@ public class MongoServiceTest {
 	@Test
 	public void testFindUnindexedIMAPMessages() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
-		
+
 		File file = FileUtils.toFile(EmlLoadTest.class
 				.getResource("/testMimeMessageWithHTML.eml"));
 		InputStream is = new FileInputStream(file);
@@ -213,13 +213,15 @@ public class MongoServiceTest {
 
 		MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
 
-		List<MimeMailMessage> unindexedMessages = storageService.findUnindexedIMAPMessages(100);
-				
+		List<MimeMailMessage> unindexedMessages = storageService
+				.findUnindexedIMAPMessages(100);
+
 		Assert.assertEquals(1, unindexedMessages.size());
-		
+
 		MimeMailMessage unindexedMessage = unindexedMessages.get(0);
-		
-		MimeMailMessageTestModel.verifyMimeMailMessage(mimeMailMessage, unindexedMessage);
+
+		MimeMailMessageTestModel.verifyMimeMailMessage(mimeMailMessage,
+				unindexedMessage);
 
 	}
 
@@ -264,7 +266,7 @@ public class MongoServiceTest {
 	}
 
 	@Test
-	public void testMarkAsIndexed() throws Exception {
+	public void testPSTMarkAsIndexed() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
 
 		MailMessage inputMessage = MailMessageTestModel.generatePSTMessage();
@@ -273,12 +275,55 @@ public class MongoServiceTest {
 
 		MailMessageTestModel.verifyStorage(storageService, inputMessage);
 
-		storageService.updateIndexStatus(inputMessage.getMessageId(),
-				IndexStatus.INDEXED);
+
+		List<MailMessage> unindexedMessages1 = storageService.findUnindexedPSTMessages(100);
+		Assert.assertEquals(1, unindexedMessages1.size());
+
+		storageService.updateIndexStatus(inputMessage, IndexStatus.INDEXED);
 
 		inputMessage.setIndexed(IndexStatus.INDEXED);
 
 		MailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+		List<MailMessage> unindexedMessages2 = storageService.findUnindexedPSTMessages(100);
+		Assert.assertEquals(0, unindexedMessages2.size());
+	}
+
+	@Test
+	public void testIMAPMarkAsIndexed() throws Exception {
+		IStorageService storageService = new MongoService(mongo, db);
+
+		File file = FileUtils.toFile(EmlLoadTest.class
+				.getResource("/testMimeMessageWithHTML.eml"));
+		InputStream is = new FileInputStream(file);
+
+		List<String> orioginalLines = Files.readAllLines(
+				Paths.get(file.toURI()), Charset.defaultCharset());
+		StringBuilder original = new StringBuilder();
+		for (String line : orioginalLines) {
+			original.append(line + "\n");
+		}
+
+		MimeMailMessage inputMessage = new MimeMailMessage();
+		inputMessage.loadMimeMessageFromSource(original.toString());
+		inputMessage.addSource(MessageSourceTestModel
+				.generateIMAPMessageSource());
+
+		storageService.store(inputMessage);
+
+		MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+		List<MimeMailMessage> unindexedMessages1 = storageService.findUnindexedIMAPMessages(100);
+		Assert.assertEquals(1, unindexedMessages1.size());
+		
+		storageService.updateIndexStatus(inputMessage, IndexStatus.INDEXED);
+
+		inputMessage.setIndexed(IndexStatus.INDEXED);
+
+		MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
+		
+		List<MimeMailMessage> unindexedMessages2 = storageService.findUnindexedIMAPMessages(100);
+		Assert.assertEquals(0, unindexedMessages2.size());
 
 	}
 

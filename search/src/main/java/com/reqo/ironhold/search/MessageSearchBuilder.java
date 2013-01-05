@@ -14,6 +14,8 @@ import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import com.reqo.ironhold.search.model.IndexedObjectType;
+
 public class MessageSearchBuilder {
 
 	public static final String FACET_FROM_NAME = "from";
@@ -48,6 +50,7 @@ public class MessageSearchBuilder {
 	private boolean toFacet;
 	private boolean toDomainFacet;
 	private boolean fileExtFacet;
+	private IndexedObjectType indexedObjectType;
 
 	private MessageSearchBuilder(SearchRequestBuilder builder) {
 		this.builder = builder;
@@ -176,9 +179,9 @@ public class MessageSearchBuilder {
 		return this;
 	}
 
-	public MessageSearchBuilder withId(String id) {
+	public MessageSearchBuilder withId(String id, IndexedObjectType indexedObjectType) {
 		this.id = id;
-
+		this.indexedObjectType = indexedObjectType;
 		return this;
 	}
 
@@ -261,7 +264,7 @@ public class MessageSearchBuilder {
 		} else {
 			FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(
 					QueryBuilders.queryString(criteria), FilterBuilders
-							.idsFilter("message").addIds(id));
+							.idsFilter(indexedObjectType.getValue()).addIds(id));
 
 			builder.setQuery(fqb);
 		}

@@ -16,6 +16,7 @@ import javax.mail.Message;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -32,12 +33,28 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.elasticsearch.common.Base64;
 
+import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
+import com.reqo.ironhold.storage.model.mixin.CompressedIMAPMailMessage;
+import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
+
 @SuppressWarnings("serial")
 public class MimeMailMessage implements Serializable {
 	private static Logger logger = Logger.getLogger(MimeMailMessage.class);
 
 	private static ObjectMapper mapper = new ObjectMapper();
+	private static ObjectMapper compressedMapper = new ObjectMapper();
 
+	static {
+		compressedMapper.getSerializationConfig().addMixInAnnotations(
+				Attachment.class, CompressedAttachmentMixin.class);
+
+		compressedMapper.getDeserializationConfig().addMixInAnnotations(
+				Attachment.class, CompressedAttachmentMixin.class);
+
+		compressedMapper.enableDefaultTyping();
+		compressedMapper.configure(
+				SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+	}
 	static {
 		mapper.enableDefaultTyping();
 		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
@@ -72,33 +89,31 @@ public class MimeMailMessage implements Serializable {
 	@JsonIgnore
 	private String rawContents;
 
-	
-	
 	private IndexStatus indexed = IndexStatus.NOT_INDEXED;
 	private Date storedDate;
 	private String messageId;
 	private MessageSource[] sources;
 
-
 	public MimeMailMessage() {
 	}
-	
-	public void loadMimeMessageFromSource(String source) throws MessagingException, IOException {
+
+	public void loadMimeMessageFromSource(String source)
+			throws MessagingException, IOException {
 		InputStream is = new ByteArrayInputStream(source.getBytes());
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
 		loadMimeMessage(mimeMessage);
 	}
-	
 
-	public void loadMimeMessage(MimeMessage mimeMessage) throws MessagingException, IOException {
+	public void loadMimeMessage(MimeMessage mimeMessage)
+			throws MessagingException, IOException {
 		long started = System.currentTimeMillis();
 		try {
 			this.messageId = mimeMessage.getMessageID();
 
 			populateRawContents(mimeMessage);
 
-			this.messageDate = mimeMessage.getReceivedDate();
+			this.messageDate = mimeMessage.getSentDate();
 			this.size = rawContents.getBytes().length;
 
 			InternetAddress internetAddress = (InternetAddress) mimeMessage
@@ -106,29 +121,52 @@ public class MimeMailMessage implements Serializable {
 
 			this.from = new Recipient(internetAddress.getPersonal(),
 					internetAddress.getAddress());
-			if (mimeMessage.getRecipients(RecipientType.TO) != null) {
-				for (Address address : mimeMessage
-						.getRecipients(RecipientType.TO)) {
-					internetAddress = (InternetAddress) address;
-					addTo(new Recipient(internetAddress.getPersonal(),
-							internetAddress.getAddress()));
+			try {
+				if (mimeMessage.getRecipients(RecipientType.TO) != null) {
+					for (Address address : mimeMessage
+							.getRecipients(RecipientType.TO)) {
+						internetAddress = (InternetAddress) address;
+						addTo(new Recipient(internetAddress.getPersonal(),
+								internetAddress.getAddress()));
+					}
 				}
+			} catch (AddressException e) {
+				for (String headerTo : mimeMessage.getHeader("TO")) {
+					addTo(new Recipient(headerTo, headerTo));
+				}
+
 			}
-			if (mimeMessage.getRecipients(RecipientType.CC) != null) {
-				for (Address address : mimeMessage
-						.getRecipients(RecipientType.CC)) {
-					internetAddress = (InternetAddress) address;
-					addCc(new Recipient(internetAddress.getPersonal(),
-							internetAddress.getAddress()));
+			try {
+
+				if (mimeMessage.getRecipients(RecipientType.CC) != null) {
+					for (Address address : mimeMessage
+							.getRecipients(RecipientType.CC)) {
+						internetAddress = (InternetAddress) address;
+						addCc(new Recipient(internetAddress.getPersonal(),
+								internetAddress.getAddress()));
+					}
 				}
+			} catch (AddressException e) {
+				for (String headerCc : mimeMessage.getHeader("CC")) {
+					addCc(new Recipient(headerCc, headerCc));
+				}
+
 			}
-			if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
-				for (Address address : mimeMessage
-						.getRecipients(RecipientType.BCC)) {
-					internetAddress = (InternetAddress) address;
-					addBcc(new Recipient(internetAddress.getPersonal(),
-							internetAddress.getAddress()));
+			try {
+				if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
+					for (Address address : mimeMessage
+							.getRecipients(RecipientType.BCC)) {
+						internetAddress = (InternetAddress) address;
+						addBcc(new Recipient(internetAddress.getPersonal(),
+								internetAddress.getAddress()));
+					}
 				}
+
+			} catch (AddressException e) {
+				for (String headerBcc : mimeMessage.getHeader("BCC")) {
+					addBcc(new Recipient(headerBcc, headerBcc));
+				}
+
 			}
 			this.subject = mimeMessage.getSubject();
 
@@ -136,13 +174,10 @@ public class MimeMailMessage implements Serializable {
 
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info("loadMimeMessage in "
-					+ (finished - started) + "ms");
+			logger.info("loadMimeMessage in " + (finished - started) + "ms");
 		}
 
 	}
-	
-
 
 	public void addSource(MessageSource source) {
 		if (sources == null) {
@@ -154,8 +189,6 @@ public class MimeMailMessage implements Serializable {
 		}
 	}
 
-	
-	
 	private void populateRawContents(MimeMessage mimeMessage)
 			throws IOException, MessagingException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -246,11 +279,25 @@ public class MimeMailMessage implements Serializable {
 		return mapper.readValue(json, MimeMailMessage.class);
 	}
 
+	public static String serializeAttachments(Attachment[] attachments)
+			throws IOException {
+		return mapper.writeValueAsString(attachments);
+	}
+
+	public static String serializeCompressedAttachments(Attachment[] attachments)
+			throws JsonGenerationException, JsonMappingException, IOException {
+		return compressedMapper.writeValueAsString(attachments);
+	}
+
 	public void addAttachment(Attachment attachment) {
 		Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
 		copy[attachments.length] = attachment;
 		attachments = copy;
 
+	}
+
+	public void removeAttachments() {
+		this.attachments = new Attachment[0];
 	}
 
 	public Attachment[] getAttachments() {

@@ -13,7 +13,7 @@ import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class IMAPIndexer {
 	private static Logger logger = Logger.getLogger(IMAPIndexer.class);
@@ -29,8 +29,7 @@ public class IMAPIndexer {
 			return;
 		}
 		try {
-			new IMAPIndexer(bean.getClient(), bean.getBatchSize(),
-					bean.getThreads());
+			new IMAPIndexer(bean.getClient(), bean.getBatchSize());
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
 			System.exit(0);
@@ -38,23 +37,16 @@ public class IMAPIndexer {
 
 	}
 
-	public IMAPIndexer(String client, int batchSize, int threads) throws Exception {
+	public IMAPIndexer(String client, int batchSize) throws Exception {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
 		final IndexService indexService = new IndexService(client);
 		
 		while (true) {
-			List<MailMessage> mailMessages = storageService
-					.findUnindexedPSTMessages(batchSize);
+			List<MimeMailMessage> mailMessages = storageService
+					.findUnindexedIMAPMessages(batchSize);
 
-	//		ExecutorService executorService = Executors.newFixedThreadPool(25);
-
-			for (final MailMessage mailMessage : mailMessages) {
-/*				executorService.execute(new Runnable() {
-
-					@Override
-					public void run() {
-*/
+			for (final MimeMailMessage mailMessage : mailMessages) {
 				logger.info("Indexing " + mailMessage.getMessageId());
 						try {
 							try {
@@ -93,7 +85,7 @@ public class IMAPIndexer {
 							storageService.store(logMessage);
 
 							storageService.updateIndexStatus(
-									mailMessage.getMessageId(),
+									mailMessage,
 									IndexStatus.INDEXED);
 							
 							
@@ -104,7 +96,7 @@ public class IMAPIndexer {
 										+ mailMessage.getMessageId(), e2);
 
 								storageService.updateIndexStatus(
-										mailMessage.getMessageId(),
+										mailMessage,
 										IndexStatus.FAILED);
 
 								LogMessage logMessage = new LogMessage(
@@ -121,12 +113,7 @@ public class IMAPIndexer {
 						}
 
 					}
-	/*			});
-			}
-			executorService.shutdown();
-			if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
-				executorService.shutdownNow();
-			}*/
+
 			if (mailMessages.size() == 0) {
 				Thread.sleep(10000);
 			} else {
