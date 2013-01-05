@@ -58,6 +58,7 @@ public class EmailView extends Panel {
 		}
 		final Label subject = new Label(subjectValue);
 		subject.setStyleName(Reindeer.LABEL_H2);
+		subject.setContentMode(Label.CONTENT_XHTML);
 		this.addComponent(subject);
 
 		final Label date = new Label(IndexUtils.getFieldValue(item,
@@ -150,8 +151,10 @@ public class EmailView extends Panel {
 		if (!value.equals(StringUtils.EMPTY)) {
 			HorizontalLayout hl = new HorizontalLayout();
 			final Label typeLabel = new Label(field.getLabel() + ":");
+			typeLabel.setContentMode(Label.CONTENT_XHTML);
 			hl.addComponent(typeLabel);
 			final Label valueLabel = new Label(value);
+			valueLabel.setContentMode(Label.CONTENT_XHTML);
 			hl.addComponent(valueLabel);
 
 			typeLabel.setWidth("35px");
