@@ -191,38 +191,51 @@ public class MimeMailMessage implements Serializable {
 
 	private void populateRawContents(MimeMessage mimeMessage)
 			throws IOException, MessagingException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		List<String> lines = Collections.list(mimeMessage.getAllHeaderLines());
-		for (String line : lines) {
-			os.write((line + "\n").getBytes());
-		}
-		os.write("\n".getBytes());
-		InputStream rawStream = mimeMessage.getRawInputStream();
-		int read = 0;
-		byte[] bytes = new byte[1024];
+		long started = System.currentTimeMillis();
+		try {
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			List<String> lines = Collections.list(mimeMessage
+					.getAllHeaderLines());
+			for (String line : lines) {
+				os.write((line + "\n").getBytes());
+			}
+			os.write("\n".getBytes());
+			InputStream rawStream = mimeMessage.getRawInputStream();
+			int read = 0;
+			byte[] bytes = new byte[1024];
 
-		while ((read = rawStream.read(bytes)) != -1) {
-			os.write(bytes, 0, read);
-		}
-		rawStream.close();
+			while ((read = rawStream.read(bytes)) != -1) {
+				os.write(bytes, 0, read);
+			}
+			rawStream.close();
 
-		this.setRawContents(os.toString());
+			this.setRawContents(os.toString());
+		} finally {
+			long finished = System.currentTimeMillis();
+			logger.info("populateRawContents in " + (finished - started) + "ms");
+		}
 	}
 
 	private void handleMessage(Message message) throws IOException,
 			MessagingException {
-		Object content = message.getContent();
-		if (content instanceof String) {
-			if (message.getContentType().startsWith("text/html")) {
-				this.bodyHTML += (String) content;
-				this.setBodyHTMLContentType(message.getContentType());
-			} else if (message.getContentType().startsWith("text/plain")) {
-				this.body += (String) content;
-				this.setBodyContentType(message.getContentType());
+		long started = System.currentTimeMillis();
+		try {
+			Object content = message.getContent();
+			if (content instanceof String) {
+				if (message.getContentType().startsWith("text/html")) {
+					this.bodyHTML += (String) content;
+					this.setBodyHTMLContentType(message.getContentType());
+				} else if (message.getContentType().startsWith("text/plain")) {
+					this.body += (String) content;
+					this.setBodyContentType(message.getContentType());
+				}
+			} else if (content instanceof Multipart) {
+				Multipart mp = (Multipart) content;
+				handleMultipart(mp);
 			}
-		} else if (content instanceof Multipart) {
-			Multipart mp = (Multipart) content;
-			handleMultipart(mp);
+		} finally {
+			long finished = System.currentTimeMillis();
+			logger.info("handleMessage in " + (finished - started) + "ms");
 		}
 	}
 
