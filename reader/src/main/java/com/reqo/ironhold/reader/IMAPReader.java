@@ -228,7 +228,7 @@ public class IMAPReader {
 					long finished = System.currentTimeMillis();
 					logger.info("Processed batch with " + number + " messages in "
 							+ (finished - started) + "ms");
-					System.exit(1);
+			//		System.exit(1);
 					if (number < bean.getBatchSize()) {
 
 						Thread.sleep(60000);
