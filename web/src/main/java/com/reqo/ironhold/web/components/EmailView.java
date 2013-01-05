@@ -133,7 +133,6 @@ public class EmailView extends Panel {
 		final HorizontalLayout bodyLayout = new HorizontalLayout();
 		bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
 		bodyLayout.setSizeFull();
-		System.out.println("In EmailView.show");
 		SearchHits hits = indexService.search(
 				indexService.getNewBuilder().withCriteria(criteria)
 						.withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();

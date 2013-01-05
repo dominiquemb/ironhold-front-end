@@ -82,7 +82,6 @@ public class SearchResults extends HorizontalLayout {
         //toDomainFacetPanel.setVisible(true);
         //yearFacetPanel.setVisible(true);
         //fileExtFacetPanel.setVisible(true);
-        System.out.println("in setCriteria");
         performSearch();
     }
 
@@ -139,7 +138,6 @@ public class SearchResults extends HorizontalLayout {
 
                 }
 
-                System.out.println("in getItemsList with " + startIndex + ", " + endIndex);
                 SearchResponse response = indexService.search(builder);
 
 
@@ -438,7 +436,6 @@ public class SearchResults extends HorizontalLayout {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 builder = indexService.getNewBuilder(builder);
-                System.out.println("in sort order listener");
                 performSearch();
             }
         });
