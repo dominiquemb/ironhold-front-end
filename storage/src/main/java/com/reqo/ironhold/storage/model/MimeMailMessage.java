@@ -192,6 +192,7 @@ public class MimeMailMessage implements Serializable {
 	private void populateRawContents(MimeMessage mimeMessage)
 			throws IOException, MessagingException {
 		long started = System.currentTimeMillis();
+		int bufferCount = 0;
 		try {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			List<String> lines = Collections.list(mimeMessage
@@ -202,17 +203,18 @@ public class MimeMailMessage implements Serializable {
 			os.write("\n".getBytes());
 			InputStream rawStream = mimeMessage.getRawInputStream();
 			int read = 0;
-			byte[] bytes = new byte[1024];
+			byte[] bytes = new byte[4096	];
 
 			while ((read = rawStream.read(bytes)) != -1) {
 				os.write(bytes, 0, read);
+				bufferCount++;
 			}
 			rawStream.close();
 
 			this.setRawContents(os.toString());
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info("populateRawContents in " + (finished - started) + "ms");
+			logger.info("populateRawContents (" + bufferCount +" buffers) in " + (finished - started) + "ms");
 		}
 	}
 
