@@ -13,8 +13,10 @@
 		<module>storage</module>
 		<module>search</module>
 		<module>reader</module>
+		<module>demodata</module>
 		<module>web</module>
 		<module>dist</module>
+		
 	</modules>
 
 	<scm>

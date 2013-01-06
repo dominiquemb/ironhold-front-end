@@ -15,6 +15,7 @@
                 <include>com.reqo.ironhold:storage</include>
                 <include>com.reqo.ironhold:search</include>
                 <include>com.reqo.ironhold:reader</include>
+                <include>com.reqo.ironhold:demodata</include>
             </includes>
             <binaries>
                 <outputDirectory>modules/${artifactId}</outputDirectory>

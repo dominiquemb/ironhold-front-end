@@ -80,7 +80,7 @@ public class IMAPReader {
 
 			logger.info("Getting the session for accessing email.");
 			store = session.getStore(protocol);
-			
+
 			store.connect(hostname, port, username, password);
 
 			logger.info("Connection established with IMAP server.");
@@ -100,57 +100,66 @@ public class IMAPReader {
 			final Message[] messages = folder.getMessages();
 
 			logger.info("Found " + messages.length + " messages");
+
 			// Loop over all of the messages
 
-			for (messageNumber = 0; messageNumber < batchSize; messageNumber++) {
+			for (messageNumber = 0; messageNumber < Math.min(batchSize, messages.length); messageNumber++) {
+				logger.info("Starting to process message " + messageNumber);
 				MimeMailMessage mailMessage = null;
 				try {
 					final int currentMessageNumber = messageNumber;
 					// Retrieve the next message to be read
 					final Message message = messages[currentMessageNumber];
-					mailMessage = new MimeMailMessage();
+					if (!message.getFlags().contains(Flag.DELETED)) {
+						mailMessage = new MimeMailMessage();
 
-					source.setLoadTimestamp(new Date());
-					mailMessage.loadMimeMessage((MimeMessage) message, false);
-					mailMessage.addSource(source);
+						source.setLoadTimestamp(new Date());
+						mailMessage.loadMimeMessage((MimeMessage) message,
+								false);
+						mailMessage.addSource(source);
 
-					String messageId = mailMessage.getMessageId();
+						String messageId = mailMessage.getMessageId();
 
-					if (storageService.existsMimeMailMessage(messageId)) {
-						logger.warn("Found duplicate " + messageId);
-						metaData.incrementDuplicates();
-						storageService.addSource(messageId, source);
+						if (storageService.existsMimeMailMessage(messageId)) {
+							logger.warn("Found duplicate " + messageId);
+							metaData.incrementDuplicates();
+							storageService.addSource(messageId, source);
+						} else {
+							long storedSize = storageService.store(mailMessage);
+
+							LogMessage logMessage = new LogMessage(
+									LogLevel.Success,
+									mailMessage.getMessageId(),
+									"Stored journaled message from "
+											+ source.getProtocol() + "://"
+											+ source.getImapSource() + ":"
+											+ source.getImapPort());
+							storageService.store(logMessage);
+
+							logger.info("Stored journaled message["
+									+ currentMessageNumber
+									+ "] "
+									+ mailMessage.getMessageId()
+									+ " "
+									+ FileUtils
+											.byteCountToDisplaySize(mailMessage
+													.getSize()));
+
+							metaData.updateSizeStatistics(mailMessage
+									.getRawContents().length(), storedSize);
+
+						}
+
+						metaData.incrementAttachmentStatistics(mailMessage
+								.isHasAttachments());
+						if (expunge) {
+							message.setFlag(Flag.DELETED, true);
+
+						}
+						metaData.incrementMessages();
 					} else {
-						long storedSize = storageService.store(mailMessage);
-
-						LogMessage logMessage = new LogMessage(
-								LogLevel.Success, mailMessage.getMessageId(),
-								"Stored journaled message from "
-										+ source.getProtocol() + "://"
-										+ source.getImapSource() + ":"
-										+ source.getImapPort());
-						storageService.store(logMessage);
-
-						logger.info("Stored journaled message["
-								+ currentMessageNumber
-								+ "] "
-								+ mailMessage.getMessageId()
-								+ " "
-								+ FileUtils.byteCountToDisplaySize(mailMessage
-										.getSize()));
-
-						metaData.updateSizeStatistics(mailMessage.getRawContents()
-								.length(),
-								storedSize);
-
+						logger.info("Skipping message that was marked deleted [" + message.getMessageNumber() + "]");
 					}
-
-					metaData.incrementAttachmentStatistics(mailMessage.isHasAttachments());
-					if (expunge) {
-						message.setFlag(Flag.DELETED, true);
-
-					}
-					metaData.incrementMessages();
 
 				} catch (Exception e) {
 					metaData.incrementFailures();
@@ -216,9 +225,6 @@ public class IMAPReader {
 					bean.getProtocol(), bean.getClient(), bean.getBatchSize(),
 					bean.getExpunge());
 
-			// "72.0.226.101", 993,
-			// "TWF\\Journal", "J0urn@l!", "imaps", "reqo"
-
 			// Calling processMail Function to read from IMAP Account
 			try {
 				while (true) {
@@ -226,9 +232,8 @@ public class IMAPReader {
 					long started = System.currentTimeMillis();
 					int number = readMail.processMail();
 					long finished = System.currentTimeMillis();
-					logger.info("Processed batch with " + number + " messages in "
-							+ (finished - started) + "ms");
-			//		System.exit(1);
+					logger.info("Processed batch with " + number
+							+ " messages in " + (finished - started) + "ms");
 					if (number < bean.getBatchSize()) {
 
 						Thread.sleep(60000);

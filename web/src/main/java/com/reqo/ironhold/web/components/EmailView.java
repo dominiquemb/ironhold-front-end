@@ -137,8 +137,9 @@ public class EmailView extends Panel {
 		SearchHits hits = indexService.search(
 				indexService.getNewBuilder().withCriteria(criteria)
 						.withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
-		final Label body = new Label(IndexUtils.getFieldValue(hits.getAt(0),
-				IndexFieldEnum.BODY, true).replaceAll("\r?\n", "<br/>"));
+		String bodyText = IndexUtils.getFieldValue(hits.getAt(0),
+				IndexFieldEnum.BODY, false).replaceAll("\r?\n", "<br/>");
+		final Label body = new Label(bodyText);
 		body.setContentMode(Label.CONTENT_RAW);
 		bodyLayout.addComponent(body);
 

@@ -51,9 +51,9 @@ public class SourceView extends Panel {
 
         
 
-        final Label body = new Label(rawBody);
+        final Label body = new Label(rawBody.replaceAll("\r?\n", "<br/>"));
 
-        body.setContentMode(Label.CONTENT_PREFORMATTED);
+        body.setContentMode(Label.CONTENT_RAW);
         this.addComponent(body);
 
     }
