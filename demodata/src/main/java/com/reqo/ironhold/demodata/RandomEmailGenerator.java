@@ -42,7 +42,7 @@ public class RandomEmailGenerator {
 		System.out.println(reg.generate());
 
 	}
-	
+
 	private Map<String, String> names = new HashMap<String, String>();
 
 	private RandomTextGenerator rtg;
@@ -50,7 +50,7 @@ public class RandomEmailGenerator {
 	public RandomEmailGenerator() {
 		this.rtg = new RandomTextGenerator();
 
-		for (int i = 0; i<100; i++)  {
+		for (int i = 0; i < 100; i++) {
 			names.put(df.getEmailAddress().replaceAll(" ", ""), df.getName());
 		}
 	}
@@ -62,30 +62,35 @@ public class RandomEmailGenerator {
 		email.setHostName("abc");
 		int toCount = (int) (Math.random() * 5) + 1;
 		for (int i = 0; i < toCount; i++) {
-			int person = (int) (Math.random()*names.size());
-			email.addTo(names.keySet().toArray()[person].toString(), names.values().toArray()[person].toString());
+			int person = (int) (Math.random() * names.size());
+			email.addTo(names.keySet().toArray()[person].toString(), names
+					.values().toArray()[person].toString());
 		}
 
 		int ccCount = (int) (Math.random() * 5) + 1;
 		for (int i = 0; i < ccCount; i++) {
-			int person = (int) (Math.random()*names.size());
-			email.addCc(names.keySet().toArray()[person].toString(), names.values().toArray()[person].toString());
+			int person = (int) (Math.random() * names.size());
+			email.addCc(names.keySet().toArray()[person].toString(), names
+					.values().toArray()[person].toString());
 		}
 
 		int bccCount = (int) (Math.random() * 5) + 1;
 		for (int i = 0; i < bccCount; i++) {
-			int person = (int) (Math.random()*names.size());
-			email.addBcc(names.keySet().toArray()[person].toString(), names.values().toArray()[person].toString());
+			int person = (int) (Math.random() * names.size());
+			email.addBcc(names.keySet().toArray()[person].toString(), names
+					.values().toArray()[person].toString());
 		}
-		int person = (int) (Math.random()*names.size());
-		email.setFrom(names.keySet().toArray()[person].toString(), names.values().toArray()[person].toString());
+		int person = (int) (Math.random() * names.size());
+		email.setFrom(names.keySet().toArray()[person].toString(), names
+				.values().toArray()[person].toString());
 
 		String text = rtg.generate();
 		int cutoff = Math.min(text.length(), 20);
-		while (!text.substring(cutoff, cutoff + 1).equals(" ")) {
+		while (!text.substring(cutoff, cutoff + 1).equals(" ") || cutoff < 40) {
 			cutoff++;
 		}
-		email.setSubject(text.substring(0, cutoff).replaceAll("\r?\n", " ") + "...");
+		email.setSubject(text.substring(0, cutoff).replaceAll("\r?\n", " ")
+				+ "...");
 
 		Date randomDate = new Date();
 		randomDate.setTime((long) (randomDate.getTime() * Math.random()));
@@ -116,7 +121,7 @@ public class RandomEmailGenerator {
 			attachment.setDescription(attachmentName);
 			attachment.setName(attachmentName + ".pdf");
 			email.attach(attachment);
-			
+
 			toBeDeleted.add(file);
 
 		}
@@ -125,7 +130,7 @@ public class RandomEmailGenerator {
 
 		ByteArrayOutputStream byos = new ByteArrayOutputStream();
 		email.getMimeMessage().writeTo(byos);
-		
+
 		for (File f : toBeDeleted) {
 			f.delete();
 		}
