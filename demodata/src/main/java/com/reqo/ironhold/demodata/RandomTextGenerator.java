@@ -26,7 +26,7 @@ public class RandomTextGenerator {
 	public RandomTextGenerator() {
 		loadParagraphs("2600.txt");
 		loadParagraphs("2320.txt");
-		loadParagraphs("25606-0.txt");
+	//	loadParagraphs("25606-0.txt");
 	}
 
 
