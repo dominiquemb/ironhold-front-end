@@ -25,7 +25,11 @@
 			<artifactId>args4j</artifactId>
 			<version>2.0.16</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.fluttercode.datafactory</groupId>
+			<artifactId>datafactory</artifactId>
+			<version>0.8</version>
+		</dependency>
 		<dependency>
 			<groupId>com.reqo.ironhold</groupId>
 			<artifactId>storage</artifactId>

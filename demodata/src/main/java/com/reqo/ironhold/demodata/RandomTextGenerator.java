@@ -22,37 +22,18 @@ public class RandomTextGenerator {
 
 	}
 	
-	public String generateName() {
-		int number = (int) (Math.random()*names.size());
-		return names.get(number);
-	}
 
 	public RandomTextGenerator() {
-		loadParagraphs();
-		loadNames();
-
+		loadParagraphs("2600.txt");
+		loadParagraphs("2320.txt");
+		loadParagraphs("25606-0.txt");
+		
 	}
 
-	private void loadNames() {
+
+	private void loadParagraphs(String fileName) {
 		InputStream in = this.getClass().getClassLoader()
-				.getResourceAsStream("2600-names.txt");
-
-		Scanner scanner = new Scanner(in).useDelimiter("\n");
-
-		StringBuffer paragraph = new StringBuffer();
-
-		while (scanner.hasNext()) {
-			String nextLine = scanner.next();
-			if (nextLine.trim().length() > 0) {
-				
-				names.add(nextLine.replace("\r", ""));
-			}
-		}
-	}
-
-	private void loadParagraphs() {
-		InputStream in = this.getClass().getClassLoader()
-				.getResourceAsStream("2600.txt");
+				.getResourceAsStream(fileName);
 
 		Scanner scanner = new Scanner(in).useDelimiter("\n");
 
@@ -81,6 +62,5 @@ public class RandomTextGenerator {
 	}
 
 	private List<String> paragraphs = new ArrayList<String>();
-	private List<String> names = new ArrayList<String>();
-
+	
 }

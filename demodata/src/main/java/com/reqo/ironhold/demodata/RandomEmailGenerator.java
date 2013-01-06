@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,6 +95,7 @@ public class RandomEmailGenerator {
 		email.setMsg(text);
 
 		int attachmentFlag = (int) (Math.random() * 3);
+		List<File> toBeDeleted = new ArrayList<File>();
 		for (int i = 0; i < attachmentFlag; i++) {
 
 			Document document = new Document(PageSize.A4, 50, 50, 50, 50);
@@ -114,6 +116,8 @@ public class RandomEmailGenerator {
 			attachment.setDescription(attachmentName);
 			attachment.setName(attachmentName + ".pdf");
 			email.attach(attachment);
+			
+			toBeDeleted.add(file);
 
 		}
 		// send the email
@@ -121,6 +125,10 @@ public class RandomEmailGenerator {
 
 		ByteArrayOutputStream byos = new ByteArrayOutputStream();
 		email.getMimeMessage().writeTo(byos);
+		
+		for (File f : toBeDeleted) {
+			f.delete();
+		}
 		return byos.toString();
 
 	}
