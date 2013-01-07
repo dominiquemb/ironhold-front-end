@@ -10,6 +10,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -78,7 +79,8 @@ public class IndexService {
 
 		String messageDef = readJsonDefinition("message.json");
 		PutMappingResponse response3 = esClient.admin().indices()
-				.preparePutMapping(indexName).setType(IndexedObjectType.MIME_MESSAGE.getValue())
+				.preparePutMapping(indexName)
+				.setType(IndexedObjectType.MIME_MESSAGE.getValue())
 				.setSource(messageDef).execute().actionGet();
 		if (!response3.acknowledged()) {
 			throw new Exception("ES Request did not get acknowledged: "
@@ -87,7 +89,8 @@ public class IndexService {
 
 		String mimeMessageDef = readJsonDefinition("mimeMessage.json");
 		PutMappingResponse response4 = esClient.admin().indices()
-				.preparePutMapping(indexName).setType(IndexedObjectType.PST_MESSAGE.getValue())
+				.preparePutMapping(indexName)
+				.setType(IndexedObjectType.PST_MESSAGE.getValue())
 				.setSource(mimeMessageDef).execute().actionGet();
 		if (!response4.acknowledged()) {
 			throw new Exception("ES Request did not get acknowledged: "
@@ -106,53 +109,48 @@ public class IndexService {
 	}
 
 	public boolean store(IndexedMailMessage message) throws Exception {
-
-		if (!exists(message.getMessageId(), message.getType())) {
-			long started = System.currentTimeMillis();
-			int retry = 1;
-			boolean success = false;
-			while (!success && retry <= MAX_RETRY_COUNT) {
-				try {
-
-					logger.info("Trying to index " + message.getMessageId());
-
-					esClient.prepareIndex(indexName,
-							message.getType().getValue(),
-							message.getMessageId())
-							.setSource(IndexedMailMessage.toJSON(message))
-							.execute().actionGet();
-
-					logger.info("Returned from ES");
-					success = true;
-					return true;
-				} catch (NoNodeAvailableException e) {
-					logger.warn("Recieved no node available exception, sleep for "
-							+ RETRY_SLEEP
-							+ " (Attempt "
-							+ retry
-							+ " out of "
-							+ MAX_RETRY_COUNT + ")");
-					success = false;
-					retry++;
-
-					try {
-						Thread.sleep(RETRY_SLEEP);
-					} catch (InterruptedException ignore) {
-					}
-					reconnect();
-				} finally {
-					logger.info("Out of the indexing try catch block");
-				}
-			}
-			long finished = System.currentTimeMillis();
-			logger.info(String.format("Statistics: store %d", finished
-					- started));
-
-		} else {
-			logger.info(String.format("Skipped document with id [%s]",
+		if (exists(message.getMessageId(), message.getType())) {
+			esClient.prepareDelete(indexName, message.getType().getValue(),
+					message.getMessageId()).execute().actionGet();
+			logger.info(String.format("Deleting document with id [%s]",
 					message.getMessageId()));
-			return false;
+
 		}
+
+		long started = System.currentTimeMillis();
+		int retry = 1;
+		boolean success = false;
+		while (!success && retry <= MAX_RETRY_COUNT) {
+			try {
+
+				logger.info("Trying to index " + message.getMessageId());
+
+				esClient.prepareIndex(indexName, message.getType().getValue(),
+						message.getMessageId())
+						.setSource(IndexedMailMessage.toJSON(message))
+						.execute().actionGet();
+
+				logger.info("Returned from ES");
+				success = true;
+				return true;
+			} catch (NoNodeAvailableException e) {
+				logger.warn("Recieved no node available exception, sleep for "
+						+ RETRY_SLEEP + " (Attempt " + retry + " out of "
+						+ MAX_RETRY_COUNT + ")");
+				success = false;
+				retry++;
+
+				try {
+					Thread.sleep(RETRY_SLEEP);
+				} catch (InterruptedException ignore) {
+				}
+				reconnect();
+			} finally {
+				logger.info("Out of the indexing try catch block");
+			}
+		}
+		long finished = System.currentTimeMillis();
+		logger.info(String.format("Statistics: store %d", finished - started));
 
 		return false;
 	}
