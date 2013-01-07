@@ -97,7 +97,7 @@ public class MimeMailMessage implements Serializable {
 	private Date storedDate;
 	private String messageId;
 	private MessageSource[] sources;
-	
+
 	public MimeMailMessage() {
 	}
 
@@ -125,11 +125,19 @@ public class MimeMailMessage implements Serializable {
 			this.messageDate = mimeMessage.getSentDate();
 			this.size = rawContents.getBytes().length;
 
-			InternetAddress internetAddress = (InternetAddress) mimeMessage
-					.getFrom()[0];
+			InternetAddress internetAddress;
+			try {
+				internetAddress = (InternetAddress) mimeMessage
+						.getFrom()[0];
+				this.from = new Recipient(internetAddress.getPersonal(),
+						internetAddress.getAddress());
 
-			this.from = new Recipient(internetAddress.getPersonal(),
-					internetAddress.getAddress());
+			} catch (AddressException e) {
+				this.from = new Recipient(mimeMessage.getHeader("From")[0],
+						mimeMessage.getHeader("From")[0]);
+			}
+
+			
 			try {
 				if (mimeMessage.getRecipients(RecipientType.TO) != null) {
 					for (Address address : mimeMessage
