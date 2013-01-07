@@ -158,7 +158,7 @@ public class IMAPReader {
 						}
 						metaData.incrementMessages();
 					} else {
-						logger.info("Skipping message that was marked deleted [" + message.getMessageNumber() + "]");
+						logger.info("Skipping message that was marked deleted [" + messageNumber + "]");
 					}
 
 				} catch (Exception e) {
