@@ -48,7 +48,7 @@ public class IndexedMailMessage {
 	private long size;
 	private String body;
 	private Attachment[] attachments;
-	
+
 	@JsonIgnore
 	private IndexedObjectType type;
 
@@ -63,11 +63,11 @@ public class IndexedMailMessage {
 		attachments = mailMessage.getAttachments();
 		this.setType(IndexedObjectType.PST_MESSAGE);
 	}
-	
+
 	public IndexedMailMessage(MimeMailMessage mimeMessage) {
 		messageId = mimeMessage.getMessageId();
 		load(mimeMessage);
-		
+
 		attachments = mimeMessage.getAttachments();
 		this.setType(IndexedObjectType.MIME_MESSAGE);
 	}
@@ -84,10 +84,10 @@ public class IndexedMailMessage {
 
 		size = imapMailMessage.getSize();
 
-		if (imapMailMessage.getBody().trim().length() != 0) {
-			body = imapMailMessage.getBody();
-		} else if (imapMailMessage.getBodyHTML().trim().length() != 0) {
+		if (imapMailMessage.getBodyHTML().trim().length() != 0) {
 			body = Jsoup.parse(imapMailMessage.getBodyHTML()).text();
+		} else if (imapMailMessage.getBody().trim().length() != 0) {
+			body = imapMailMessage.getBody();
 		} else {
 			body = StringUtils.EMPTY;
 		}
