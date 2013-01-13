@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.elasticsearch.search.SearchHit;
 
 import com.reqo.ironhold.search.IndexService;
@@ -39,7 +40,7 @@ public class SourceView extends Panel {
 
         this.removeAllComponents();
 
-        final Label messageId = new Label("<b>MessageId: " + item.getId() + "</b>");
+        final Label messageId = new Label("<b>MessageId: " + StringEscapeUtils.escapeHtml4(item.getId()) + "</b>");
         messageId.setContentMode(Label.CONTENT_XHTML);
         this.addComponent(messageId);
         
@@ -77,7 +78,7 @@ public class SourceView extends Panel {
 
         
 
-        final Label body = new Label(rawBody.replaceAll("\r?\n", "<br/>"));
+        final Label body = new Label(StringEscapeUtils.escapeHtml4(rawBody).replaceAll("\r?\n", "<br/>"));
 
         body.setContentMode(Label.CONTENT_RAW);
         this.addComponent(body);
