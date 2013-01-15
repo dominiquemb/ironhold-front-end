@@ -33,7 +33,7 @@ import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
 import com.reqo.ironhold.storage.model.mixin.PSTAppointmentMixin;
 import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 
-@JsonIgnoreProperties("attachments")
+@JsonIgnoreProperties(value = "attachments", ignoreUnknown = true)
 public class MailMessage {
 	private static final int BUFFER_SIZE = 20000;
 	private static ObjectMapper mapper = new ObjectMapper();
