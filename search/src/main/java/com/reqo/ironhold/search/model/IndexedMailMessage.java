@@ -42,6 +42,7 @@ public class IndexedMailMessage {
 	private String subject;
 	private Date messageDate;
 	private Recipient sender;
+	private Recipient realSender;
 	private Recipient[] to;
 	private Recipient[] cc;
 	private Recipient[] bcc;
@@ -77,7 +78,6 @@ public class IndexedMailMessage {
 		subject = imapMailMessage.getSubject();
 		messageDate = imapMailMessage.getMessageDate();
 		sender = imapMailMessage.getFrom();
-
 		to = imapMailMessage.getTo();
 		cc = imapMailMessage.getCc();
 		bcc = imapMailMessage.getBcc();

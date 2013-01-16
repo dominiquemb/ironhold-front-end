@@ -67,6 +67,8 @@ public class MimeMailMessage implements Serializable {
 	@JsonIgnore
 	private Recipient from;
 	@JsonIgnore
+	private Recipient sender;
+	@JsonIgnore
 	private Recipient[] to = new Recipient[0];
 	@JsonIgnore
 	private Recipient[] cc = new Recipient[0];
@@ -127,8 +129,7 @@ public class MimeMailMessage implements Serializable {
 
 			InternetAddress internetAddress;
 			try {
-				internetAddress = (InternetAddress) mimeMessage
-						.getFrom()[0];
+				internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
 				this.from = new Recipient(internetAddress.getPersonal(),
 						internetAddress.getAddress());
 
@@ -137,7 +138,17 @@ public class MimeMailMessage implements Serializable {
 						mimeMessage.getHeader("From")[0]);
 			}
 
-			
+			try {
+				internetAddress = (InternetAddress) mimeMessage.getSender();
+				if (internetAddress != null) {
+					this.setSender(new Recipient(internetAddress.getPersonal(),
+							internetAddress.getAddress()));
+				}
+
+			} catch (AddressException e) {
+				// ignore
+			}
+
 			try {
 				if (mimeMessage.getRecipients(RecipientType.TO) != null) {
 					for (Address address : mimeMessage
@@ -497,6 +508,14 @@ public class MimeMailMessage implements Serializable {
 
 	public void setHasAttachments(boolean hasAttachments) {
 		this.hasAttachments = hasAttachments;
+	}
+
+	public Recipient getSender() {
+		return sender;
+	}
+
+	public void setSender(Recipient sender) {
+		this.sender = sender;
 	}
 
 }

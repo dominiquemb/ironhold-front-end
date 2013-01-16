@@ -1,0 +1,169 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="_4c7aa80d-e28d-4903-9084-9d6adbdc3d1e_"
+Subject: CPC 0021475
+To: <Nick@transworldfacilities.com>
+From: <suydaminc@aol.com>
+Sender: <MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@twf.transworldfacilities.com>
+Message-ID: <4701e791-2b45-4e13-98f3-59e3f281009c@journal.report.generator>
+Date: Wed, 31 Oct 2012 15:26:02 +0000
+X-MS-Journal-Report:
+X-MS-Exchange-Organization-AuthSource: TWFSRV01.twf.transworldfacilities.com
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 05
+Keywords:
+
+--_4c7aa80d-e28d-4903-9084-9d6adbdc3d1e_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Sender: suydaminc@aol.com
+Subject: CPC 0021475
+Message-Id: <8CF859332B1BC38-2284-5C1AB@webmail-m154.sysops.aol.com>
+Recipient: Nick@transworldfacilities.com
+
+--_4c7aa80d-e28d-4903-9084-9d6adbdc3d1e_
+Content-Type: message/rfc822
+
+Received: from imr-da04.mx.aol.com (205.188.105.146) by
+ TWFSRV01.twf.transworldfacilities.com (10.108.180.50) with Microsoft SMTP
+ Server id 14.2.298.4; Wed, 31 Oct 2012 11:26:02 -0400
+Received: from mtaomg-mb04.r1000.mx.aol.com (mtaomg-mb04.r1000.mx.aol.com
+ [172.29.41.75])	by imr-da04.mx.aol.com (8.14.1/8.14.1) with ESMTP id
+ q9VFQEfs005179	for <Nick@transworldfacilities.com>; Wed, 31 Oct 2012 11:26:14
+ -0400
+Received: from core-dka002b.r1000.mail.aol.com (core-dka002.r1000.mail.aol.com
+ [172.29.181.84])	by mtaomg-mb04.r1000.mx.aol.com (OMAG/Core Interface) with
+ ESMTP id 39EA8E000081	for <Nick@transworldfacilities.com>; Wed, 31 Oct 2012
+ 11:26:14 -0400 (EDT)
+To: <Nick@transworldfacilities.com>
+Subject: CPC 0021475
+X-MB-Message-Source: WebUI
+X-MB-Message-Type: User
+From: <suydaminc@aol.com>
+Content-Type: multipart/alternative;
+	boundary="_919a4a95-74a8-4a5a-826d-4ded4c0f6a66_"
+X-Mailer: AOL Webmail 37105-STANDARD
+Received: from 74.101.24.21 by webmail-m154.sysops.aol.com (64.12.101.131)
+ with HTTP (WebMailUI); Wed, 31 Oct 2012 11:26:14 -0400
+Message-ID: <8CF859332B1BC38-2284-5C1AB@webmail-m154.sysops.aol.com>
+X-Originating-IP: [74.101.24.21]
+Date: Wed, 31 Oct 2012 11:26:14 -0400
+x-aol-global-disposition: G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.aol.com;
+	s=20110426; t=1351697174;
+	bh=Knus2t0TEmSQKXfgU3MzLBONWYTpE6SBVdiCkMiEpXs=;
+	h=From:To:Subject:Message-Id:Date:MIME-Version:Content-Type;
+	b=h1KLtW+ZiDAySLQHHEEULr7HnWawfV+hq2NEze+GcuIw1eDUG5NmdT13g8BsRB1iZ
+	 GlcfJjQ9KGtBq0v7+MR8jiOnG1mHaY9eIhFXr8PXdE3RKDzvrmyWhD/2KyHjS7LAjg
+	 DLTTnkDrHJuDaQIHVCexV5Wcq2CNe9jXPyC0GXB4=
+X-AOL-SCOLL-SCORE: 0:2:401641152:93952408  
+X-AOL-SCOLL-URL_COUNT: 0  
+x-aol-sid: 3039ac1d294b50914316156e
+Return-Path: suydaminc@aol.com
+X-MS-Exchange-Organization-OriginalArrivalTime: 31 Oct 2012 15:26:02.0333
+ (UTC)
+X-MS-Exchange-Forest-ArrivalHubServer: TWFSRV01.twf.transworldfacilities.com
+X-MS-Exchange-Organization-OriginalClientIPAddress: 205.188.105.146
+X-MS-Exchange-Organization-OriginalServerIPAddress: 10.108.180.50
+X-MS-Exchange-Organization-AuthSource: TWFSRV01.twf.transworldfacilities.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: TWFSRV01.twf.transworldfacilities.com
+X-GFI-SMTP-Submission: 1
+X-MS-Exchange-Organization-PRD: aol.com
+X-MS-Exchange-Organization-SenderIdResult: Pass
+Received-SPF: Pass (TWFSRV01.twf.transworldfacilities.com: domain of
+ suydaminc@aol.com designates 205.188.105.146 as permitted sender)
+ receiver=TWFSRV01.twf.transworldfacilities.com; client-ip=205.188.105.146;
+ helo=imr-da04.mx.aol.com;
+X-GFI-SMTP-Submission: 1
+X-GFI-SMTP-HelloDomain: imr-da04.mx.aol.com
+X-GFI-SMTP-RemoteIP: 205.188.105.146
+X-MS-Exchange-Organization-PCL: 2
+X-MS-Exchange-Organization-Antispam-Report: DV:3.3.11314.470;SID:SenderIDStatus Pass;OrigIP:205.188.105.146
+X-MS-Exchange-Organization-OriginalSize: 4183
+X-MS-Exchange-Forest-MessageScope: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Organization-MessageScope: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Organization-HygienePolicy: Standard
+X-MS-Exchange-Organization-Recipient-Limit-Verified: True
+X-MS-Exchange-Forest-RulesExecuted: TWFSRV01
+X-MS-Exchange-Organization-Rules-Execution-History: Test User Auto Response
+MIME-Version: 1.0
+
+--_919a4a95-74a8-4a5a-826d-4ded4c0f6a66_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+
+
+Hope all is well!
+
+The attached insured has a claim to file. (508 Beach 43rd LLC)  He's curren=
+tly with Hermitage Insurance Company.
+He has broken windows do to tree branches, he has broken gutters and severe=
+ water damage. I explained he would need to contact his flood insurer for f=
+lood coverage. He stated he has no flood insurance.  I further explained th=
+at he has a $2,500 deductible.  He wants me to submit claim for his damages=
+ and have an adjuster contact him.
+
+Please advise claim # and adjusters name and phone once submitted.
+
+Thanks,
+
+
+Tony  Skoros  cpcu
+Suydam Agency Inc.
+718-359-3964
+917-670-3417
+
+--_919a4a95-74a8-4a5a-826d-4ded4c0f6a66_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="us-ascii"
+
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+><font color=3D"black" size=3D"2" face=3D"Arial, Helvetica, sans-serif">
+<div><font style=3D"background-color: transparent;" size=3D"3" face=3D"Aria=
+l, Helvetica, sans-serif">Hope all is well!</font></div>
+
+<div><font size=3D"3"></font>&nbsp;</div>
+
+<div><font size=3D"3">The attached insured has a claim to file. (508 Beach =
+43rd LLC)&nbsp; He's currently with Hermitage Insurance Company.</font></di=
+v>
+
+<div><font size=3D"3">He has broken windows do to tree branches, he has bro=
+ken gutters and severe water damage. I explained he would need to contact h=
+is flood insurer for flood coverage. He stated he has no flood insurance.&n=
+bsp; I further explained that he has a $2,500 deductible.&nbsp; He wants me=
+ to submit claim for his damages and have an adjuster contact him.</font></=
+div>
+
+<div><font size=3D"3"></font>&nbsp;</div>
+
+<div><font size=3D"3">Please advise claim # and adjusters name and phone on=
+ce submitted.</font></div>
+
+<div><font size=3D"3"></font>&nbsp;</div>
+
+<div><font size=3D"3">Thanks,</font></div>
+
+<div><font size=3D"3"></font></div>
+
+<div style=3D"clear: both;">
+<div><font size=3D"3">Tony&nbsp; Skoros&nbsp; <font color=3D"black">cpcu</f=
+ont></font></div>
+<font size=3D"3">
+</font>
+<div><font size=3D"3">Suydam Agency Inc.</font></div>
+<font size=3D"3">
+</font>
+<div><font size=3D"3">718-359-3964</font></div>
+<font size=3D"3">
+</font>
+<div><font size=3D"3">917-670-3417</font></div>
+</div>
+</font>=
+
+--_919a4a95-74a8-4a5a-826d-4ded4c0f6a66_--
+
+--_4c7aa80d-e28d-4903-9084-9d6adbdc3d1e_--
