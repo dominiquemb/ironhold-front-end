@@ -29,6 +29,7 @@ import junit.framework.Assert;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -743,12 +744,12 @@ public class EmlLoadTest {
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(((InternetAddress) mimeMessage.getSender()).getAddress(), mailMessage.getSender().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getSender()).getPersonal(), mailMessage.getSender().getName());
+		Assert.assertEquals(((InternetAddress) mimeMessage.getSender()).getPersonal() == null ? StringUtils.EMPTY : ((InternetAddress) mimeMessage.getSender()).getPersonal(), mailMessage.getSender().getName());
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
 				mailMessage.getFrom().getAddress());
 		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
+				((InternetAddress) mimeMessage.getFrom()[0]).getPersonal() == null ? StringUtils.EMPTY : ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
 				mailMessage.getFrom().getName());
 
 		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
