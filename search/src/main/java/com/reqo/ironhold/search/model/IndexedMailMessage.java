@@ -1,6 +1,8 @@
 package com.reqo.ironhold.search.model;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,8 +16,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
@@ -85,7 +90,14 @@ public class IndexedMailMessage {
 		size = imapMailMessage.getSize();
 
 		if (imapMailMessage.getBodyHTML().trim().length() != 0) {
-			body = Jsoup.parse(imapMailMessage.getBodyHTML()).text();
+			Document html = Jsoup.parse(imapMailMessage.getBodyHTML());
+			StringWriter buffer = new StringWriter();
+			PrintWriter writer = new PrintWriter(buffer);
+			
+			for (Node node : html.childNodes()) {
+				parseHtml(writer, node);
+			}
+			body = buffer.toString();
 		} else if (imapMailMessage.getBody().trim().length() != 0) {
 			body = imapMailMessage.getBody();
 		} else {
@@ -93,6 +105,16 @@ public class IndexedMailMessage {
 		}
 		logger.info("Done loading imap message");
 
+	}
+
+	private void parseHtml(PrintWriter writer, Node node) {
+		if (node instanceof TextNode) {
+			writer.println(((TextNode) node).text());
+		} else if (node instanceof Element) {
+			for (Node subNode : ((Element)node).childNodes()) {
+				parseHtml(writer, subNode);
+			}
+		}
 	}
 
 	private void load(ArchivedPSTMessage pstMessage) {

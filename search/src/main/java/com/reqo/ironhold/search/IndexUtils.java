@@ -51,21 +51,25 @@ public class IndexUtils {
 	public static final int PREVIEW_RECIPIENT_COUNT = 3;
 
 	public static String getFieldValue(SearchHit hit, IndexFieldEnum field) {
-		return getFieldValue(hit, field, true);
+		return getFieldValue(hit, field, null, true);
+	}
+
+	public static String getFieldValue(SearchHit hit, IndexFieldEnum field, IndexFieldEnum subField) {
+		return getFieldValue(hit, field, subField, true);
 
 	}
 
-	public static String getFieldValue(SearchHit hit, IndexFieldEnum field,
+	public static String getFieldValue(SearchHit hit, IndexFieldEnum field, IndexFieldEnum subField,
 			boolean preview) {
 		final SimpleDateFormat sdf = new SimpleDateFormat(
 				"EEE, d MMM yyyy HH:mm:ss z");
 
 		String key = field.getValue();
-
+		String subKey = subField != null ? subField.getValue() : StringUtils.EMPTY;
 		if (preview && hit.getHighlightFields().containsKey(key)) {
 			return StringUtils.join(hit.getHighlightFields().get(key)
 					.getFragments(), " ... ");
-		} else if (hit.getFields().containsKey(key)) {
+		} else if (hit.getFields().containsKey(key) || hit.getFields().containsKey(subKey)) {
 			switch (field) {
 			case DATE:
 				try {
@@ -102,17 +106,9 @@ public class IndexUtils {
 				return FileUtils.byteCountToDisplaySize(size);
 
 			case FROM_NAME:
-				return getRecipientInfo(hit, IndexFieldEnum.FROM_NAME,
-						IndexFieldEnum.FROM_ADDRESS, preview);
-
 			case TO_NAME:
-				return getRecipientInfo(hit, IndexFieldEnum.TO_NAME,
-						IndexFieldEnum.TO_ADDRESS, preview);
-
 			case CC_NAME:
-				return getRecipientInfo(hit, IndexFieldEnum.CC_NAME,
-						IndexFieldEnum.CC_ADDRESS, preview);
-
+				return getRecipientInfo(hit, field, subField, preview);
 			case BODY:
 			case SUBJECT:
 				if (!preview) {
@@ -135,18 +131,26 @@ public class IndexUtils {
 
 	private static String getRecipientInfo(SearchHit hit, IndexFieldEnum key,
 			IndexFieldEnum subKey, boolean preview) {
-		Object names = hit.getFields().get(key.getValue()).getValue();
-		Object addresses = hit.getFields().get(subKey.getValue()).getValue();
+		
+		
+		Object name = null;
+		if (hit.getFields().containsKey(key.getValue())) {
+			name = hit.getFields().get(key.getValue()).getValue();
+		}
+		
+		Object address = null;
+		if (hit.getFields().containsKey(subKey.getValue())) {
+			address = hit.getFields().get(subKey.getValue()).getValue();
+		}
+		if (name instanceof String || address instanceof String) {
 
-		if (names instanceof String) {
-
-			return String.format("%s %s", names,
-					showAddress((String) names, (String) addresses));
+			return String.format("%s %s", name == null ? StringUtils.EMPTY : name,
+					showAddress((String) name, (String) address));
 		} else {
 
 			StringBuilder result = new StringBuilder();
-			List<String> namesArray = (List<String>) names;
-			List<String> addressesArray = (List<String>) addresses;
+			List<String> namesArray = (List<String>) name;
+			List<String> addressesArray = (List<String>) address;
 			int max = preview ? Math.min(PREVIEW_RECIPIENT_COUNT,
 					namesArray.size()) : namesArray.size();
 			for (int i = 0; i < max; i++) {
@@ -169,7 +173,7 @@ public class IndexUtils {
 		if (address.trim().length() == 0) {
 			return StringUtils.EMPTY;
 		}
-		if (name.contains(address)) {
+		if (name != null && name.contains(address)) {
 			return StringUtils.EMPTY;
 		}
 

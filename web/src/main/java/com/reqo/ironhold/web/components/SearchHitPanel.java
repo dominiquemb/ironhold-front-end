@@ -82,9 +82,9 @@ public class SearchHitPanel extends Panel {
         date.setStyleName(Reindeer.LABEL_SMALL);
         this.addComponent(date);
 
-        addPartyLabel(item, IndexFieldEnum.FROM_NAME);
-        addPartyLabel(item, IndexFieldEnum.TO_NAME);
-        addPartyLabel(item, IndexFieldEnum.CC_NAME);
+        addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
+        addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
+        addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_NAME);
 
 
         final Label body = new Label(IndexUtils.getFieldValue(item, IndexFieldEnum.BODY));
@@ -103,8 +103,8 @@ public class SearchHitPanel extends Panel {
 
     }
 
-    private void addPartyLabel(SearchHit item, IndexFieldEnum field) {
-        String value = IndexUtils.getFieldValue(item, field);
+    private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
+        String value = IndexUtils.getFieldValue(item, field, subField);
         if (!value.equals(StringUtils.EMPTY)) {
             HorizontalLayout hl = new HorizontalLayout();
             final Label typeLabel = new Label(field.getLabel() + ":");

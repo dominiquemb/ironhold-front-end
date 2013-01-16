@@ -52,7 +52,7 @@ public class EmailView extends Panel {
 		this.removeAllComponents();
 
 		String subjectValue = IndexUtils.getFieldValue(item,
-				IndexFieldEnum.SUBJECT, false);
+				IndexFieldEnum.SUBJECT, null, false);
 		if (subjectValue.equals(StringUtils.EMPTY)) {
 			subjectValue = "&lt;No subject&gt;";
 		}
@@ -138,7 +138,8 @@ public class EmailView extends Panel {
 				indexService.getNewBuilder().withCriteria(criteria)
 						.withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
 		String bodyText = IndexUtils.getFieldValue(hits.getAt(0),
-				IndexFieldEnum.BODY, false).replaceAll("\r?\n", "<br/>");
+				IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");
+		System.out.println(bodyText);
 		final Label body = new Label(bodyText);
 		body.setContentMode(Label.CONTENT_RAW);
 		bodyLayout.addComponent(body);
@@ -147,26 +148,21 @@ public class EmailView extends Panel {
 
 	}
 
-	private void addPartyLabel(SearchHit item, IndexFieldEnum field1, IndexFieldEnum field2) {
-		String value1 = IndexUtils.getFieldValue(item, field1);
-		String value2 = IndexUtils.getFieldValue(item, field2);
-		if (!value1.equals(StringUtils.EMPTY) || !value2.equals(StringUtils.EMPTY)) {
+	private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
+		String value = IndexUtils.getFieldValue(item, field, subField);
+		if (!value.equals(StringUtils.EMPTY)) {
 			HorizontalLayout hl = new HorizontalLayout();
-			final Label typeLabel = new Label(field1.getLabel() + ":");
-			typeLabel.setContentMode(Label.CONTENT_RAW);
+			final Label typeLabel = new Label(field.getLabel() + ":");
+			typeLabel.setContentMode(Label.CONTENT_XHTML);
 			hl.addComponent(typeLabel);
-			final Label valueLabel1 = new Label(value1);
-			valueLabel1.setContentMode(Label.CONTENT_RAW);
-			hl.addComponent(valueLabel1);
-			final Label valueLabel2 = new Label(value2);
-			valueLabel2.setContentMode(Label.CONTENT_RAW);
-			hl.addComponent(valueLabel2);
+			final Label valueLabel = new Label(value);
+			valueLabel.setContentMode(Label.CONTENT_XHTML);
+			hl.addComponent(valueLabel);
+			
 
 			typeLabel.setWidth("35px");
-			valueLabel1.setWidth(null);
-			valueLabel2.setWidth(null);
-			hl.setExpandRatio(valueLabel1, 1.0f);
-			hl.setExpandRatio(valueLabel2, 1.0f);
+			valueLabel.setWidth(null);
+			hl.setExpandRatio(valueLabel, 1.0f);
 
 			this.addComponent(hl);
 		}

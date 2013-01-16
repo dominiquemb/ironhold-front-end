@@ -1,8 +1,6 @@
 package com.reqo.ironhold.storage.model;
 
-import javax.mail.Address;
-import javax.mail.internet.InternetAddress;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -16,7 +14,7 @@ public class Recipient {
     }
 
     public Recipient(String name, String address) {
-        this.name = name;
+        this.name = name == null ? StringUtils.EMPTY : name;
         this.address = address;
     }
 
