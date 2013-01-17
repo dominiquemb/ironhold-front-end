@@ -239,6 +239,7 @@ public class MimeMailMessage implements Serializable {
 			while ((read = rawStream.read(bytes)) != -1) {
 				os.write(bytes, 0, read);
 				bufferCount++;
+				logger.info("populateRawContents - recieved buffer " + bufferCount);
 			}
 			
 			logger.info("populateRawContents - finished reading");
