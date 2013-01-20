@@ -125,6 +125,8 @@ public class IMAPReader {
 						} else {
 							long storedSize = storageService.store(mailMessage);
 
+							metaData.incrementBatchSize(storedSize);
+							
 							LogMessage logMessage = new LogMessage(
 									LogLevel.Success,
 									mailMessage.getMessageId(),

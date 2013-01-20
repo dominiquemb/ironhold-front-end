@@ -36,6 +36,7 @@ public class IMAPBatchMeta {
 	private long duplicates;
 	private long failures;
 
+	private long batchSize;
 	private long maxSize;
 	private long compressedMaxSize;
 
@@ -99,6 +100,10 @@ public class IMAPBatchMeta {
 		} else {
 			messagesWithoutAttachments++;
 		}
+	}
+
+	public void incrementBatchSize(long size) {
+		batchSize += size;
 	}
 
 	public void incrementMessages() {
@@ -212,6 +217,10 @@ public class IMAPBatchMeta {
 
 	public void setSource(IMAPMessageSource source) {
 		this.source = source;
+	}
+
+	public long getBatchSize() {
+		return batchSize;
 	}
 
 }
