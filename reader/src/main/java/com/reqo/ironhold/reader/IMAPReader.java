@@ -1,10 +1,8 @@
 package com.reqo.ironhold.reader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.mail.AuthenticationFailedException;
 import javax.mail.Flags.Flag;
@@ -30,7 +28,6 @@ import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
-import com.reqo.ironhold.storage.utils.Compression;
 
 public class IMAPReader {
 
@@ -103,7 +100,8 @@ public class IMAPReader {
 
 			// Loop over all of the messages
 
-			for (messageNumber = 0; messageNumber < Math.min(batchSize, messages.length); messageNumber++) {
+			for (messageNumber = 0; messageNumber < Math.min(batchSize,
+					messages.length); messageNumber++) {
 				logger.info("Starting to process message " + messageNumber);
 				MimeMailMessage mailMessage = null;
 				try {
@@ -158,13 +156,18 @@ public class IMAPReader {
 						}
 						metaData.incrementMessages();
 					} else {
-						logger.info("Skipping message that was marked deleted [" + messageNumber + "]");
+						logger.info("Skipping message that was marked deleted ["
+								+ messageNumber + "]");
 					}
 
 				} catch (Exception e) {
 					metaData.incrementFailures();
 					if (mailMessage != null) {
-						logger.info(mailMessage.getRawContents());
+						File f = new File(mailMessage.getMessageId() + ".eml");
+						if (!f.exists()) {
+							FileUtils.writeStringToFile(f,
+									mailMessage.getRawContents());
+						}
 					}
 					logger.error("Failed to process message", e);
 					e.printStackTrace();
