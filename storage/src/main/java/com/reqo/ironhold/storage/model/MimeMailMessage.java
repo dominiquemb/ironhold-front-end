@@ -210,6 +210,17 @@ public class MimeMailMessage implements Serializable {
 							.replaceAll("\"3D", "\"");
 					reset();
 					loadMimeMessageFromSource(fixedRawContents);
+				} else { 
+					throw e;
+				}
+			} catch (IOException e) {
+				if (e.getMessage().equals("Unknown encoding: 8-bit")) {
+					String fixedRawContents = this.getRawContents()
+							.replaceAll("Content-Transfer-Encoding: 8-bit", "Content-Transfer-Encoding: 8bit");
+					reset();
+					loadMimeMessageFromSource(fixedRawContents);
+				} else {
+					throw e;
 				}
 			}
 
@@ -233,9 +244,11 @@ public class MimeMailMessage implements Serializable {
 		size = 0;
 		bodyHTMLContentType = null;
 		bodyContentType = null;
-		attachments = null;
+		
 		rawContents = null;
 		hasAttachments = false;
+		
+		this.attachments = new Attachment[0];
 	}
 
 	public void addSource(MessageSource source) {
