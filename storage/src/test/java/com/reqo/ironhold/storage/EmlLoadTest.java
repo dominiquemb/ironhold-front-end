@@ -827,6 +827,11 @@ public class EmlLoadTest {
 		performBasicCheckout("/testUnknownEncodingQuote.eml");
 	}
 	
+	@Test
+	public void testNullImage() throws Exception {
+		performBasicCheckout("/testNullImage.eml");
+	}
+	
 	private void performBasicCheckout(String fileName) throws MessagingException, IOException {
 		File file = FileUtils.toFile(EmlLoadTest.class
 				.getResource(fileName));

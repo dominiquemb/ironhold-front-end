@@ -236,6 +236,17 @@ public class MimeMailMessage implements Serializable {
 				} else {
 					throw e;
 				}
+			} catch (NullPointerException e) {
+				Pattern p = Pattern.compile("Content-Type: (.+); name=\\\"\\\"");
+				Matcher m = p.matcher(this.getRawContents());
+				if (m.find()) {
+					String fixedRawContents = m.replaceFirst("Content-Type: $1; name=\"unknown\"");
+					reset();
+					loadMimeMessageFromSource(fixedRawContents);
+
+				} else {
+					throw e;
+				}
 			}
 
 		} finally {
