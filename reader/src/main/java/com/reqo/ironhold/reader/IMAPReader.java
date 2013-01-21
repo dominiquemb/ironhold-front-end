@@ -104,6 +104,7 @@ public class IMAPReader {
 					messages.length); messageNumber++) {
 				logger.info("Starting to process message " + messageNumber);
 				MimeMailMessage mailMessage = null;
+				String messageId = null; 
 				try {
 					final int currentMessageNumber = messageNumber;
 					// Retrieve the next message to be read
@@ -116,7 +117,7 @@ public class IMAPReader {
 								false);
 						mailMessage.addSource(source);
 
-						String messageId = mailMessage.getMessageId();
+						 messageId = mailMessage.getMessageId();
 
 						if (storageService.existsMimeMailMessage(messageId)) {
 							logger.warn("Found duplicate " + messageId);
@@ -171,7 +172,7 @@ public class IMAPReader {
 									mailMessage.getRawContents());
 						}
 					}
-					logger.error("Failed to process message", e);
+					logger.error("Failed to process message " + messageId, e);
 					e.printStackTrace();
 
 				}
