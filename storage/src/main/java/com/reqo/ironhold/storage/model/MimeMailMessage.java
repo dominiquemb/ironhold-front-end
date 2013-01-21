@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;
@@ -35,8 +37,6 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.elasticsearch.common.Base64;
 
 import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
-import com.reqo.ironhold.storage.model.mixin.CompressedIMAPMailMessage;
-import com.reqo.ironhold.storage.model.mixin.CompressedPSTMessageMixin;
 
 @SuppressWarnings("serial")
 public class MimeMailMessage implements Serializable {
@@ -210,6 +210,20 @@ public class MimeMailMessage implements Serializable {
 							.replaceAll("\"3D", "\"");
 					reset();
 					loadMimeMessageFromSource(fixedRawContents);
+				} else if (e.getMessage().startsWith("\"")) {
+					//charset="\"Windows-1252\""
+					Pattern p = Pattern.compile("Content-Type: (.+); charset=\"\\\\\"(.+)\\\\\"\"");
+					Matcher m = p.matcher(this.getRawContents());
+					if (m.find()) {
+					    // replace first number with "number" and second number with the first
+						String fixedRawContents = m.replaceFirst("Content-Type: $1; charset=\"$2\"");
+						reset();
+						loadMimeMessageFromSource(fixedRawContents);
+
+					} else {
+						throw e;
+					}
+					
 				} else { 
 					throw e;
 				}

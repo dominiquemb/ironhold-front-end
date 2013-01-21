@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -806,150 +809,27 @@ public class EmlLoadTest {
 
 	@Test
 	public void testMimeMessageBig() throws Exception {
-		File file = FileUtils.toFile(EmlLoadTest.class
-				.getResource("/testMimeMessageBig.eml"));
-		InputStream is = new FileInputStream(file);
-		MimeMessage mimeMessage = new MimeMessage(null, is);
-
-		MimeMailMessage mailMessage = new MimeMailMessage();
-		mailMessage.loadMimeMessage(mimeMessage);
-		mailMessage.addSource(source);
-
-		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getSentDate(),
-				mailMessage.getMessageDate());
-
-		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getSender()).getAddress(),
-				mailMessage.getSender().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getSender())
-				.getPersonal() == null ? StringUtils.EMPTY
-				: ((InternetAddress) mimeMessage.getSender()).getPersonal(),
-				mailMessage.getSender().getName());
-		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-				mailMessage.getFrom().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
-				.getPersonal() == null ? StringUtils.EMPTY
-				: ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-				mailMessage.getFrom().getName());
-
-		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
-				mailMessage.getTo().length);
-		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
-
-			Assert.assertEquals(
-					mimeMessage.getRecipients(RecipientType.CC).length,
-					mailMessage.getCc().length);
-
-			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.CC)[i]).getAddress(),
-						mailMessage.getCc()[i].getAddress());
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.CC)[i]).getPersonal(),
-						mailMessage.getCc()[i].getName());
-			}
-		} else {
-			Assert.assertEquals(0, mailMessage.getCc().length);
-		}
-
-		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
-
-			Assert.assertEquals(
-					mimeMessage.getRecipients(RecipientType.BCC).length,
-					mailMessage.getBcc().length);
-
-			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.BCC)[i]).getAddress(),
-						mailMessage.getBcc()[i].getAddress());
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
-						mailMessage.getBcc()[i].getName());
-			}
-		} else {
-			Assert.assertEquals(0, mailMessage.getBcc().length);
-		}
-
+		performBasicCheckout("/testMimeMessageBig.eml");
 	}
 	
 	@Test
 	public void testUnsupportedEncodingException3D() throws Exception {
-		System.setProperty("mail.mime.ignoreunknownencoding", "true");
-		File file = FileUtils.toFile(EmlLoadTest.class
-				.getResource("/testUnsupportedEncodingException3D.eml"));
-		InputStream is = new FileInputStream(file);
-		MimeMessage mimeMessage = new MimeMessage(null, is);
-
-		MimeMailMessage mailMessage = new MimeMailMessage();
-		mailMessage.loadMimeMessage(mimeMessage);
-		mailMessage.addSource(source);
-
-		Assert.assertEquals(mimeMessage.getSubject(), mailMessage.getSubject());
-		Assert.assertEquals(mimeMessage.getSentDate(),
-				mailMessage.getMessageDate());
-
-		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getSender()).getAddress(),
-				mailMessage.getSender().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getSender())
-				.getPersonal() == null ? StringUtils.EMPTY
-				: ((InternetAddress) mimeMessage.getSender()).getPersonal(),
-				mailMessage.getSender().getName());
-		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-				mailMessage.getFrom().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
-				.getPersonal() == null ? StringUtils.EMPTY
-				: ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-				mailMessage.getFrom().getName());
-
-		Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
-				mailMessage.getTo().length);
-		if (mimeMessage.getRecipients(RecipientType.CC) != null) {
-
-			Assert.assertEquals(
-					mimeMessage.getRecipients(RecipientType.CC).length,
-					mailMessage.getCc().length);
-
-			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.CC).length; i++) {
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.CC)[i]).getAddress(),
-						mailMessage.getCc()[i].getAddress());
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.CC)[i]).getPersonal(),
-						mailMessage.getCc()[i].getName());
-			}
-		} else {
-			Assert.assertEquals(0, mailMessage.getCc().length);
-		}
-
-		if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
-
-			Assert.assertEquals(
-					mimeMessage.getRecipients(RecipientType.BCC).length,
-					mailMessage.getBcc().length);
-
-			for (int i = 0; i < mimeMessage.getRecipients(RecipientType.BCC).length; i++) {
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.BCC)[i]).getAddress(),
-						mailMessage.getBcc()[i].getAddress());
-				Assert.assertEquals(((InternetAddress) mimeMessage
-						.getRecipients(RecipientType.BCC)[i]).getPersonal(),
-						mailMessage.getBcc()[i].getName());
-			}
-		} else {
-			Assert.assertEquals(0, mailMessage.getBcc().length);
-		}
-
+		performBasicCheckout("/testUnsupportedEncodingException3D.eml");
 	}
 
 	@Test
 	public void testUnknownEncoding8dashBit() throws Exception {
-		System.setProperty("mail.mime.ignoreunknownencoding", "true");
+		performBasicCheckout("/testUnknownEncoding8dashBit.eml");
+	}
+	
+	@Test
+	public void testUnknownEncodingQuote() throws Exception {
+		performBasicCheckout("/testUnknownEncodingQuote.eml");
+	}
+	
+	private void performBasicCheckout(String fileName) throws MessagingException, IOException {
 		File file = FileUtils.toFile(EmlLoadTest.class
-				.getResource("/testUnknownEncoding8dashBit.eml"));
+				.getResource(fileName));
 		InputStream is = new FileInputStream(file);
 		MimeMessage mimeMessage = new MimeMessage(null, is);
 

@@ -171,8 +171,10 @@ public class IMAPReader {
 							FileUtils.writeStringToFile(f,
 									mailMessage.getRawContents());
 						}
+						
+						logger.error("Failed to process message " + mailMessage.getMessageId(), e);
 					}
-					logger.error("Failed to process message " + messageId, e);
+					
 					e.printStackTrace();
 
 				}
