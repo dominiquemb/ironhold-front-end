@@ -340,6 +340,10 @@ public class MimeMailMessage implements Serializable {
 				Multipart mp = (Multipart) content;
 				handleMultipart(mp, processAttachments);
 			}
+		} catch (IOException e) {
+			if (!e.getMessage().equals("No content")) {
+				throw e;
+			}
 		} finally {
 			long finished = System.currentTimeMillis();
 			logger.info("handleMessage in " + (finished - started) + "ms");

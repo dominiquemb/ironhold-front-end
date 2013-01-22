@@ -832,6 +832,11 @@ public class EmlLoadTest {
 		performBasicCheckout("/testNullImage.eml");
 	}
 	
+	@Test
+	public void testBlankContent() throws Exception {
+		performBasicCheckout("/testBlankContent.eml");
+	}
+	
 	private void performBasicCheckout(String fileName) throws MessagingException, IOException {
 		File file = FileUtils.toFile(EmlLoadTest.class
 				.getResource(fileName));
