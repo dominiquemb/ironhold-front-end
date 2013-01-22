@@ -162,7 +162,27 @@ public class IMAPReader {
 						logger.info("Skipping message that was marked deleted ["
 								+ messageNumber + "]");
 					}
-
+				} catch (AuthenticationFailedException e) {
+					logger.error("Not able to process the mail reading.", e);
+					e.printStackTrace();
+					System.exit(1);
+				} catch (FolderClosedException e) {
+					logger.error("Not able to process the mail reading.", e);
+					e.printStackTrace();
+					System.exit(1);
+				} catch (FolderNotFoundException e) {
+					logger.error("Not able to process the mail reading.", e);
+					e.printStackTrace();
+					System.exit(1);
+				} catch (ReadOnlyFolderException e) {
+					logger.error("Not able to process the mail reading.", e);
+					e.printStackTrace();
+					System.exit(1);
+				} catch (StoreClosedException e) {
+					logger.error("Not able to process the mail reading.", e);
+					e.printStackTrace();
+					System.exit(1);
+				
 				} catch (Exception e) {
 					metaData.incrementFailures();
 					if (mailMessage != null) {
