@@ -20,6 +20,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.MongoOptions;
 import com.mongodb.QueryBuilder;
+import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
@@ -74,7 +75,12 @@ public class MongoService implements IStorageService {
 		options.setAutoConnectRetry(true);
 		options.setDescription(purpose);
 		options.setMaxAutoConnectRetryTime(maxAutoConnectRetry);
-		mongo = new Mongo(new ServerAddress(mongoHost, mongoPort), options);
+		
+		List<ServerAddress> hosts = new ArrayList<ServerAddress>();
+		for (String eachHost : mongoHost.split(",")) {
+			hosts.add(new ServerAddress(eachHost, mongoPort));
+		}
+		mongo = new Mongo(hosts, options);
 
 		db = mongo.getDB("admin");
 		if (!username.equals("${mongo.username}")) {
