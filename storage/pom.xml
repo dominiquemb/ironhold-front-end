@@ -45,7 +45,7 @@
 		<profile>
 			<id>production</id>
 			<properties>
-				<mongo.host>ih650db001,ih650db002</mongo.host>
+				<mongo.host>ih650db001,ih650db002,ih650db003</mongo.host>
 				<mongo.port>9017</mongo.port>
 				<mongo.username>sa</mongo.username>
 				<mongo.password>Pobeda@1945</mongo.password>
