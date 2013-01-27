@@ -52,9 +52,12 @@ public class Recipient {
     }
 
 	public static Recipient normalize(Recipient recipient) {
-		if (recipient.getName().trim().length() > 0) {
+		if (recipient.getName()!=null && recipient.getName().trim().length() > 0) {
 			return recipient;
 		} else {
+			if (recipient.getAddress() == null) {
+				return new Recipient("unknown","unknown");
+			}
 			String address = recipient.getAddress().trim();
 			if (address.contains("@")) {
 				String name = address.substring(0, address.indexOf("@"));
