@@ -73,11 +73,7 @@
 			<artifactId>storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>0.20.3</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch-mapper-attachments</artifactId>
