@@ -82,10 +82,10 @@ public class IndexedMailMessage {
 		logger.info("Loading imap message");
 		subject = imapMailMessage.getSubject();
 		messageDate = imapMailMessage.getMessageDate();
-		sender = imapMailMessage.getFrom();
-		to = imapMailMessage.getTo();
-		cc = imapMailMessage.getCc();
-		bcc = imapMailMessage.getBcc();
+		sender = Recipient.normalize(imapMailMessage.getFrom());
+		to = Recipient.normalize(imapMailMessage.getTo());
+		cc = Recipient.normalize(imapMailMessage.getCc());
+		bcc = Recipient.normalize(imapMailMessage.getBcc());
 
 		size = imapMailMessage.getSize();
 
@@ -122,12 +122,12 @@ public class IndexedMailMessage {
 		messageId = pstMessage.getInternetMessageId();
 		subject = pstMessage.getSubject();
 		messageDate = pstMessage.getMessageDeliveryTime();
-		sender = new Recipient(pstMessage.getSenderName(),
-				pstMessage.getSenderEmailAddress());
+		sender = Recipient.normalize(new Recipient(pstMessage.getSenderName(),
+				pstMessage.getSenderEmailAddress()));
 
-		to = pstMessage.getTo();
-		cc = pstMessage.getCc();
-		bcc = pstMessage.getBcc();
+		to = Recipient.normalize(pstMessage.getTo());
+		cc = Recipient.normalize(pstMessage.getCc());
+		bcc = Recipient.normalize(pstMessage.getBcc());
 
 		size = pstMessage.getMessageSize();
 

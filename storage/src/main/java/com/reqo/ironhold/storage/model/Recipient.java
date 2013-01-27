@@ -50,4 +50,33 @@ public class Recipient {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
+
+	public static Recipient normalize(Recipient recipient) {
+		if (recipient.getName().trim().length() > 0) {
+			return recipient;
+		} else {
+			String address = recipient.getAddress().trim();
+			if (address.contains("@")) {
+				String name = address.substring(0, address.indexOf("@"));
+				if (name.trim().length() > 0) {
+					return new Recipient(name, address);
+				} else {
+					return new Recipient(address, address);	
+				}
+				
+			} else {
+				return new Recipient(address, address);
+			}
+		}
+	}
+	
+	public static Recipient[] normalize(Recipient[] recipients) {
+		Recipient[] results = new Recipient[recipients.length];
+		
+		for (int i =0 ; i< recipients.length; i++) {
+			results[i] = Recipient.normalize(recipients[i]);
+		}
+		
+		return results;
+	}
 }
