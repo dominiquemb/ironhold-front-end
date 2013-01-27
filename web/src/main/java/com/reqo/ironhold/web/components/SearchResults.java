@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 import org.vaadin.pagingcomponent.PagingComponent;
@@ -77,11 +78,11 @@ public class SearchResults extends HorizontalLayout {
         sortFieldSelector.setVisible(true);
         sortOrderSelector.setVisible(true);
         fromFacetPanel.setVisible(true);
-        //fromDomainFacetPanel.setVisible(true);
-        //toFacetPanel.setVisible(true);
-        //toDomainFacetPanel.setVisible(true);
-        //yearFacetPanel.setVisible(true);
-        //fileExtFacetPanel.setVisible(true);
+        fromDomainFacetPanel.setVisible(true);
+        toFacetPanel.setVisible(true);
+        toDomainFacetPanel.setVisible(true);
+        yearFacetPanel.setVisible(true);
+        fileExtFacetPanel.setVisible(true);
         performSearch();
     }
 
@@ -111,9 +112,8 @@ public class SearchResults extends HorizontalLayout {
                 builder = indexService.getNewBuilder(builder);
 
                 if (!facetsSetup) {
-               /*     builder.withDateFacet().withFromFacet().withFromDomainFacet().withToFacet().withToDomainFacet()
-                            .withFileExtFacet();*/
-                	builder.withFromFacet(); //.withFromDomainFacet().withToFacet().withToDomainFacet();
+                    builder.withDateFacet().withFromFacet().withFromDomainFacet().withToFacet().withToDomainFacet()
+                            .withFileExtFacet();
                 }
 
                 builder.withResultsLimit(startIndex, endIndex - startIndex);
@@ -162,7 +162,7 @@ public class SearchResults extends HorizontalLayout {
     	
     	
         if (!facetsSetup) {
-          /*  DateHistogramFacet dateFacet = response.getFacets().facet(MessageSearchBuilder.FACET_DATE);
+            DateHistogramFacet dateFacet = response.getFacets().facet(MessageSearchBuilder.FACET_DATE);
             yearFacetPanel.removeAllComponents();
             for (final DateHistogramFacet.Entry entry : dateFacet.getEntries()) {
                 final HorizontalLayout hl = new HorizontalLayout();
@@ -235,7 +235,7 @@ public class SearchResults extends HorizontalLayout {
 
                 fileExtFacetPanel.addComponent(hl);
             }
-*/
+
             TermsFacet fromFacet = response.getFacets().facet(MessageSearchBuilder.FACET_FROM_NAME);
             fromFacetPanel.removeAllComponents();
             for (final TermsFacet.Entry entry : fromFacet.getEntries()) {
@@ -272,7 +272,7 @@ public class SearchResults extends HorizontalLayout {
 
                 fromFacetPanel.addComponent(hl);
             }
-/*
+
             TermsFacet fromDomainFacet = response.getFacets().facet(MessageSearchBuilder.FACET_FROM_DOMAIN);
             fromDomainFacetPanel.removeAllComponents();
             for (final TermsFacet.Entry entry : fromDomainFacet.getEntries()) {
@@ -383,7 +383,7 @@ public class SearchResults extends HorizontalLayout {
 
                     toDomainFacetPanel.addComponent(hl);
                 }
-            }*/
+            }
         }
         facetsSetup = true;
     }

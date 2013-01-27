@@ -76,17 +76,17 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>0.19.11</version>
+			<version>0.20.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch-mapper-attachments</artifactId>
-			<version>0.17.6</version>
+			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-parsers</artifactId>
-			<version>0.7</version>
+			<version>1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
