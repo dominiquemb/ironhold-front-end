@@ -38,7 +38,7 @@ import com.vaadin.ui.themes.Reindeer;
 @SuppressWarnings("serial")
 public class SearchResults extends HorizontalLayout {
 
-	protected static final int MAX_RESULTS_TO_BE_FACETED = 10000;
+	protected static final int MAX_RESULTS_TO_BE_FACETED = 5000;
 	private final IndexService indexService;
 	private final IStorageService storageService;
 	private final SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
@@ -121,9 +121,8 @@ public class SearchResults extends HorizontalLayout {
 						builder = indexService.getNewBuilder(builder);
 
 						if (!facetsSetup) {
-							builder.withDateFacet();
 							if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
-								builder.withFromFacet().withFromDomainFacet()
+								builder.withDateFacet().withFromFacet().withFromDomainFacet()
 										.withToFacet().withToDomainFacet().withFileExtFacet();
 							}
 						}
