@@ -121,10 +121,10 @@ public class SearchResults extends HorizontalLayout {
 						builder = indexService.getNewBuilder(builder);
 
 						if (!facetsSetup) {
-							builder.withDateFacet().withFileExtFacet();
+							builder.withDateFacet();
 							if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
 								builder.withFromFacet().withFromDomainFacet()
-										.withToFacet().withToDomainFacet();
+										.withToFacet().withToDomainFacet().withFileExtFacet();
 							}
 						}
 
