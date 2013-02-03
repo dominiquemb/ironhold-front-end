@@ -340,4 +340,52 @@ public class MessageSearchBuilder {
 
 		return this;
 	}
+
+	public boolean isDateFacet() {
+		return dateFacet;
+	}
+
+	public void setDateFacet(boolean dateFacet) {
+		this.dateFacet = dateFacet;
+	}
+
+	public boolean isFromFacet() {
+		return fromFacet;
+	}
+
+	public void setFromFacet(boolean fromFacet) {
+		this.fromFacet = fromFacet;
+	}
+
+	public boolean isFromDomainFacet() {
+		return fromDomainFacet;
+	}
+
+	public void setFromDomainFacet(boolean fromDomainFacet) {
+		this.fromDomainFacet = fromDomainFacet;
+	}
+
+	public boolean isToFacet() {
+		return toFacet;
+	}
+
+	public void setToFacet(boolean toFacet) {
+		this.toFacet = toFacet;
+	}
+
+	public boolean isToDomainFacet() {
+		return toDomainFacet;
+	}
+
+	public void setToDomainFacet(boolean toDomainFacet) {
+		this.toDomainFacet = toDomainFacet;
+	}
+
+	public boolean isFileExtFacet() {
+		return fileExtFacet;
+	}
+
+	public void setFileExtFacet(boolean fileExtFacet) {
+		this.fileExtFacet = fileExtFacet;
+	}
 }
