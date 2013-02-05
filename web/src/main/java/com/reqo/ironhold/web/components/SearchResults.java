@@ -123,7 +123,7 @@ public class SearchResults extends HorizontalLayout {
 						if (!facetsSetup) {
 							if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
 								builder.withDateFacet().withFromFacet().withFromDomainFacet()
-										.withToFacet().withToDomainFacet().withFileExtFacet();
+										.withToDomainFacet().withFileExtFacet(); //.withToFacet()
 							}
 						}
 

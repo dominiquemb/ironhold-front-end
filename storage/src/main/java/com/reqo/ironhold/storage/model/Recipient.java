@@ -91,14 +91,16 @@ public class Recipient {
 		name = name.replaceAll("[.,\"'(</]+$", "");
 		name = name.trim();
 
-		if (name.length() == 0 || name.matches("^[\\?*\\s*]*$")) {
+		if (name.length() == 0 || name.matches("^[\\?*\\s*]*$")
+			/*	|| !name.contains(" ")*/) {
 			name = "unknown";
 		}
-		/*
-		 * if (!result.getName().equals(name)) {
-		 * System.out.println(String.format( "%s\t%s", result.getName(), name,
-		 * (int) name.charAt(0))); }
-		 */
+
+		if (!result.getName().equals(name)) {
+			System.out.println(String.format("%s\t%s", result.getName(), name,
+					(int) name.charAt(0)));
+		}
+
 		return new Recipient(name, result.getAddress());
 	}
 
