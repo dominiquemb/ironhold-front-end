@@ -73,8 +73,6 @@ public class IndexedMailMessageTest {
 			Assert.assertEquals(storedMessage.getPstMessage()
 					.getMessageDeliveryTime(), indexedMailMessage
 					.getMessageDate());
-			Assert.assertEquals(storedMessage.getPstMessage().getSenderName(),
-					indexedMailMessage.getSender().getName());
 			Assert.assertEquals(storedMessage.getPstMessage()
 					.getSenderEmailAddress(), indexedMailMessage.getSender()
 					.getAddress());
