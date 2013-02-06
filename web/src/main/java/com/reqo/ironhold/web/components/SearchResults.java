@@ -74,6 +74,7 @@ public class SearchResults extends HorizontalLayout {
 	}
 
 	public void setCriteria(String criteria) {
+		long started = System.currentTimeMillis();
 		this.criteria = criteria;
 		this.facetsSetup = false;
 		builder = indexService.getNewBuilder().withCriteria(criteria);
@@ -87,7 +88,10 @@ public class SearchResults extends HorizontalLayout {
 		toDomainFacetPanel.setVisible(true);
 		yearFacetPanel.setVisible(true);
 		fileExtFacetPanel.setVisible(true);
+		
 		performSearch();
+		long finished = System.currentTimeMillis();
+		resultLabel.setCaption(String.format("%s, rendering took %,d ms", resultLabel.getCaption(), (finished - started)));
 	}
 
 	private void performSearch() {
