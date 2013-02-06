@@ -11,6 +11,7 @@ import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 import org.elasticsearch.search.facet.FacetBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -188,7 +189,7 @@ public class MessageSearchBuilder {
 	public SearchRequestBuilder build() {
 		if (id == null) {
 			QueryStringQueryBuilder qb = QueryBuilders.queryString(criteria);
-
+			qb.defaultOperator(Operator.AND);
 			if (fromFacetValues.size() > 0 || fromDomainFacetValues.size() > 0
 					|| toFacetValues.size() > 0
 					|| toDomainFacetValues.size() > 0
