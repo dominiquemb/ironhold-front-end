@@ -301,22 +301,22 @@ public class MessageSearchBuilder {
 		}
 
 		if (fromFacet) {
-			builder.addFacet(FacetBuilders.termsFacet(FACET_FROM_NAME).field(
+			builder.addFacet(FacetBuilders.termsFacet(FACET_FROM_NAME).exclude("unknown").field(
 					IndexFieldEnum.FROM_NAME.getValue()));
 		}
 
 		if (fromDomainFacet) {
-			builder.addFacet(FacetBuilders.termsFacet(FACET_FROM_DOMAIN).field(
+			builder.addFacet(FacetBuilders.termsFacet(FACET_FROM_DOMAIN).exclude("unknown").field(
 					IndexFieldEnum.FROM_ADDRESS.getValue()));
 		}
 
 		if (toFacet) {
-			builder.addFacet(FacetBuilders.termsFacet(FACET_TO_NAME).field(
+			builder.addFacet(FacetBuilders.termsFacet(FACET_TO_NAME).exclude("unknown").field(
 					IndexFieldEnum.TO_NAME.getValue()));
 		}
 
 		if (toDomainFacet) {
-			builder.addFacet(FacetBuilders.termsFacet(FACET_TO_DOMAIN).field(
+			builder.addFacet(FacetBuilders.termsFacet(FACET_TO_DOMAIN).exclude("unknown").field(
 					IndexFieldEnum.TO_ADDRESS.getValue()));
 		}
 

@@ -19,7 +19,7 @@ public class RecipientTest {
 	public void testNormalizeNoWork() {
 		Recipient original = new Recipient("name", "address");
 		Recipient result = Recipient.normalize(original);
-		Assert.assertEquals("Name", result.getName());
+		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("address", result.getAddress());
 	}
 
@@ -27,7 +27,7 @@ public class RecipientTest {
 	public void testNormalizeEmptyNameNoAtSign() {
 		Recipient original = new Recipient("", "address");
 		Recipient result = Recipient.normalize(original);
-		Assert.assertEquals("Address", result.getName());
+		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("address", result.getAddress());
 	}
 
@@ -35,7 +35,7 @@ public class RecipientTest {
 	public void testNormalizeEmptyNameWithAtSign() {
 		Recipient original = new Recipient("", "address@domain.com");
 		Recipient result = Recipient.normalize(original);
-		Assert.assertEquals("Address", result.getName());
+		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("address@domain.com", result.getAddress());
 	}
 
@@ -74,8 +74,8 @@ public class RecipientTest {
 			cleanLines.add(Recipient.normalize(new Recipient(line, line))
 					.getName());
 		}
-		Assert.assertEquals(lines.size(), 74704);
-		Assert.assertEquals(cleanLines.size(), 59489);
+		Assert.assertEquals(74704, lines.size());
+		Assert.assertEquals(24280, cleanLines.size());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,8 +89,8 @@ public class RecipientTest {
 			cleanLines.add(Recipient.normalize(new Recipient(line, line))
 					.getName());
 		}
-		Assert.assertEquals(lines.size(), 125265);
-		Assert.assertEquals(cleanLines.size(), 94136);
+		Assert.assertEquals(125265, lines.size());
+		Assert.assertEquals(42973, cleanLines.size());
 	}
 
 	@Test
@@ -103,8 +103,8 @@ public class RecipientTest {
 			cleanLines.add(Recipient.normalize(new Recipient(line, line))
 					.getName());
 		}
-		Assert.assertEquals(lines.size(), 21468);
-		Assert.assertEquals(cleanLines.size(), 18351);
+		Assert.assertEquals(21468, lines.size());
+		Assert.assertEquals(11784, cleanLines.size());
 	}
 
 }

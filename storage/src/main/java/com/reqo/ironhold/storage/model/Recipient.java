@@ -92,7 +92,7 @@ public class Recipient {
 		name = name.trim();
 
 		if (name.length() == 0 || name.matches("^[\\?*\\s*]*$")
-			/*	|| !name.contains(" ")*/) {
+			|| !name.contains(" ")) {
 			name = "unknown";
 		}
 
