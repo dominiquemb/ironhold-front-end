@@ -181,7 +181,9 @@ public class IndexService {
 	}
 
 	public SearchResponse search(MessageSearchBuilder builder) {
-		SearchResponse response = builder.build().execute().actionGet();
+		SearchRequestBuilder search = builder.build();
+		logger.info(search.toString());
+		SearchResponse response = search.execute().actionGet();
 		return response;
 	}
 
