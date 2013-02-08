@@ -1,5 +1,7 @@
 package com.reqo.ironhold.web.components;
 
+import java.util.Properties;
+
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
@@ -19,6 +21,9 @@ public class SearchWindow extends Window {
 
     public SearchWindow(String title) throws Exception {
         super(title);
+        final Properties prop = new Properties();
+		prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
+		
         this.me = this;
         LoginForm loginForm = new LoginForm();
         loginForm.setWidth("100%");
@@ -30,8 +35,14 @@ public class SearchWindow extends Window {
                 String password = event.getLoginParameter("password");
 
 
-                if (password.equals("S0lidC0re12")) {
-                    try {
+                String[] validUserNames = prop.getProperty("usernames").toString().split(",");
+                boolean foundValidUsername = false;
+                for (String validUserName : validUserNames) {
+                	foundValidUsername = validUserName.equals(username);
+                	if (foundValidUsername) break;
+                }
+                if (password.equals(prop.getProperty("password").toString()) && foundValidUsername) {
+                	try {
                         login(username);
                     } catch (Exception e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

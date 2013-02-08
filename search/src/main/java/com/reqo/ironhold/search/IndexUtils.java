@@ -144,7 +144,11 @@ public class IndexUtils {
 		}
 		if (name instanceof String || address instanceof String) {
 
-			return String.format("%s %s", name == null ? StringUtils.EMPTY : name,
+			if (name == null || name.equals("unknown")) {
+				name = StringUtils.EMPTY;
+			}
+			
+			return String.format("%s %s", name,
 					showAddress((String) name, (String) address));
 		} else {
 
@@ -155,9 +159,14 @@ public class IndexUtils {
 					namesArray.size()) : namesArray.size();
 			for (int i = 0; i < max; i++) {
 				String leadingComma = i == 0 ? "" : ", ";
+				name = namesArray.get(i);
+				
+				if (name == null || name.equals("unknown")) {
+					name = StringUtils.EMPTY;
+				}
 				result.append(String.format("%s%s %s", leadingComma,
-						namesArray.get(i),
-						showAddress(namesArray.get(i), addressesArray.get(i))));
+						name,
+						showAddress((String)name, addressesArray.get(i))));
 			}
 
 			if (preview && namesArray.size() > PREVIEW_RECIPIENT_COUNT) {
