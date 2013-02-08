@@ -91,23 +91,22 @@ public class SearchResults extends HorizontalLayout {
 
 		performSearch();
 		long finished = System.currentTimeMillis();
-		resultLabel.setDescription(String.format("%s, rendering took %,d ms",
-				resultLabel.getDescription(), (finished - started)));
+		resultLabel.setDescription(String.format(
+				"Server rendering took %,d ms", (finished - started)));
 	}
 
 	private void performSearch() {
 		final SearchResponse response = indexService.getMatchCount(builder);
 		if (!facetsSetup) {
-			resultLabel.setCaption(String.format(
-					"%,d matches. Search took %,d ms", response.getHits()
-							.totalHits(), response.getTookInMillis()));
+			resultLabel.setCaption(String.format("%,d matches.", response
+					.getHits().totalHits()));
 		} else {
-			resultLabel
-					.setCaption(String.format(
-							"%,d filtered matches. Search took %,d ms",
-							response.getHits().totalHits(),
-							response.getTookInMillis()));
+			resultLabel.setCaption(String.format("%,d filtered matches. ",
+					response.getHits().totalHits()));
 		}
+
+		final String originalResultLabelValue = resultLabel.getCaption();
+
 		final List<SearchHit> results = new FakeList<SearchHit>((int) response
 				.getHits().totalHits());
 
@@ -159,14 +158,12 @@ public class SearchResults extends HorizontalLayout {
 
 						SearchResponse response = indexService.search(builder);
 
-						long started = System.currentTimeMillis();
 						setUpFacets(response);
-						long finished = System.currentTimeMillis();
-						resultLabel.setDescription(String
-								.format("Detailed search took %,d ms, facet setup took %,d ms",
-										
-										response.getTookInMillis(), finished
-												- started));
+
+						resultLabel.setCaption(String.format(
+								"%s, Search took %,d ms",
+								originalResultLabelValue,
+								response.getTookInMillis()));
 						return Arrays.asList(response.getHits().getHits());
 					}
 

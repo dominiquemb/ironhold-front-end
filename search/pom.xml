@@ -38,6 +38,8 @@
 			<properties>
 				<elasticsearch.hosts>192.168.247.128</elasticsearch.hosts>
 				<elasticsearch.port>9300</elasticsearch.port>
+				<elasticsearch.replicas>0</elasticsearch.replicas>
+				<elasticsearch.shards>10</elasticsearch.shards>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -48,6 +50,17 @@
 			<properties>
 				<elasticsearch.hosts>ih650es011</elasticsearch.hosts>
 				<elasticsearch.port>9300</elasticsearch.port>
+				<elasticsearch.replicas>2</elasticsearch.replicas>
+				<elasticsearch.shards>10</elasticsearch.shards>
+			</properties>
+		</profile>
+		<profile>
+			<id>trc</id>
+			<properties>
+				<elasticsearch.hosts>ihtrces001</elasticsearch.hosts>
+				<elasticsearch.port>9300</elasticsearch.port>
+				<elasticsearch.replicas>1</elasticsearch.replicas>
+				<elasticsearch.shards>10</elasticsearch.shards>
 			</properties>
 		</profile>
 	</profiles>
