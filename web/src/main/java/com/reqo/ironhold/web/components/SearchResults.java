@@ -88,10 +88,11 @@ public class SearchResults extends HorizontalLayout {
 		toDomainFacetPanel.setVisible(true);
 		yearFacetPanel.setVisible(true);
 		fileExtFacetPanel.setVisible(true);
-		
+
 		performSearch();
 		long finished = System.currentTimeMillis();
-		resultLabel.setCaption(String.format("%s, rendering took %,d ms", resultLabel.getCaption(), (finished - started)));
+		resultLabel.setCaption(String.format("%s, rendering took %,d ms",
+				resultLabel.getCaption(), (finished - started)));
 	}
 
 	private void performSearch() {
@@ -126,8 +127,9 @@ public class SearchResults extends HorizontalLayout {
 
 						if (!facetsSetup) {
 							if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
-								builder.withDateFacet().withFromFacet().withFromDomainFacet()
-										.withToDomainFacet().withFileExtFacet(); //.withToFacet()
+								builder.withDateFacet().withFromFacet()
+										.withFromDomainFacet()
+										.withToDomainFacet().withFileExtFacet(); // .withToFacet()
 							}
 						}
 
@@ -157,8 +159,14 @@ public class SearchResults extends HorizontalLayout {
 
 						SearchResponse response = indexService.search(builder);
 
+						long started = System.currentTimeMillis();
 						setUpFacets(response);
-
+						long finished = System.currentTimeMillis();
+						resultLabel.setCaption(String
+								.format("%s, detailed search took %,d ms, facet setup took %,d ms",
+										resultLabel.getCaption(),
+										response.getTookInMillis(), finished
+												- started));
 						return Arrays.asList(response.getHits().getHits());
 					}
 
@@ -190,9 +198,9 @@ public class SearchResults extends HorizontalLayout {
 					}
 
 				});
-				
-				
-				for (final Entry entry : years.subList(0, Math.min(years.size(),  10))) {
+
+				for (final Entry entry : years.subList(0,
+						Math.min(years.size(), 10))) {
 					final HorizontalLayout hl = new HorizontalLayout();
 					hl.setWidth("100%");
 
