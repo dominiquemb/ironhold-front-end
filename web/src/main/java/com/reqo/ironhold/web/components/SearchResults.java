@@ -91,8 +91,8 @@ public class SearchResults extends HorizontalLayout {
 
 		performSearch();
 		long finished = System.currentTimeMillis();
-		resultLabel.setCaption(String.format("%s, rendering took %,d ms",
-				resultLabel.getCaption(), (finished - started)));
+		resultLabel.setDescription(String.format("%s, rendering took %,d ms",
+				resultLabel.getDescription(), (finished - started)));
 	}
 
 	private void performSearch() {
@@ -162,9 +162,9 @@ public class SearchResults extends HorizontalLayout {
 						long started = System.currentTimeMillis();
 						setUpFacets(response);
 						long finished = System.currentTimeMillis();
-						resultLabel.setCaption(String
-								.format("%s, detailed search took %,d ms, facet setup took %,d ms",
-										resultLabel.getCaption(),
+						resultLabel.setDescription(String
+								.format("Detailed search took %,d ms, facet setup took %,d ms",
+										
 										response.getTookInMillis(), finished
 												- started));
 						return Arrays.asList(response.getHits().getHits());
