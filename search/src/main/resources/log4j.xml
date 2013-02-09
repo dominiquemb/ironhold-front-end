@@ -10,9 +10,18 @@
 		</layout>
 	</appender>
 
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<param name="Threshold" value="INFO" />
+		<param name="File" value="${sun.java.command}.log" />
+		<param name="MaxFileSize" value="10000KB" />
+		<param name="MaxBackupIndex" value="5" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %d [%t] %c: %m%n" />
+		</layout>
+	</appender>
 	<root>
 		<priority value="info" />
-		<appender-ref ref="console" />
+		<appender-ref ref="${logger}" />
 
 	</root>
 

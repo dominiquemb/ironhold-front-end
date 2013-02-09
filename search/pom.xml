@@ -40,6 +40,7 @@
 				<elasticsearch.port>9300</elasticsearch.port>
 				<elasticsearch.replicas>0</elasticsearch.replicas>
 				<elasticsearch.shards>10</elasticsearch.shards>
+				<logger>console</logger>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -52,6 +53,7 @@
 				<elasticsearch.port>9300</elasticsearch.port>
 				<elasticsearch.replicas>2</elasticsearch.replicas>
 				<elasticsearch.shards>10</elasticsearch.shards>
+				<logger>file</logger>
 			</properties>
 		</profile>
 		<profile>
@@ -61,6 +63,7 @@
 				<elasticsearch.port>9300</elasticsearch.port>
 				<elasticsearch.replicas>1</elasticsearch.replicas>
 				<elasticsearch.shards>10</elasticsearch.shards>
+				<logger>file</logger>
 			</properties>
 		</profile>
 	</profiles>

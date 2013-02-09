@@ -37,6 +37,7 @@
 			<properties>
 				<mongo.host>192.168.247.128</mongo.host>
 				<mongo.port>27017</mongo.port>
+				<logger>console</logger>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -49,6 +50,7 @@
 				<mongo.port>9017</mongo.port>
 				<mongo.username>sa</mongo.username>
 				<mongo.password>Pobeda@1945</mongo.password>
+				<logger>file</logger>
 			</properties>
 		</profile>
 		<profile>
@@ -58,6 +60,7 @@
 				<mongo.port>9017</mongo.port>
 				<mongo.username>sa</mongo.username>
 				<mongo.password>Pobeda@1945</mongo.password>
+				<logger>file</logger>
 			</properties>
 		</profile>
 
