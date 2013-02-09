@@ -13,7 +13,9 @@ import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 
 public class QueueWatcher extends FileWatcher {
-
+	static {
+		System.setProperty("jobname", QueueWatcher.class.getSimpleName());
+	}
 	private static Logger logger = Logger.getLogger(QueueWatcher.class);
 	private final IStorageService storageService;
 	public QueueWatcher(String inputDirName, String outputDirName, String quarantineDirName, String client, IStorageService storageService)

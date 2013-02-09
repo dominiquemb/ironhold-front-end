@@ -7,6 +7,7 @@ import org.elasticsearch.index.mapper.MapperParsingException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.mongodb.MongoException;
 import com.reqo.ironhold.search.model.IndexedMailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
@@ -16,9 +17,13 @@ import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class IMAPIndexer {
+	static {
+		System.setProperty("jobname", IMAPIndexer.class.getSimpleName());
+	}
 	private static Logger logger = Logger.getLogger(IMAPIndexer.class);
 
 	public static void main(String[] args) {
+		
 		IndexerOptions bean = new IndexerOptions();
 		CmdLineParser parser = new CmdLineParser(bean);
 		try {
@@ -84,7 +89,7 @@ public class IMAPIndexer {
 
 					storageService.updateIndexStatus(mailMessage,
 							IndexStatus.INDEXED);
-
+				
 				} catch (Exception e2) {
 
 					try {

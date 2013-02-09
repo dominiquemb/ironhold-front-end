@@ -12,7 +12,7 @@
 
 	<appender name="file" class="org.apache.log4j.RollingFileAppender">
 		<param name="Threshold" value="INFO" />
-		<param name="File" value="${sun.java.command}.log" />
+		<param name="File" value="${jobname}.log" />
 		<param name="MaxFileSize" value="10000KB" />
 		<param name="MaxBackupIndex" value="5" />
 		<layout class="org.apache.log4j.PatternLayout">

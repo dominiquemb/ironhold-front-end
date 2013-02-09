@@ -30,7 +30,9 @@ import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class IMAPReader {
-
+	static {
+		System.setProperty("jobname", IMAPReader.class.getSimpleName());
+	}
 	private static Logger logger = Logger.getLogger(IMAPReader.class);
 	private final IStorageService storageService;
 	private String hostname;

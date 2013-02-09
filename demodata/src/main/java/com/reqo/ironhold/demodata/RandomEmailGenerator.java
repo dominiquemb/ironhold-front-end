@@ -27,6 +27,9 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class RandomEmailGenerator {
+	static {
+		System.setProperty("jobname", RandomEmailGenerator.class.getSimpleName());
+	}
 	protected static DataFactory df = new DataFactory();
 
 	/**

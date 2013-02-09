@@ -16,6 +16,9 @@ import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
 
 public class PSTIndexer {
+	static {
+		System.setProperty("jobname", PSTIndexer.class.getSimpleName());
+	}
 	private static Logger logger = Logger.getLogger(PSTIndexer.class);
 
 	public static void main(String[] args) {

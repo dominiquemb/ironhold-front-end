@@ -11,6 +11,9 @@ import com.reqo.ironhold.importer.notification.EmailNotification;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 
 public class InboundWatcher extends FileWatcher {
+	static {
+		System.setProperty("jobname", InboundWatcher.class.getSimpleName());
+	}
     private static Logger logger = Logger.getLogger(InboundWatcher.class);
 
     

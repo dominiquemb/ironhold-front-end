@@ -18,7 +18,9 @@ import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class FileReader {
-
+	static {
+		System.setProperty("jobname", FileReader.class.getSimpleName());
+	}
 	private static Logger logger = Logger.getLogger(FileReader.class);
 	private final IStorageService storageService;
 	private String emlFile;

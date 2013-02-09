@@ -13,7 +13,9 @@ import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class RandomEmailReader {
-
+	static {
+		System.setProperty("jobname", RandomEmailReader.class.getSimpleName());
+	}
 	/**
 	 * @param args
 	 * @throws Exception
