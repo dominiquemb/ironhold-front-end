@@ -111,6 +111,7 @@ public class MongoService implements IStorageService {
 					DBObject key = (DBObject) info.get("key");
 					if (key.containsField(index) && key.keySet().size()==1) {
 						found = true;
+						break;
 					}
 					
 				}
