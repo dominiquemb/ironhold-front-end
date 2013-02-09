@@ -37,4 +37,49 @@
 		</dependency>
 
 	</dependencies>
+	
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+	<profiles>
+		<profile>
+			<id>development</id>
+			<properties>
+				<logger>console</logger>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<logger>file</logger>
+			</properties>
+		</profile>
+		<profile>
+			<id>trc</id>
+			<properties>
+				<logger>file</logger>
+			</properties>
+		</profile>
+	</profiles>
 </project>
