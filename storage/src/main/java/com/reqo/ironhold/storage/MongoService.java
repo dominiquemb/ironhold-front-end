@@ -13,6 +13,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -20,7 +21,6 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import com.mongodb.MongoOptions;
 import com.mongodb.QueryBuilder;
-import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
@@ -94,7 +94,44 @@ public class MongoService implements IStorageService {
 							mongoHost, mongoPort, clientName));
 		}
 		db = mongo.getDB(clientName);
-
+		
+		
+		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION, "metadata.indexed", true);
+		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION, "metadata.indexed", true);
+		createCollectionAndIndexIfRequired(LOG_COLLECTION, "messageId", false);
+	}
+	
+	public void createCollectionAndIndexIfRequired(String coll, String index, boolean isGridFS) {
+		String collection = isGridFS ? coll + ".files" : coll;
+		if (db.getCollectionNames().contains(collection)) {
+			boolean found = false;
+			for (DBObject info : db.getCollection(collection).getIndexInfo()) {
+				
+				if (info.containsField("key")) {
+					DBObject key = (DBObject) info.get("key");
+					if (key.containsField(index) && key.keySet().size()==1) {
+						found = true;
+					}
+					
+				}
+			}
+			
+			if (!found) {
+				logger.warn("Missing index found: Collection " + collection + ", Index " + index + " => creating");
+				BasicDBObject indexObj = new BasicDBObject();
+				indexObj.put(index, 1);
+				db.getCollection(collection).ensureIndex(indexObj);
+			} 
+		} else {
+			logger.warn("Collection " + collection + " is not present => creating");
+			if (isGridFS) {
+				GridFS fs = new GridFS(db, coll);
+				createCollectionAndIndexIfRequired(coll, index, true);
+			} else {
+				db.getCollection(collection);
+				createCollectionAndIndexIfRequired(coll, index, true);
+			}
+		}
 	}
 
 	public boolean existsMailMessage(String messageId) {
