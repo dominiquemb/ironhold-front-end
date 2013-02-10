@@ -3,6 +3,8 @@ package com.reqo.ironhold.search.model;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +48,7 @@ public class IndexedMailMessage {
 	private String messageId;
 	private String subject;
 	private Date messageDate;
+	private String year;
 	private Recipient sender;
 	private Recipient realSender;
 	private Recipient[] to;
@@ -54,9 +57,12 @@ public class IndexedMailMessage {
 	private long size;
 	private String body;
 	private Attachment[] attachments;
-
+	
 	@JsonIgnore
 	private IndexedObjectType type;
+	
+	@JsonIgnore
+	private SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
 
 	public IndexedMailMessage() {
 
@@ -82,6 +88,7 @@ public class IndexedMailMessage {
 		logger.info("Loading imap message");
 		subject = imapMailMessage.getSubject();
 		messageDate = imapMailMessage.getMessageDate();
+		year = yearFormat.format(messageDate);
 		sender = Recipient.normalize(imapMailMessage.getFrom());
 		to = Recipient.normalize(imapMailMessage.getTo());
 		cc = Recipient.normalize(imapMailMessage.getCc());
@@ -122,6 +129,7 @@ public class IndexedMailMessage {
 		messageId = pstMessage.getInternetMessageId();
 		subject = pstMessage.getSubject();
 		messageDate = pstMessage.getMessageDeliveryTime();
+		year = yearFormat.format(messageDate);
 		sender = Recipient.normalize(new Recipient(pstMessage.getSenderName(),
 				pstMessage.getSenderEmailAddress()));
 
@@ -243,6 +251,22 @@ public class IndexedMailMessage {
 		this.attachments = attachments.clone();
 	}
 
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public IndexedObjectType getType() {
+		return type;
+	}
+
+	public void setType(IndexedObjectType type) {
+		this.type = type;
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
@@ -257,13 +281,5 @@ public class IndexedMailMessage {
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
-	}
-
-	public IndexedObjectType getType() {
-		return type;
-	}
-
-	public void setType(IndexedObjectType type) {
-		this.type = type;
 	}
 }

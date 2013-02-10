@@ -22,9 +22,9 @@ public class MessageSearchBuilder {
 	public static final String FACET_FROM_NAME = "from";
 	public static final String FACET_FROM_DOMAIN = "from_domain";
 	public static final String FACET_TO_NAME = "to";
-	public static final String FACET_DATE = "date";
+	public static final String FACET_YEAR = "date";
 	public static final String FACET_TO_DOMAIN = "to_domain";
-	public static final String FACET_FILENAME = "file";
+	public static final String FACET_FILEEXT = "file_ext";
 
 	public static MessageSearchBuilder newBuilder(SearchRequestBuilder builder) {
 		return new MessageSearchBuilder(builder);
@@ -35,7 +35,7 @@ public class MessageSearchBuilder {
 	private List<String> toFacetValues = new ArrayList<String>();
 	private List<String> toDomainFacetValues = new ArrayList<String>();
 	private List<String> fileExtFacetValues = new ArrayList<String>();
-	private List<Long> dateFacetValues = new ArrayList<Long>();
+	private List<String> dateFacetValues = new ArrayList<String>();
 
 	private final SearchRequestBuilder builder;
 	private String criteria;
@@ -170,12 +170,12 @@ public class MessageSearchBuilder {
 		return this;
 	}
 
-	public MessageSearchBuilder withYearFacetValue(long term) {
+	public MessageSearchBuilder withYearFacetValue(String term) {
 		this.dateFacetValues.add(term);
 		return this;
 	}
 
-	public MessageSearchBuilder withoutYearFacetValue(long term) {
+	public MessageSearchBuilder withoutYearFacetValue(String term) {
 		this.dateFacetValues.remove(term);
 		return this;
 	}
@@ -204,7 +204,7 @@ public class MessageSearchBuilder {
 				}
 				if (fromDomainFacetValues.size() > 0) {
 					andFilter.add(FilterBuilders.inFilter(
-							IndexFieldEnum.FROM_ADDRESS.getValue(),
+							IndexFieldEnum.FROM_DOMAIN.getValue(),
 							fromDomainFacetValues
 									.toArray(new String[fromDomainFacetValues
 											.size()])));
@@ -219,7 +219,7 @@ public class MessageSearchBuilder {
 
 				if (toDomainFacetValues.size() > 0) {
 					andFilter.add(FilterBuilders.inFilter(
-							IndexFieldEnum.TO_ADDRESS.getValue(),
+							IndexFieldEnum.TO_DOMAIN.getValue(),
 							toDomainFacetValues
 									.toArray(new String[toDomainFacetValues
 											.size()])));
@@ -227,31 +227,18 @@ public class MessageSearchBuilder {
 
 				if (fileExtFacetValues.size() > 0) {
 					andFilter.add(FilterBuilders.inFilter(
-							IndexFieldEnum.FILENAME.getValue(),
+							IndexFieldEnum.FILEEXT.getValue(),
 							fileExtFacetValues
 									.toArray(new String[fileExtFacetValues
 											.size()])));
 				}
 
 				if (dateFacetValues.size() > 0) {
-
-					OrFilterBuilder orFilter = FilterBuilders.orFilter();
-					for (Long yearFacetValue : dateFacetValues) {
-						DateTime from = new DateTime(yearFacetValue.longValue());
-						DateTime to = from.plusYears(1);
-
-						orFilter.add(FilterBuilders
-								.numericRangeFilter(
-										IndexFieldEnum.DATE.getValue())
-								.from(from.toDate().getTime())
-								.to(to.toDate().getTime()));
-					}
-
-					andFilter.add(orFilter);
-
-					// ..inFilter(IndexFieldEnum.DATE.getValue(),
-					// dateFacetValues.toArray(new Long[dateFacetValues
-					// .size()])));
+					andFilter.add(FilterBuilders.inFilter(
+							IndexFieldEnum.YEAR.getValue(),
+							dateFacetValues
+									.toArray(new String[dateFacetValues
+											.size()])));
 				}
 
 				FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(qb,
@@ -297,8 +284,8 @@ public class MessageSearchBuilder {
 		builder.setHighlighterPreTags("<b>").setHighlighterPostTags("</b>");
 
 		if (dateFacet) {
-			builder.addFacet(FacetBuilders.dateHistogramFacet(FACET_DATE)
-					.interval("year").field(IndexFieldEnum.DATE.getValue()));
+			builder.addFacet(FacetBuilders.termsFacet(FACET_YEAR)
+					.field(IndexFieldEnum.YEAR.getValue()));
 		}
 
 		if (fromFacet) {
@@ -308,7 +295,7 @@ public class MessageSearchBuilder {
 
 		if (fromDomainFacet) {
 			builder.addFacet(FacetBuilders.termsFacet(FACET_FROM_DOMAIN).exclude("unknown").field(
-					IndexFieldEnum.FROM_ADDRESS.getValue()));
+					IndexFieldEnum.FROM_DOMAIN.getValue()));
 		}
 
 		if (toFacet) {
@@ -318,12 +305,12 @@ public class MessageSearchBuilder {
 
 		if (toDomainFacet) {
 			builder.addFacet(FacetBuilders.termsFacet(FACET_TO_DOMAIN).exclude("unknown").field(
-					IndexFieldEnum.TO_ADDRESS.getValue()));
+					IndexFieldEnum.TO_DOMAIN.getValue()));
 		}
 
 		if (fileExtFacet) {
-			builder.addFacet(FacetBuilders.termsFacet(FACET_FILENAME).field(
-					IndexFieldEnum.FILENAME.getValue()));
+			builder.addFacet(FacetBuilders.termsFacet(FACET_FILEEXT).field(
+					IndexFieldEnum.FILEEXT.getValue()));
 		}
 
 		return builder;

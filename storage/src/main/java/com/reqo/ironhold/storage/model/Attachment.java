@@ -2,6 +2,7 @@ package com.reqo.ironhold.storage.model;
 
 import java.util.Date;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -14,6 +15,7 @@ public class Attachment {
 	private String body;
 	private String contentType;
 	private String contentDisposition;
+	private String fileExt;
 	
 	public Attachment() {
 		
@@ -26,6 +28,7 @@ public class Attachment {
 		this.creationTime = creationTime;
 		this.modificationTime = modificationTime;
 		this.fileName = fileName;
+		this.fileExt = FilenameUtils.getExtension(fileName);
 		this.body = body;
 	}
 	
@@ -88,6 +91,16 @@ public class Attachment {
 	}
 	
 
+	public String getFileExt() {
+		return fileExt;
+	}
+
+	public void setFileExt(String fileExt) {
+		this.fileExt = fileExt;
+	}
+
+
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
@@ -103,6 +116,5 @@ public class Attachment {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
-
 
 }

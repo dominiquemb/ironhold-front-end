@@ -39,8 +39,11 @@
                         "format": "dateOptionalTime"
                     },
                     "fileName": {
+                        "type": "string"
+                    },
+                    "fileExt": {
                         "type": "string",
-                        "analyzer": "file"
+                        "analyzer": "keyword"
                     },
                     "modificationTime": {
                         "type": "date",
@@ -56,9 +59,13 @@
                 "properties": {
                     "address": {
                         "type": "string",
-                        "analyzer": "domain"
+                        "analyzer": "keyword"
                     },
                     "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
                         "type": "string",
                         "analyzer": "keyword"
                     }
@@ -73,9 +80,13 @@
                 "properties": {
                     "address": {
                         "type": "string",
-                        "analyzer": "domain"
+                        "analyzer": "keyword"
                     },
                     "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
                         "type": "string",
                         "analyzer": "keyword"
                     }
@@ -85,6 +96,11 @@
                 "type": "date",
                 "format": "dateOptionalTime"
             },
+            "year": {
+                "type": "string",
+                "format": "keyword"
+            },
+
             "messageId": {
                 "type": "string"
             },
@@ -93,12 +109,17 @@
                 "properties": {
                     "address": {
                         "type": "string",
-                        "analyzer": "domain"
+                        "analyzer": "keyword"
                     },
                     "name": {
                         "type": "string",
                         "analyzer": "keyword"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "analyzer": "keyword"
                     }
+
                 }
             },
             "size": {
@@ -113,9 +134,13 @@
                 "properties": {
                     "address": {
                         "type": "string",
-                        "analyzer": "domain"
+                        "analyzer": "keyword"
                     },
                     "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
                         "type": "string",
                         "analyzer": "keyword"
                     }

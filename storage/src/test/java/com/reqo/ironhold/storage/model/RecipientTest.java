@@ -21,6 +21,7 @@ public class RecipientTest {
 		Recipient result = Recipient.normalize(original);
 		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("address", result.getAddress());
+		Assert.assertEquals(null, result.getDomain());
 	}
 
 	@Test
@@ -29,6 +30,7 @@ public class RecipientTest {
 		Recipient result = Recipient.normalize(original);
 		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("address", result.getAddress());
+		Assert.assertEquals(null, result.getDomain());
 	}
 
 	@Test
@@ -37,6 +39,7 @@ public class RecipientTest {
 		Recipient result = Recipient.normalize(original);
 		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("address@domain.com", result.getAddress());
+		Assert.assertEquals("domain.com", result.getDomain());
 	}
 
 	@Test
@@ -45,6 +48,7 @@ public class RecipientTest {
 		Recipient result = Recipient.normalize(original);
 		Assert.assertEquals("unknown", result.getName());
 		Assert.assertEquals("@domain.com", result.getAddress());
+		Assert.assertEquals("domain.com", result.getDomain());
 	}
 
 	@Test
@@ -55,6 +59,7 @@ public class RecipientTest {
 		Recipient[] result = Recipient.normalize(originals);
 		Assert.assertEquals("unknown", result[0].getName());
 		Assert.assertEquals("@domain.com", result[0].getAddress());
+		Assert.assertEquals("domain.com", result[0].getDomain());
 	}
 
 	@Test

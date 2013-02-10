@@ -182,27 +182,26 @@ public class SearchResults extends HorizontalLayout {
 
 		if (!facetsSetup) {
 			if (builder.isDateFacet()) {
-				DateHistogramFacet dateFacet = response.getFacets().facet(
-						MessageSearchBuilder.FACET_DATE);
+				yearFacetPanel.setVisible(true);
+				TermsFacet dateFacet = response.getFacets().facet(
+						MessageSearchBuilder.FACET_YEAR);
 				yearFacetPanel.removeAllComponents();
-				List<Entry> years = (List<Entry>) dateFacet.getEntries();
-				Collections.sort(years, new Comparator<Entry>() {
+				List<TermsFacet.Entry> years = (List<TermsFacet.Entry>) dateFacet.getEntries();
+				Collections.sort(years, new Comparator<TermsFacet.Entry>() {
 
 					@Override
-					public int compare(Entry o1, Entry o2) {
-						return yearFormat.format(o2.getTime()).compareTo(
-								yearFormat.format(o1.getTime()));
+					public int compare(TermsFacet.Entry o1, TermsFacet.Entry o2) {
+						return o2.getTerm().compareTo(o1.getTerm());
 					}
 
 				});
 
-				for (final Entry entry : years.subList(0,
+				for (final TermsFacet.Entry entry : years.subList(0,
 						Math.min(years.size(), 10))) {
 					final HorizontalLayout hl = new HorizontalLayout();
 					hl.setWidth("100%");
 
-					CheckBox checkBox = new CheckBox(yearFormat.format(entry
-							.getTime()));
+					CheckBox checkBox = new CheckBox(entry.getTerm());
 					checkBox.setImmediate(true);
 					checkBox.addListener(new Button.ClickListener() {
 						@Override
@@ -211,9 +210,9 @@ public class SearchResults extends HorizontalLayout {
 							builder = indexService.getNewBuilder(builder);
 
 							if (enabled) {
-								builder.withYearFacetValue(entry.getTime());
+								builder.withYearFacetValue(entry.getTerm());
 							} else {
-								builder.withoutYearFacetValue(entry.getTime());
+								builder.withoutYearFacetValue(entry.getTerm());
 							}
 							performSearch();
 						}
@@ -234,12 +233,13 @@ public class SearchResults extends HorizontalLayout {
 
 				}
 			} else {
-				yearFacetPanel.addComponent(new Label("Too many matches"));
+				yearFacetPanel.setVisible(false);
 			}
 
 			if (builder.isFileExtFacet()) {
+				fileExtFacetPanel.setVisible(true);
 				TermsFacet fileExtFacet = response.getFacets().facet(
-						MessageSearchBuilder.FACET_FILENAME);
+						MessageSearchBuilder.FACET_FILEEXT);
 				fileExtFacetPanel.removeAllComponents();
 				for (final TermsFacet.Entry entry : fileExtFacet.getEntries()) {
 					final HorizontalLayout hl = new HorizontalLayout();
@@ -279,10 +279,11 @@ public class SearchResults extends HorizontalLayout {
 					fileExtFacetPanel.addComponent(hl);
 				}
 			} else {
-				fileExtFacetPanel.addComponent(new Label("Too many matches"));
+				fileExtFacetPanel.setVisible(false);
 			}
 
 			if (builder.isFromFacet()) {
+				fromFacetPanel.setVisible(true);
 				TermsFacet fromFacet = response.getFacets().facet(
 						MessageSearchBuilder.FACET_FROM_NAME);
 				fromFacetPanel.removeAllComponents();
@@ -323,10 +324,11 @@ public class SearchResults extends HorizontalLayout {
 					fromFacetPanel.addComponent(hl);
 				}
 			} else {
-				fromFacetPanel.addComponent(new Label("Too many matches"));
+				fromFacetPanel.setVisible(false);
 			}
 
 			if (builder.isFromDomainFacet()) {
+				fromDomainFacetPanel.setVisible(true);
 				TermsFacet fromDomainFacet = response.getFacets().facet(
 						MessageSearchBuilder.FACET_FROM_DOMAIN);
 				fromDomainFacetPanel.removeAllComponents();
@@ -374,11 +376,11 @@ public class SearchResults extends HorizontalLayout {
 					}
 				}
 			} else {
-				fromDomainFacetPanel
-						.addComponent(new Label("Too many matches"));
+				fromDomainFacetPanel.setVisible(false);
 			}
 
 			if (builder.isToFacet()) {
+				toFacetPanel.setVisible(true);
 				TermsFacet toFacet = response.getFacets().facet(
 						MessageSearchBuilder.FACET_TO_NAME);
 				toFacetPanel.removeAllComponents();
@@ -418,10 +420,11 @@ public class SearchResults extends HorizontalLayout {
 					toFacetPanel.addComponent(hl);
 				}
 			} else {
-				toFacetPanel.addComponent(new Label("Too many matches"));
+				toFacetPanel.setVisible(false);
 			}
 
 			if (builder.isToDomainFacet()) {
+				toDomainFacetPanel.setVisible(true);
 				TermsFacet toDomainFacet = response.getFacets().facet(
 						MessageSearchBuilder.FACET_TO_DOMAIN);
 				toDomainFacetPanel.removeAllComponents();
@@ -468,7 +471,7 @@ public class SearchResults extends HorizontalLayout {
 					}
 				}
 			} else {
-				toDomainFacetPanel.addComponent(new Label("Too many matches"));
+				toDomainFacetPanel.setVisible(false);
 			}
 		}
 		facetsSetup = true;

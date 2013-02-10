@@ -9,6 +9,7 @@ import org.apache.commons.lang3.text.WordUtils;
 public class Recipient {
 	private String name;
 	private String address;
+	private String domain;
 
 	public Recipient() {
 
@@ -17,6 +18,9 @@ public class Recipient {
 	public Recipient(String name, String address) {
 		this.name = name == null ? StringUtils.EMPTY : name;
 		this.address = address;
+		this.domain = address != null && address.contains("@")
+				&& address.lastIndexOf('@') < address.length() ? address
+				.substring(address.lastIndexOf('@') + 1) : null;
 	}
 
 	public String getName() {
@@ -33,6 +37,14 @@ public class Recipient {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 	@Override
@@ -92,7 +104,7 @@ public class Recipient {
 		name = name.trim();
 
 		if (name.length() == 0 || name.matches("^[\\?*\\s*]*$")
-			|| !name.contains(" ")) {
+				|| !name.contains(" ")) {
 			name = "unknown";
 		}
 
