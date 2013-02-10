@@ -37,7 +37,7 @@
 		</dependency>
 
 	</dependencies>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -70,7 +70,13 @@
 			</activation>
 		</profile>
 		<profile>
-			<id>production</id>
+			<id>650</id>
+			<properties>
+				<logger>file</logger>
+			</properties>
+		</profile>
+		<profile>
+			<id>108</id>
 			<properties>
 				<logger>file</logger>
 			</properties>
