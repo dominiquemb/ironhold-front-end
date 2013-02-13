@@ -19,6 +19,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 
 import com.reqo.ironhold.search.model.IndexedMailMessage;
 import com.reqo.ironhold.search.model.IndexedObjectType;
@@ -190,7 +191,8 @@ public class IndexService {
 	public long getMatchCount(String search) {
 
 		SearchRequestBuilder builder = esClient.prepareSearch(indexName);
-		QueryBuilder qb = QueryBuilders.queryString(search);
+		QueryBuilder qb = QueryBuilders.queryString(search).defaultOperator(Operator.AND);
+		
 		builder.setQuery(qb);
 		builder.setSearchType(SearchType.COUNT);
 		SearchResponse response = builder.execute().actionGet();
