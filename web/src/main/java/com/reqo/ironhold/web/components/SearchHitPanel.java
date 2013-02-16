@@ -10,6 +10,7 @@ import com.vaadin.event.MouseEvents;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
@@ -42,7 +43,7 @@ public class SearchHitPanel extends Panel {
         headerLayout.setWidth("100%");
         final NativeButton subject = new NativeButton(subjectValue);
         subject.setHtmlContentAllowed(true);
-        subject.setStyleName(Reindeer.LABEL_H2);
+        subject.setStyleName(BaseTheme.BUTTON_LINK);
         subject.addListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
@@ -84,42 +85,39 @@ public class SearchHitPanel extends Panel {
 
         addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
-        addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_NAME);
+        addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
 
 
-        final Label body = new Label(IndexUtils.getFieldValue(item, IndexFieldEnum.BODY));
-        body.setContentMode(Label.CONTENT_XHTML);
-        this.addComponent(body);
-
+    	this.addComponent(renderKeyValuePair("Body:", IndexUtils.getFieldValue(item, IndexFieldEnum.BODY) + "..."));
 
         String attachmentValue = IndexUtils.getFieldValue(item, IndexFieldEnum.ATTACHMENT);
         if (!attachmentValue.equals(StringUtils.EMPTY)) {
-            final Label attachment = new Label(attachmentValue);
-            attachment.setContentMode(Label.CONTENT_XHTML);
-            attachment.setStyleName(Reindeer.LABEL_SMALL);
-
-            this.addComponent(attachment);
+        	this.addComponent(renderKeyValuePair("Att.:", attachmentValue + "..."));
         }
 
     }
 
-    private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
+
+	private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
         String value = IndexUtils.getFieldValue(item, field, subField);
         if (!value.equals(StringUtils.EMPTY)) {
-            HorizontalLayout hl = new HorizontalLayout();
-            final Label typeLabel = new Label(field.getLabel() + ":");
-            hl.addComponent(typeLabel);
-            final Label valueLabel = new Label(value);
-            valueLabel.setContentMode(Label.CONTENT_XHTML);
-            hl.addComponent(valueLabel);
-
-            typeLabel.setWidth("35px");
-            valueLabel.setWidth(null);
-            hl.setExpandRatio(valueLabel, 1.0f);
-
-            this.addComponent(hl);
+        	this.addComponent(renderKeyValuePair(field.getLabel() + ":", value));
         }
 
     }
 
+
+    private Component renderKeyValuePair(String caption, String value) {
+    	HorizontalLayout hl = new HorizontalLayout();
+    	final Label captionLabel = new Label(caption);
+    	captionLabel.setWidth("35px");
+    	hl.addComponent(captionLabel);
+        final Label valueLabel = new Label(value);
+        valueLabel.setContentMode(Label.CONTENT_XHTML);
+        valueLabel.setWidth(null);
+        
+        hl.addComponent(valueLabel);
+        hl.setExpandRatio(valueLabel, 1.0f);
+        return hl;
+	}
 }

@@ -1,16 +1,4 @@
 {
-    "analysis": {
-        "analyzer": {
-            "domain": {
-                "type": "pattern",
-                "pattern": ".+@"
-            },
-            "file": {
-                "type": "pattern",
-                "pattern": ".+\\."
-            }
-        }
-    },
     "index" : {
         "number_of_replicas" : ${elasticsearch.replicas},
         "number_of_shards" : ${elasticsearch.shards}

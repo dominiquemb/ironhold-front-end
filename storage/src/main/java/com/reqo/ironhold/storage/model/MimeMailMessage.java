@@ -378,8 +378,8 @@ public class MimeMailMessage implements Serializable {
 						out.write(buf, 0, bytesRead);
 					}
 
-					addAttachment(new Attachment(bp.getSize(), new Date(),
-							new Date(), filename, Base64.encodeBytes(out
+					addAttachment(new Attachment(bp.getSize(), this.getMessageDate(),
+							this.getMessageDate(), filename, Base64.encodeBytes(out
 									.toByteArray()), bp.getContentType(),
 							bp.getDisposition()));
 					attachmentStream.close();

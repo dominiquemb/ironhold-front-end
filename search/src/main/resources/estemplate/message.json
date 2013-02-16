@@ -5,34 +5,8 @@
                 "dynamic": "true",
                 "properties": {
                     "body": {
-                        "type": "attachment",
-                        "path": "full",
-                        "fields": {
-                            "body": {
-                                "type": "string",
-                                "store": "yes",
-                                "term_vector": "with_positions_offsets"
-                            },
-                            "author": {
-                                "type": "string"
-                            },
-                            "title": {
-                                "type": "string"
-                            },
-                            "name": {
-                                "type": "string"
-                            },
-                            "date": {
-                                "type": "date",
-                                "format": "dateOptionalTime"
-                            },
-                            "keywords": {
-                                "type": "string"
-                            },
-                            "content_type": {
-                                "type": "string"
-                            }
-                        }
+                        "type": "string",
+                        "term_vector": "with_positions_offsets"
                     },
                     "creationTime": {
                         "type": "date",
@@ -51,6 +25,12 @@
                     },
                     "size": {
                         "type": "long"
+                    },
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "contentDisposition": {
+                        "type": "string"
                     }
                 }
             },
@@ -72,8 +52,8 @@
                 }
             },
             "body": {
-                "type": "string",	
-                 "term_vector": "with_positions_offsets"
+                "type": "string",
+                "term_vector": "with_positions_offsets"
             },
             "cc": {
                 "dynamic": "true",
@@ -100,7 +80,6 @@
                 "type": "string",
                 "format": "keyword"
             },
-
             "messageId": {
                 "type": "string"
             },
@@ -119,7 +98,6 @@
                         "type": "string",
                         "analyzer": "keyword"
                     }
-
                 }
             },
             "size": {

@@ -30,6 +30,7 @@ public class IronholdApplication extends Application {
     public void init() {
 
         try {
+        	setTheme("ironhold");
             window = new SearchWindow("IronHold Search");
 
             setMainWindow(window);

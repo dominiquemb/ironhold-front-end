@@ -83,5 +83,7 @@ public class IndexedMailMessageTest {
 			Assert.assertNull(e);
 		}
 	}
+	
+	
 
 }

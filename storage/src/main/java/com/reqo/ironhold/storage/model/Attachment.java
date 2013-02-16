@@ -30,6 +30,8 @@ public class Attachment {
 		this.fileName = fileName;
 		this.fileExt = FilenameUtils.getExtension(fileName);
 		this.body = body;
+		this.contentType = contentType;
+		this.contentDisposition = contentDisposition;
 	}
 	
 	
