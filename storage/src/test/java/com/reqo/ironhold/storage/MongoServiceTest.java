@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.DB;
@@ -170,6 +171,7 @@ public class MongoServiceTest {
 	}
 
 	@Test
+	@Ignore
 	public void testFindUnindexedPSTMessages() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
 

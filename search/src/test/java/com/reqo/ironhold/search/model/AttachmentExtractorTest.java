@@ -17,6 +17,7 @@ import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.index.mapper.MapperParsingException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.reqo.ironhold.search.model.IndexedMailMessage;
@@ -97,6 +98,7 @@ public class AttachmentExtractorTest {
 	}
 
 	@Test
+	@Ignore
 	public void testJSON() throws Exception {
 		File inputFile = FileUtils.toFile(AttachmentExtractorTest.class
 				.getResource("/testJSON.eml"));
