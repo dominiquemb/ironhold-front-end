@@ -24,7 +24,7 @@ import com.reqo.ironhold.storage.model.PSTMessageSource;
 
 public class MailMessageTestModel extends CommonTestModel {
 
-    private static final String PST_TEST_FILE = "/data.pst";
+    private static final String PST_TEST_FILE = "/attachments.pst";
     private static List<MailMessage> mailMessages = new ArrayList<MailMessage>();
     private static List<PSTMessage> pstMessages = new ArrayList<PSTMessage>();
     private static final int MAX_MESSAGES_TO_LOAD = 10;

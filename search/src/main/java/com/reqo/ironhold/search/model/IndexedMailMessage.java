@@ -56,7 +56,7 @@ public class IndexedMailMessage {
 	private Recipient[] bcc;
 	private long size;
 	private String body;
-	private Attachment[] attachments;
+	private IndexedAttachment[] attachments;
 	
 	@JsonIgnore
 	private IndexedObjectType type;
@@ -72,7 +72,7 @@ public class IndexedMailMessage {
 		messageId = mailMessage.getMessageId();
 		load(mailMessage.getPstMessage());
 
-		attachments = mailMessage.getAttachments();
+		attachments = IndexedAttachment.fromArray(mailMessage.getAttachments());
 		this.setType(IndexedObjectType.PST_MESSAGE);
 	}
 
@@ -80,7 +80,7 @@ public class IndexedMailMessage {
 		messageId = mimeMessage.getMessageId();
 		load(mimeMessage);
 
-		attachments = mimeMessage.getAttachments();
+		attachments = IndexedAttachment.fromArray(mimeMessage.getAttachments());
 		this.setType(IndexedObjectType.MIME_MESSAGE);
 	}
 
@@ -248,7 +248,7 @@ public class IndexedMailMessage {
 	}
 
 	public void setAttachments(Attachment[] attachments) {
-		this.attachments = attachments.clone();
+		this.attachments = IndexedAttachment.fromArray(attachments);
 	}
 
 	public String getYear() {
