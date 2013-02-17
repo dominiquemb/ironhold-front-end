@@ -11,6 +11,7 @@ import com.mongodb.Mongo;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MailMessageTestModel;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
@@ -19,23 +20,25 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 
-
-
 public class IndexedMailMessageTest {
 
 	private MongodExecutable mongodExe;
 	private MongodProcess mongod;
 	private Mongo mongo;
 	private DB db;
+	private MailMessageTestModel testModel;
 	private static final String DATABASENAME = "mongo_test";
 
 	@Before
 	public void setUp() throws Exception {
 		MongodStarter runtime = MongodStarter.getDefaultInstance();
-        mongodExe = runtime.prepare(new MongodConfig(Version.Main.V2_0, 12345, Network.localhostIsIPv6()));
-        mongod = mongodExe.start();
+		mongodExe = runtime.prepare(new MongodConfig(Version.Main.V2_0, 12345,
+				Network.localhostIsIPv6()));
+		mongod = mongodExe.start();
 		mongo = new Mongo("localhost", 12345);
 		db = mongo.getDB(DATABASENAME);
+
+		testModel = new MailMessageTestModel("/data.pst");
 	}
 
 	@After
@@ -43,19 +46,20 @@ public class IndexedMailMessageTest {
 		mongod.stop();
 		mongodExe.stop();
 	}
+
 	@Test
 	public void testIndexedMailMessageConstructor() throws Exception {
 		try {
 			IStorageService storageService = new MongoService(mongo, db);
 
-			MailMessage inputMessage = MailMessageTestModel
-					.generatePSTMessage();
+			MailMessage inputMessage = testModel.generatePSTMessage();
 
 			storageService.store(inputMessage);
 
-			MailMessageTestModel.verifyStorage(storageService, inputMessage);
+			testModel.verifyStorage(storageService, inputMessage);
 
-			Assert.assertTrue(storageService.existsMailMessage(inputMessage.getMessageId()));
+			Assert.assertTrue(storageService.existsMailMessage(inputMessage
+					.getMessageId()));
 
 			MailMessage storedMessage = storageService
 					.getMailMessage(inputMessage.getMessageId());
@@ -82,7 +86,5 @@ public class IndexedMailMessageTest {
 			Assert.assertNull(e);
 		}
 	}
-	
-	
 
 }

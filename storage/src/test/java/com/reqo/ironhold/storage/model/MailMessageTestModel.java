@@ -1,30 +1,36 @@
 package com.reqo.ironhold.storage.model;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import junit.framework.Assert;
+
+import org.apache.commons.io.FileUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+
 import com.pff.PSTException;
 import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IStorageService;
-import junit.framework.Assert;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
 
 public class MailMessageTestModel extends CommonTestModel {
-
-	private static final String PST_TEST_FILE = "/data.pst";
-	private static List<MailMessage> mailMessages = new ArrayList<MailMessage>();
-	private static List<PSTMessage> pstMessages = new ArrayList<PSTMessage>();
 	private static final int MAX_MESSAGES_TO_LOAD = 5;
 
-	static {
-		try {
+	private List<MailMessage> mailMessages = new ArrayList<MailMessage>();
+	private List<PSTMessage> pstMessages = new ArrayList<PSTMessage>();
 
+	public MailMessageTestModel(String pstFilePath) throws JsonParseException, JsonMappingException, JsonGenerationException, IOException, PSTException {
 			File file = FileUtils.toFile(MailMessageTestModel.class
-					.getResource(PST_TEST_FILE));
+					.getResource(pstFilePath));
 			System.out.println("Loading messages from " + file);
 			PSTFile pstFile;
 			pstFile = new PSTFile(file);
@@ -41,22 +47,19 @@ public class MailMessageTestModel extends CommonTestModel {
 			}
 
 			System.out.println("Loaded " + mailMessages.size() + " messages");
-		} catch (PSTException | IOException e) {
-			e.printStackTrace();
-		}
 	}
 
-	public static MailMessage generatePSTMessage() {
+	public MailMessage generatePSTMessage() {
 
 		return mailMessages.get(0);
 	}
 
-	public static List<MailMessage> generatePSTMessages() {
+	public List<MailMessage> generatePSTMessages() {
 
 		return mailMessages;
 	}
 
-	private static void loadAllMessages(String folderPath, PSTFolder folder)
+	private void loadAllMessages(String folderPath, PSTFolder folder)
 			throws PSTException, IOException {
 		if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
 			return;
@@ -89,7 +92,7 @@ public class MailMessageTestModel extends CommonTestModel {
 		}
 	}
 
-	public static MailMessage verifyStorage(IStorageService storageService,
+	public MailMessage verifyStorage(IStorageService storageService,
 			MailMessage inputMessage) throws Exception {
 
 		MailMessage storedMessage = storageService.getMailMessage(
@@ -105,9 +108,13 @@ public class MailMessageTestModel extends CommonTestModel {
 
 		for (int i = 0; i < inputMessage.getSources().length; i++) {
 			if (inputMessage.getSources()[i] instanceof PSTMessageSource) {
-				Assert.assertTrue(PSTMessageSource.sameAs((PSTMessageSource)inputMessage.getSources()[i], (PSTMessageSource)storedMessage.getSources()[i]));
-			} else if  (inputMessage.getSources()[i] instanceof IMAPMessageSource) {
-				Assert.assertTrue(IMAPMessageSource.sameAs((IMAPMessageSource)inputMessage.getSources()[i], (IMAPMessageSource)storedMessage.getSources()[i]));
+				Assert.assertTrue(PSTMessageSource.sameAs(
+						(PSTMessageSource) inputMessage.getSources()[i],
+						(PSTMessageSource) storedMessage.getSources()[i]));
+			} else if (inputMessage.getSources()[i] instanceof IMAPMessageSource) {
+				Assert.assertTrue(IMAPMessageSource.sameAs(
+						(IMAPMessageSource) inputMessage.getSources()[i],
+						(IMAPMessageSource) storedMessage.getSources()[i]));
 			}
 		}
 
