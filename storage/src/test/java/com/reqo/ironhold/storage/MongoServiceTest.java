@@ -171,7 +171,6 @@ public class MongoServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFindUnindexedPSTMessages() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
 
