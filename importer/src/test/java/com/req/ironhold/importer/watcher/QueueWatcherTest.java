@@ -27,6 +27,7 @@ import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
 
 public class QueueWatcherTest {
 
@@ -55,29 +56,25 @@ public class QueueWatcherTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
 		MongodStarter runtime = MongodStarter.getDefaultInstance();
-		mongodExe = runtime
-				.prepare(new MongodConfig(Version.V2_2_1, 12345, false));
-		mongod = mongodExe.start();
-
+        mongodExe = runtime.prepare(new MongodConfig(Version.Main.V2_0, 12345, Network.localhostIsIPv6()));
+        mongod = mongodExe.start();
 		mongo = new Mongo("localhost", 12345);
 		db = mongo.getDB(DATABASENAME);
-		
-		
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		mongod.stop();
 		mongodExe.stop();
 	}
-	
+
 	@Test
 	public void testQueueWatcherValid() throws Exception {
 		IStorageService storageService = new MongoService(mongo, db);
 		EmailNotification.disableNotification();
-		final QueueWatcher qw = new QueueWatcher(queueFolder.getRoot().toString(),
-				outFolder.getRoot().toString(), quarantineFolder
+		final QueueWatcher qw = new QueueWatcher(queueFolder.getRoot()
+				.toString(), outFolder.getRoot().toString(), quarantineFolder
 				.getRoot().toString(), client, storageService);
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
 		executorService.execute(new Runnable() {
@@ -94,14 +91,13 @@ public class QueueWatcherTest {
 
 			}
 		});
-		
+
 		/* Make sure watcher is fully started */
 		while (!qw.isStarted()) {
 			Thread.sleep(100);
 		}
 		Thread.sleep(100);
-		
-		
+
 		File pstFile = FileUtils.toFile(QueueWatcherTest.class
 				.getResource(PST_TEST_FILE));
 
