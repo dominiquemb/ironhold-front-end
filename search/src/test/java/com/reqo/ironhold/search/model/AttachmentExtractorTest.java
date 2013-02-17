@@ -112,12 +112,11 @@ public class AttachmentExtractorTest {
 
 		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
 				mailMessage);
-		String json = IndexedMailMessage.toJSON(indexedMailMessage).replaceAll("[ \\t\\n\\r]+", " ");
+		String json = IndexedMailMessage.toJSON(indexedMailMessage).replaceAll("[ \\\\t\\\\n\\\\r]+", " ");
 
 		System.out.println(json);
 
-		String assertContent = FileUtils.readFileToString(assertFile)
-				.replaceAll("[ \\t\\n\\r]+", " ");
+		String assertContent = FileUtils.readFileToString(assertFile).replaceAll("[ \\\\t\\\\n\\\\r]+", " ");
 		System.out.println(assertContent);
 		Assert.assertEquals(assertContent, json);
 	}

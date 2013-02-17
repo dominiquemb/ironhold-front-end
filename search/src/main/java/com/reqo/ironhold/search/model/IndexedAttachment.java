@@ -8,8 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Base64;
-import org.elasticsearch.plugin.mapper.attachments.tika.TikaInstance;
-
+import com.reqo.ironhold.search.TikaInstance;
 import com.reqo.ironhold.storage.model.Attachment;
 
 public class IndexedAttachment extends Attachment {
