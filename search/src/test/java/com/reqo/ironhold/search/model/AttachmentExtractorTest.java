@@ -13,6 +13,7 @@ import javax.mail.internet.MimeMultipart;
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -119,6 +120,27 @@ public class AttachmentExtractorTest {
 		String assertContent = FileUtils.readFileToString(assertFile).replaceAll("[ \\\\t\\\\n\\\\r]+", " ");
 		System.out.println(assertContent);
 		Assert.assertEquals(assertContent, json);
+	}
+	
+	@Test
+	public void testInvalidAttachment() throws Exception {
+		File inputFile = FileUtils.toFile(AttachmentExtractorTest.class
+				.getResource("/testInvalidAttachment.eml"));
+		
+		InputStream is = new FileInputStream(inputFile);
+		MimeMessage mimeMessage = new MimeMessage(null, is);
+
+		MimeMailMessage mailMessage = new MimeMailMessage();
+		mailMessage.loadMimeMessage(mimeMessage);
+
+		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+				mailMessage);
+
+		String parsedContent = indexedMailMessage.getAttachments()[0]
+				.getBody();
+
+		Assert.assertEquals(StringUtils.EMPTY, parsedContent);
+
 	}
 
 }

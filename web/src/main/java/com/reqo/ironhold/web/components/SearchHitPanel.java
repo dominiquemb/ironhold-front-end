@@ -1,6 +1,7 @@
 package com.reqo.ironhold.web.components;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.elasticsearch.search.SearchHit;
 
 import com.reqo.ironhold.search.IndexFieldEnum;
@@ -23,7 +24,8 @@ import com.vaadin.ui.themes.Reindeer;
 public class SearchHitPanel extends Panel {
 
     private final SearchHitPanel me;
-
+    private static Logger logger = Logger.getLogger(SearchHitPanel.class);
+	
     public SearchHitPanel(final SearchHit item, final EmailPreviewPanel emailPreview, final String criteria,
                           final Application application) {
         this.me = this;
@@ -50,7 +52,7 @@ public class SearchHitPanel extends Panel {
                 try {
                     emailPreview.show(me, item, criteria);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warn(e);
                 }
             }
         });
@@ -61,7 +63,7 @@ public class SearchHitPanel extends Panel {
                 try {
                     emailPreview.show(me, item, criteria);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                	logger.warn(e);
                 }
             }
         });

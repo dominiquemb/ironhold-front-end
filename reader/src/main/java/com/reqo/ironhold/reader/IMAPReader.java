@@ -164,27 +164,9 @@ public class IMAPReader {
 						logger.info("Skipping message that was marked deleted ["
 								+ messageNumber + "]");
 					}
-				} catch (AuthenticationFailedException e) {
+				} catch (AuthenticationFailedException | FolderClosedException | FolderNotFoundException | ReadOnlyFolderException | StoreClosedException e) {
 					logger.error("Not able to process the mail reading.", e);
-					e.printStackTrace();
 					System.exit(1);
-				} catch (FolderClosedException e) {
-					logger.error("Not able to process the mail reading.", e);
-					e.printStackTrace();
-					System.exit(1);
-				} catch (FolderNotFoundException e) {
-					logger.error("Not able to process the mail reading.", e);
-					e.printStackTrace();
-					System.exit(1);
-				} catch (ReadOnlyFolderException e) {
-					logger.error("Not able to process the mail reading.", e);
-					e.printStackTrace();
-					System.exit(1);
-				} catch (StoreClosedException e) {
-					logger.error("Not able to process the mail reading.", e);
-					e.printStackTrace();
-					System.exit(1);
-				
 				} catch (Exception e) {
 					metaData.incrementFailures();
 					if (mailMessage != null) {
@@ -195,10 +177,9 @@ public class IMAPReader {
 						}
 						
 						logger.error("Failed to process message " + mailMessage.getMessageId(), e);
+					} else {
+						logger.error("Failed to process message", e);
 					}
-					
-					e.printStackTrace();
-
 				}
 
 			}
@@ -209,32 +190,11 @@ public class IMAPReader {
 			folder.close(true);
 
 			store.close();
-		} catch (AuthenticationFailedException e) {
-			logger.error("Not able to process the mail reading.", e);
-			e.printStackTrace();
-			System.exit(1);
-		} catch (FolderClosedException e) {
-			logger.error("Not able to process the mail reading.", e);
-			e.printStackTrace();
-			System.exit(1);
-		} catch (FolderNotFoundException e) {
-			logger.error("Not able to process the mail reading.", e);
-			e.printStackTrace();
-			System.exit(1);
-		} catch (ReadOnlyFolderException e) {
-			logger.error("Not able to process the mail reading.", e);
-			e.printStackTrace();
-			System.exit(1);
-		} catch (StoreClosedException e) {
-			logger.error("Not able to process the mail reading.", e);
-			e.printStackTrace();
-			System.exit(1);
 		} catch (Exception e) {
 			logger.error("Not able to process the mail reading.", e);
-			e.printStackTrace();
 			System.exit(1);
 		}
-
+		
 		return messageNumber;
 	}
 
@@ -245,7 +205,7 @@ public class IMAPReader {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println(e.getMessage());
+			logger.error(e);
 			parser.printUsage(System.err);
 			return;
 		}
@@ -272,11 +232,10 @@ public class IMAPReader {
 
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.warn("Got interrupted", e);
 			}
 		} catch (IOException e) {
 			logger.error("Critical error detected, exiting", e);
-			e.printStackTrace();
 			System.exit(1);
 		}
 

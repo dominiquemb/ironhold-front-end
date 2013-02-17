@@ -2,6 +2,8 @@ package com.reqo.ironhold.web.components;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.log4j.Logger;
+
 import com.reqo.ironhold.storage.IStorageService;
 import com.vaadin.Application;
 import com.vaadin.ui.Alignment;
@@ -15,7 +17,8 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class Header extends HorizontalLayout {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G");
-
+	private static Logger logger = Logger.getLogger(Header.class);
+	
 	public Header(final Application application, final String username,
 			final IStorageService storageService) {
 		this.setWidth("100%");
@@ -42,8 +45,7 @@ public class Header extends HorizontalLayout {
 					getWindow().addWindow(window);
 
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.warn(e);
 				}
 
 			}
@@ -61,8 +63,7 @@ public class Header extends HorizontalLayout {
 					getWindow().addWindow(window);
 
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.warn(e);
 				}
 
 			}

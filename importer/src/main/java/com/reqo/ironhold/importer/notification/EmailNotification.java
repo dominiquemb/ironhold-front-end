@@ -20,8 +20,7 @@ public class EmailNotification {
 			addr = InetAddress.getLocalHost();
 			hostname = addr.getHostName();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("Setting hostname to unknown", e);
 			hostname = "unknown";
 		}
 	}
@@ -47,8 +46,7 @@ public class EmailNotification {
 				
 				logger.info(String.format("Sending notification:\n%s\n%s\n", subject, body)); 
 			} catch (EmailException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn(e);
 			}
 		} else {
 			logger.info(String.format("Sending notification:\n%s\n%s\n", subject, body)); 

@@ -56,8 +56,6 @@ public class FileReader {
 				logger.info(mailMessage.getRawContents());
 			}
 			logger.error("Failed to process message", e);
-			e.printStackTrace();
-
 		}
 
 	}
@@ -69,7 +67,7 @@ public class FileReader {
 		try {
 			parser.parseArgument(args);
 		} catch (CmdLineException e) {
-			System.err.println(e.getMessage());
+			logger.error(e);
 			parser.printUsage(System.err);
 			return;
 		}
@@ -83,11 +81,10 @@ public class FileReader {
 					logger.info("Processed message in " + (finished - started) + "ms");
 				
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.warn("Got interrupted", e);
 			}
 		} catch (Exception e) {
 			logger.error("Critical error detected, exiting", e);
-			e.printStackTrace();
 			System.exit(1);
 		}
 

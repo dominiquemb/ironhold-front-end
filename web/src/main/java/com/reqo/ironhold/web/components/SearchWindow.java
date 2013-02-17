@@ -2,6 +2,8 @@ package com.reqo.ironhold.web.components;
 
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
@@ -16,7 +18,8 @@ import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
 public class SearchWindow extends Window {
-
+	private static Logger logger = Logger.getLogger(SearchWindow.class);
+	
     private final SearchWindow me;
 
     public SearchWindow(String title) throws Exception {
@@ -45,7 +48,7 @@ public class SearchWindow extends Window {
                 	try {
                         login(username);
                     } catch (Exception e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        logger.warn(e);
                     }
                 } else {
                     getWindow().showNotification("Invalid credentials");

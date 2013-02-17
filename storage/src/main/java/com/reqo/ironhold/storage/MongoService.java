@@ -439,8 +439,7 @@ public class MongoService implements IStorageService {
 			try {
 				result.add(getMimeMailMessage(fileName));
 			} catch (Exception e) {
-				logger.warn("Failed to retrieve " + fileName);
-				e.printStackTrace();
+				logger.warn("Failed to retrieve " + fileName, e);
 			}
 		}
 		finished = System.currentTimeMillis();

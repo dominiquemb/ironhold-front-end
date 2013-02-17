@@ -15,6 +15,8 @@
  */
 package com.reqo.ironhold.web;
 
+import org.apache.log4j.Logger;
+
 import com.reqo.ironhold.web.components.SearchWindow;
 import com.vaadin.Application;
 import com.vaadin.ui.Window;
@@ -25,7 +27,8 @@ import com.vaadin.ui.Window;
 @SuppressWarnings("serial")
 public class IronholdApplication extends Application {
     private Window window;
-
+    private static Logger logger = Logger.getLogger(IronholdApplication.class);
+	
     @Override
     public void init() {
 
@@ -35,8 +38,7 @@ public class IronholdApplication extends Application {
 
             setMainWindow(window);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	logger.warn(e);
         }
     }
 

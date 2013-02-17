@@ -105,7 +105,7 @@ public abstract class FileWatcher {
 					} catch (Exception e) {
 						EmailNotification.send("Failed to process " + fileName,
 								e.getMessage());
-						e.printStackTrace();
+						logger.warn("Failed to process " + fileName, e);
 					}
 
 				}
@@ -123,7 +123,7 @@ public abstract class FileWatcher {
 		try {
 			watchService.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn(e);
 		}
 	}
 

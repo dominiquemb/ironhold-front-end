@@ -108,6 +108,7 @@ public class IndexService {
 		}
 	}
 
+	
 	public boolean store(IndexedMailMessage message) throws Exception {
 		if (exists(message.getMessageId(), message.getType())) {
 			esClient.prepareDelete(indexName, message.getType().getValue(),

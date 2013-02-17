@@ -3,11 +3,9 @@ package com.reqo.ironhold.search;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.elasticsearch.index.mapper.MapperParsingException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.mongodb.MongoException;
 import com.reqo.ironhold.search.model.IndexedMailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
@@ -23,7 +21,7 @@ public class IMAPIndexer {
 	private static Logger logger = Logger.getLogger(IMAPIndexer.class);
 
 	public static void main(String[] args) {
-		
+
 		IndexerOptions bean = new IndexerOptions();
 		CmdLineParser parser = new CmdLineParser(bean);
 		try {
@@ -54,27 +52,7 @@ public class IMAPIndexer {
 			for (final MimeMailMessage mailMessage : mailMessages) {
 				logger.info("Indexing " + mailMessage.getMessageId());
 				try {
-					try {
-						indexService.store(new IndexedMailMessage(mailMessage));
-
-					} catch (MapperParsingException e) {
-						logger.warn(
-								"Failed to index message "
-										+ mailMessage.getMessageId()
-										+ " with attachments, "
-										+ "skipping attachments", e);
-
-						LogMessage logMessage = new LogMessage(
-								LogLevel.Warning,
-								"Failed to index message with attachments, "
-										+ "skiping attachments ["
-										+ e.getDetailedMessage() + "]",
-								mailMessage.getMessageId());
-						storageService.store(logMessage);
-						mailMessage.removeAttachments();
-
-						indexService.store(new IndexedMailMessage(mailMessage));
-					}
+					indexService.store(new IndexedMailMessage(mailMessage));
 
 					logger.info("Message indexed with "
 							+ mailMessage.getAttachments().length
@@ -89,7 +67,7 @@ public class IMAPIndexer {
 
 					storageService.updateIndexStatus(mailMessage,
 							IndexStatus.INDEXED);
-				
+
 				} catch (Exception e2) {
 
 					try {

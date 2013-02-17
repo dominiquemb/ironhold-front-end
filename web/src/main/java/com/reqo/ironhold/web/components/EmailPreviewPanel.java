@@ -1,16 +1,17 @@
 package com.reqo.ironhold.web.components;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.search.SearchHit;
 
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.themes.Reindeer;
 
 @SuppressWarnings("serial")
 public class EmailPreviewPanel extends TabSheet {
-
+	private static Logger logger = Logger.getLogger(EmailPreviewPanel.class);
+	
     private SearchHitPanel currentHitPanel;
     private final EmailView emailView;
     private final SourceView sourceView;
@@ -38,8 +39,7 @@ public class EmailPreviewPanel extends TabSheet {
 				try {
 					updateCurrentTab();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.warn(e);
 				}
 			}
 		});

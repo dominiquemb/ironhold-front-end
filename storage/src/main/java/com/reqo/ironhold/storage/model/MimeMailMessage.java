@@ -578,10 +578,6 @@ public class MimeMailMessage implements Serializable {
 		return sources;
 	}
 
-	public void setSources(MessageSource[] sources) {
-		this.sources = sources;
-	}
-
 	public boolean isHasAttachments() {
 		return hasAttachments;
 	}

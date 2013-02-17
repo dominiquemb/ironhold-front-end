@@ -14,6 +14,7 @@ import javax.mail.Multipart;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -35,6 +36,8 @@ import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 
 @JsonIgnoreProperties(value = "attachments", ignoreUnknown = true)
 public class MailMessage {
+	private static Logger logger = Logger.getLogger(MailMessage.class);
+	
 	private static final int BUFFER_SIZE = 20000;
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static ObjectMapper compressedMapper = new ObjectMapper();
@@ -113,7 +116,7 @@ public class MailMessage {
 						break;
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warn(e);
 					this.pstPartialFailure = true;
 				}
 
@@ -166,12 +169,12 @@ public class MailMessage {
 									.getFilename(), Base64.encodeBytes(out
 									.toByteArray()), attachment.getMimeTag(), attachment.getAttachmentContentDisposition()));
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warn(e);
 					this.pstPartialFailure = true;
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn(e);
 			this.pstPartialFailure = true;
 		}
 		this.setMessageId(originalPSTMessage.getInternetMessageId());
