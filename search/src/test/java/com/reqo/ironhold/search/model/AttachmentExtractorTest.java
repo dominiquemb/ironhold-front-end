@@ -98,7 +98,6 @@ public class AttachmentExtractorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testJSON() throws Exception {
 		File inputFile = FileUtils.toFile(AttachmentExtractorTest.class
 				.getResource("/testJSON.eml"));
@@ -119,7 +118,7 @@ public class AttachmentExtractorTest {
 
 		String assertContent = FileUtils.readFileToString(assertFile)
 				.replaceAll("[ \\t\\n\\r]+", " ");
-
+		System.out.println(assertContent);
 		Assert.assertEquals(assertContent, json);
 	}
 
