@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MailMessageTestModel;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class AttachmentExtractorTest {

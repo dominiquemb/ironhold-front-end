@@ -11,7 +11,6 @@ import com.mongodb.Mongo;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MailMessageTestModel;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
