@@ -299,22 +299,22 @@ public class MimeMailMessage implements Serializable {
 				os.write((line + "\n").getBytes());
 			}
 			os.write("\n".getBytes());
-			logger.info("populateRawContents - headers done");
+			logger.debug("populateRawContents - headers done");
 			InputStream rawStream = mimeMessage.getRawInputStream();
-			logger.info("populateRawContents - recieved input stream");
+			logger.debug("populateRawContents - recieved input stream");
 			int read = 0;
 			byte[] bytes = new byte[BUFFER_SIZE];
 
 			while ((read = rawStream.read(bytes)) != -1) {
 				os.write(bytes, 0, read);
 				bufferCount++;
-				logger.info("populateRawContents - recieved buffer "
+				logger.debug("populateRawContents - recieved buffer "
 						+ bufferCount);
 			}
 
-			logger.info("populateRawContents - finished reading");
+			logger.debug("populateRawContents - finished reading");
 			rawStream.close();
-			logger.info("populateRawContents - closed stream");
+			logger.debug("populateRawContents - closed stream");
 			this.setRawContents(os.toString());
 		} finally {
 			long finished = System.currentTimeMillis();

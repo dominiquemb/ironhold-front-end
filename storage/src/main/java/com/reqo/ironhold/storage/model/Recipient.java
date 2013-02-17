@@ -5,8 +5,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.log4j.Logger;
 
 public class Recipient {
+	private static Logger logger = Logger.getLogger(MimeMailMessage.class);
+
 	private String name;
 	private String address;
 	private String domain;
@@ -109,7 +112,7 @@ public class Recipient {
 		}
 
 		if (!result.getName().equals(name)) {
-			System.out.println(String.format("%s\t%s", result.getName(), name,
+			logger.debug(String.format("%s\t%s", result.getName(), name,
 					(int) name.charAt(0)));
 		}
 
