@@ -124,14 +124,14 @@ public class IndexService {
 		while (!success && retry <= MAX_RETRY_COUNT) {
 			try {
 
-				logger.info("Trying to index " + message.getMessageId());
+				logger.debug("Trying to index " + message.getMessageId());
 
 				esClient.prepareIndex(indexName, message.getType().getValue(),
 						message.getMessageId())
 						.setSource(IndexedMailMessage.toJSON(message))
 						.execute().actionGet();
 
-				logger.info("Returned from ES");
+				logger.debug("Returned from ES");
 				success = true;
 				return true;
 			} catch (NoNodeAvailableException e) {
@@ -147,7 +147,7 @@ public class IndexService {
 				}
 				reconnect();
 			} finally {
-				logger.info("Out of the indexing try catch block");
+				logger.debug("Out of the indexing try catch block");
 			}
 		}
 		long finished = System.currentTimeMillis();
@@ -165,7 +165,7 @@ public class IndexService {
 			return response.isExists();
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info(String.format("Statistics: exists %d", finished
+			logger.debug(String.format("Statistics: exists %d", finished
 					- started));
 
 		}
