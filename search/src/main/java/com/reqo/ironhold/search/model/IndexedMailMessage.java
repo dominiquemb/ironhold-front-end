@@ -85,7 +85,7 @@ public class IndexedMailMessage {
 	}
 
 	private void load(MimeMailMessage imapMailMessage) {
-		logger.info("Loading imap message");
+		logger.debug("Loading imap message");
 		subject = imapMailMessage.getSubject();
 		messageDate = imapMailMessage.getMessageDate();
 		year = yearFormat.format(messageDate);
@@ -110,7 +110,7 @@ public class IndexedMailMessage {
 		} else {
 			body = StringUtils.EMPTY;
 		}
-		logger.info("Done loading imap message");
+		logger.debug("Done loading imap message");
 
 	}
 
@@ -125,7 +125,7 @@ public class IndexedMailMessage {
 	}
 
 	private void load(ArchivedPSTMessage pstMessage) {
-		logger.info("Loading pst message");
+		logger.debug("Loading pst message");
 		messageId = pstMessage.getInternetMessageId();
 		subject = pstMessage.getSubject();
 		messageDate = pstMessage.getMessageDeliveryTime();
@@ -148,18 +148,18 @@ public class IndexedMailMessage {
 		} else {
 			body = StringUtils.EMPTY;
 		}
-		logger.info("Done loading pst message");
+		logger.debug("Done loading pst message");
 
 	}
 
 	public static String toJSON(IndexedMailMessage message)
 			throws JsonGenerationException, JsonMappingException, IOException {
 		String result = null;
-		logger.info("Starting toJSON serialization");
+		logger.debug("Starting toJSON serialization");
 		try {
 			result = mapper.writeValueAsString(message);
 		} finally {
-			logger.info("Finished toJSON serialization " + result.length()
+			logger.debug("Finished toJSON serialization " + result.length()
 					+ " bytes");
 		}
 
