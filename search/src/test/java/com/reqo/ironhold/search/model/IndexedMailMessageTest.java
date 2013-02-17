@@ -12,11 +12,13 @@ import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MailMessage;
 
-import de.flapdoodle.embedmongo.MongoDBRuntime;
-import de.flapdoodle.embedmongo.MongodExecutable;
-import de.flapdoodle.embedmongo.MongodProcess;
-import de.flapdoodle.embedmongo.config.MongodConfig;
-import de.flapdoodle.embedmongo.distribution.Version;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.distribution.Version;
+
+
 
 public class IndexedMailMessageTest {
 
@@ -29,9 +31,9 @@ public class IndexedMailMessageTest {
 	@Before
 	public void setUp() throws Exception {
 
-		MongoDBRuntime runtime = MongoDBRuntime.getDefaultInstance();
+		MongodStarter runtime = MongodStarter.getDefaultInstance();
 		mongodExe = runtime
-				.prepare(new MongodConfig(Version.V2_0, 12346, false));
+				.prepare(new MongodConfig(Version.V2_2_1, 12346, false));
 		mongod = mongodExe.start();
 
 		mongo = new Mongo("localhost", 12346);
@@ -40,8 +42,7 @@ public class IndexedMailMessageTest {
 
 	@After
 	public void tearDown() throws Exception {
-		mongod.stop();
-		mongodExe.cleanup();
+		mongodExe.stop();
 	}
 
 	@Test

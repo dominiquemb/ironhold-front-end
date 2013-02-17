@@ -16,19 +16,17 @@ import org.junit.rules.TemporaryFolder;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
-import com.reqo.ironhold.importer.PSTImporterTest;
 import com.reqo.ironhold.importer.notification.EmailNotification;
-import com.reqo.ironhold.importer.watcher.InboundWatcher;
 import com.reqo.ironhold.importer.watcher.QueueWatcher;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 
-import de.flapdoodle.embedmongo.MongoDBRuntime;
-import de.flapdoodle.embedmongo.MongodExecutable;
-import de.flapdoodle.embedmongo.MongodProcess;
-import de.flapdoodle.embedmongo.config.MongodConfig;
-import de.flapdoodle.embedmongo.distribution.Version;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.distribution.Version;
 
 public class QueueWatcherTest {
 
@@ -58,9 +56,9 @@ public class QueueWatcherTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		MongoDBRuntime runtime = MongoDBRuntime.getDefaultInstance();
+		MongodStarter runtime = MongodStarter.getDefaultInstance();
 		mongodExe = runtime
-				.prepare(new MongodConfig(Version.V2_0, 12345, false));
+				.prepare(new MongodConfig(Version.V2_2_1, 12345, false));
 		mongod = mongodExe.start();
 
 		mongo = new Mongo("localhost", 12345);
@@ -71,8 +69,7 @@ public class QueueWatcherTest {
 
 	@After
 	public void tearDown() throws Exception {
-		mongod.stop();
-		mongodExe.cleanup();
+		mongodExe.stop();
 	}
 	
 	@Test

@@ -18,11 +18,11 @@ import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.PSTFileMeta;
 
-import de.flapdoodle.embedmongo.MongoDBRuntime;
-import de.flapdoodle.embedmongo.MongodExecutable;
-import de.flapdoodle.embedmongo.MongodProcess;
-import de.flapdoodle.embedmongo.config.MongodConfig;
-import de.flapdoodle.embedmongo.distribution.Version;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.distribution.Version;
 
 public class PSTImporterTest {
 	private MongodExecutable mongodExe;
@@ -55,9 +55,9 @@ public class PSTImporterTest {
 
 		md52 = MD5CheckSum.getMD5Checksum(pstfile2);
 
-		MongoDBRuntime runtime = MongoDBRuntime.getDefaultInstance();
+		MongodStarter runtime = MongodStarter.getDefaultInstance();
 		mongodExe = runtime
-				.prepare(new MongodConfig(Version.V2_0, 12345, false));
+				.prepare(new MongodConfig(Version.V2_2_1, 12345, false));
 		mongod = mongodExe.start();
 
 		mongo = new Mongo("localhost", 12345);
@@ -67,8 +67,7 @@ public class PSTImporterTest {
 
 	@After
 	public void tearDown() throws Exception {
-		mongod.stop();
-		mongodExe.cleanup();
+		mongodExe.stop();
 	}
 
 	@Test

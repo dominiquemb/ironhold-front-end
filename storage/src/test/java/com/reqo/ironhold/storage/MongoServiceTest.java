@@ -21,7 +21,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.DB;
@@ -39,11 +38,11 @@ import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessageTestModel;
 import com.reqo.ironhold.storage.model.PSTMessageSource;
 
-import de.flapdoodle.embedmongo.MongoDBRuntime;
-import de.flapdoodle.embedmongo.MongodExecutable;
-import de.flapdoodle.embedmongo.MongodProcess;
-import de.flapdoodle.embedmongo.config.MongodConfig;
-import de.flapdoodle.embedmongo.distribution.Version;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.distribution.Version;
 
 public class MongoServiceTest {
 	private MongodExecutable mongodExe;
@@ -65,9 +64,9 @@ public class MongoServiceTest {
 	@Before
 	public void setUp() throws Exception {
 
-		MongoDBRuntime runtime = MongoDBRuntime.getDefaultInstance();
+		MongodStarter runtime = MongodStarter.getDefaultInstance();
 		mongodExe = runtime
-				.prepare(new MongodConfig(Version.V2_0, 12345, false));
+				.prepare(new MongodConfig(Version.V2_2_1, 12345, false));
 		mongod = mongodExe.start();
 
 		mongo = new Mongo("localhost", 12345);
@@ -76,8 +75,7 @@ public class MongoServiceTest {
 
 	@After
 	public void tearDown() throws Exception {
-		mongod.stop();
-		mongodExe.cleanup();
+		mongodExe.stop();
 	}
 
 	@Test
