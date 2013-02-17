@@ -178,7 +178,7 @@ public class MongoService implements IStorageService {
 
 	public List<MailMessage> findUnindexedPSTMessages(int limit)
 			throws JsonParseException, JsonMappingException, IOException {
-		logger.info("Statistics: findUnindexedMessages, phase 1 started");
+		logger.debug("Statistics: findUnindexedMessages, phase 1 started");
 
 		long started = System.currentTimeMillis();
 		List<MailMessage> result = new ArrayList<MailMessage>();
@@ -199,7 +199,7 @@ public class MongoService implements IStorageService {
 		}
 		long finished = System.currentTimeMillis();
 
-		logger.info(String.format(
+		logger.debug(String.format(
 				"Statistics: findUnindexedMessages, phase 1 %d", finished
 						- started));
 
@@ -222,7 +222,7 @@ public class MongoService implements IStorageService {
 		}
 		finished = System.currentTimeMillis();
 
-		logger.info(String.format(
+		logger.debug(String.format(
 				"Statistics: findUnindexedMessages, phase 2 %d", finished
 						- started));
 		return result;
@@ -255,7 +255,7 @@ public class MongoService implements IStorageService {
 
 		update(message);
 		long finished = System.currentTimeMillis();
-		logger.info(String.format("Statistics: updateIndexStatus %d", finished
+		logger.debug(String.format("Statistics: updateIndexStatus %d", finished
 				- started));
 	}
 
@@ -267,7 +267,7 @@ public class MongoService implements IStorageService {
 
 		update(message);
 		long finished = System.currentTimeMillis();
-		logger.info(String.format("Statistics: updateIndexStatus %d", finished
+		logger.debug(String.format("Statistics: updateIndexStatus %d", finished
 				- started));
 	}
 
@@ -342,7 +342,6 @@ public class MongoService implements IStorageService {
 		DBObject query = QueryBuilder.start().put("messageId").is(messageId)
 				.get();
 
-		logger.info(query.toString());
 		DBCursor cur = db.getCollection(LOG_COLLECTION).find(query);
 
 		while (cur.hasNext()) {
@@ -407,7 +406,7 @@ public class MongoService implements IStorageService {
 	@Override
 	public List<MimeMailMessage> findUnindexedIMAPMessages(int limit)
 			throws Exception {
-		logger.info("Statistics: findUnindexedIMAPMessages, phase 1 started");
+		logger.debug("Statistics: findUnindexedIMAPMessages, phase 1 started");
 
 		long started = System.currentTimeMillis();
 		List<MimeMailMessage> result = new ArrayList<MimeMailMessage>();
@@ -428,9 +427,9 @@ public class MongoService implements IStorageService {
 		}
 		long finished = System.currentTimeMillis();
 
-		logger.info(String.format("Found %d unindexed messages",
+		logger.debug(String.format("Found %d unindexed messages",
 				toBeReturned.size()));
-		logger.info(String.format(
+		logger.debug(String.format(
 				"Statistics: findUnindexedIMAPMessages, phase 1 %d", finished
 						- started));
 
@@ -444,7 +443,7 @@ public class MongoService implements IStorageService {
 		}
 		finished = System.currentTimeMillis();
 
-		logger.info(String.format(
+		logger.debug(String.format(
 				"Statistics: findUnindexedIMAPMessages, phase 2 %d", finished
 						- started));
 
