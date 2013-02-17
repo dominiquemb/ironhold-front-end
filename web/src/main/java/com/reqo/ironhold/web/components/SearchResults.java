@@ -128,7 +128,7 @@ public class SearchResults extends HorizontalLayout {
 							if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
 								builder.withDateFacet().withFromFacet()
 										.withFromDomainFacet()
-										.withToDomainFacet().withFileExtFacet(); // .withToFacet()
+										.withFileExtFacet(); // .withToFacet()
 							}
 						}
 
