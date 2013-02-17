@@ -1,6 +1,5 @@
 package com.reqo.ironhold.web.components;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,8 +9,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
-import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet.Entry;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 import org.vaadin.pagingcomponent.PagingComponent;
@@ -41,7 +38,6 @@ public class SearchResults extends HorizontalLayout {
 	protected static final int MAX_RESULTS_TO_BE_FACETED = 30000;
 	private final IndexService indexService;
 	private final IStorageService storageService;
-	private final SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
 	private String criteria;
 	private VerticalLayout leftPane;
 	private VerticalLayout rightPane;
