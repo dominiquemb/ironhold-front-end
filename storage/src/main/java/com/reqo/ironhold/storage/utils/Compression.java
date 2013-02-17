@@ -30,7 +30,7 @@ public class Compression {
 			return Base64.encodeBytes(baos.toByteArray());
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info("Compressed " + str.length() + " bytes in "
+			logger.debug("Compressed " + str.length() + " bytes in "
 					+ (finished - started) + "ms");
 		}
 	}
@@ -60,7 +60,7 @@ public class Compression {
 			return new String(content, 0, content.length);
 		} finally {
 			long finished = System.currentTimeMillis();
-			logger.info("Decompressed " + str.length() + " bytes in "
+			logger.debug("Decompressed " + str.length() + " bytes in "
 					+ (finished - started) + "ms");
 		}
 	}
