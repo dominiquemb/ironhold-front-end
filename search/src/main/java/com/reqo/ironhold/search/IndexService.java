@@ -10,7 +10,10 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryRequestBuilder;
+import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -108,7 +111,6 @@ public class IndexService {
 		}
 	}
 
-	
 	public boolean store(IndexedMailMessage message) throws Exception {
 		if (exists(message.getMessageId(), message.getType())) {
 			esClient.prepareDelete(indexName, message.getType().getValue(),
@@ -183,29 +185,45 @@ public class IndexService {
 	}
 
 	public SearchResponse search(MessageSearchBuilder builder) {
-		SearchRequestBuilder search = builder.build();
-		logger.info(search.toString());
-		SearchResponse response = search.execute().actionGet();
-		return response;
+		try {
+			SearchRequestBuilder search = builder.build();
+			logger.info(search.toString());
+			SearchResponse response = search.execute().actionGet();
+			return response;
+		} catch (SearchPhaseExecutionException e) {
+			logger.warn(e);
+			return null;
+		}
 	}
 
 	public long getMatchCount(String search) {
+		try {
+			SearchRequestBuilder builder = esClient.prepareSearch(indexName);
+			QueryBuilder qb = QueryBuilders.queryString(search)
+					.defaultOperator(Operator.AND);
 
-		SearchRequestBuilder builder = esClient.prepareSearch(indexName);
-		QueryBuilder qb = QueryBuilders.queryString(search).defaultOperator(Operator.AND);
-		
-		builder.setQuery(qb);
-		builder.setSearchType(SearchType.COUNT);
-		SearchResponse response = builder.execute().actionGet();
+			builder.setQuery(qb);
+			builder.setSearchType(SearchType.COUNT);
+			SearchResponse response = builder.execute().actionGet();
 
-		return response.getHits().getTotalHits();
+			return response.getHits().getTotalHits();
+		} catch (SearchPhaseExecutionException e) {
+			logger.warn(e);
+			return -1;
+		}
 	}
 
 	public SearchResponse getMatchCount(MessageSearchBuilder builder) {
-		SearchResponse response = builder.build()
-				.setSearchType(SearchType.COUNT).execute().actionGet();
+		try {
+			SearchResponse response = builder.build()
+					.setSearchType(SearchType.COUNT).execute().actionGet();
 
-		return response;
+			return response;
+
+		} catch (SearchPhaseExecutionException e) {
+			logger.warn(e);
+			return null;
+		}
 	}
 
 	private static String readJsonDefinition(String fileName) throws Exception {

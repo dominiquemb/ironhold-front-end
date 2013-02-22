@@ -93,6 +93,11 @@ public class SearchResults extends HorizontalLayout {
 
 	private void performSearch() {
 		final SearchResponse response = indexService.getMatchCount(builder);
+		if (response == null) {
+			resultLabel.setCaption("Invalid search query");
+			return;
+		}
+		
 		if (!facetsSetup) {
 			resultLabel.setCaption(String.format("%,d matches.", response
 					.getHits().totalHits()));
@@ -153,7 +158,7 @@ public class SearchResults extends HorizontalLayout {
 						}
 
 						SearchResponse response = indexService.search(builder);
-
+						
 						setUpFacets(response);
 
 						resultLabel.setCaption(String.format(

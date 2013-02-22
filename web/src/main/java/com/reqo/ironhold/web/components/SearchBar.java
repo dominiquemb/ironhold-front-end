@@ -12,39 +12,45 @@ import com.vaadin.ui.Window;
 @SuppressWarnings("serial")
 public class SearchBar extends VerticalLayout {
 
-    private SearchTextField filterField;
+	private SearchTextField filterField;
 
-    public SearchBar(final Window window, final IndexService indexService, final IStorageService storageService,
-                     SearchResults searchResults) {
+	public SearchBar(final Window window, final IndexService indexService,
+			final IStorageService storageService, SearchResults searchResults) {
 
-        filterField = new SearchTextField(window, searchResults);
+		filterField = new SearchTextField(window, searchResults);
 
-        final Label previewLabel = new Label(String.format("%,d total messages", storageService.getTotalMessageCount
-                ()));
+		final Label previewLabel = new Label(String.format(
+				"%,d total messages", storageService.getTotalMessageCount()));
 
-        filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
-        filterField.setTextChangeTimeout(200);
-        filterField.setWidth("400px");
-        filterField.addListener(new TextChangeListener() {
+		filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
+		filterField.setTextChangeTimeout(200);
+		filterField.setWidth("400px");
+		filterField.addListener(new TextChangeListener() {
 
-            public void textChange(TextChangeEvent event) {
-                String criteria = event.getText();
-                if (criteria.trim().length() > 0) {
-                    long results = indexService.getMatchCount(event.getText());
-                    previewLabel.setValue(String.format("%,d matched messages", results));
-                } else {
-                    previewLabel.setValue(String.format("%,d total messages", storageService.getTotalMessageCount()));
-                }
-            }
-        });
-        this.addComponent(filterField);
-        this.addComponent(previewLabel);
+			public void textChange(TextChangeEvent event) {
+				String criteria = event.getText();
+				if (criteria.trim().length() > 0) {
+					long results = indexService.getMatchCount(event.getText());
+					if (results >= 0) {
+						previewLabel.setValue(String.format(
+								"%,d matched messages", results));
+					} else {
+						previewLabel.setValue("Invalid search query");
+					}
+				} else {
+					previewLabel.setValue(String.format("%,d total messages",
+							storageService.getTotalMessageCount()));
+				}
+			}
+		});
+		this.addComponent(filterField);
+		this.addComponent(previewLabel);
 
-        filterField.focus();
-    }
+		filterField.focus();
+	}
 
-    public String getCriteria() {
-        return (String) filterField.getValue();
-    }
+	public String getCriteria() {
+		return (String) filterField.getValue();
+	}
 
 }
