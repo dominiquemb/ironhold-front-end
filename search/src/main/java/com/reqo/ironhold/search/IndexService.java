@@ -14,6 +14,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -56,7 +57,7 @@ public class IndexService {
 		reconnect();
 
 	}
-	
+
 	protected IndexService(String indexPrefix, Client esClient) {
 		this.indexPrefix = indexPrefix;
 		this.esClient = esClient;
@@ -71,8 +72,9 @@ public class IndexService {
 		esClient = new TransportClient();
 
 		for (String esHost : esHosts) {
-			((TransportClient)esClient).addTransportAddress(new InetSocketTransportAddress(esHost,
-					esPort));
+			((TransportClient) esClient)
+					.addTransportAddress(new InetSocketTransportAddress(esHost,
+							esPort));
 		}
 
 	}
@@ -119,52 +121,59 @@ public class IndexService {
 
 	public boolean store(IndexedMailMessage message) throws Exception {
 		String indexName = indexPrefix + "." + message.getYear();
-		
+
 		createIndexIfMissing(message.getYear());
-		
+
 		if (exists(indexName, message.getMessageId(), message.getType())) {
-			esClient.prepareDelete(indexName, message.getType().getValue(),
+			DeleteResponse response = esClient.prepareDelete(indexName, message.getType().getValue(),
 					message.getMessageId()).execute().actionGet();
-			logger.info(String.format("Deleting document with id [%s]",
-					message.getMessageId()));
+			logger.info(String.format("Deleting document with id [%s] => %s",
+					message.getMessageId(), response.isNotFound()));
 
 		}
 
 		long started = System.currentTimeMillis();
-		int retry = 1;
-		boolean success = false;
-		while (!success && retry <= MAX_RETRY_COUNT) {
-			try {
-
-				logger.debug("Trying to index " + message.getMessageId());
-
-				esClient.prepareIndex(indexName,
-						message.getType().getValue(), message.getMessageId())
-						.setSource(IndexedMailMessage.toJSON(message))
-						.execute().actionGet();
-
-				logger.debug("Returned from ES");
-				success = true;
-				return true;
-			} catch (NoNodeAvailableException e) {
-				logger.warn("Recieved no node available exception, sleep for "
-						+ RETRY_SLEEP + " (Attempt " + retry + " out of "
-						+ MAX_RETRY_COUNT + ")");
-				success = false;
-				retry++;
-
+		try {
+			int retry = 1;
+			boolean success = false;
+			while (!success && retry <= MAX_RETRY_COUNT) {
 				try {
-					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException ignore) {
-				}
-				reconnect();
-			} finally {
-				logger.debug("Out of the indexing try catch block");
-			}
-		}
-		long finished = System.currentTimeMillis();
-		logger.info(String.format("Statistics: store %d", finished - started));
 
+					logger.debug("Trying to index " + message.getMessageId());
+
+					esClient.prepareIndex(indexName,
+							message.getType().getValue(),
+							message.getMessageId())
+							.setSource(IndexedMailMessage.toJSON(message))
+							.execute().actionGet();
+
+					logger.debug("Returned from ES");
+					success = true;
+					return true;
+				} catch (NoNodeAvailableException e) {
+					logger.warn("Recieved no node available exception, sleep for "
+							+ RETRY_SLEEP
+							+ " (Attempt "
+							+ retry
+							+ " out of "
+							+ MAX_RETRY_COUNT + ")");
+					success = false;
+					retry++;
+
+					try {
+						Thread.sleep(RETRY_SLEEP);
+					} catch (InterruptedException ignore) {
+					}
+					reconnect();
+				} finally {
+					logger.debug("Out of the indexing try catch block");
+				}
+			}
+		} finally {
+			long finished = System.currentTimeMillis();
+			logger.info(String.format("Statistics: store %d", finished
+					- started));
+		}
 		return false;
 	}
 
@@ -173,20 +182,19 @@ public class IndexService {
 			String indexName = indexPrefix + "." + year;
 
 			IndicesExistsResponse exists = esClient.admin().indices()
-					.prepareExists(indexName).execute()
-					.actionGet();
+					.prepareExists(indexName).execute().actionGet();
 
 			if (!exists.isExists()) {
 				createIndex(year);
 			}
-			
 
 			this.indexes.add(year);
 		}
 
 	}
 
-	private boolean exists(String indexName, String messageId, IndexedObjectType type) {
+	private boolean exists(String indexName, String messageId,
+			IndexedObjectType type) {
 		long started = System.currentTimeMillis();
 		try {
 			GetResponse response = esClient
