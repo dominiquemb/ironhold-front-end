@@ -10,6 +10,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.sort.SortOrder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,13 +120,16 @@ public class IndexServiceTest {
 		indexService.refresh();
 		
 		String searchWord = inputMessage.getPstMessage().getBody().split(" ")[0];
-		MessageSearchBuilder builder1 = MessageSearchBuilder.newBuilder(client.prepareSearch(INDEX_PREFIX));
+		MessageSearchBuilder builder1 = indexService.getNewBuilder();
 		builder1.withCriteria(searchWord);
+		builder1.withResultsLimit(1, 10);
+		builder1.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
+		
 		SearchResponse matchCount = indexService.getMatchCount(builder1);
 
 		Assert.assertEquals(1, matchCount.getHits().getTotalHits());
 
-		MessageSearchBuilder builder2 = MessageSearchBuilder.newBuilder(client.prepareSearch(INDEX_PREFIX));
+		MessageSearchBuilder builder2 = indexService.getNewBuilder(builder1);
 		builder2.withCriteria("xxyyzz");
 		
 		SearchResponse notFound = indexService.getMatchCount(builder2);
@@ -144,7 +148,9 @@ public class IndexServiceTest {
 		indexService.refresh();
 		
 		String searchWord = inputMessage.getPstMessage().getBody().split(" ")[0];
-		MessageSearchBuilder builder = MessageSearchBuilder.newBuilder(client.prepareSearch(INDEX_PREFIX));
+		MessageSearchBuilder builder = indexService.getNewBuilder();
+		builder.withResultsLimit(1, 10);
+		builder.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
 		builder.withCriteria(searchWord);
 		builder.withDateFacet().withFileExtFacet().withFromDomainFacet().withFromFacet().withFullBody().withToFacet().withToDomainFacet();
 		SearchResponse response = indexService.search(builder);
