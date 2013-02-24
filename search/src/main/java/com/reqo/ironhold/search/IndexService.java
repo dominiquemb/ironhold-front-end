@@ -3,20 +3,23 @@ package com.reqo.ironhold.search;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
-import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryRequestBuilder;
-import org.elasticsearch.action.admin.indices.validate.query.ValidateQueryResponse;
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -32,13 +35,14 @@ public class IndexService {
 	private static final int MAX_RETRY_COUNT = 10;
 
 	private static Logger logger = Logger.getLogger(IndexService.class);
-	private TransportClient esClient;
-	private final String indexName;
+	private Client esClient;
+	private final String indexPrefix;
 	private String[] esHosts;
 	private int esPort;
+	private Set<String> indexes;
 
-	public IndexService(String indexName) throws Exception {
-		this.indexName = indexName;
+	public IndexService(String indexPrefix) throws Exception {
+		this.indexPrefix = indexPrefix;
 
 		Properties prop = new Properties();
 		prop.load(IndexService.class
@@ -47,8 +51,17 @@ public class IndexService {
 		esHosts = prop.getProperty("hosts").split(",");
 		esPort = Integer.parseInt(prop.getProperty("port"));
 
+		indexes = Collections.synchronizedSet(new HashSet<String>());
+
 		reconnect();
 
+	}
+	
+	protected IndexService(String indexPrefix, Client esClient) {
+		this.indexPrefix = indexPrefix;
+		this.esClient = esClient;
+
+		indexes = Collections.synchronizedSet(new HashSet<String>());
 	}
 
 	private void reconnect() throws Exception {
@@ -58,19 +71,14 @@ public class IndexService {
 		esClient = new TransportClient();
 
 		for (String esHost : esHosts) {
-			esClient.addTransportAddress(new InetSocketTransportAddress(esHost,
+			((TransportClient)esClient).addTransportAddress(new InetSocketTransportAddress(esHost,
 					esPort));
 		}
 
-		IndicesExistsResponse exists = esClient.admin().indices()
-				.prepareExists(indexName).execute().actionGet();
-
-		if (!exists.isExists()) {
-			createIndex();
-		}
 	}
 
-	private void createIndex() throws Exception {
+	private void createIndex(String year) throws Exception {
+		String indexName = indexPrefix + "." + year;
 		String analyzerDef = readJsonDefinition("analyzers.json");
 		CreateIndexResponse response1 = esClient.admin().indices()
 				.prepareCreate(indexName).setSettings(analyzerDef).execute()
@@ -100,19 +108,21 @@ public class IndexService {
 					+ response4.toString());
 		}
 
-	}
-
-	public void dropIndex() throws Exception {
-		DeleteIndexResponse response = esClient.admin().indices()
-				.prepareDelete(indexName).execute().actionGet();
-		if (!response.acknowledged()) {
+		IndicesAliasesResponse response5 = esClient.admin().indices()
+				.prepareAliases().addAlias(indexName, indexPrefix).execute()
+				.actionGet();
+		if (!response5.acknowledged()) {
 			throw new Exception("ES Request did not get acknowledged: "
-					+ response.toString());
+					+ response5.toString());
 		}
 	}
 
 	public boolean store(IndexedMailMessage message) throws Exception {
-		if (exists(message.getMessageId(), message.getType())) {
+		String indexName = indexPrefix + "." + message.getYear();
+		
+		createIndexIfMissing(message.getYear());
+		
+		if (exists(indexName, message.getMessageId(), message.getType())) {
 			esClient.prepareDelete(indexName, message.getType().getValue(),
 					message.getMessageId()).execute().actionGet();
 			logger.info(String.format("Deleting document with id [%s]",
@@ -128,8 +138,8 @@ public class IndexService {
 
 				logger.debug("Trying to index " + message.getMessageId());
 
-				esClient.prepareIndex(indexName, message.getType().getValue(),
-						message.getMessageId())
+				esClient.prepareIndex(indexName,
+						message.getType().getValue(), message.getMessageId())
 						.setSource(IndexedMailMessage.toJSON(message))
 						.execute().actionGet();
 
@@ -158,7 +168,25 @@ public class IndexService {
 		return false;
 	}
 
-	private boolean exists(String messageId, IndexedObjectType type) {
+	private void createIndexIfMissing(String year) throws Exception {
+		if (!indexes.contains(year)) {
+			String indexName = indexPrefix + "." + year;
+
+			IndicesExistsResponse exists = esClient.admin().indices()
+					.prepareExists(indexName).execute()
+					.actionGet();
+
+			if (!exists.isExists()) {
+				createIndex(year);
+			}
+			
+
+			this.indexes.add(year);
+		}
+
+	}
+
+	private boolean exists(String indexName, String messageId, IndexedObjectType type) {
 		long started = System.currentTimeMillis();
 		try {
 			GetResponse response = esClient
@@ -175,12 +203,12 @@ public class IndexService {
 
 	public MessageSearchBuilder getNewBuilder() {
 		return MessageSearchBuilder.newBuilder(esClient
-				.prepareSearch(indexName));
+				.prepareSearch(indexPrefix));
 	}
 
 	public MessageSearchBuilder getNewBuilder(MessageSearchBuilder oldBuilder) {
 		MessageSearchBuilder newBuilder = MessageSearchBuilder
-				.newBuilder(esClient.prepareSearch(indexName));
+				.newBuilder(esClient.prepareSearch(indexPrefix));
 		return newBuilder.buildFrom(oldBuilder);
 	}
 
@@ -198,7 +226,7 @@ public class IndexService {
 
 	public long getMatchCount(String search) {
 		try {
-			SearchRequestBuilder builder = esClient.prepareSearch(indexName);
+			SearchRequestBuilder builder = esClient.prepareSearch(indexPrefix);
 			QueryBuilder qb = QueryBuilders.queryString(search)
 					.defaultOperator(Operator.AND);
 
@@ -256,6 +284,14 @@ public class IndexService {
 		}
 
 		return bufferJSON.toString();
+	}
+
+	public void refresh() throws Exception {
+		RefreshResponse refresh = esClient.admin().indices()
+				.prepareRefresh(indexPrefix).execute().actionGet();
+		if (refresh.getFailedShards() > 0) {
+			throw new Exception("Refresh failed");
+		}
 	}
 
 }

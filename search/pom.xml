@@ -133,6 +133,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.github.tlrx</groupId>
+			<artifactId>elasticsearch-test</artifactId>
+			<version>0.0.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.fluttercode.datafactory</groupId>
 			<artifactId>datafactory</artifactId>
 			<version>0.8</version>
