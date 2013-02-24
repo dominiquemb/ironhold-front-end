@@ -76,9 +76,6 @@ public class IndexServiceTest {
 				inputMessage);
 
 		indexService.store(indexedMailMessage);
-
-		RefreshResponse refresh = client.admin().indices()
-				.prepareRefresh(INDEX_PREFIX).execute().actionGet();
 		indexService.refresh();
 		
 		String searchWord = inputMessage.getPstMessage().getBody().split(" ")[0];
