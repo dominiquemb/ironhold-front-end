@@ -6,8 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,8 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class RandomEmailGenerator {
 	static {
-		System.setProperty("jobname", RandomEmailGenerator.class.getSimpleName());
+		System.setProperty("jobname",
+				RandomEmailGenerator.class.getSimpleName());
 	}
 	protected static DataFactory df = new DataFactory();
 
@@ -95,10 +97,18 @@ public class RandomEmailGenerator {
 		email.setSubject(text.substring(0, cutoff).replaceAll("\r?\n", " ")
 				+ "...");
 
-		Date randomDate = new Date();
-		randomDate.setTime((long) (randomDate.getTime() * Math.random()));
 
-		email.setSentDate(randomDate);
+        int year = randBetween(2000, 2010);
+
+        int month = randBetween(0, 11);
+
+        GregorianCalendar gc = new GregorianCalendar(year, month, 1);
+
+        int day = randBetween(1, gc.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        gc.set(year, month, day);
+
+		email.setSentDate(gc.getTime());
 
 		email.setMsg(text);
 
@@ -139,6 +149,10 @@ public class RandomEmailGenerator {
 		}
 		return byos.toString();
 
+	}
+
+	private static int randBetween(int start, int end) {
+		return start + (int) Math.round(Math.random() * (end - start));
 	}
 
 	private String getRawContents(MimeMessage mimeMessage) throws IOException,
