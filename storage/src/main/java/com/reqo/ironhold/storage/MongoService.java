@@ -203,7 +203,7 @@ public class MongoService implements IStorageService {
 				"Statistics: findUnindexedMessages, phase 1 %d", finished
 						- started));
 
-		started = System.currentTimeMillis();
+		long started2 = System.currentTimeMillis();
 		for (String fileName : toBeReturned) {
 
 			GridFSDBFile object = fs.findOne(fileName);
@@ -220,10 +220,14 @@ public class MongoService implements IStorageService {
 			result.add(mailMessage);
 
 		}
-		finished = System.currentTimeMillis();
+		long finished2 = System.currentTimeMillis();
 
 		logger.debug(String.format(
-				"Statistics: findUnindexedMessages, phase 2 %d", finished
+				"Statistics: findUnindexedMessages, phase 2 %d", finished2
+						- started2));
+		
+		logger.info(String.format(
+				"Statistics: findUnindexedMessages took %dms", finished2
 						- started));
 		return result;
 
