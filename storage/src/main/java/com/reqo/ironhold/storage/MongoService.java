@@ -287,7 +287,9 @@ public class MongoService implements IStorageService {
 
 		String jsonString = MailMessage
 				.serializeCompressedMailMessage(mailMessage);
-		fsFile.setMetaData((DBObject) JSON.parse(jsonString));
+		DBObject metaData = (DBObject) JSON.parse(jsonString);
+		fsFile.setMetaData(metaData);
+		logger.info("Saving " + metaData.toString());
 		fsFile.save();
 		mongo.fsync(false);
 	}
