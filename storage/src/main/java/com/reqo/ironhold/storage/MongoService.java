@@ -199,7 +199,7 @@ public class MongoService implements IStorageService {
 		}
 		long finished = System.currentTimeMillis();
 
-		logger.debug(String.format(
+		logger.info(String.format(
 				"Statistics: findUnindexedMessages, phase 1 %d", finished
 						- started));
 
@@ -222,7 +222,7 @@ public class MongoService implements IStorageService {
 		}
 		long finished2 = System.currentTimeMillis();
 
-		logger.debug(String.format(
+		logger.info(String.format(
 				"Statistics: findUnindexedMessages, phase 2 %d", finished2
 						- started2));
 		
