@@ -57,17 +57,16 @@ public class PSTIndexer {
 					logger.info("Message indexed with "
 							+ mailMessage.getAttachments().length
 							+ " attachments");
-
+					
+					storageService.updateIndexStatus(mailMessage,
+							IndexStatus.INDEXED);
+					
 					LogMessage logMessage = new LogMessage(LogLevel.Success,
 							"Message indexed with "
 									+ mailMessage.getAttachments().length
 									+ " attachments",
 							mailMessage.getMessageId());
 					storageService.store(logMessage);
-
-					storageService.updateIndexStatus(mailMessage,
-							IndexStatus.INDEXED);
-
 				} catch (Exception e2) {
 
 					try {

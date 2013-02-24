@@ -75,7 +75,7 @@ public class MongoService implements IStorageService {
 		options.setAutoConnectRetry(true);
 		options.setDescription(purpose);
 		options.setMaxAutoConnectRetryTime(maxAutoConnectRetry);
-		
+
 		List<ServerAddress> hosts = new ArrayList<ServerAddress>();
 		for (String eachHost : mongoHost.split(",")) {
 			hosts.add(new ServerAddress(eachHost, mongoPort));
@@ -94,37 +94,41 @@ public class MongoService implements IStorageService {
 							mongoHost, mongoPort, clientName));
 		}
 		db = mongo.getDB(clientName);
-		
-		
-		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION, "metadata.indexed", true);
-		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION, "metadata.indexed", true);
+
+		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION,
+				"metadata.indexed", true);
+		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION,
+				"metadata.indexed", true);
 		createCollectionAndIndexIfRequired(LOG_COLLECTION, "messageId", false);
 	}
-	
-	public void createCollectionAndIndexIfRequired(String coll, String index, boolean isGridFS) {
+
+	public void createCollectionAndIndexIfRequired(String coll, String index,
+			boolean isGridFS) {
 		String collection = isGridFS ? coll + ".files" : coll;
 		if (db.getCollectionNames().contains(collection)) {
 			boolean found = false;
 			for (DBObject info : db.getCollection(collection).getIndexInfo()) {
-				
+
 				if (info.containsField("key")) {
 					DBObject key = (DBObject) info.get("key");
-					if (key.containsField(index) && key.keySet().size()==1) {
+					if (key.containsField(index) && key.keySet().size() == 1) {
 						found = true;
 						break;
 					}
-					
+
 				}
 			}
-			
+
 			if (!found) {
-				logger.warn("Missing index found: Collection " + collection + ", Index " + index + " => creating");
+				logger.warn("Missing index found: Collection " + collection
+						+ ", Index " + index + " => creating");
 				BasicDBObject indexObj = new BasicDBObject();
 				indexObj.put(index, 1);
 				db.getCollection(collection).ensureIndex(indexObj);
-			} 
+			}
 		} else {
-			logger.warn("Collection " + collection + " is not present => creating");
+			logger.warn("Collection " + collection
+					+ " is not present => creating");
 			if (isGridFS) {
 				GridFS fs = new GridFS(db, coll);
 				createCollectionAndIndexIfRequired(coll, index, true);
@@ -168,6 +172,7 @@ public class MongoService implements IStorageService {
 		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
 		fsFile.saveChunks();
 		fsFile.save();
+		mongo.fsync(false);
 		return fsFile.getLength();
 	}
 
@@ -225,7 +230,7 @@ public class MongoService implements IStorageService {
 		logger.info(String.format(
 				"Statistics: findUnindexedMessages, phase 2 %d", finished2
 						- started2));
-		
+
 		logger.info(String.format(
 				"Statistics: findUnindexedMessages took %dms", finished2
 						- started));
@@ -284,7 +289,7 @@ public class MongoService implements IStorageService {
 				.serializeCompressedMailMessage(mailMessage);
 		fsFile.setMetaData((DBObject) JSON.parse(jsonString));
 		fsFile.save();
-
+		mongo.fsync(false);
 	}
 
 	public void update(MimeMailMessage mailMessage)
@@ -296,7 +301,7 @@ public class MongoService implements IStorageService {
 		String jsonString = MimeMailMessage.serialize(mailMessage);
 		fsFile.setMetaData((DBObject) JSON.parse(jsonString));
 		fsFile.save();
-
+		mongo.fsync(false);
 	}
 
 	@Override
@@ -339,6 +344,7 @@ public class MongoService implements IStorageService {
 			JsonMappingException, MongoException, IOException {
 		db.getCollection(LOG_COLLECTION).insert(
 				(DBObject) JSON.parse(LogMessage.toJSON(logMessage)));
+		mongo.fsync(false);
 	}
 
 	public List<LogMessage> getLogMessages(String messageId) throws Exception {
@@ -399,6 +405,7 @@ public class MongoService implements IStorageService {
 			fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
 			fsFile.saveChunks();
 			fsFile.save();
+			mongo.fsync(false);
 			return fsFile.getLength();
 		} finally {
 			long finished = System.currentTimeMillis();
