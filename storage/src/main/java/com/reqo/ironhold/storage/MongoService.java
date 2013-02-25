@@ -155,25 +155,31 @@ public class MongoService implements IStorageService {
 
 	public long store(MailMessage mailMessage) throws JsonGenerationException,
 			JsonMappingException, MongoException, IOException {
-		Date storedDate = new Date();
-		mailMessage.setStoredDate(storedDate);
-		String jsonString = MailMessage
-				.serializeCompressedMailMessage(mailMessage);
-		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-		String attachmentsString = MailMessage
-				.serializeCompressedAttachments(mailMessage.getAttachments());
-		ByteArrayInputStream bis = new ByteArrayInputStream(
-				attachmentsString.getBytes());
-		GridFSInputFile fsFile = fs.createFile(bis, mailMessage.getMessageId());
+		if (!existsMailMessage(mailMessage.getMessageId())) {
+			Date storedDate = new Date();
+			mailMessage.setStoredDate(storedDate);
+			String jsonString = MailMessage
+					.serializeCompressedMailMessage(mailMessage);
+			GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
+			String attachmentsString = MailMessage
+					.serializeCompressedAttachments(mailMessage
+							.getAttachments());
+			ByteArrayInputStream bis = new ByteArrayInputStream(
+					attachmentsString.getBytes());
+			GridFSInputFile fsFile = fs.createFile(bis,
+					mailMessage.getMessageId());
 
-		DBObject metaData = (DBObject) JSON.parse(jsonString);
+			DBObject metaData = (DBObject) JSON.parse(jsonString);
 
-		fsFile.setMetaData(metaData);
-		fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
-		fsFile.saveChunks();
-		fsFile.save();
-		mongo.fsync(false);
-		return fsFile.getLength();
+			fsFile.setMetaData(metaData);
+			fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
+			fsFile.saveChunks();
+			fsFile.save();
+			mongo.fsync(false);
+			return fsFile.getLength();
+		} else {
+			return 0;
+		}
 	}
 
 	public void stopSession() {
@@ -258,23 +264,34 @@ public class MongoService implements IStorageService {
 
 	public void updateIndexStatus(MailMessage message, IndexStatus status)
 			throws JsonParseException, JsonMappingException, IOException {
-		long started = System.currentTimeMillis();
-
-		message.setIndexed(status);
-
-		update(message);
-		long finished = System.currentTimeMillis();
-		logger.debug(String.format("Statistics: updateIndexStatus %d", finished
-				- started));
+		updateIndexStatus(message.getMessageId(), status, MESSAGE_COLLECTION);
 	}
 
 	public void updateIndexStatus(MimeMailMessage message, IndexStatus status)
 			throws JsonParseException, JsonMappingException, IOException {
+		updateIndexStatus(message.getMessageId(), status,
+				MIME_MESSAGE_COLLECTION);
+	}
+
+	private void updateIndexStatus(String messageId, IndexStatus status,
+			String collection) throws JsonParseException, JsonMappingException,
+			IOException {
 		long started = System.currentTimeMillis();
 
-		message.setIndexed(status);
+		GridFS fs = new GridFS(db, collection);
+		List<GridFSDBFile> fsFiles = fs.find(messageId);
+		int count = 0;
+		for (GridFSDBFile fsFile : fsFiles) {
+			if (count > 0) {
+				logger.warn("Found duplicate file entry: "
+						+ fsFile.getId().toString());
+			}
+			fsFile.getMetaData().put("indexed", status.toString());
+			fsFile.save();
+			mongo.fsync(false);
+			count++;
+		}
 
-		update(message);
 		long finished = System.currentTimeMillis();
 		logger.debug(String.format("Statistics: updateIndexStatus %d", finished
 				- started));
@@ -284,10 +301,10 @@ public class MongoService implements IStorageService {
 			JsonMappingException, MongoException, IOException {
 		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
 		GridFSDBFile fsFile = fs.findOne(mailMessage.getMessageId());
-
 		String jsonString = MailMessage
 				.serializeCompressedMailMessage(mailMessage);
 		DBObject metaData = (DBObject) JSON.parse(jsonString);
+
 		fsFile.setMetaData(metaData);
 		logger.info("Saving " + metaData.toString());
 		fsFile.save();
@@ -388,31 +405,35 @@ public class MongoService implements IStorageService {
 
 	@Override
 	public long store(MimeMailMessage mailMessage) throws Exception {
-		long started = System.currentTimeMillis();
-		try {
-			Date storedDate = new Date();
-			mailMessage.setStoredDate(storedDate);
-			String jsonString = MimeMailMessage.serialize(mailMessage);
-			GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
-			String compressedRawContents = Compression.compress(mailMessage
-					.getRawContents());
-			ByteArrayInputStream bis = new ByteArrayInputStream(
-					compressedRawContents.getBytes());
-			GridFSInputFile fsFile = fs.createFile(bis,
-					mailMessage.getMessageId());
+		if (!existsMimeMailMessage(mailMessage.getMessageId())) {
+			long started = System.currentTimeMillis();
+			try {
+				Date storedDate = new Date();
+				mailMessage.setStoredDate(storedDate);
+				String jsonString = MimeMailMessage.serialize(mailMessage);
+				GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+				String compressedRawContents = Compression.compress(mailMessage
+						.getRawContents());
+				ByteArrayInputStream bis = new ByteArrayInputStream(
+						compressedRawContents.getBytes());
+				GridFSInputFile fsFile = fs.createFile(bis,
+						mailMessage.getMessageId());
 
-			DBObject metaData = (DBObject) JSON.parse(jsonString);
+				DBObject metaData = (DBObject) JSON.parse(jsonString);
 
-			fsFile.setMetaData(metaData);
-			fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
-			fsFile.saveChunks();
-			fsFile.save();
-			mongo.fsync(false);
-			return fsFile.getLength();
-		} finally {
-			long finished = System.currentTimeMillis();
-			logger.info("Stored mime message in " + (finished - started)
-					+ " ms");
+				fsFile.setMetaData(metaData);
+				fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
+				fsFile.saveChunks();
+				fsFile.save();
+				mongo.fsync(false);
+				return fsFile.getLength();
+			} finally {
+				long finished = System.currentTimeMillis();
+				logger.info("Stored mime message in " + (finished - started)
+						+ " ms");
+			}
+		} else {
+			return 0;
 		}
 	}
 
