@@ -16,6 +16,7 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -141,7 +142,7 @@ public class IndexService {
 
 					logger.debug("Trying to index " + message.getMessageId());
 
-					esClient.prepareIndex(indexName,
+					IndexResponse result = esClient.prepareIndex(indexName,
 							message.getType().getValue(),
 							message.getMessageId())
 							.setSource(IndexedMailMessage.toJSON(message))
