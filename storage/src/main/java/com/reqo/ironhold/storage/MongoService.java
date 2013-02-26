@@ -96,14 +96,21 @@ public class MongoService implements IStorageService {
 		db = mongo.getDB(clientName);
 
 		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION,
-				"metadata.indexed", true);
+				new String[] { "metadata.indexed" }, true);
+		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION,
+				new String[] { "metadata.indexed", "filename" }, true);
+
 		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION,
-				"metadata.indexed", true);
-		createCollectionAndIndexIfRequired(LOG_COLLECTION, "messageId", false);
+				new String[] { "metadata.indexed" }, true);
+		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION, new String[] {
+				"metadata.indexed", "filename" }, true);
+
+		createCollectionAndIndexIfRequired(LOG_COLLECTION,
+				new String[] { "messageId" }, false);
 	}
 
-	public void createCollectionAndIndexIfRequired(String coll, String index,
-			boolean isGridFS) {
+	public void createCollectionAndIndexIfRequired(String coll,
+			String[] indexCols, boolean isGridFS) {
 		String collection = isGridFS ? coll + ".files" : coll;
 		if (db.getCollectionNames().contains(collection)) {
 			boolean found = false;
@@ -111,9 +118,16 @@ public class MongoService implements IStorageService {
 
 				if (info.containsField("key")) {
 					DBObject key = (DBObject) info.get("key");
-					if (key.containsField(index) && key.keySet().size() == 1) {
+					if (key.keySet().size() == indexCols.length) {
 						found = true;
-						break;
+						for (String indexCol : indexCols) {
+							if (!key.containsField(indexCol)) {
+								found = false;
+							}
+						}
+						if (found) {
+							break;
+						}
 					}
 
 				}
@@ -121,9 +135,11 @@ public class MongoService implements IStorageService {
 
 			if (!found) {
 				logger.warn("Missing index found: Collection " + collection
-						+ ", Index " + index + " => creating");
+						+ ", Index " + indexCols + " => creating");
 				BasicDBObject indexObj = new BasicDBObject();
-				indexObj.put(index, 1);
+				for (String indexCol : indexCols) {
+					indexObj.put(indexCol, 1);
+				}
 				db.getCollection(collection).ensureIndex(indexObj);
 			}
 		} else {
@@ -131,10 +147,10 @@ public class MongoService implements IStorageService {
 					+ " is not present => creating");
 			if (isGridFS) {
 				GridFS fs = new GridFS(db, coll);
-				createCollectionAndIndexIfRequired(coll, index, true);
+				createCollectionAndIndexIfRequired(coll, indexCols, true);
 			} else {
 				db.getCollection(collection);
-				createCollectionAndIndexIfRequired(coll, index, true);
+				createCollectionAndIndexIfRequired(coll, indexCols, true);
 			}
 		}
 	}
