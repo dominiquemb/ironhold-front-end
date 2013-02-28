@@ -90,7 +90,7 @@ public class IMAPExporter {
 					date = storageService.getUploadDate(newMessages
 							.get(newMessages.size() - 1));
 				} else {
-					Thread.sleep(120000);
+					System.exit(1);
 				}
 			}
 		} catch (Exception e) {
