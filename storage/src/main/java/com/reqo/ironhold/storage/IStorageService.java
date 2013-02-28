@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage;
 
+import java.util.Date;
 import java.util.List;
 
 import com.reqo.ironhold.storage.model.IMAPBatchMeta;
@@ -13,6 +14,13 @@ import com.reqo.ironhold.storage.model.PSTMessageSource;
 
 public interface IStorageService {
 
+	List<MailMessage> findNewMailMessagesSince(Date date, int limit) throws Exception;
+	List<MimeMailMessage> findNewMimeMailMessagesSince(Date date, int limit) throws Exception;
+
+	Date getUploadDate(MimeMailMessage mimeMailMessage);
+	Date getUploadDate(MailMessage mailMessage);
+
+	
 	boolean existsMailMessage(String messageId) throws Exception;
 	boolean existsMimeMailMessage(String messageId) throws Exception;
 

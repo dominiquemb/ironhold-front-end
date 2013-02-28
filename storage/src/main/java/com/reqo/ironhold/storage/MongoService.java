@@ -99,11 +99,15 @@ public class MongoService implements IStorageService {
 				new String[] { "metadata.indexed" }, true);
 		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION,
 				new String[] { "metadata.indexed", "filename" }, true);
-
+		createCollectionAndIndexIfRequired(MIME_MESSAGE_COLLECTION,
+				new String[] { "uploadDate" }, true);
+		
 		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION,
 				new String[] { "metadata.indexed" }, true);
 		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION, new String[] {
 				"metadata.indexed", "filename" }, true);
+		createCollectionAndIndexIfRequired(MESSAGE_COLLECTION,
+				new String[] { "uploadDate" }, true);
 
 		createCollectionAndIndexIfRequired(LOG_COLLECTION,
 				new String[] { "messageId" }, false);
@@ -539,6 +543,126 @@ public class MongoService implements IStorageService {
 		}
 
 		return result;
+	}
+
+	@Override
+	public List<MailMessage> findNewMailMessagesSince(Date date, int limit)
+			throws Exception {
+		logger.debug("Statistics: findNewMailMessagesSince, phase 1 started");
+
+		long started = System.currentTimeMillis();
+		List<MailMessage> result = new ArrayList<MailMessage>();
+		DBObject query = QueryBuilder.start().put("uploadDate")
+				.greaterThan(date).get();
+
+		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
+
+		
+		DBCursor cur = fs.getFileList(query).limit(limit).sort(new BasicDBObject("uploadDate", 1));
+
+		List<String> toBeReturned = new ArrayList<String>();
+
+		while (cur.hasNext()) {
+			GridFSDBFile object = (GridFSDBFile) cur.next();
+
+			toBeReturned.add(object.getFilename());
+			date = object.getUploadDate();
+		}
+		long finished = System.currentTimeMillis();
+
+		logger.info(String.format(
+				"Statistics: findNewMailMessagesSince, phase 1 %d", finished
+						- started));
+
+		long started2 = System.currentTimeMillis();
+		for (String fileName : toBeReturned) {
+
+			GridFSDBFile object = fs.findOne(fileName);
+			MailMessage mailMessage = MailMessage
+					.deserializeCompressedMailMessage(object.getMetaData()
+							.toString());
+			ByteArrayOutputStream byos = new ByteArrayOutputStream();
+			object.writeTo(byos);
+
+			Attachment[] attachments = MailMessage
+					.deserializeCompressedAttachments(new String(byos
+							.toByteArray()));
+			mailMessage.setAttachments(attachments);
+			result.add(mailMessage);
+
+		}
+		long finished2 = System.currentTimeMillis();
+
+		logger.info(String.format(
+				"Statistics: findNewMailMessagesSince, phase 2 %d", finished2
+						- started2));
+
+		logger.info(String.format(
+				"Statistics: findNewMailMessagesSince took %dms", finished2
+						- started));
+		return result;
+	}
+
+	@Override
+	public List<MimeMailMessage> findNewMimeMailMessagesSince(Date date,
+			int limit) throws Exception {
+		logger.debug("Statistics: findNewMimeMailMessagesSince, phase 1 started");
+
+		long started = System.currentTimeMillis();
+		List<MimeMailMessage> result = new ArrayList<MimeMailMessage>();
+		DBObject query = QueryBuilder.start().put("uploadDate")
+				.greaterThan(date).get();
+
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+
+		DBCursor cur = fs.getFileList(query).limit(limit).sort(new BasicDBObject("uploadDate", 1));
+
+		List<String> toBeReturned = new ArrayList<String>();
+
+		while (cur.hasNext()) {
+			GridFSDBFile object = (GridFSDBFile) cur.next();
+
+			toBeReturned.add(object.getFilename());
+			date = object.getUploadDate();
+		}
+		long finished = System.currentTimeMillis();
+
+		logger.debug(String.format("Found %d messages",
+				toBeReturned.size()));
+		logger.debug(String.format(
+				"Statistics: findNewMimeMailMessagesSince, phase 1 %d", finished
+						- started));
+
+		started = System.currentTimeMillis();
+		for (String fileName : toBeReturned) {
+			try {
+				result.add(getMimeMailMessage(fileName));
+			} catch (Exception e) {
+				logger.warn("Failed to retrieve " + fileName, e);
+			}
+		}
+		finished = System.currentTimeMillis();
+
+		logger.debug(String.format(
+				"Statistics: findNewMimeMailMessagesSince, phase 2 %d", finished
+						- started));
+
+		
+		return result;
+	}
+
+	@Override
+	public Date getUploadDate(MimeMailMessage mimeMailMessage) {
+		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
+		
+		return fs.findOne(mimeMailMessage.getMessageId()).getUploadDate();
+	}
+
+	@Override
+	public Date getUploadDate(MailMessage mailMessage) {
+		GridFS fs = new GridFS(db,MESSAGE_COLLECTION);
+		
+		return fs.findOne(mailMessage.getMessageId()).getUploadDate();
 	}
 
 }
