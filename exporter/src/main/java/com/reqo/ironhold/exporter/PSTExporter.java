@@ -20,6 +20,10 @@ import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MailMessage;
 
 public class PSTExporter {
+	static {
+		System.setProperty("jobname", PSTExporter.class.getSimpleName());
+	}
+
 	private static Logger logger = Logger.getLogger(PSTExporter.class);
 
 	private final String data;

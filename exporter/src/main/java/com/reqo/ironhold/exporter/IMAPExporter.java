@@ -1,7 +1,6 @@
 package com.reqo.ironhold.exporter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -23,6 +22,10 @@ import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class IMAPExporter {
+	static {
+		System.setProperty("jobname", IMAPExporter.class.getSimpleName());
+	}
+
 	private static Logger logger = Logger.getLogger(IMAPExporter.class);
 
 	private final String data;
