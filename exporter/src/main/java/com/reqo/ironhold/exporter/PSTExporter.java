@@ -3,6 +3,7 @@ package com.reqo.ironhold.exporter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -11,6 +12,7 @@ import java.util.List;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -65,6 +67,8 @@ public class PSTExporter {
 	}
 
 	private void start() {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
+		
 		Calendar c = GregorianCalendar.getInstance();
 		c.set(2000, 1, 1);
 		Date date = c.getTime();
@@ -77,13 +81,14 @@ public class PSTExporter {
 				if (newMessages.size() > 0) {
 					logger.info("Exporting " + newMessages.size() + " messages");
 					for (MailMessage newMessage : newMessages) {
-						String filename = data
+						String dirName = data + File.separator + client
 								+ File.separator
-								+ client
+								+ sdf.format(newMessage.getPstMessage().getMessageDeliveryTime());
+						FileUtils.forceMkdir(new File(dirName));
+						String filename = dirName
 								+ File.separator
 								+ newMessage.getMessageId().replaceAll("\\W+",
 										"_");
-						logger.info("Writing to " + filename);
 						compress(new File(filename),
 								MailMessage.serializeMailMessage(newMessage));
 					}
