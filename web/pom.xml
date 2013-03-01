@@ -78,8 +78,8 @@
 		<profile>
 			<id>650</id>
 			<properties>
-				<web.usernames>demo,twf,vbm,glt</web.usernames>
-				<web.password>S0lidC0re12</web.password>
+				<web.usernames>glt</web.usernames>
+				<web.password>L00k&amp;f1nd</web.password>
 			</properties>
 		</profile>
 		<profile>

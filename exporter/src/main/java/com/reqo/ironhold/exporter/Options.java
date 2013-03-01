@@ -12,6 +12,9 @@ public class Options {
     @Option(name = "-batchSize", usage = "batch size", required = true)
     private int batchSize;
 
+    @Option(name = "-max", usage = "max messages to backup", required = true)
+    private int max;
+
     @Option(name = "-compression", usage = "compression algorithm", required = true)
     private String compression;
 
@@ -31,5 +34,8 @@ public class Options {
 		return compression;
 	}
 
+	public int getMax() {
+		return max;
+	}
     
 }

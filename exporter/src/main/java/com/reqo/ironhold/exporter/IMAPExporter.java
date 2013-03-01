@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -29,11 +30,13 @@ public class IMAPExporter {
 	private final String client;
 	private final IStorageService storageService;
 	private final String compression;
+	private final int max;
 
-	public IMAPExporter(String data, int batchSize, String client, String compression,
-			IStorageService storageService) {
+	public IMAPExporter(String data, int batchSize, int max, String client,
+			String compression, IStorageService storageService) {
 		this.data = data;
 		this.batchSize = batchSize;
+		this.max = max;
 		this.client = client;
 		this.compression = compression;
 
@@ -55,7 +58,8 @@ public class IMAPExporter {
 			IStorageService storageService = new MongoService(bean.getClient(),
 					"PSTExporter");
 			IMAPExporter exporter = new IMAPExporter(bean.getData(),
-					bean.getBatchSize(), bean.getClient(), bean.getCompression(), storageService);
+					bean.getBatchSize(), bean.getMax(), bean.getClient(),
+					bean.getCompression(), storageService);
 			exporter.start();
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
@@ -64,31 +68,37 @@ public class IMAPExporter {
 	}
 
 	private void start() {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
 		Calendar c = GregorianCalendar.getInstance();
 		c.set(2000, 1, 1);
+
 		Date date = c.getTime();
 		try {
+			int count = 0;
 			while (true) {
 
 				List<MimeMailMessage> newMessages = storageService
 						.findNewMimeMailMessagesSince(date, batchSize);
 
-				if (newMessages.size() > 0) {
-					logger.info("Exporting " + newMessages.size() + " messages");
+				if (newMessages.size() > 0 && count < max) {
+					logger.info("Exported " + count + " messages");
 					for (MimeMailMessage newMessage : newMessages) {
-						String filename = data
+						String dirName = data + File.separator + client
 								+ File.separator
-								+ client
+								+ sdf.format(newMessage.getMessageDate());
+						FileUtils.forceMkdir(new File(dirName));
+						String filename = dirName
 								+ File.separator
 								+ newMessage.getMessageId().replaceAll("\\W+",
 										"_");
-						logger.info("Writing to " + filename);
+
 						compress(new File(filename),
 								newMessage.getRawContents());
 					}
 
 					date = storageService.getUploadDate(newMessages
 							.get(newMessages.size() - 1));
+					count += newMessages.size();
 				} else {
 					System.exit(1);
 				}
@@ -101,17 +111,20 @@ public class IMAPExporter {
 
 	private void compress(File file, String contents)
 			throws CompressorException, IOException, InterruptedException {
-		CompressorOutputStream compressedStream = null;
-		try {
-			compressedStream = new CompressorStreamFactory()
-					.createCompressorOutputStream(
-							compression, 							
-							new FileOutputStream(file));
+		if (!compression.equals("NONE")) {
+			CompressorOutputStream compressedStream = null;
+			try {
+				compressedStream = new CompressorStreamFactory()
+						.createCompressorOutputStream(compression,
+								new FileOutputStream(file));
 
-			compressedStream.write(contents.getBytes());
-		} finally {
-			if (compressedStream != null)
-				compressedStream.close();
+				compressedStream.write(contents.getBytes());
+			} finally {
+				if (compressedStream != null)
+					compressedStream.close();
+			}
+		} else {
+			FileUtils.writeStringToFile(file, contents);
 		}
 	}
 }

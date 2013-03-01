@@ -33,7 +33,7 @@ public class Header extends HorizontalLayout {
 		// this.setComponentAlignment(logo, Alignment.TOP_LEFT);
 
 		VerticalLayout vl = new VerticalLayout();
-		Button pstStatistics = new Button("PST Stats");
+/*		Button pstStatistics = new Button("PST Stats");
 		pstStatistics.addListener(new ClickListener() {
 
 			@Override
@@ -68,7 +68,7 @@ public class Header extends HorizontalLayout {
 
 			}
 		});
-
+*/
 		Button logout = new Button("Logout");
 		logout.addListener(new ClickListener() {
 
@@ -87,8 +87,8 @@ public class Header extends HorizontalLayout {
 
 		HorizontalLayout hl = new HorizontalLayout();
 		hl.setSpacing(true);
-		hl.addComponent(pstStatistics);
-		hl.addComponent(imapStatistics);
+	//	hl.addComponent(pstStatistics);
+		//hl.addComponent(imapStatistics);
 		hl.addComponent(logout);
 
 		vl.addComponent(hl);
