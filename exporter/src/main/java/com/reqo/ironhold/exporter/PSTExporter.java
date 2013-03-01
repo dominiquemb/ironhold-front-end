@@ -33,11 +33,12 @@ public class PSTExporter {
 	private final String client;
 	private final String compression;
 	private final IStorageService storageService;
-
-	public PSTExporter(String data, int batchSize, String client, String compression,
-			IStorageService storageService) {
+	private final int max;
+	public PSTExporter(String data, int batchSize, int max, String client,
+			String compression, IStorageService storageService) {
 		this.data = data;
 		this.batchSize = batchSize;
+		this.max = max;
 		this.client = client;
 		this.compression = compression;
 		this.storageService = storageService;
@@ -58,7 +59,8 @@ public class PSTExporter {
 			IStorageService storageService = new MongoService(bean.getClient(),
 					"PSTExporter");
 			PSTExporter exporter = new PSTExporter(bean.getData(),
-					bean.getBatchSize(), bean.getClient(), bean.getCompression(), storageService);
+					bean.getBatchSize(), bean.getMax(), bean.getClient(),
+					bean.getCompression(), storageService);
 			exporter.start();
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
@@ -68,22 +70,26 @@ public class PSTExporter {
 
 	private void start() {
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
-		
+
 		Calendar c = GregorianCalendar.getInstance();
 		c.set(2000, 1, 1);
 		Date date = c.getTime();
 		try {
+			int count = 0;
 			while (true) {
 
 				List<MailMessage> newMessages = storageService
 						.findNewMailMessagesSince(date, batchSize);
 
-				if (newMessages.size() > 0) {
-					logger.info("Exporting " + newMessages.size() + " messages");
+				if (newMessages.size() > 0 && count < max) {
+					logger.info("Exported " + count + " messages");
 					for (MailMessage newMessage : newMessages) {
-						String dirName = data + File.separator + client
+						String dirName = data
 								+ File.separator
-								+ sdf.format(newMessage.getPstMessage().getMessageDeliveryTime());
+								+ client
+								+ File.separator
+								+ sdf.format(newMessage.getPstMessage()
+										.getMessageDeliveryTime());
 						FileUtils.forceMkdir(new File(dirName));
 						String filename = dirName
 								+ File.separator
@@ -95,6 +101,7 @@ public class PSTExporter {
 
 					date = storageService.getUploadDate(newMessages
 							.get(newMessages.size() - 1));
+					count += newMessages.size();
 				} else {
 					System.exit(1);
 				}
