@@ -34,6 +34,7 @@ public class PSTExporter {
 	private final String compression;
 	private final IStorageService storageService;
 	private final int max;
+
 	public PSTExporter(String data, int batchSize, int max, String client,
 			String compression, IStorageService storageService) {
 		this.data = data;
@@ -115,16 +116,20 @@ public class PSTExporter {
 	private void compress(File file, String contents)
 			throws CompressorException, IOException, InterruptedException {
 
-		CompressorOutputStream compressedStream = null;
-		try {
-			compressedStream = new CompressorStreamFactory()
-					.createCompressorOutputStream(compression,
-							new FileOutputStream(file));
+		if (!compression.equals("NONE")) {
+			CompressorOutputStream compressedStream = null;
+			try {
+				compressedStream = new CompressorStreamFactory()
+						.createCompressorOutputStream(compression,
+								new FileOutputStream(file));
 
-			compressedStream.write(contents.getBytes());
-		} finally {
-			if (compressedStream != null)
-				compressedStream.close();
+				compressedStream.write(contents.getBytes());
+			} finally {
+				if (compressedStream != null)
+					compressedStream.close();
+			}
+		} else {
+			FileUtils.writeStringToFile(file, contents);
 		}
 	}
 }
