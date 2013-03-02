@@ -1,23 +1,21 @@
 package com.req.ironhold.importer.watcher;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
+import com.reqo.ironhold.importer.notification.EmailNotification;
+import com.reqo.ironhold.importer.watcher.InboundWatcher;
+import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.reqo.ironhold.importer.notification.EmailNotification;
-import com.reqo.ironhold.importer.watcher.InboundWatcher;
-import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class InboundWatcherTest {
 
@@ -62,7 +60,7 @@ public class InboundWatcherTest {
 		while (!iw.isStarted()) {
 			Thread.sleep(100);
 		}
-		Thread.sleep(100);
+		Thread.sleep(1000);
 		
 		
 		File pstFile = FileUtils.toFile(InboundWatcherTest.class
@@ -72,7 +70,7 @@ public class InboundWatcherTest {
 		File md5File = MD5CheckSum.createMD5CheckSum(pstFile);
 		FileUtils.copyFileToDirectory(md5File, inFolder.getRoot());
 
-		Thread.sleep(2000);
+        Thread.sleep(20000);
 
 		Assert.assertEquals(0, inFolder.getRoot().listFiles().length);
 		Assert.assertEquals(2, queueFolder.getRoot().listFiles().length);
@@ -128,7 +126,7 @@ public class InboundWatcherTest {
 		
 		FileUtils.copyFileToDirectory(md5File, inFolder.getRoot());
 
-		Thread.sleep(2000);
+		Thread.sleep(20000);
 
 		Assert.assertEquals(0, inFolder.getRoot().listFiles().length);
 		Assert.assertEquals(0, queueFolder.getRoot().listFiles().length);

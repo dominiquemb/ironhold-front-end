@@ -1,19 +1,5 @@
 package com.req.ironhold.importer.watcher;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.Assert;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.reqo.ironhold.importer.notification.EmailNotification;
@@ -21,13 +7,24 @@ import com.reqo.ironhold.importer.watcher.QueueWatcher;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class QueueWatcherTest {
 
@@ -105,7 +102,7 @@ public class QueueWatcherTest {
 		File md5File = MD5CheckSum.createMD5CheckSum(pstFile);
 		FileUtils.copyFileToDirectory(md5File, queueFolder.getRoot());
 
-		Thread.sleep(10000);
+		Thread.sleep(20000);
 
 		Assert.assertEquals(0, queueFolder.getRoot().listFiles().length);
 		Assert.assertEquals(2, outFolder.getRoot().listFiles().length);

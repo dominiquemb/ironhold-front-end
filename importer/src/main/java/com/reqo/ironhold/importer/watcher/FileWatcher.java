@@ -1,19 +1,12 @@
 package com.reqo.ironhold.importer.watcher;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-
-import org.apache.log4j.Logger;
-
 import com.reqo.ironhold.importer.notification.EmailNotification;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
 
 public abstract class FileWatcher {
 	private static Logger logger = Logger.getLogger(FileWatcher.class);
@@ -69,13 +62,11 @@ public abstract class FileWatcher {
 			WatchKey watckKey;
 			try {
 				watckKey = watchService.take();
-			} catch (InterruptedException e) {
-				return;
-			} catch (ClosedWatchServiceException e) {
+			} catch (InterruptedException | ClosedWatchServiceException e) {
 				return;
 			}
 
-			for (WatchEvent<?> event : watckKey.pollEvents()) {
+            for (WatchEvent<?> event : watckKey.pollEvents()) {
 				WatchEvent.Kind<?> kind = event.kind();
 				if (kind == StandardWatchEventKinds.OVERFLOW) {
 					continue;
@@ -88,7 +79,7 @@ public abstract class FileWatcher {
 					logger.info("Processing md5 file: " + fileName);
 
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						return;
 					}

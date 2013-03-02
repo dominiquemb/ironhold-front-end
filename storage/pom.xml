@@ -1,149 +1,74 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.reqo.ironhold</groupId>
-		<artifactId>ironhold</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
-	</parent>
-	<artifactId>storage</artifactId>
-	<name>Storage Module</name>
-
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-		</plugins>
-
-	</build>
-
-	<profiles>
-		<profile>
-			<id>development</id>
-			<properties>
-				<mongo.host>192.168.247.128</mongo.host>
-				<mongo.port>27017</mongo.port>
-				<logger>console</logger>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>650</id>
-			<properties>
-				<mongo.host>ih650db002</mongo.host>
-				<mongo.port>9017</mongo.port>
-				<mongo.username>sa</mongo.username>
-				<mongo.password>Pobeda@1945</mongo.password>
-				<logger>file</logger>
-			</properties>
-		</profile>
-		<profile>
-			<id>108</id>
-			<properties>
-				<mongo.host>ih108db001</mongo.host>
-				<mongo.port>9017</mongo.port>
-				<mongo.username>sa</mongo.username>
-				<mongo.password>Pobeda@1945</mongo.password>
-				<logger>file</logger>
-			</properties>
-		</profile>
-		<profile>
-			<id>trc</id>
-			<properties>
-				<mongo.host>ihtrcdb001</mongo.host>
-				<mongo.port>9017</mongo.port>
-				<mongo.username>sa</mongo.username>
-				<mongo.password>Pobeda@1945</mongo.password>
-				<logger>file</logger>
-			</properties>
-		</profile>
-
-	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>java-libpst</groupId>
-			<artifactId>java-libpst</artifactId>
-			<version>0.7</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/../lib/java-libpst.0.7.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>jcharset</groupId>
-			<artifactId>jcharset</artifactId>
-			<version>1.0.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/../lib/jcharset.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20090211</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>2.10.1</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.7</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-email</artifactId>
-			<version>1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>de.flapdoodle.embed</groupId>
-			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.28</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.fluttercode.datafactory</groupId>
-			<artifactId>datafactory</artifactId>
-			<version>0.8</version>
-			<scope>test</scope>
-		</dependency>
-
-
-	</dependencies>
-
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>ironhold</artifactId>
+    <groupId>com.reqo.ironhold</groupId>
+    <version>0.0.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>storage</artifactId>
+  <name>Storage Module</name>
+  <dependencies></dependencies>
+  <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <!-- specify UTF-8, ISO-8859-1 or any other file encoding -->
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>development</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <mongo.host>192.168.247.128</mongo.host>
+        <mongo.port>27017</mongo.port>
+        <logger>console</logger>
+      </properties>
+    </profile>
+    <profile>
+      <id>650</id>
+      <properties>
+        <mongo.host>ih650db002</mongo.host>
+        <mongo.port>9017</mongo.port>
+        <mongo.username>sa</mongo.username>
+        <mongo.password>Pobeda@1945</mongo.password>
+        <logger>file</logger>
+      </properties>
+    </profile>
+    <profile>
+      <id>108</id>
+      <properties>
+        <mongo.host>ih108db001</mongo.host>
+        <mongo.port>9017</mongo.port>
+        <mongo.username>sa</mongo.username>
+        <mongo.password>Pobeda@1945</mongo.password>
+        <logger>file</logger>
+      </properties>
+    </profile>
+    <profile>
+      <id>trc</id>
+      <properties>
+        <mongo.host>ihtrcdb001</mongo.host>
+        <mongo.port>9017</mongo.port>
+        <mongo.username>sa</mongo.username>
+        <mongo.password>Pobeda@1945</mongo.password>
+        <logger>file</logger>
+      </properties>
+    </profile>
+  </profiles>
 </project>
