@@ -96,7 +96,7 @@ public class PSTExporter {
                                 + getExportFileName(newMessage.getMessageId())
                                 + "." + compression;
                         compress(new File(filename),
-                                MailMessage.serializeMailMessage(newMessage));
+                                MailMessage.serializeMailMessageWithAttachments(newMessage));
                         logger.info("Exporting to " + filename);
                     }
 

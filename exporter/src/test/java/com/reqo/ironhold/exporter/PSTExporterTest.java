@@ -97,13 +97,21 @@ public class PSTExporterTest {
                     + "." + CompressorStreamFactory.GZIP);
 
             String exportedContents = decompress(exportedFile, CompressorStreamFactory.GZIP);
-            String messageContents = MailMessage.serializeMailMessage(pstMessage);
+            String messageContents = MailMessage.serializeMailMessageWithAttachments(pstMessage);
 
             Assert.assertEquals(messageContents, exportedContents);
 
-            MailMessage exportedMessage = MailMessage.deserializeMailMessage(exportedContents);
+            MailMessage exportedMessage = MailMessage.deserializeMailMessageWithAttachments(exportedContents);
 
             Assert.assertEquals(pstMessage.getAttachments().length, exportedMessage.getAttachments().length);
+
+
+            for (int i = 0; i<pstMessage.getAttachments().length; i++) {
+                junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getBody(), exportedMessage.getAttachments()[i].getBody());
+                junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getFileName(), exportedMessage.getAttachments()[i].getFileName());
+                junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getSize(), exportedMessage.getAttachments()[i].getSize());
+                junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getFileExt(), exportedMessage.getAttachments()[i].getFileExt());
+            }
         }
     }
 
