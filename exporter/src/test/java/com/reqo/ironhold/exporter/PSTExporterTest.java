@@ -87,14 +87,9 @@ public class PSTExporterTest {
         Assert.assertEquals(pstMessages.size(), files.size());
 
         for (MailMessage pstMessage : pstMessages) {
-            File exportedFile = new File(backupFolder.getRoot().toPath()
+            File exportedFile = new File(pstMessage.getExportDirName(backupFolder.getRoot().toPath().toString(), "test")
                     + File.separator
-                    + "test"
-                    + File.separator
-                    + exporter.yearFormat.format(pstMessage.getPstMessage().getMessageDeliveryTime())
-                    + File.separator
-                    + exporter.getExportFileName(pstMessage.getMessageId())
-                    + "." + CompressorStreamFactory.GZIP);
+                    + pstMessage.getExportFileName(CompressorStreamFactory.GZIP));
 
             String exportedContents = decompress(exportedFile, CompressorStreamFactory.GZIP);
             String messageContents = MailMessage.serializeMailMessageWithAttachments(pstMessage);

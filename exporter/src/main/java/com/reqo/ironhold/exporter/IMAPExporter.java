@@ -1,53 +1,39 @@
 package com.reqo.ironhold.exporter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import org.apache.commons.compress.compressors.CompressorException;
-import org.apache.commons.compress.compressors.CompressorOutputStream;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
-import org.apache.commons.io.FileUtils;
+import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.ExportableMessage;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import java.util.Date;
+import java.util.List;
 
-public class IMAPExporter {
+public class IMAPExporter extends MessageExporter {
 	static {
 		System.setProperty("jobname", IMAPExporter.class.getSimpleName());
 	}
 
 	private static Logger logger = Logger.getLogger(IMAPExporter.class);
 
-	private final String data;
-	private final int batchSize;
-	private final String client;
-	private final IStorageService storageService;
-	private final String compression;
-	private final int max;
-
-	public IMAPExporter(String data, int batchSize, int max, String client,
+	public IMAPExporter(String exportDir, int batchSize, int max, String client,
 			String compression, IStorageService storageService) {
-		this.data = data;
-		this.batchSize = batchSize;
-		this.max = max;
-		this.client = client;
-		this.compression = compression;
-
-		this.storageService = storageService;
+		super(exportDir, batchSize, max,  client,  compression, storageService);
 
 	}
 
-	public static void main(String[] args) {
+    @Override
+    protected List<ExportableMessage> findNewMessagesSince(Date date, int batchSize) throws Exception {
+        return storageService.findNewMimeMailMessagesSince(date, batchSize);
+    }
+
+    @Override
+    protected Date getUploadDate(String messageId) throws Exception {
+        return storageService.getMimeMailMessageUploadDate(messageId);
+    }
+
+    public static void main(String[] args) {
 		Options bean = new Options();
 		CmdLineParser parser = new CmdLineParser(bean);
 		try {
@@ -67,67 +53,6 @@ public class IMAPExporter {
 		} catch (Exception e) {
 			logger.error("Critical error detected. Exiting.", e);
 			System.exit(0);
-		}
-	}
-
-	private void start() {
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
-		Calendar c = GregorianCalendar.getInstance();
-		c.set(2000, 1, 1);
-
-		Date date = c.getTime();
-		try {
-			int count = 0;
-			while (true) {
-
-				List<MimeMailMessage> newMessages = storageService
-						.findNewMimeMailMessagesSince(date, batchSize);
-
-				if (newMessages.size() > 0 && count < max) {
-					logger.info("Exported " + count + " messages");
-					for (MimeMailMessage newMessage : newMessages) {
-						String dirName = data + File.separator + client
-								+ File.separator
-								+ sdf.format(newMessage.getMessageDate());
-						FileUtils.forceMkdir(new File(dirName));
-						String filename = dirName
-								+ File.separator
-								+ newMessage.getMessageId().replaceAll("\\W+",
-										"_");
-
-						compress(new File(filename),
-								newMessage.getRawContents());
-					}
-
-					date = storageService.getUploadDate(newMessages
-							.get(newMessages.size() - 1));
-					count += newMessages.size();
-				} else {
-					System.exit(1);
-				}
-			}
-		} catch (Exception e) {
-			logger.warn(e);
-		}
-
-	}
-
-	private void compress(File file, String contents)
-			throws CompressorException, IOException, InterruptedException {
-		if (!compression.equals("NONE")) {
-			CompressorOutputStream compressedStream = null;
-			try {
-				compressedStream = new CompressorStreamFactory()
-						.createCompressorOutputStream(compression,
-								new FileOutputStream(file));
-
-				compressedStream.write(contents.getBytes());
-			} finally {
-				if (compressedStream != null)
-					compressedStream.close();
-			}
-		} else {
-			FileUtils.writeStringToFile(file, contents);
 		}
 	}
 }

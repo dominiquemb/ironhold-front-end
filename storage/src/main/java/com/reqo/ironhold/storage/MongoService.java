@@ -1,5 +1,17 @@
 package com.reqo.ironhold.storage;
 
+import com.mongodb.*;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSInputFile;
+import com.mongodb.util.JSON;
+import com.reqo.ironhold.storage.model.*;
+import com.reqo.ironhold.storage.utils.Compression;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,35 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
-import com.mongodb.MongoOptions;
-import com.mongodb.QueryBuilder;
-import com.mongodb.ServerAddress;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSInputFile;
-import com.mongodb.util.JSON;
-import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.IMAPBatchMeta;
-import com.reqo.ironhold.storage.model.IMAPMessageSource;
-import com.reqo.ironhold.storage.model.IndexStatus;
-import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
-import com.reqo.ironhold.storage.model.PSTFileMeta;
-import com.reqo.ironhold.storage.model.PSTMessageSource;
-import com.reqo.ironhold.storage.utils.Compression;
 
 public class MongoService implements IStorageService {
 
@@ -546,12 +529,12 @@ public class MongoService implements IStorageService {
 	}
 
 	@Override
-	public List<MailMessage> findNewMailMessagesSince(Date date, int limit)
+	public List<ExportableMessage> findNewMailMessagesSince(Date date, int limit)
 			throws Exception {
 		logger.debug("Statistics: findNewMailMessagesSince, phase 1 started");
 
 		long started = System.currentTimeMillis();
-		List<MailMessage> result = new ArrayList<MailMessage>();
+		List<ExportableMessage> result = new ArrayList<ExportableMessage>();
 		DBObject query = QueryBuilder.start().put("uploadDate")
 				.greaterThan(date).get();
 
@@ -604,12 +587,12 @@ public class MongoService implements IStorageService {
 	}
 
 	@Override
-	public List<MimeMailMessage> findNewMimeMailMessagesSince(Date date,
+	public List<ExportableMessage> findNewMimeMailMessagesSince(Date date,
 			int limit) throws Exception {
 		logger.debug("Statistics: findNewMimeMailMessagesSince, phase 1 started");
 
 		long started = System.currentTimeMillis();
-		List<MimeMailMessage> result = new ArrayList<MimeMailMessage>();
+		List<ExportableMessage> result = new ArrayList<ExportableMessage>();
 		DBObject query = QueryBuilder.start().put("uploadDate")
 				.greaterThan(date).get();
 
@@ -652,17 +635,17 @@ public class MongoService implements IStorageService {
 	}
 
 	@Override
-	public Date getUploadDate(MimeMailMessage mimeMailMessage) {
+	public Date getMimeMailMessageUploadDate(String messageId) {
 		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
 		
-		return fs.findOne(mimeMailMessage.getMessageId()).getUploadDate();
+		return fs.findOne(messageId).getUploadDate();
 	}
 
 	@Override
-	public Date getUploadDate(MailMessage mailMessage) {
+	public Date getMailMessageUploadDate(String messageId) {
 		GridFS fs = new GridFS(db,MESSAGE_COLLECTION);
 		
-		return fs.findOne(mailMessage.getMessageId()).getUploadDate();
+		return fs.findOne(messageId).getUploadDate();
 	}
 
 }

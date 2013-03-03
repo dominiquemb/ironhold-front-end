@@ -18,15 +18,16 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MailMessage {
+public class MailMessage implements ExportableMessage, Serializable {
     private static Logger logger = Logger.getLogger(MailMessage.class);
+
+    protected SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
 
     private static final int BUFFER_SIZE = 20000;
     private static ObjectMapper mapper = new ObjectMapper();
@@ -238,6 +239,32 @@ public class MailMessage {
         }
     }
 
+    @Override
+    public String serializeMessageWithAttachments() throws IOException {
+        return MailMessage.serializeMailMessageWithAttachments(this);
+    }
+
+    @Override
+    public ExportableMessage deserializeMessageWithAttachments(String serializedMessage) throws IOException {
+        return MailMessage.deserializeMailMessageWithAttachments(serializedMessage);
+    }
+
+    @Override
+    public String getExportDirName(String exportDir, String client) {
+        return exportDir
+                + File.separator
+                + client
+                + File.separator
+                + yearFormat.format(this.getPstMessage().getMessageDeliveryTime());
+    }
+
+    @Override
+    public String getExportFileName(String compression) {
+        return messageId.replaceAll("\\W+", "_") + ".pst." + compression;
+    }
+
+
+
     public static String serializeAttachments(Attachment[] attachments)
             throws IOException {
         return mapper.writeValueAsString(attachments);
@@ -338,6 +365,7 @@ public class MailMessage {
         this.storedDate = storedDate;
     }
 
+    @Override
     public String getMessageId() {
         return messageId;
     }
@@ -377,5 +405,6 @@ public class MailMessage {
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
+
 
 }

@@ -1,0 +1,22 @@
+<atlassian-ide-plugin>
+  <project-configuration>
+    <servers>
+      <bamboo>
+        <server-id>0837dc49-0546-40a1-a384-7cfbe2cb7b6b</server-id>
+        <name>Reqo CI</name>
+        <url>http://66.114.87.242:30847</url>
+        <shared>false</shared>
+        <use-favourites>false</use-favourites>
+        <bamboo2>true</bamboo2>
+        <plans>
+          <plan key="IRONHOLD-IRONHOLDTRUNK" grouped="0" />
+          <plan key="IRONHOLD-SONAR" grouped="0" />
+          <plan key="IRONHOLD-IH108DEPLOY" grouped="0" />
+          <plan key="IRONHOLD-PROD" grouped="0" />
+          <plan key="IRONHOLD-PRODWEB" grouped="0" />
+          <plan key="IRONHOLD-TOWERIMPORT" grouped="0" />
+        </plans>
+      </bamboo>
+    </servers>
+  </project-configuration>
+</atlassian-ide-plugin>
