@@ -30,26 +30,42 @@ public abstract class MessageExporter {
     protected final String compression;
     protected final IStorageService storageService;
     protected final int max;
+    protected final String recoveryFile;
 
     public MessageExporter(String exportDir, int batchSize, int max, String client,
-                       String compression, IStorageService storageService) {
+                           String compression, String recoveryFile, IStorageService storageService) {
         this.exportDir = exportDir;
         this.batchSize = batchSize;
         this.max = max;
         this.client = client;
         this.compression = compression;
+        this.recoveryFile = recoveryFile;
         this.storageService = storageService;
+
 
     }
 
     protected abstract List<ExportableMessage> findNewMessagesSince(Date date, int batchSize) throws Exception;
+
     protected abstract Date getUploadDate(String messageId) throws Exception;
 
     protected void start() {
 
         Calendar c = GregorianCalendar.getInstance();
         c.set(2000, 1, 1);
+
         Date date = c.getTime();
+
+        File f = new File(recoveryFile);
+
+        if (f.exists()) {
+            try {
+                date.setTime(Long.parseLong(FileUtils.readFileToString(f)));
+                logger.info("Recovering export to " + date.toString());
+            } catch (IOException e) {
+                logger.warn("Failed to load recovery file", e);
+            }
+        }
         try {
             int count = 0;
             while (true) {
@@ -57,7 +73,13 @@ public abstract class MessageExporter {
 
                 List<ExportableMessage> newMessages = findNewMessagesSince(date, batchSize);
 
-                if (newMessages.size() > 0 && count < max) {
+                if (count >= max && max > 0) {
+                    return;
+                }
+
+                if (newMessages.size() == 0) {
+                    Thread.sleep(60000);
+                } else {
                     logger.info("Exported " + count + " messages");
                     for (ExportableMessage newMessage : newMessages) {
 
@@ -72,8 +94,8 @@ public abstract class MessageExporter {
                     date = getUploadDate(newMessages
                             .get(newMessages.size() - 1).getMessageId());
                     count += newMessages.size();
-                } else {
-                    return;
+
+                    FileUtils.writeStringToFile(f, Long.toString(date.getTime()));
                 }
             }
         } catch (Exception e) {

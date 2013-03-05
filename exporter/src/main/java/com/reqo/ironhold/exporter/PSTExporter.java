@@ -18,8 +18,8 @@ public class PSTExporter extends MessageExporter {
     private static Logger logger = Logger.getLogger(PSTExporter.class);
 
     public PSTExporter(String exportDir, int batchSize, int max, String client,
-                       String compression, IStorageService storageService) {
-        super(exportDir, batchSize, max, client, compression, storageService);
+                       String compression, String recoveryFile, IStorageService storageService) {
+        super(exportDir, batchSize, max, client, compression, recoveryFile, storageService);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class PSTExporter extends MessageExporter {
                     "PSTExporter");
             PSTExporter exporter = new PSTExporter(bean.getData(),
                     bean.getBatchSize(), bean.getMax(), bean.getClient(),
-                    bean.getCompression(), storageService);
+                    bean.getCompression(), bean.getRecoveryFile(), storageService);
             exporter.start();
         } catch (Exception e) {
             logger.error("Critical error detected. Exiting.", e);

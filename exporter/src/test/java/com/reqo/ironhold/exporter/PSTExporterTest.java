@@ -78,7 +78,9 @@ public class PSTExporterTest {
             storageService.store(pstMessage);
         }
 
-        PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1000, "test", CompressorStreamFactory.GZIP, storageService);
+        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+
+        PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, pstMessages.size(), "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
         exporter.start();
 
@@ -118,7 +120,9 @@ public class PSTExporterTest {
 
         storageService.store(pstMessage);
 
-        PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 100, "test", CompressorStreamFactory.GZIP, storageService);
+        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+
+        PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
         String messageContents = MailMessage.serializeMailMessage(pstMessage);
         File outputFile = new File(backupFolder.getRoot().getAbsolutePath() + File.separator + "testCompress");
@@ -138,7 +142,9 @@ public class PSTExporterTest {
 
         storageService.store(pstMessage);
 
-        PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 100, "test", "NONE", storageService);
+        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+
+        PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", "NONE", recoveryFile, storageService);
 
         String messageContents = MailMessage.serializeMailMessage(pstMessage);
         File outputFile = new File(backupFolder.getRoot().getAbsolutePath() + File.separator + "testCompress");

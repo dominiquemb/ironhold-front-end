@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,6 +76,7 @@ public class IMAPExporterTest {
 
     @Test
     public void testFullExport() throws Exception {
+        Date startDate = new Date();
         IStorageService storageService = new MongoService(mongo, db);
 
         List<MimeMailMessage> mimeMailMessageList = new ArrayList<MimeMailMessage>();
@@ -92,7 +94,8 @@ public class IMAPExporterTest {
             storageService.store(mailMessage);
         }
 
-        IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1000, "test", CompressorStreamFactory.GZIP, storageService);
+        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, messages.length, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
         exporter.start();
 
@@ -124,6 +127,13 @@ public class IMAPExporterTest {
                 junit.framework.Assert.assertEquals(message.getAttachments()[i].getFileExt(), exportedMessage.getAttachments()[i].getFileExt());
             }
         }
+
+        String recoveryString = FileUtils.readFileToString(new File(recoveryFile));
+
+        Date recoveryDate = new Date();
+        recoveryDate.setTime(Long.parseLong(recoveryString));
+        Assert.assertTrue(recoveryDate.before(new Date()));
+        Assert.assertTrue(recoveryDate.after(startDate));
     }
 
     @Test
@@ -141,7 +151,9 @@ public class IMAPExporterTest {
 
         storageService.store(mailMessage);
 
-        IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 100, "test", CompressorStreamFactory.GZIP, storageService);
+        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+
+        IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
         String messageContents = mailMessage.serializeMessageWithAttachments();
         File outputFile = new File(backupFolder.getRoot().getAbsolutePath() + File.separator + "testCompress");
@@ -168,7 +180,9 @@ public class IMAPExporterTest {
 
         storageService.store(mailMessage);
 
-        IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 100, "test", "NONE", storageService);
+        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+
+        IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", "NONE", recoveryFile, storageService);
 
         String messageContents = mailMessage.serializeMessageWithAttachments();
         File outputFile = new File(backupFolder.getRoot().getAbsolutePath() + File.separator + "testCompress");

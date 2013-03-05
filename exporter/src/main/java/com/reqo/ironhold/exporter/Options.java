@@ -12,30 +12,37 @@ public class Options {
     @Option(name = "-batchSize", usage = "batch size", required = true)
     private int batchSize;
 
-    @Option(name = "-max", usage = "max messages to backup", required = true)
+    @Option(name = "-max", usage = "max messages to backup", required = false)
     private int max;
 
     @Option(name = "-compression", usage = "compression algorithm", required = true)
     private String compression;
 
-	public String getClient() {
-		return client;
-	}
+    @Option(name = "-recoveryFile", usage = "location of recovery file", required = true)
+    private String recoveryFile;
 
-	public String getData() {
-		return data;
-	}
+    public String getClient() {
+        return client;
+    }
 
-	public int getBatchSize() {
-		return batchSize;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public String getCompression() {
-		return compression;
-	}
+    public int getBatchSize() {
+        return batchSize;
+    }
 
-	public int getMax() {
-		return max;
-	}
-    
+    public String getCompression() {
+        return compression;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public String getRecoveryFile() {
+        return recoveryFile;
+    }
+
 }
