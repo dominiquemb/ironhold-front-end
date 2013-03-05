@@ -16,6 +16,7 @@
     <module>demodata</module>
     <module>web</module>
     <module>dist</module>
+      <module>model</module>
   </modules>
   <scm>
     <connection>scm:git:https://igaysinskiy@bitbucket.org/reqo/ironhold.git</connection>

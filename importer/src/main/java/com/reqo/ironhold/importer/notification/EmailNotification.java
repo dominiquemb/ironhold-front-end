@@ -1,60 +1,75 @@
 package com.reqo.ironhold.importer.notification;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Properties;
+
 public class EmailNotification {
-	private static Logger logger = Logger.getLogger(EmailNotification.class);
+    private static Logger logger = Logger.getLogger(EmailNotification.class);
 
-	
-	private static boolean enabled = true;
-	private static String hostname = null;
 
-	static {
-		InetAddress addr;
-		try {
-			addr = InetAddress.getLocalHost();
-			hostname = addr.getHostName();
-		} catch (UnknownHostException e) {
-			logger.warn("Setting hostname to unknown", e);
-			hostname = "unknown";
-		}
-	}
+    private static boolean enabled = true;
+    private static String hostname = null;
 
-	public static void send(String subject, String body) {
-		if (enabled) {
-			// send the email
-			try {
+    private static String mailServer;
 
-				HtmlEmail email = new HtmlEmail();
-				email.setHostName("10.65.0.78");
-				email.addTo("admins@ironhold.net", "admins@ironhold.net");
-				email.setFrom("admins@ironhold.net", hostname);
-				email.setSubject(subject);
+    static {
+        InetAddress addr;
+        try {
+            addr = InetAddress.getLocalHost();
+            hostname = addr.getHostName();
+        } catch (UnknownHostException e) {
+            logger.warn("Setting hostname to unknown", e);
+            hostname = "unknown";
+        }
 
-				// set the html message
-				email.setHtmlMsg(body);
+        try {
+            Properties prop = new Properties();
+            prop.load(EmailNotification.class.getResourceAsStream("email.properties"));
 
-				// set the alternative message
-				email.setTextMsg("Your email client does not support HTML messages");
+            mailServer = prop.getProperty("mailserver");
+        } catch (IOException e) {
+            logger.warn("Failed to set email server", e);
+            mailServer = "127.0.0.1";
+        }
 
-				email.send();
-				
-				logger.info(String.format("Sending notification:\n%s\n%s\n", subject, body)); 
-			} catch (EmailException e) {
-				logger.warn(e);
-			}
-		} else {
-			logger.info(String.format("Sending notification:\n%s\n%s\n", subject, body)); 
-			logger.info("Notification has been disabled");
-		}
-	}
-	
-	public static void disableNotification() {
-		enabled = false;
-	}
+    }
+
+    public static void send(String subject, String body) {
+        if (enabled) {
+            // send the email
+            try {
+
+                HtmlEmail email = new HtmlEmail();
+                email.setHostName(mailServer);
+                email.addTo("admins@ironhold.net", "admins@ironhold.net");
+                email.setFrom("admins@ironhold.net", hostname);
+                email.setSubject(subject);
+
+                // set the html message
+                email.setHtmlMsg(body);
+
+                // set the alternative message
+                email.setTextMsg("Your email client does not support HTML messages");
+
+                email.send();
+
+                logger.info(String.format("Sending notification:\n%s\n%s\n", subject, body));
+            } catch (EmailException e) {
+                logger.warn(e);
+            }
+        } else {
+            logger.info(String.format("Sending notification:\n%s\n%s\n", subject, body));
+            logger.info("Notification has been disabled");
+        }
+    }
+
+    public static void disableNotification() {
+        enabled = false;
+    }
 }
