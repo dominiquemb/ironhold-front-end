@@ -1,12 +1,6 @@
 package com.reqo.ironhold.storage.model;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
+import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -17,6 +11,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 
 public class IMAPBatchMeta {
 	private static ObjectMapper mapper = new ObjectMapper();

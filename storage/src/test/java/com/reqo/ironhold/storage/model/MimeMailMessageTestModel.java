@@ -1,17 +1,11 @@
 package com.reqo.ironhold.storage.model;
 
-import com.pff.PSTException;
-import com.pff.PSTFile;
-import com.pff.PSTFolder;
-import com.pff.PSTMessage;
+import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.pst.PSTMessageSource;
 import com.reqo.ironhold.storage.IStorageService;
 import junit.framework.Assert;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
 
 public class MimeMailMessageTestModel extends CommonTestModel {
 

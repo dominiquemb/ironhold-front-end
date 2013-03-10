@@ -1,6 +1,6 @@
 package com.reqo.ironhold.storage.model.mixin;
 
-import com.reqo.ironhold.storage.model.Attachment;
+import com.reqo.ironhold.model.message.Attachment;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**

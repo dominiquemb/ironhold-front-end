@@ -1,12 +1,12 @@
 package com.reqo.ironhold.search.model;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
+import com.pff.PSTMessage;
+import com.reqo.ironhold.model.message.Attachment;
+import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
+import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
+import com.reqo.ironhold.storage.model.Recipient;
+import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -20,17 +20,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Node;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 
-import com.pff.PSTMessage;
-import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
-import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
-import com.reqo.ironhold.storage.model.Recipient;
-import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class IndexedMailMessage {
 	private static Logger logger = Logger.getLogger(IndexedMailMessage.class);

@@ -1,10 +1,11 @@
-package com.reqo.ironhold.storage.model;
+package com.reqo.ironhold.model.message.pst;
 
-import java.util.Date;
-
+import com.reqo.ironhold.model.message.MessageSource;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.Date;
 
 public class PSTMessageSource extends MessageSource {
 	private String pstFileName;

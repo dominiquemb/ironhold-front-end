@@ -1,5 +1,8 @@
 package com.reqo.ironhold.storage.model;
 
+import com.reqo.ironhold.model.message.Attachment;
+import com.reqo.ironhold.model.message.ExportableMessage;
+import com.reqo.ironhold.model.message.IMessage;
 import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -31,7 +34,7 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MimeMailMessage implements ExportableMessage, Serializable {
+public class MimeMailMessage extends IMessage implements ExportableMessage, Serializable {
     private static final int BUFFER_SIZE = 20000;
 
     private static Logger logger = Logger.getLogger(MimeMailMessage.class);
@@ -84,16 +87,11 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
     @JsonIgnore
     private String bodyContentType;
     @JsonIgnore
-    private Attachment[] attachments = new Attachment[0];
-    @JsonIgnore
     private String rawContents;
-    @JsonIgnore
-    private boolean hasAttachments;
 
     private IndexStatus indexed = IndexStatus.NOT_INDEXED;
     private Date storedDate;
     private String messageId;
-    private MessageSource[] sources;
 
     public MimeMailMessage() {
     }
@@ -265,20 +263,10 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
         bodyContentType = null;
 
         rawContents = null;
-        hasAttachments = false;
+        removeAttachments();
 
-        this.attachments = new Attachment[0];
     }
 
-    public void addSource(MessageSource source) {
-        if (sources == null) {
-            sources = new MessageSource[]{source};
-        } else {
-            MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
-            copy[sources.length] = source;
-            sources = copy;
-        }
-    }
 
     private void populateRawContents(MimeMessage mimeMessage)
             throws IOException, MessagingException {
@@ -436,21 +424,6 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
         return compressedMapper.writeValueAsString(attachments);
     }
 
-    public void addAttachment(Attachment attachment) {
-        Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
-        copy[attachments.length] = attachment;
-        attachments = copy;
-
-    }
-
-    public void removeAttachments() {
-        this.attachments = new Attachment[0];
-    }
-
-    public Attachment[] getAttachments() {
-        return attachments;
-    }
-
     public void addTo(Recipient recipient) {
         Recipient[] copy = Arrays.copyOf(to, to.length + 1);
         copy[to.length] = recipient;
@@ -597,17 +570,6 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
         this.messageId = messageId;
     }
 
-    public MessageSource[] getSources() {
-        return sources;
-    }
-
-    public boolean isHasAttachments() {
-        return hasAttachments;
-    }
-
-    public void setHasAttachments(boolean hasAttachments) {
-        this.hasAttachments = hasAttachments;
-    }
 
     public Recipient getSender() {
         return sender;

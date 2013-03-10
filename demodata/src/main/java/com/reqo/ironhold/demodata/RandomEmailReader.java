@@ -1,16 +1,15 @@
 package com.reqo.ironhold.demodata;
 
-import java.util.Date;
-
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
 import com.mongodb.MongoException;
+import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+
+import java.util.Date;
 
 public class RandomEmailReader {
 	static {

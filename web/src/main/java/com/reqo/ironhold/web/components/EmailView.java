@@ -1,11 +1,11 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.model.message.Attachment;
 import com.reqo.ironhold.search.IndexFieldEnum;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.IndexUtils;
 import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.Attachment;
 import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.terminal.ClassResource;

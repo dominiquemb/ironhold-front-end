@@ -1,6 +1,10 @@
 package com.reqo.ironhold.storage.model;
 
 import com.pff.*;
+import com.reqo.ironhold.model.message.Attachment;
+import com.reqo.ironhold.model.message.ExportableMessage;
+import com.reqo.ironhold.model.message.IMessage;
+import com.reqo.ironhold.model.message.pst.PSTMessageSource;
 import com.reqo.ironhold.storage.model.mixin.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -20,11 +24,11 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
+@SuppressWarnings("serial")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MailMessage implements ExportableMessage, Serializable {
+public class MailMessage extends IMessage implements ExportableMessage, Serializable {
     private static Logger logger = Logger.getLogger(MailMessage.class);
 
     protected SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
@@ -84,9 +88,7 @@ public class MailMessage implements ExportableMessage, Serializable {
     private IndexStatus indexed = IndexStatus.NOT_INDEXED;
     private Date storedDate;
     private String messageId;
-    private MessageSource[] sources;
 
-    private Attachment[] attachments = new Attachment[0];
 
     private boolean pstPartialFailure = false;
     private String pstObjectType;
@@ -187,15 +189,7 @@ public class MailMessage implements ExportableMessage, Serializable {
 
     }
 
-    public void addSource(MessageSource source) {
-        if (sources == null) {
-            sources = new MessageSource[]{source};
-        } else {
-            MessageSource[] copy = Arrays.copyOf(sources, sources.length + 1);
-            copy[sources.length] = source;
-            sources = copy;
-        }
-    }
+
 
     private void handleMessage(Message message) throws IOException,
             MessagingException {
@@ -318,24 +312,7 @@ public class MailMessage implements ExportableMessage, Serializable {
         return deepMapper.readValue(json, MailMessage.class);
     }
 
-    public void addAttachment(Attachment attachment) {
-        Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);
-        copy[attachments.length] = attachment;
-        attachments = copy;
 
-    }
-
-    public Attachment[] getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(Attachment[] attachments) {
-        this.attachments = attachments.clone();
-    }
-
-    public void removeAttachments() {
-        this.attachments = new Attachment[0];
-    }
 
     public ArchivedPSTMessage getPstMessage() {
         return pstMessage;
@@ -353,9 +330,6 @@ public class MailMessage implements ExportableMessage, Serializable {
         this.indexed = indexed;
     }
 
-    public MessageSource[] getSources() {
-        return sources;
-    }
 
     public Date getStoredDate() {
         return storedDate;

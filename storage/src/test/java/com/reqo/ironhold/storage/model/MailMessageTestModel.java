@@ -1,26 +1,21 @@
 package com.reqo.ironhold.storage.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
+import com.pff.PSTException;
+import com.pff.PSTFile;
+import com.pff.PSTFolder;
+import com.pff.PSTMessage;
+import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.pst.PSTMessageSource;
+import com.reqo.ironhold.storage.IStorageService;
 import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
-import com.pff.PSTException;
-import com.pff.PSTFile;
-import com.pff.PSTFolder;
-import com.pff.PSTMessage;
-import com.reqo.ironhold.storage.IStorageService;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class MailMessageTestModel extends CommonTestModel {
 	private static final int MAX_MESSAGES_TO_LOAD = 5;

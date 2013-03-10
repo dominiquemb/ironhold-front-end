@@ -1,5 +1,6 @@
-package com.reqo.ironhold.storage.model;
+package com.reqo.ironhold.model.message.eml;
 
+import com.reqo.ironhold.model.message.MessageSource;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

@@ -1,8 +1,8 @@
 package com.reqo.ironhold.exporter;
 
+import com.reqo.ironhold.model.message.ExportableMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.ExportableMessage;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

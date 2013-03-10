@@ -1,11 +1,11 @@
-package com.reqo.ironhold.storage.model;
-
-import java.util.Date;
+package com.reqo.ironhold.model.message;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.Date;
 
 public class Attachment {
 	private int size;

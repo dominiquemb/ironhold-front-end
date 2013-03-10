@@ -1,7 +1,7 @@
 package com.reqo.ironhold.exporter;
 
+import com.reqo.ironhold.model.message.ExportableMessage;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.ExportableMessage;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;

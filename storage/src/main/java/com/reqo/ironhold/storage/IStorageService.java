@@ -1,5 +1,8 @@
 package com.reqo.ironhold.storage;
 
+import com.reqo.ironhold.model.message.ExportableMessage;
+import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.pst.PSTMessageSource;
 import com.reqo.ironhold.storage.model.*;
 
 import java.util.Date;

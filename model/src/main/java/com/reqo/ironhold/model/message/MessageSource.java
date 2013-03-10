@@ -1,13 +1,13 @@
-package com.reqo.ironhold.storage.model;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Date;
+package com.reqo.ironhold.model.message;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 
 public abstract class MessageSource {
 	private Date loadTimestamp;

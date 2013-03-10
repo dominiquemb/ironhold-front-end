@@ -1,15 +1,15 @@
 package com.reqo.ironhold.search.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
+import com.reqo.ironhold.model.message.Attachment;
+import com.reqo.ironhold.search.TikaInstance;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Base64;
-import com.reqo.ironhold.search.TikaInstance;
-import com.reqo.ironhold.storage.model.Attachment;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class IndexedAttachment extends Attachment {
 	private static Logger logger = Logger.getLogger(IndexedAttachment.class);
