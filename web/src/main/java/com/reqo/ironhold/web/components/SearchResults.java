@@ -1,11 +1,13 @@
 package com.reqo.ironhold.web.components;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
+import com.reqo.ironhold.search.IndexFieldEnum;
+import com.reqo.ironhold.search.IndexService;
+import com.reqo.ironhold.search.MessageSearchBuilder;
+import com.reqo.ironhold.storage.IStorageService;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -15,22 +17,7 @@ import org.vaadin.pagingcomponent.PagingComponent;
 import org.vaadin.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import org.vaadin.pagingcomponent.utilities.FakeList;
 
-import com.reqo.ironhold.search.IndexFieldEnum;
-import com.reqo.ironhold.search.IndexService;
-import com.reqo.ironhold.search.MessageSearchBuilder;
-import com.reqo.ironhold.storage.IStorageService;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class SearchResults extends HorizontalLayout {
@@ -242,43 +229,51 @@ public class SearchResults extends HorizontalLayout {
 				TermsFacet fileExtFacet = response.getFacets().facet(
 						MessageSearchBuilder.FACET_FILEEXT);
 				fileExtFacetPanel.removeAllComponents();
+                int visibleFacets = 0;
 				for (final TermsFacet.Entry entry : fileExtFacet.getEntries()) {
-					final HorizontalLayout hl = new HorizontalLayout();
-					hl.setWidth("100%");
+                    if (entry.getTerm().trim().length()!=0) {
+                        final HorizontalLayout hl = new HorizontalLayout();
+                        hl.setWidth("100%");
 
-					CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-							entry.getTerm(),
-							20 - Integer.toString(entry.getCount()).length()));
-					checkBox.setImmediate(true);
-					checkBox.addListener(new Button.ClickListener() {
-						@Override
-						public void buttonClick(Button.ClickEvent event) {
-							boolean enabled = event.getButton().booleanValue();
-							builder = indexService.getNewBuilder(builder);
+                        CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
+                                entry.getTerm(),
+                                20 - Integer.toString(entry.getCount()).length()));
+                        checkBox.setImmediate(true);
+                        checkBox.addListener(new Button.ClickListener() {
+                            @Override
+                            public void buttonClick(Button.ClickEvent event) {
+                                boolean enabled = event.getButton().booleanValue();
+                                builder = indexService.getNewBuilder(builder);
 
-							if (enabled) {
-								builder.withFileExtFacetValue(entry.getTerm());
-							} else {
-								builder.withoutFileExtFacetValue(entry
-										.getTerm());
-							}
-							performSearch();
-						}
-					});
+                                if (enabled) {
+                                    builder.withFileExtFacetValue(entry.getTerm());
+                                } else {
+                                    builder.withoutFileExtFacetValue(entry
+                                            .getTerm());
+                                }
+                                performSearch();
+                            }
+                        });
 
-					hl.addComponent(checkBox);
+                        hl.addComponent(checkBox);
 
-					Label countLabel = new Label(String.format("%,d",
-							entry.getCount()));
-					hl.addComponent(countLabel);
-					hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
+                        Label countLabel = new Label(String.format("%,d",
+                                entry.getCount()));
+                        hl.addComponent(countLabel);
+                        hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
 
-					checkBox.setWidth(null);
-					countLabel.setWidth(null);
-					hl.setExpandRatio(checkBox, 1.0f);
+                        checkBox.setWidth(null);
+                        countLabel.setWidth(null);
+                        hl.setExpandRatio(checkBox, 1.0f);
 
-					fileExtFacetPanel.addComponent(hl);
+                        fileExtFacetPanel.addComponent(hl);
+                        visibleFacets++;
+                    }
 				}
+
+                if (visibleFacets == 0) {
+                    fileExtFacetPanel.setVisible(false);
+                }
 			} else {
 				fileExtFacetPanel.setVisible(false);
 			}
