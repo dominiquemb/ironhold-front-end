@@ -11,6 +11,7 @@
         <moduleSet>
             <useAllReactorProjects>true</useAllReactorProjects>
             <includes>
+                <include>com.reqo.ironhold:model</include>
                 <include>com.reqo.ironhold:importer</include>
                 <include>com.reqo.ironhold:exporter</include>
                 <include>com.reqo.ironhold:storage</include>

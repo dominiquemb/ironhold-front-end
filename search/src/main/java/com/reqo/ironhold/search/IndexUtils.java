@@ -1,10 +1,7 @@
 package com.reqo.ironhold.search;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
+import com.pff.PSTMessage;
+import com.reqo.ironhold.model.mixin.PSTMessageMixin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -15,8 +12,10 @@ import org.elasticsearch.common.joda.time.format.PeriodFormatter;
 import org.elasticsearch.common.joda.time.format.PeriodFormatterBuilder;
 import org.elasticsearch.search.SearchHit;
 
-import com.pff.PSTMessage;
-import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class IndexUtils {
 	private static ObjectMapper mapper = new ObjectMapper();

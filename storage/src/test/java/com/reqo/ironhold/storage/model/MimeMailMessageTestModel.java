@@ -1,6 +1,8 @@
 package com.reqo.ironhold.storage.model;
 
 import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.model.message.pst.PSTMessageSource;
 import com.reqo.ironhold.storage.IStorageService;
 import junit.framework.Assert;
@@ -20,7 +22,7 @@ public class MimeMailMessageTestModel extends CommonTestModel {
 		Assert.assertEquals(inputMessage.getAttachments().length,
 				storedMessage.getAttachments().length);
 		Assert.assertEquals(MailMessage.serializeAttachments(inputMessage
-				.getAttachments()), MailMessage
+                .getAttachments()), MailMessage
 				.serializeAttachments(storedMessage.getAttachments()));
 		Assert.assertNotNull(storedMessage.getStoredDate());
 

@@ -1,20 +1,17 @@
 package com.reqo.ironhold.search.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import javax.mail.internet.MimeMessage;
-
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class AttachmentExtractorTest {
 	private MailMessageTestModel testModel;

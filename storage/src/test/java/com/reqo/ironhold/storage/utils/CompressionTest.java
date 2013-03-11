@@ -1,11 +1,11 @@
 package com.reqo.ironhold.storage.utils;
 
-import java.io.IOException;
-
+import com.reqo.ironhold.model.utils.Compression;
 import junit.framework.Assert;
-
 import org.fluttercode.datafactory.impl.DataFactory;
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class CompressionTest {
 

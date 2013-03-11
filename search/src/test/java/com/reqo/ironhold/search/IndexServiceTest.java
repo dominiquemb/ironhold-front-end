@@ -1,14 +1,17 @@
 package com.reqo.ironhold.search;
 
-import java.util.List;
-
+import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
+import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
+import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
+import com.reqo.ironhold.model.message.pst.MailMessage;
+import com.reqo.ironhold.search.model.IndexedMailMessage;
+import com.reqo.ironhold.search.model.MailMessageTestModel;
 import junit.framework.Assert;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.After;
@@ -16,13 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
-import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
-import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
-import com.reqo.ironhold.search.model.IndexedMailMessage;
-import com.reqo.ironhold.search.model.MailMessageTestModel;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.Recipient;
+import java.util.List;
 
 @RunWith(ElasticsearchRunner.class)
 public class IndexServiceTest {

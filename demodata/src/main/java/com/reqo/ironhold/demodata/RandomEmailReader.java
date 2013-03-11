@@ -1,11 +1,11 @@
 package com.reqo.ironhold.demodata;
 
 import com.mongodb.MongoException;
+import com.reqo.ironhold.model.log.LogLevel;
+import com.reqo.ironhold.model.log.LogMessage;
 import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.LogLevel;
-import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 

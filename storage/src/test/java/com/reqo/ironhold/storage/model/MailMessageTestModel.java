@@ -5,6 +5,7 @@ import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.model.message.pst.PSTMessageSource;
 import com.reqo.ironhold.storage.IStorageService;
 import junit.framework.Assert;
@@ -26,7 +27,6 @@ public class MailMessageTestModel extends CommonTestModel {
 	public MailMessageTestModel(String pstFilePath) throws JsonParseException, JsonMappingException, JsonGenerationException, IOException, PSTException {
 			File file = FileUtils.toFile(MailMessageTestModel.class
 					.getResource(pstFilePath));
-			System.out.println("Loading messages from " + file);
 			PSTFile pstFile;
 			pstFile = new PSTFile(file);
 
@@ -40,8 +40,6 @@ public class MailMessageTestModel extends CommonTestModel {
 									.length(), new Date(file.lastModified()))));
 				}
 			}
-
-			System.out.println("Loaded " + mailMessages.size() + " messages");
 	}
 
 	public MailMessage generatePSTMessage() {
@@ -75,9 +73,6 @@ public class MailMessageTestModel extends CommonTestModel {
 		if (folder.getContentCount() > 0) {
 			PSTMessage message = (PSTMessage) folder.getNextChild();
 			while (message != null) {
-				System.out.println(message.getInternetMessageId() + " : "
-						+ message.getNumberOfAttachments());
-
 				pstMessages.add(message);
 				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
 					return;

@@ -1,23 +1,20 @@
 package com.reqo.ironhold.search.model;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.mongodb.DB;
 import com.mongodb.Mongo;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.MailMessage;
-
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IndexedMailMessageTest {
 
@@ -26,7 +23,7 @@ public class IndexedMailMessageTest {
 	private Mongo mongo;
 	private DB db;
 	private MailMessageTestModel testModel;
-	private static final String DATABASENAME = "mongo_test";
+	private static final String DATABASENAME = "IndexedMailMessageTest";
 
 	@Before
 	public void setUp() throws Exception {

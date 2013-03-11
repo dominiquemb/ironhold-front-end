@@ -2,11 +2,11 @@ package com.reqo.ironhold.search.model;
 
 import com.pff.PSTMessage;
 import com.reqo.ironhold.model.message.Attachment;
-import com.reqo.ironhold.storage.model.ArchivedPSTMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
-import com.reqo.ironhold.storage.model.Recipient;
-import com.reqo.ironhold.storage.model.mixin.PSTMessageMixin;
+import com.reqo.ironhold.model.message.Recipient;
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.ArchivedPSTMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
+import com.reqo.ironhold.model.mixin.PSTMessageMixin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

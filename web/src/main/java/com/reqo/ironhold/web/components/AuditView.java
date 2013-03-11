@@ -1,13 +1,13 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.model.log.LogMessage;
 import com.reqo.ironhold.model.message.MessageSource;
 import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.model.message.pst.PSTMessageSource;
 import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Label;

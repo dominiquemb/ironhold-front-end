@@ -1,7 +1,9 @@
 package com.reqo.ironhold.web.components;
 
-import java.text.SimpleDateFormat;
-
+import com.reqo.ironhold.model.message.pst.PSTFileMeta;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.joda.time.DateTime;
@@ -9,16 +11,7 @@ import org.elasticsearch.common.joda.time.Period;
 import org.elasticsearch.common.joda.time.format.PeriodFormatter;
 import org.elasticsearch.common.joda.time.format.PeriodFormatterBuilder;
 
-import com.reqo.ironhold.storage.model.PSTFileMeta;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.text.SimpleDateFormat;
 
 public class PSTFileMetaPanel extends Panel {
 	private static final String TYPE = "Type";

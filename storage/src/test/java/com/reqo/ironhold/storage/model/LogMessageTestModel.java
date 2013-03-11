@@ -1,5 +1,8 @@
 package com.reqo.ironhold.storage.model;
 
+import com.reqo.ironhold.model.log.LogLevel;
+import com.reqo.ironhold.model.log.LogMessage;
+
 import java.net.UnknownHostException;
 import java.util.UUID;
 

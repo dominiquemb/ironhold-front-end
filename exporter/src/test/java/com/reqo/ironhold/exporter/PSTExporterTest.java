@@ -3,9 +3,9 @@ package com.reqo.ironhold.exporter;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.reqo.ironhold.exporter.model.MailMessageTestModel;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.MailMessage;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -39,7 +39,7 @@ public class PSTExporterTest {
     private Mongo mongo;
     private DB db;
     private MailMessageTestModel testModel;
-    private static final String DATABASENAME = "MongoServiceTest";
+    private static final String DATABASENAME = "PSTExporterTest";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

@@ -4,10 +4,17 @@ import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.gridfs.GridFS;
 import com.pff.PSTException;
+import com.reqo.ironhold.model.IndexStatus;
+import com.reqo.ironhold.model.log.LogMessage;
 import com.reqo.ironhold.model.message.Attachment;
 import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.model.message.pst.PSTMessageSource;
-import com.reqo.ironhold.storage.model.*;
+import com.reqo.ironhold.storage.model.LogMessageTestModel;
+import com.reqo.ironhold.storage.model.MailMessageTestModel;
+import com.reqo.ironhold.storage.model.MessageSourceTestModel;
+import com.reqo.ironhold.storage.model.MimeMailMessageTestModel;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -130,7 +137,6 @@ public class MongoServiceTest {
     }
 
 
-
     @Test
     public void testAttachmentsSerialization() throws IOException, PSTException {
         testModel = new MailMessageTestModel("/attachments.pst");
@@ -147,7 +153,7 @@ public class MongoServiceTest {
 
         Assert.assertEquals(pstMessage.getAttachments().length, deserializedMessage.getAttachments().length);
 
-        for (int i = 0; i<pstMessage.getAttachments().length; i++) {
+        for (int i = 0; i < pstMessage.getAttachments().length; i++) {
             Assert.assertEquals(pstMessage.getAttachments()[i].getBody(), deserializedMessage.getAttachments()[i].getBody());
             Assert.assertEquals(pstMessage.getAttachments()[i].getFileName(), deserializedMessage.getAttachments()[i].getFileName());
             Assert.assertEquals(pstMessage.getAttachments()[i].getSize(), deserializedMessage.getAttachments()[i].getSize());
@@ -236,7 +242,7 @@ public class MongoServiceTest {
     public void testFindUnindexedIMAPMessages() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
 
-        File file = FileUtils.toFile(EmlLoadTest.class
+        File file = FileUtils.toFile(MongoServiceTest.class
                 .getResource("/testMimeMessageWithHTML.eml"));
         InputStream is = new FileInputStream(file);
 
@@ -291,8 +297,7 @@ public class MongoServiceTest {
     @Test
     public void testAddIMAPSource() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
-
-        File file = FileUtils.toFile(EmlLoadTest.class
+        File file = FileUtils.toFile(MongoServiceTest.class
                 .getResource("/testMimeMessageWithHTML.eml"));
         InputStream is = new FileInputStream(file);
 
@@ -350,9 +355,9 @@ public class MongoServiceTest {
     @Test
     public void testIMAPMarkAsIndexed() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
-
-        File file = FileUtils.toFile(EmlLoadTest.class
+        File file = FileUtils.toFile(MongoServiceTest.class
                 .getResource("/testMimeMessageWithHTML.eml"));
+
         InputStream is = new FileInputStream(file);
 
         List<String> orioginalLines = Files.readAllLines(

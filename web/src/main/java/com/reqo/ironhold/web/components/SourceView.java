@@ -1,25 +1,23 @@
 package com.reqo.ironhold.web.components;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.elasticsearch.search.SearchHit;
-
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.MailMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.elasticsearch.search.SearchHit;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 @SuppressWarnings("serial")
 public class SourceView extends Panel {

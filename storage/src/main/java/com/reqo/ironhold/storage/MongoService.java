@@ -5,12 +5,17 @@ import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import com.mongodb.util.JSON;
+import com.reqo.ironhold.model.IndexStatus;
+import com.reqo.ironhold.model.log.LogMessage;
 import com.reqo.ironhold.model.message.Attachment;
 import com.reqo.ironhold.model.message.ExportableMessage;
+import com.reqo.ironhold.model.message.eml.IMAPBatchMeta;
 import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
+import com.reqo.ironhold.model.message.eml.MimeMailMessage;
+import com.reqo.ironhold.model.message.pst.MailMessage;
+import com.reqo.ironhold.model.message.pst.PSTFileMeta;
 import com.reqo.ironhold.model.message.pst.PSTMessageSource;
-import com.reqo.ironhold.storage.model.*;
-import com.reqo.ironhold.storage.utils.Compression;
+import com.reqo.ironhold.model.utils.Compression;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -393,6 +398,8 @@ public class MongoService implements IStorageService {
 	public void addPSTFile(PSTFileMeta pstFile) throws Exception {
 		db.getCollection(PST_COLLECTION).insert(
 				(DBObject) JSON.parse(PSTFileMeta.toJSON(pstFile)));
+        mongo.fsync(false);
+
 	}
 
 	@Override
