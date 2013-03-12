@@ -326,10 +326,10 @@ public class MongoServiceTest {
                 .getResource("/testMimeMessageWithHTML.eml"));
         InputStream is = new FileInputStream(file);
 
-        List<String> orioginalLines = Files.readAllLines(
+        List<String> originalLines = Files.readAllLines(
                 Paths.get(file.toURI()), Charset.defaultCharset());
         StringBuilder original = new StringBuilder();
-        for (String line : orioginalLines) {
+        for (String line : originalLines) {
             original.append(line + "\n");
         }
 

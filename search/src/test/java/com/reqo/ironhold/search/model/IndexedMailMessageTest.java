@@ -13,10 +13,17 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class IndexedMailMessageTest {
@@ -91,8 +98,30 @@ public class IndexedMailMessageTest {
                 Assert.assertEquals(storedMessage2.getAttachments()[i].getFileExt(), indexedMailMessage.getAttachments()[i].getFileExt());
                 Assert.assertEquals(storedMessage2.getAttachments()[i].getFileName(), indexedMailMessage.getAttachments()[i].getFileName());
                 Assert.assertEquals(storedMessage2.getAttachments()[i].getSize(), indexedMailMessage.getAttachments()[i].getSize());
+
+                Assert.assertNotNull(indexedMailMessage.getAttachments()[i].getFileExt());
             }
         }
+
+    }
+
+    @Test
+    public void testMultipleAttachmentsFromPSTMessage() throws Exception {
+        File file = FileUtils.toFile(IndexedMailMessageTest.class
+                .getResource("/testMultipleAttachmentsFromPSTMessage.json"));
+        InputStream is = new FileInputStream(file);
+
+        List<String> jsonLines = Files.readAllLines(
+                Paths.get(file.toURI()), Charset.defaultCharset());
+        StringBuilder json = new StringBuilder();
+        for (String line : jsonLines) {
+            json.append(line + "\n");
+        }
+
+        MailMessage message = MailMessage.deserializeMailMessage(json.toString());
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(message);
+
 
     }
 
