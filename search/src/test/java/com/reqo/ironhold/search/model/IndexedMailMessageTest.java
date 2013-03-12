@@ -1,23 +1,29 @@
 package com.reqo.ironhold.search.model;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MailMessage;
-
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class IndexedMailMessageTest {
 
@@ -85,5 +91,33 @@ public class IndexedMailMessageTest {
 			Assert.assertNull(e);
 		}
 	}
+
+    @Test
+    public void testMultipleAttachmentsFromPST() throws Exception {
+
+        File file = FileUtils.toFile(IndexedMailMessageTest.class
+                .getResource("/testMultipleAttachmentsFromPST.json"));
+        InputStream is = new FileInputStream(file);
+
+        List<String> orioginalLines = Files.readAllLines(
+                Paths.get(file.toURI()), Charset.defaultCharset());
+        StringBuilder original = new StringBuilder();
+        for (String line : orioginalLines) {
+            original.append(line + "\n");
+        }
+
+        MailMessage mailMessage = MailMessage.deserializeMailMessage(original.toString());
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mailMessage);
+
+        Assert.assertEquals(mailMessage.getAttachments().length, indexedMailMessage.getAttachments().length);
+
+        for (int i = 0; i < mailMessage.getAttachments().length; i++) {
+            Assert.assertEquals(mailMessage.getAttachments()[i].getFileName(), indexedMailMessage.getAttachments()[i].getFileName());
+            Assert.assertEquals(mailMessage.getAttachments()[i].getFileExt(), indexedMailMessage.getAttachments()[i].getFileExt());
+
+            Assert.assertNotNull(mailMessage.getAttachments()[i].getFileExt());
+        }
+    }
 
 }
