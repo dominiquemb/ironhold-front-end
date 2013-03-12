@@ -2,10 +2,10 @@ package com.reqo.ironhold.exporter;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
-import com.reqo.ironhold.exporter.model.MailMessageTestModel;
 import com.reqo.ironhold.model.message.eml.MimeMailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.testcommon.MailMessageTestModel;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -94,7 +94,7 @@ public class IMAPExporterTest {
             storageService.store(mailMessage);
         }
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
         IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, messages.length, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
         exporter.start();
@@ -151,7 +151,7 @@ public class IMAPExporterTest {
 
         storageService.store(mailMessage);
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
@@ -180,7 +180,7 @@ public class IMAPExporterTest {
 
         storageService.store(mailMessage);
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", "NONE", recoveryFile, storageService);
 

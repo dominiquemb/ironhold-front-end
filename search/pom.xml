@@ -19,6 +19,12 @@
           <artifactId>model</artifactId>
           <version>${project.parent.version}</version>
       </dependency>
+      <dependency>
+          <groupId>com.reqo.ironhold</groupId>
+          <artifactId>test-common</artifactId>
+          <version>${project.parent.version}</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
   <build>
     <resources>

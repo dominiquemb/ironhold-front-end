@@ -1,4 +1,4 @@
-package com.reqo.ironhold.exporter.model;
+package com.reqo.ironhold.testcommon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.fluttercode.datafactory.impl.DataFactory;

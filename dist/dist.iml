@@ -12,6 +12,7 @@
     <orderEntry type="library" name="jcharset" level="project" />
     <orderEntry type="module" module-name="importer" />
     <orderEntry type="module" module-name="storage" />
+    <orderEntry type="module" module-name="model" />
     <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch:0.20.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:3.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers:3.6.2" level="project" />

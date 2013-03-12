@@ -11,10 +11,10 @@ import com.reqo.ironhold.model.message.eml.IMAPMessageSource;
 import com.reqo.ironhold.model.message.eml.MimeMailMessage;
 import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.model.message.pst.PSTMessageSource;
-import com.reqo.ironhold.storage.model.LogMessageTestModel;
-import com.reqo.ironhold.storage.model.MailMessageTestModel;
-import com.reqo.ironhold.storage.model.MessageSourceTestModel;
-import com.reqo.ironhold.storage.model.MimeMailMessageTestModel;
+import com.reqo.ironhold.testcommon.LogMessageTestModel;
+import com.reqo.ironhold.testcommon.MailMessageTestModel;
+import com.reqo.ironhold.testcommon.MessageSourceTestModel;
+import com.reqo.ironhold.testcommon.MimeMailMessageTestModel;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -83,7 +83,10 @@ public class MongoServiceTest {
 
             storageService.store(inputMessage);
 
-            testModel.verifyStorage(storageService, inputMessage);
+            MailMessage storedMessage = storageService.getMailMessage(
+                    inputMessage.getMessageId(), true);
+
+            testModel.verifyStorage(storedMessage, inputMessage);
 
             Assert.assertTrue(storageService.existsMailMessage(inputMessage
                     .getMessageId()));
@@ -184,7 +187,10 @@ public class MongoServiceTest {
 
             storageService.store(inputMessage);
 
-            testModel.verifyStorage(storageService, inputMessage);
+            MailMessage storedMessage = storageService.getMailMessage(
+                    inputMessage.getMessageId(), true);
+
+            testModel.verifyStorage(storedMessage, inputMessage);
 
             Assert.assertTrue(storageService.existsMailMessage(inputMessage
                     .getMessageId()));
@@ -202,7 +208,10 @@ public class MongoServiceTest {
 
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MailMessage storedMessage = storageService.getMailMessage(
+                inputMessage.getMessageId(), true);
+
+        testModel.verifyStorage(storedMessage, inputMessage);
 
         Assert.assertFalse(storageService.existsMailMessage(UUID.randomUUID()
                 .toString()));
@@ -216,7 +225,11 @@ public class MongoServiceTest {
 
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MailMessage storedMessage = storageService.getMailMessage(
+                inputMessage.getMessageId(), true);
+
+        testModel.verifyStorage(storedMessage, inputMessage);
+
     }
 
     @Test
@@ -228,7 +241,11 @@ public class MongoServiceTest {
 
             storageService.store(inputMessage);
 
-            testModel.verifyStorage(storageService, inputMessage);
+            MailMessage storedMessage = storageService.getMailMessage(
+                    inputMessage.getMessageId(), true);
+
+            testModel.verifyStorage(storedMessage, inputMessage);
+
             storedCount++;
         }
 
@@ -260,7 +277,10 @@ public class MongoServiceTest {
 
         storageService.store(mimeMailMessage);
 
-        MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
+        MimeMailMessage storedMessage = storageService.getMimeMailMessage(
+                mimeMailMessage.getMessageId());
+
+        MimeMailMessageTestModel.verifyStorage(storedMessage, mimeMailMessage);
 
         List<MimeMailMessage> unindexedMessages = storageService
                 .findUnindexedIMAPMessages(100);
@@ -282,7 +302,10 @@ public class MongoServiceTest {
 
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MailMessage storedMessage = storageService.getMailMessage(
+                inputMessage.getMessageId(), true);
+
+        testModel.verifyStorage(storedMessage, inputMessage);
 
         PSTMessageSource source = MessageSourceTestModel
                 .generatePSTMessageSource();
@@ -290,8 +313,10 @@ public class MongoServiceTest {
 
         inputMessage.addSource(source);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MailMessage storedMessage2 = storageService.getMailMessage(
+                inputMessage.getMessageId(), true);
 
+        testModel.verifyStorage(storedMessage2, inputMessage);
     }
 
     @Test
@@ -315,7 +340,11 @@ public class MongoServiceTest {
 
         storageService.store(mimeMailMessage);
 
-        MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
+        MimeMailMessage storedMessage = storageService.getMimeMailMessage(
+                mimeMailMessage.getMessageId());
+
+        MimeMailMessageTestModel.verifyStorage(storedMessage, mimeMailMessage);
+
 
         IMAPMessageSource source = MessageSourceTestModel
                 .generateIMAPMessageSource();
@@ -323,7 +352,11 @@ public class MongoServiceTest {
 
         mimeMailMessage.addSource(source);
 
-        MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
+        MimeMailMessage storedMessage2 = storageService.getMimeMailMessage(
+                mimeMailMessage.getMessageId());
+
+        MimeMailMessageTestModel.verifyStorage(storedMessage2, mimeMailMessage);
+
 
     }
 
@@ -335,7 +368,10 @@ public class MongoServiceTest {
 
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MailMessage storedMessage = storageService.getMailMessage(
+                inputMessage.getMessageId(), true);
+
+        testModel.verifyStorage(storedMessage, inputMessage);
 
         List<MailMessage> unindexedMessages1 = storageService
                 .findUnindexedPSTMessages(100);
@@ -345,7 +381,10 @@ public class MongoServiceTest {
 
         inputMessage.setIndexed(IndexStatus.INDEXED);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MailMessage storedMessage2 = storageService.getMailMessage(
+                inputMessage.getMessageId(), true);
+
+        testModel.verifyStorage(storedMessage2, inputMessage);
 
         List<MailMessage> unindexedMessages2 = storageService
                 .findUnindexedPSTMessages(100);
@@ -374,7 +413,11 @@ public class MongoServiceTest {
 
         storageService.store(inputMessage);
 
-        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
+        MimeMailMessage storedMessage = storageService.getMimeMailMessage(
+                inputMessage.getMessageId());
+
+        MimeMailMessageTestModel.verifyStorage(storedMessage, inputMessage);
+
 
         List<MimeMailMessage> unindexedMessages1 = storageService
                 .findUnindexedIMAPMessages(100);
@@ -384,7 +427,11 @@ public class MongoServiceTest {
 
         inputMessage.setIndexed(IndexStatus.INDEXED);
 
-        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
+        MimeMailMessage storedMessage2 = storageService.getMimeMailMessage(
+                inputMessage.getMessageId());
+
+        MimeMailMessageTestModel.verifyStorage(storedMessage2, inputMessage);
+
 
         List<MimeMailMessage> unindexedMessages2 = storageService
                 .findUnindexedIMAPMessages(100);
@@ -400,7 +447,10 @@ public class MongoServiceTest {
         for (MailMessage inputMessage : messages) {
             storageService.store(inputMessage);
 
-            testModel.verifyStorage(storageService, inputMessage);
+            MailMessage storedMessage = storageService.getMailMessage(
+                    inputMessage.getMessageId(), true);
+
+            testModel.verifyStorage(storedMessage, inputMessage);
         }
 
         Assert.assertEquals(messages.size(),

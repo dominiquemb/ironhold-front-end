@@ -2,10 +2,10 @@ package com.reqo.ironhold.exporter;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
-import com.reqo.ironhold.exporter.model.MailMessageTestModel;
 import com.reqo.ironhold.model.message.pst.MailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.testcommon.MailMessageTestModel;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -78,7 +78,7 @@ public class PSTExporterTest {
             storageService.store(pstMessage);
         }
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, pstMessages.size(), "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
@@ -103,7 +103,7 @@ public class PSTExporterTest {
             Assert.assertEquals(pstMessage.getAttachments().length, exportedMessage.getAttachments().length);
 
 
-            for (int i = 0; i<pstMessage.getAttachments().length; i++) {
+            for (int i = 0; i < pstMessage.getAttachments().length; i++) {
                 junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getBody(), exportedMessage.getAttachments()[i].getBody());
                 junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getFileName(), exportedMessage.getAttachments()[i].getFileName());
                 junit.framework.Assert.assertEquals(pstMessage.getAttachments()[i].getSize(), exportedMessage.getAttachments()[i].getSize());
@@ -120,7 +120,7 @@ public class PSTExporterTest {
 
         storageService.store(pstMessage);
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
@@ -142,7 +142,7 @@ public class PSTExporterTest {
 
         storageService.store(pstMessage);
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         PSTExporter exporter = new PSTExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", "NONE", recoveryFile, storageService);
 
