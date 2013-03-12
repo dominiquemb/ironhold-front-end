@@ -1,12 +1,5 @@
 package com.reqo.ironhold.web.components;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.elasticsearch.search.SearchHit;
-
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
@@ -15,14 +8,22 @@ import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.log4j.Logger;
+import org.elasticsearch.search.SearchHit;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 @SuppressWarnings("serial")
 public class SourceView extends Panel {
+    private static Logger logger = Logger.getLogger(SourceView.class);
+
 
     private final IStorageService storageService;
     private final IndexService indexService;
@@ -43,40 +44,65 @@ public class SourceView extends Panel {
         final Label messageId = new Label("<b>MessageId: " + StringEscapeUtils.escapeHtml4(item.getId()) + "</b>");
         messageId.setContentMode(Label.CONTENT_XHTML);
         this.addComponent(messageId);
-        
-        
+
+
         Object mailMessage = null;
         String rawBody = null;
-    	if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
-			mailMessage = storageService.getMailMessage(item.getId(), true);
-			rawBody = MailMessage.serializeMailMessage((MailMessage)mailMessage);	
-		} else if (item.getType().equals(
-				IndexedObjectType.MIME_MESSAGE.getValue())) {
-			mailMessage = storageService.getMimeMailMessage(item.getId());
-			rawBody = ((MimeMailMessage)mailMessage).getRawContents();
+        if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
+            mailMessage = storageService.getMailMessage(item.getId(), false);
+            rawBody = MailMessage.serializeMailMessage((MailMessage) mailMessage);
 
-			final String downloadableContent = rawBody;
-			
-	        final Button download = new Button("Download");
-	        download.setStyleName(BaseTheme.BUTTON_LINK);
-	        download.addListener(new ClickListener() {
 
-				public void buttonClick(ClickEvent event) {
-					event.getButton().getWindow()
-							.open(new StreamResource(new StreamSource() {
+            final Button download = new Button("Download");
+            download.setStyleName(BaseTheme.BUTTON_LINK);
+            download.addListener(new ClickListener() {
 
-								public InputStream getStream() {
-									return new ByteArrayInputStream(downloadableContent.getBytes());
-								}
-							}, item.getId() + ".eml", me
-									.getApplication()));
-				}
-			});
-	        this.addComponent(download);
+                public void buttonClick(ClickEvent event) {
+                    event.getButton().getWindow()
+                            .open(new StreamResource(new StreamSource() {
 
-		}
+                                public InputStream getStream() {
 
-        
+                                    String downloadableContent = null;
+                                    try {
+                                        downloadableContent = MailMessage.serializeMailMessageWithAttachments(storageService.getMailMessage(item.getId(), true));
+                                    } catch (Exception e) {
+                                        logger.error("Failed to retrieve content in source view", e);
+                                    };
+
+                                    return new ByteArrayInputStream(downloadableContent.getBytes());
+                                }
+                            }, item.getId() + ".json", me
+                                    .getApplication()));
+                }
+            });
+            this.addComponent(download);
+        } else if (item.getType().equals(
+                IndexedObjectType.MIME_MESSAGE.getValue())) {
+            mailMessage = storageService.getMimeMailMessage(item.getId());
+            rawBody = ((MimeMailMessage) mailMessage).getRawContents();
+
+            final String downloadableContent = rawBody;
+
+            final Button download = new Button("Download");
+            download.setStyleName(BaseTheme.BUTTON_LINK);
+            download.addListener(new ClickListener() {
+
+                public void buttonClick(ClickEvent event) {
+                    event.getButton().getWindow()
+                            .open(new StreamResource(new StreamSource() {
+
+                                public InputStream getStream() {
+                                    return new ByteArrayInputStream(downloadableContent.getBytes());
+                                }
+                            }, item.getId() + ".eml", me
+                                    .getApplication()));
+                }
+            });
+            this.addComponent(download);
+
+        }
+
 
         final Label body = new Label(StringEscapeUtils.escapeHtml4(rawBody).replaceAll("\r?\n", "<br/>"));
 
