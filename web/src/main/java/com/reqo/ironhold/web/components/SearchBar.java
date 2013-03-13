@@ -14,7 +14,7 @@ public class SearchBar extends VerticalLayout {
 
 	private SearchTextField filterField;
 
-	public SearchBar(final Window window, final IndexService indexService,
+	public SearchBar(final String indexPrefix, final Window window, final IndexService indexService,
 			final IStorageService storageService, SearchResults searchResults) {
 
 		filterField = new SearchTextField(window, searchResults);
@@ -30,7 +30,7 @@ public class SearchBar extends VerticalLayout {
 			public void textChange(TextChangeEvent event) {
 				String criteria = event.getText();
 				if (criteria.trim().length() > 0) {
-					long results = indexService.getMatchCount(event.getText());
+					long results = indexService.getMatchCount(indexPrefix, event.getText());
 					if (results >= 0) {
 						previewLabel.setValue(String.format(
 								"%,d matched messages", results));

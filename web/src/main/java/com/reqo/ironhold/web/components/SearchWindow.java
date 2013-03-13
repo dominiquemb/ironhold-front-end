@@ -1,20 +1,14 @@
 package com.reqo.ironhold.web.components;
 
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
-
-import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.reqo.ironhold.web.IronholdApplication;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.LoginForm;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import org.apache.log4j.Logger;
+
+import java.util.Properties;
 
 @SuppressWarnings("serial")
 public class SearchWindow extends Window {
@@ -67,11 +61,11 @@ public class SearchWindow extends Window {
         vl.setMargin(true);
 
 
-        final IndexService indexService = new IndexService(username);
+
         final IStorageService storageService = new MongoService(username, "web");
 
-        final SearchResults searchResults = new SearchResults(indexService, storageService);
-        final SearchBar searchBar = new SearchBar(this, indexService, storageService, searchResults);
+        final SearchResults searchResults = new SearchResults(username, ((IronholdApplication)this.getApplication()).getIndexService(), storageService);
+        final SearchBar searchBar = new SearchBar(username, this, ((IronholdApplication)this.getApplication()).getIndexService(), storageService, searchResults);
         final Button searchButton = new Button("Search");
 
         searchButton.addListener(new ClickListener() {

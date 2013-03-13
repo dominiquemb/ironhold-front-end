@@ -31,9 +31,11 @@ public class EmailView extends Panel {
 	private final IStorageService storageService;
 	private final IndexService indexService;
 	private final EmailView me;
+    private final String indexPrefix;
 	private SearchHitPanel currentHitPanel;
 
-	public EmailView(IStorageService storageService, IndexService indexService) {
+	public EmailView(String indexPrefix, IStorageService storageService, IndexService indexService) {
+        this.indexPrefix = indexPrefix;
 		this.storageService = storageService;
 		this.indexService = indexService;
 		this.setSizeFull();
@@ -131,7 +133,7 @@ public class EmailView extends Panel {
 		bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
 		bodyLayout.setSizeFull();
 		SearchHits hits = indexService.search(
-				indexService.getNewBuilder().withCriteria(criteria)
+				indexService.getNewBuilder(indexPrefix).withCriteria(criteria)
 						.withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
 		String bodyText = IndexUtils.getFieldValue(hits.getAt(0),
 				IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");

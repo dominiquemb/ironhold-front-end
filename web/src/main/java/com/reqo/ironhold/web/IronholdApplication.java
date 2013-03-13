@@ -15,11 +15,11 @@
  */
 package com.reqo.ironhold.web;
 
-import org.apache.log4j.Logger;
-
+import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.web.components.SearchWindow;
 import com.vaadin.Application;
 import com.vaadin.ui.Window;
+import org.apache.log4j.Logger;
 
 /**
  * The Application's "main" class
@@ -28,18 +28,35 @@ import com.vaadin.ui.Window;
 public class IronholdApplication extends Application {
     private Window window;
     private static Logger logger = Logger.getLogger(IronholdApplication.class);
-	
+    private static IndexService indexService;
+
+    static {
+        try {
+            indexService = new IndexService();
+        } catch (Exception e) {
+            logger.error("Failed to create index node", e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private Object lock = new Object();
+
     @Override
     public void init() {
 
         try {
-        	setTheme("ironhold");
+            setTheme("ironhold");
+
             window = new SearchWindow("IronHold Search");
 
             setMainWindow(window);
         } catch (Exception e) {
-        	logger.warn(e);
+            logger.warn(e);
         }
     }
 
+    public IndexService getIndexService() {
+        return indexService;
+    }
 }

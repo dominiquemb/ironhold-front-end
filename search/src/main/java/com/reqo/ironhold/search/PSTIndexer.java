@@ -1,11 +1,5 @@
 package com.reqo.ironhold.search;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
 import com.reqo.ironhold.search.model.IndexedMailMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
@@ -13,6 +7,11 @@ import com.reqo.ironhold.storage.model.IndexStatus;
 import com.reqo.ironhold.storage.model.LogLevel;
 import com.reqo.ironhold.storage.model.LogMessage;
 import com.reqo.ironhold.storage.model.MailMessage;
+import org.apache.log4j.Logger;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+
+import java.util.List;
 
 public class PSTIndexer {
 	static {
@@ -42,7 +41,7 @@ public class PSTIndexer {
 	public PSTIndexer(String client, int batchSize) throws Exception {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
-		final IndexService indexService = new IndexService(client);
+		final IndexService indexService = new IndexService();
 
 		while (true) {
 			List<MailMessage> mailMessages = storageService
@@ -52,7 +51,7 @@ public class PSTIndexer {
 
 				logger.info("Indexing " + mailMessage.getMessageId());
 				try {
-					indexService.store(new IndexedMailMessage(mailMessage));
+					indexService.store(client, new IndexedMailMessage(mailMessage));
 
 					logger.info("Message indexed with "
 							+ mailMessage.getAttachments().length

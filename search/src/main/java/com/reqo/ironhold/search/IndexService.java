@@ -40,14 +40,11 @@ public class IndexService {
 
 	private static Logger logger = Logger.getLogger(IndexService.class);
 	private Client esClient;
-	private final String indexPrefix;
 	private String[] esHosts;
 	private int esPort;
 	private Set<String> indexes;
 
-	public IndexService(String indexPrefix) throws Exception {
-		this.indexPrefix = indexPrefix;
-
+	public IndexService() throws Exception {
 		Properties prop = new Properties();
 		prop.load(IndexService.class
 				.getResourceAsStream("elasticsearch.properties"));
@@ -61,8 +58,7 @@ public class IndexService {
 
 	}
 
-	protected IndexService(String indexPrefix, Client esClient) {
-		this.indexPrefix = indexPrefix;
+	protected IndexService(Client esClient) {
 		this.esClient = esClient;
 
 		indexes = Collections.synchronizedSet(new HashSet<String>());
@@ -87,7 +83,7 @@ public class IndexService {
 
 	}
 
-	private void createIndex(String year) throws Exception {
+	private void createIndex(String indexPrefix, String year) throws Exception {
 		String indexName = indexPrefix + "." + year;
 		String analyzerDef = readJsonDefinition("analyzers.json");
 		CreateIndexResponse response1 = esClient.admin().indices()
@@ -127,10 +123,10 @@ public class IndexService {
 		}
 	}
 
-	public boolean store(IndexedMailMessage message) throws Exception {
+	public boolean store(String indexPrefix, IndexedMailMessage message) throws Exception {
 		String indexName = indexPrefix + "." + message.getYear();
 
-		createIndexIfMissing(message.getYear());
+		createIndexIfMissing(indexPrefix, message.getYear());
 
 		if (exists(indexName, message.getMessageId(), message.getType())) {
 			DeleteResponse response = esClient.prepareDelete(indexName, message.getType().getValue(),
@@ -185,7 +181,7 @@ public class IndexService {
 		return false;
 	}
 
-	private void createIndexIfMissing(String year) throws Exception {
+	private void createIndexIfMissing(String indexPrefix, String year) throws Exception {
 		if (!indexes.contains(year)) {
 			String indexName = indexPrefix + "." + year;
 
@@ -193,7 +189,7 @@ public class IndexService {
 					.prepareExists(indexName).execute().actionGet();
 
 			if (!exists.isExists()) {
-				createIndex(year);
+				createIndex(indexPrefix, year);
 			}
 
 			this.indexes.add(year);
@@ -217,12 +213,12 @@ public class IndexService {
 		}
 	}
 
-	public MessageSearchBuilder getNewBuilder() {
+	public MessageSearchBuilder getNewBuilder(String indexPrefix) {
 		return MessageSearchBuilder.newBuilder(esClient
 				.prepareSearch(indexPrefix));
 	}
 
-	public MessageSearchBuilder getNewBuilder(MessageSearchBuilder oldBuilder) {
+	public MessageSearchBuilder getNewBuilder(String indexPrefix, MessageSearchBuilder oldBuilder) {
 		MessageSearchBuilder newBuilder = MessageSearchBuilder
 				.newBuilder(esClient.prepareSearch(indexPrefix));
 		return newBuilder.buildFrom(oldBuilder);
@@ -240,7 +236,7 @@ public class IndexService {
 		}
 	}
 
-	public long getMatchCount(String search) {
+	public long getMatchCount(String indexPrefix, String search) {
 		try {
 			SearchRequestBuilder builder = esClient.prepareSearch(indexPrefix);
 			QueryBuilder qb = QueryBuilders.queryString(search)
@@ -302,7 +298,7 @@ public class IndexService {
 		return bufferJSON.toString();
 	}
 
-	public void refresh() throws Exception {
+	public void refresh(String indexPrefix) throws Exception {
 		RefreshResponse refresh = esClient.admin().indices()
 				.prepareRefresh(indexPrefix).execute().actionGet();
 		if (refresh.getFailedShards() > 0) {

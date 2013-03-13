@@ -1,12 +1,11 @@
 package com.reqo.ironhold.web.components;
 
-import org.apache.log4j.Logger;
-import org.elasticsearch.search.SearchHit;
-
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.log4j.Logger;
+import org.elasticsearch.search.SearchHit;
 
 @SuppressWarnings("serial")
 public class EmailPreviewPanel extends TabSheet {
@@ -20,11 +19,11 @@ public class EmailPreviewPanel extends TabSheet {
 	private SearchHit item;
 	private String criteria;
 
-    public EmailPreviewPanel(IStorageService storageService, IndexService indexService) {
+    public EmailPreviewPanel(String indexPrefix, IStorageService storageService, IndexService indexService) {
         this.setVisible(false);
         this.setSizeFull();
 
-        this.emailView = new EmailView(storageService, indexService);
+        this.emailView = new EmailView(indexPrefix, storageService, indexService);
         this.sourceView = new SourceView(storageService, indexService);
         this.auditView = new AuditView(storageService);
 
