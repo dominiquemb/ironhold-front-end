@@ -1,21 +1,15 @@
 package com.reqo.ironhold.search;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.reqo.ironhold.search.model.IndexedObjectType;
 import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.common.joda.time.DateTime;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.FilteredQueryBuilder;
-import org.elasticsearch.index.query.OrFilterBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 import org.elasticsearch.search.facet.FacetBuilders;
+import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 
-import com.reqo.ironhold.search.model.IndexedObjectType;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageSearchBuilder {
 
@@ -284,8 +278,8 @@ public class MessageSearchBuilder {
 		builder.setHighlighterPreTags("<b>").setHighlighterPostTags("</b>");
 
 		if (dateFacet) {
-			builder.addFacet(FacetBuilders.termsFacet(FACET_YEAR)
-					.field(IndexFieldEnum.YEAR.getValue()));
+			builder.addFacet(FacetBuilders.termsFacet(FACET_YEAR).order(TermsFacet.ComparatorType.REVERSE_TERM)
+                    .field(IndexFieldEnum.YEAR.getValue()));
 		}
 
 		if (fromFacet) {

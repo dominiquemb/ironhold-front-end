@@ -1,13 +1,8 @@
 package com.reqo.ironhold.search;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-
+import com.reqo.ironhold.search.model.IndexedMailMessage;
+import com.reqo.ironhold.search.model.IndexedObjectType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -23,14 +18,21 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
+import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeBuilder;
 
-import com.reqo.ironhold.search.model.IndexedMailMessage;
-import com.reqo.ironhold.search.model.IndexedObjectType;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 public class IndexService {
 	private static final int RETRY_SLEEP = 10000;
@@ -70,13 +72,18 @@ public class IndexService {
 		if (esClient != null) {
 			esClient.close();
 		}
-		esClient = new TransportClient();
 
-		for (String esHost : esHosts) {
-			((TransportClient) esClient)
-					.addTransportAddress(new InetSocketTransportAddress(esHost,
-							esPort));
-		}
+        Settings settings = ImmutableSettings.settingsBuilder()
+                .put("discovery.zen.ping.multicast.enabled", false)
+                .put("discovery.zen.ping.unicast.enabled", true)
+                .put("discovery.zen.ping.unicast.hosts",StringUtils.join(esHosts, ","))
+                .build();
+
+        Node node = NodeBuilder.nodeBuilder().client(true).settings(settings).node().start();
+
+		esClient = node.client();
+
+
 
 	}
 

@@ -35,7 +35,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <mongo.host>192.168.247.128</mongo.host>
+        <mongo.host>172.16.144.128</mongo.host>
         <mongo.port>27017</mongo.port>
         <logger>console</logger>
       </properties>

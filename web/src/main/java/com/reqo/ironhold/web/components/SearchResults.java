@@ -17,7 +17,9 @@ import org.vaadin.pagingcomponent.PagingComponent;
 import org.vaadin.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import org.vaadin.pagingcomponent.utilities.FakeList;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class SearchResults extends HorizontalLayout {
@@ -175,14 +177,6 @@ public class SearchResults extends HorizontalLayout {
 						MessageSearchBuilder.FACET_YEAR);
 				yearFacetPanel.removeAllComponents();
 				List<TermsFacet.Entry> years = (List<TermsFacet.Entry>) dateFacet.getEntries();
-				Collections.sort(years, new Comparator<TermsFacet.Entry>() {
-
-					@Override
-					public int compare(TermsFacet.Entry o1, TermsFacet.Entry o2) {
-						return o2.getTerm().compareTo(o1.getTerm());
-					}
-
-				});
 
 				for (final TermsFacet.Entry entry : years.subList(0,
 						Math.min(years.size(), 10))) {

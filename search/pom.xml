@@ -41,7 +41,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <elasticsearch.hosts>192.168.247.128</elasticsearch.hosts>
+        <elasticsearch.hosts>172.16.144.128:9300</elasticsearch.hosts>
         <elasticsearch.port>9300</elasticsearch.port>
         <elasticsearch.replicas>0</elasticsearch.replicas>
         <elasticsearch.shards>10</elasticsearch.shards>
