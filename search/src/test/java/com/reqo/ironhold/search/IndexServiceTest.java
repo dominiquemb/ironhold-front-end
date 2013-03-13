@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 @RunWith(ElasticsearchRunner.class)
+@SuppressWarnings("unchecked")
 public class IndexServiceTest {
 
 	private static final String INDEX_PREFIX = "unittest";

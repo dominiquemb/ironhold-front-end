@@ -29,6 +29,7 @@ import java.util.List;
  * Date: 3/2/13
  * Time: 4:46 PM
  */
+@SuppressWarnings("unchecked")
 public class PSTExporterTest {
     @Rule
     public TemporaryFolder backupFolder = new TemporaryFolder();

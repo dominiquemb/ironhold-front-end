@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","unchecked"})
 public class SearchResults extends HorizontalLayout {
 
 	protected static final int MAX_RESULTS_TO_BE_FACETED = 30000;

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","unchecked"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MimeMailMessage implements ExportableMessage, Serializable {
     private static final int BUFFER_SIZE = 20000;

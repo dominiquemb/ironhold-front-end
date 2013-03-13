@@ -1,18 +1,16 @@
 package com.reqo.ironhold.storage.model;
 
+import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-
+@SuppressWarnings("unchecked")
 public class RecipientTest {
 
 	@Test
