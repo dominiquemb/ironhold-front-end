@@ -42,7 +42,7 @@ public class IMAPIndexer {
 	public IMAPIndexer(String client, int batchSize) throws Exception {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
-		final IndexService indexService = new IndexService();
+		final IndexService indexService = new IndexService("IMAPIndexer[" + client + "]");
 
 		while (true) {
 			List<MimeMailMessage> mailMessages = storageService

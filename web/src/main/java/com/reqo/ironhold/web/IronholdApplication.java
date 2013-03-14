@@ -30,9 +30,10 @@ public class IronholdApplication extends Application {
     private static Logger logger = Logger.getLogger(IronholdApplication.class);
     private static IndexService indexService;
 
+    //TODO: is there a better way to ensure that there is only 1 ES cient?
     static {
         try {
-            indexService = new IndexService();
+            indexService = new IndexService("WebServer");
         } catch (Exception e) {
             logger.error("Failed to create index node", e);
             throw new RuntimeException(e);

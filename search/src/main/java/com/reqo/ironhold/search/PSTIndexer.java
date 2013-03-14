@@ -41,7 +41,7 @@ public class PSTIndexer {
 	public PSTIndexer(String client, int batchSize) throws Exception {
 		final IStorageService storageService = new MongoService(client,
 				"indexer");
-		final IndexService indexService = new IndexService();
+		final IndexService indexService = new IndexService("PSTIndexer[" + client + "]");
 
 		while (true) {
 			List<MailMessage> mailMessages = storageService

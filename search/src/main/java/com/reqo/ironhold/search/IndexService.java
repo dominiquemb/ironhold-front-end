@@ -43,8 +43,9 @@ public class IndexService {
 	private String[] esHosts;
 	private int esPort;
 	private Set<String> indexes;
+    private String nodeName;
 
-	public IndexService() throws Exception {
+	public IndexService(String nodeName) throws Exception {
 		Properties prop = new Properties();
 		prop.load(IndexService.class
 				.getResourceAsStream("elasticsearch.properties"));
@@ -54,6 +55,8 @@ public class IndexService {
 
 		indexes = Collections.synchronizedSet(new HashSet<String>());
 
+        String hostname = java.net.InetAddress.getLocalHost().getHostName();
+        this.nodeName = nodeName + "@" + hostname;
 		reconnect();
 
 	}
@@ -73,6 +76,7 @@ public class IndexService {
                 .put("discovery.zen.ping.multicast.enabled", false)
                 .put("discovery.zen.ping.unicast.enabled", true)
                 .put("discovery.zen.ping.unicast.hosts",StringUtils.join(esHosts, ","))
+                .put("node.name", this.nodeName)
                 .build();
 
         Node node = NodeBuilder.nodeBuilder().client(true).settings(settings).node().start();
