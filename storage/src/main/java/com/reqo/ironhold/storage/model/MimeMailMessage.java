@@ -1,10 +1,14 @@
 package com.reqo.ironhold.storage.model;
 
+import com.pff.*;
 import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.mail.ByteArrayDataSource;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
@@ -29,7 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings({"serial","unchecked"})
+@SuppressWarnings({"serial", "unchecked"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MimeMailMessage implements ExportableMessage, Serializable {
     private static final int BUFFER_SIZE = 20000;
@@ -94,6 +98,7 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
     private Date storedDate;
     private String messageId;
     private MessageSource[] sources;
+    private boolean pstPartialFailure;
 
     public MimeMailMessage() {
     }
@@ -111,6 +116,93 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
     public void loadMimeMessage(MimeMessage mimeMessage)
             throws MessagingException, IOException {
         loadMimeMessage(mimeMessage, true);
+    }
+
+    public static MimeMessage getMimeMessage(PSTMessage originalPSTMessage) throws EmailException, PSTException, IOException, MessagingException {
+        HtmlEmail email = new HtmlEmail();
+        try {
+            for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
+                try {
+                    PSTRecipient recipient = originalPSTMessage.getRecipient(i);
+                    switch (recipient.getRecipientType()) {
+                        case PSTMessage.RECIPIENT_TYPE_TO:
+                            email.addTo(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            break;
+                        case PSTMessage.RECIPIENT_TYPE_CC:
+                            email.addCc(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            break;
+                    }
+                } catch (Exception e) {
+                    logger.warn(e);
+                }
+
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            if (originalPSTMessage.getDisplayTo().trim().length() > 0) {
+                for (String displayTo : originalPSTMessage.getDisplayTo().split(";")) {
+                    email.addTo(null, displayTo);
+                }
+            }
+
+            if (originalPSTMessage.getDisplayCC().trim().length() > 0) {
+                for (String displayCc : originalPSTMessage.getDisplayCC().split(";")) {
+                    email.addCc(null, displayCc);
+                }
+            }
+        }
+
+        if (originalPSTMessage.getDisplayBCC().trim().length() > 0) {
+            for (String displayBcc : originalPSTMessage.getDisplayBCC().split(";")) {
+                email.addBcc(null, displayBcc);
+            }
+        }
+
+        if (originalPSTMessage.getBody().trim().length() > 0) {
+            email.setMsg(originalPSTMessage.getBody());
+        }
+        if (originalPSTMessage.getBodyHTML().trim().length() > 0) {
+            email.setHtmlMsg(originalPSTMessage.getBodyHTML());
+        }
+
+        email.setFrom(originalPSTMessage.getSenderEmailAddress(), originalPSTMessage.getSenderName());
+        email.setSentDate(originalPSTMessage.getMessageDeliveryTime());
+        email.setSubject(originalPSTMessage.getSubject());
+
+        try {
+            for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
+                try {
+                    PSTAttachment attachment = originalPSTMessage
+                            .getAttachment(i);
+
+                    if ((PSTObject) attachment instanceof PSTMessage) {
+
+                    } else {
+                        String fileName = attachment.getLongFilename();
+                        if (fileName.isEmpty()) {
+                            fileName = attachment.getFilename();
+                        }
+
+                        if (attachment.getAttachmentContentDisposition() != null && attachment.getAttachmentContentDisposition().trim().length() > 0) {
+                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), attachment.getMimeTag()), fileName, attachment.getDisplayName(), attachment.getAttachmentContentDisposition());
+                        } else {
+                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), attachment.getMimeTag()), fileName, attachment.getDisplayName());
+                        }
+                    }
+
+                } catch (Exception e1) {
+                    logger.warn(e1);
+                }
+
+            }
+        } catch (Exception e2) {
+            logger.warn(e2);
+        }
+
+        String hostname = java.net.InetAddress.getLocalHost().getHostName();
+        email.setHostName(hostname);
+        email.buildMimeMessage();
+        return email.getMimeMessage();
+
     }
 
     public void loadMimeMessage(MimeMessage mimeMessage,
