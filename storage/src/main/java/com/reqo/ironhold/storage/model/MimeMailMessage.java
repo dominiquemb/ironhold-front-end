@@ -1,6 +1,9 @@
 package com.reqo.ironhold.storage.model;
 
-import com.pff.*;
+import com.pff.PSTAttachment;
+import com.pff.PSTException;
+import com.pff.PSTMessage;
+import com.pff.PSTRecipient;
 import com.reqo.ironhold.storage.model.mixin.CompressedAttachmentMixin;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -176,8 +179,15 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
                     PSTAttachment attachment = originalPSTMessage
                             .getAttachment(i);
 
-                    if ((PSTObject) attachment instanceof PSTMessage) {
+                    if (attachment.getEmbeddedPSTMessage() != null) {
+                        MimeMessage embeddedMessage = MimeMailMessage.getMimeMessage(attachment.getEmbeddedPSTMessage());
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        embeddedMessage.writeTo(baos);
+                        String rawContents = baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(attachment.getEmbeddedPSTMessage().getInternetMessageId()));
 
+                        System.out.println(rawContents);
+
+                        email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), embeddedMessage.getSubject(), embeddedMessage.getSubject());
                     } else {
                         String fileName = attachment.getLongFilename();
                         if (fileName.isEmpty()) {
