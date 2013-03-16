@@ -3,6 +3,7 @@ package com.reqo.ironhold.storage;
 import com.reqo.ironhold.storage.model.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.MessageSourceTestModel;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
+import com.reqo.ironhold.storage.utils.ChecksumUtils;
 import junit.framework.Assert;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -21,8 +22,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 
@@ -410,7 +409,7 @@ public class EmlLoadTest {
 		File attachment = FileUtils.toFile(EmlLoadTest.class.getResource("/"
 				+ mailMessage.getAttachments()[0].getFileName()));
 
-		String md5fromFile = getMD5Checksum(attachment);
+		String md5fromFile = ChecksumUtils.getMD5Checksum(attachment);
 		OutputStream fos = new FileOutputStream(tempFolder.getRoot()
 				+ File.separator
 				+ mailMessage.getAttachments()[0].getFileName());
@@ -432,9 +431,9 @@ public class EmlLoadTest {
 		fos.flush();
 		fos.close();
 
-		String md5fromAttachment = getMD5Checksum(new File(tempFolder.getRoot()
-				+ File.separator
-				+ mailMessage.getAttachments()[0].getFileName()));
+		String md5fromAttachment = ChecksumUtils.getMD5Checksum(new File(tempFolder.getRoot()
+                + File.separator
+                + mailMessage.getAttachments()[0].getFileName()));
 
 		Assert.assertEquals(md5fromFile, md5fromAttachment);
 
@@ -536,7 +535,7 @@ public class EmlLoadTest {
 		File attachment = FileUtils.toFile(EmlLoadTest.class.getResource("/"
 				+ mailMessage.getAttachments()[0].getFileName()));
 
-		String md5fromFile = getMD5Checksum(attachment);
+		String md5fromFile = ChecksumUtils.getMD5Checksum(attachment);
 		OutputStream fos = new FileOutputStream(tempFolder.getRoot()
 				+ File.separator
 				+ mailMessage.getAttachments()[0].getFileName());
@@ -558,9 +557,9 @@ public class EmlLoadTest {
 		fos.flush();
 		fos.close();
 
-		String md5fromAttachment = getMD5Checksum(new File(tempFolder.getRoot()
-				+ File.separator
-				+ mailMessage.getAttachments()[0].getFileName()));
+		String md5fromAttachment = ChecksumUtils.getMD5Checksum(new File(tempFolder.getRoot()
+                + File.separator
+                + mailMessage.getAttachments()[0].getFileName()));
 
 		Assert.assertEquals(md5fromFile, md5fromAttachment);
 
@@ -891,34 +890,4 @@ public class EmlLoadTest {
 		}
 
 	}
-
-	private static byte[] createChecksum(File file)
-			throws NoSuchAlgorithmException, IOException {
-		InputStream fis = new FileInputStream(file);
-
-		byte[] buffer = new byte[1024];
-		MessageDigest complete = MessageDigest.getInstance("MD5");
-		int numRead;
-		do {
-			numRead = fis.read(buffer);
-			if (numRead > 0) {
-				complete.update(buffer, 0, numRead);
-			}
-		} while (numRead != -1);
-		fis.close();
-		return complete.digest();
-	}
-
-	// see this How-to for a faster way to convert
-	// a byte array to a HEX string
-	public static String getMD5Checksum(File file)
-			throws NoSuchAlgorithmException, IOException {
-		byte[] b = createChecksum(file);
-		String result = "";
-		for (int i = 0; i < b.length; i++) {
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-		}
-		return result;
-	}
-
 }

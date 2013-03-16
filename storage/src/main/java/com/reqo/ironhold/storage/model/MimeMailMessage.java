@@ -159,6 +159,8 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
 
         if (originalPSTMessage.getBody().trim().length() > 0) {
             email.setMsg(originalPSTMessage.getBody());
+        } else {
+            email.setMsg(" ");
         }
         if (originalPSTMessage.getBodyHTML().trim().length() > 0) {
             email.setHtmlMsg(originalPSTMessage.getBodyHTML());
@@ -397,6 +399,8 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
                 logger.debug("populateRawContents - recieved buffer "
                         + bufferCount);
             }
+            os.flush();
+            os.close();
 
             logger.debug("populateRawContents - finished reading");
             rawStream.close();
@@ -463,6 +467,8 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
                     while ((bytesRead = attachmentStream.read(buf)) != -1) {
                         out.write(buf, 0, bytesRead);
                     }
+                    out.flush();
+                    out.close();
 
                     addAttachment(new Attachment(bp.getSize(), this.getMessageDate(),
                             this.getMessageDate(), filename, Base64.encodeBytes(out
@@ -495,7 +501,11 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
 
     @Override
     public String getExportFileName(String compression) {
-        return messageId.replaceAll("\\W+", "_") + ".eml." + compression;
+        if (compression != null) {
+            return messageId.replaceAll("\\W+", "_") + ".eml." + compression;
+        } else {
+            return messageId.replaceAll("\\W+", "_") + ".eml";
+        }
     }
 
     @Override

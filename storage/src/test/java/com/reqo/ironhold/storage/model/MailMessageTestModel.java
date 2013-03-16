@@ -7,9 +7,6 @@ import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,29 +14,33 @@ import java.util.*;
 
 public class MailMessageTestModel extends CommonTestModel {
 	private static final int MAX_MESSAGES_TO_LOAD = 5;
-
+    private final int maxMessagesToLoad;
 	private List<MailMessage> mailMessages = new ArrayList<MailMessage>();
 	private List<PSTMessage> pstMessages = new ArrayList<PSTMessage>();
 
-	public MailMessageTestModel(String pstFilePath) throws JsonParseException, JsonMappingException, JsonGenerationException, IOException, PSTException {
-			File file = FileUtils.toFile(MailMessageTestModel.class
-					.getResource(pstFilePath));
-			System.out.println("Loading messages from " + file);
-			PSTFile pstFile;
-			pstFile = new PSTFile(file);
+    public MailMessageTestModel(String pstFilePath, int maxMessagesToLoad)  throws IOException, PSTException {
+        this.maxMessagesToLoad = maxMessagesToLoad;
+        File file = FileUtils.toFile(MailMessageTestModel.class
+                .getResource(pstFilePath));
+        System.out.println("Loading messages from " + file);
+        PSTFile pstFile;
+        pstFile = new PSTFile(file);
 
-			loadAllMessages("", pstFile.getRootFolder());
+        loadAllMessages("", pstFile.getRootFolder());
 
-			Set<String> uniqueMessages = new HashSet<String>();
-			for (PSTMessage pstMessage : pstMessages) {
-				if (!uniqueMessages.contains(pstMessage.getInternetMessageId())) {
-					mailMessages.add(new MailMessage(pstMessage,
-							new PSTMessageSource(file.toString(), "", file
-									.length(), new Date(file.lastModified()))));
-				}
-			}
+        Set<String> uniqueMessages = new HashSet<String>();
+        for (PSTMessage pstMessage : pstMessages) {
+            if (!uniqueMessages.contains(pstMessage.getInternetMessageId())) {
+                mailMessages.add(new MailMessage(pstMessage,
+                        new PSTMessageSource(file.toString(), "", file
+                                .length(), new Date(file.lastModified()))));
+            }
+        }
 
-			System.out.println("Loaded " + mailMessages.size() + " messages");
+        System.out.println("Loaded " + mailMessages.size() + " messages");
+    }
+	public MailMessageTestModel(String pstFilePath) throws IOException, PSTException {
+        this(pstFilePath, MAX_MESSAGES_TO_LOAD);
 	}
 
     public PSTMessage generateOriginalPSTMessage() {
@@ -58,7 +59,7 @@ public class MailMessageTestModel extends CommonTestModel {
 
 	private void loadAllMessages(String folderPath, PSTFolder folder)
 			throws PSTException, IOException {
-		if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
+		if (pstMessages.size() == maxMessagesToLoad) {
 			return;
 		}
 
@@ -68,7 +69,7 @@ public class MailMessageTestModel extends CommonTestModel {
 				loadAllMessages(
 						folderPath + "/" + childFolder.getDisplayName(),
 						childFolder);
-				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
+				if (pstMessages.size() == maxMessagesToLoad) {
 					return;
 				}
 			}
@@ -81,7 +82,7 @@ public class MailMessageTestModel extends CommonTestModel {
 						+ message.getNumberOfAttachments());
 
 				pstMessages.add(message);
-				if (pstMessages.size() == MAX_MESSAGES_TO_LOAD) {
+				if (pstMessages.size() == maxMessagesToLoad) {
 					return;
 				}
 				message = (PSTMessage) folder.getNextChild();
