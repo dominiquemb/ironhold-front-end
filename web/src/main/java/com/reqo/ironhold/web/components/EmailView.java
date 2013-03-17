@@ -28,65 +28,67 @@ import java.io.InputStream;
 @SuppressWarnings("serial")
 public class EmailView extends Panel {
 
-	private final IStorageService storageService;
-	private final IndexService indexService;
-	private final EmailView me;
+    private final IStorageService storageService;
+    private final IndexService indexService;
+    private final EmailView me;
     private final String indexPrefix;
-	private SearchHitPanel currentHitPanel;
+    private SearchHitPanel currentHitPanel;
+    private final boolean displayHTML;
 
-	public EmailView(String indexPrefix, IStorageService storageService, IndexService indexService) {
+    public EmailView(String indexPrefix, IStorageService storageService, IndexService indexService, boolean displayHTML) {
         this.indexPrefix = indexPrefix;
-		this.storageService = storageService;
-		this.indexService = indexService;
-		this.setSizeFull();
-		this.me = this;
-	}
+        this.storageService = storageService;
+        this.indexService = indexService;
+        this.displayHTML = displayHTML;
+        this.setSizeFull();
+        this.me = this;
+    }
 
-	public synchronized void show(SearchHitPanel newHitPanel, SearchHit item,
-			String criteria) throws Exception {
+    public synchronized void show(SearchHitPanel newHitPanel, SearchHit item,
+                                  String criteria) throws Exception {
 
-		this.removeAllComponents();
+        this.removeAllComponents();
 
-		String subjectValue = IndexUtils.getFieldValue(item,
-				IndexFieldEnum.SUBJECT, null, false);
-		if (subjectValue.equals(StringUtils.EMPTY)) {
-			subjectValue = "&lt;No subject&gt;";
-		}
-		final Label subject = new Label(subjectValue);
-		subject.setStyleName(Reindeer.LABEL_H2);
-		subject.setContentMode(Label.CONTENT_XHTML);
-		this.addComponent(subject);
+        String subjectValue = IndexUtils.getFieldValue(item,
+                IndexFieldEnum.SUBJECT, null, false);
+        if (subjectValue.equals(StringUtils.EMPTY)) {
+            subjectValue = "&lt;No subject&gt;";
+        }
+        final Label subject = new Label(subjectValue);
+        subject.setStyleName(Reindeer.LABEL_H2);
+        subject.setContentMode(Label.CONTENT_XHTML);
+        this.addComponent(subject);
 
-		final Label date = new Label(IndexUtils.getFieldValue(item,
-				IndexFieldEnum.DATE));
-		date.setContentMode(Label.CONTENT_XHTML);
-		date.setStyleName(Reindeer.LABEL_SMALL);
-		this.addComponent(date);
+        final Label date = new Label(IndexUtils.getFieldValue(item,
+                IndexFieldEnum.DATE));
+        date.setContentMode(Label.CONTENT_XHTML);
+        date.setStyleName(Reindeer.LABEL_SMALL);
+        this.addComponent(date);
 
-		addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
-		addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
-		addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
+        addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
+        addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
+        addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
 
-		final Label size = new Label(IndexUtils.getFieldValue(item,
-				IndexFieldEnum.SIZE));
-		size.setContentMode(Label.CONTENT_XHTML);
-		size.setStyleName(Reindeer.LABEL_SMALL);
-		this.addComponent(size);
+        final Label size = new Label(IndexUtils.getFieldValue(item,
+                IndexFieldEnum.SIZE));
+        size.setContentMode(Label.CONTENT_XHTML);
+        size.setStyleName(Reindeer.LABEL_SMALL);
+        this.addComponent(size);
 
-		Object mailMessage = null;
-		Attachment[] attachments = null;
-		
-		if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
-			mailMessage = storageService.getMailMessage(item.getId(), true);
-			attachments = ((MailMessage) mailMessage).getAttachments();
-		} else if (item.getType().equals(
-				IndexedObjectType.MIME_MESSAGE.getValue())) {
-			mailMessage = storageService.getMimeMailMessage(item.getId());
-			attachments = ((MimeMailMessage) mailMessage).getAttachments();
-		}
+        Object mailMessage = null;
+        Attachment[] attachments = null;
 
-		if (attachments != null) {
-			for (final Attachment attachment : attachments) {
+        if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
+            mailMessage = storageService.getMailMessage(item.getId(), true);
+            attachments = ((MailMessage) mailMessage).getAttachments();
+        } else if (item.getType().equals(
+                IndexedObjectType.MIME_MESSAGE.getValue())) {
+            mailMessage = storageService.getMimeMailMessage(item.getId());
+            attachments = ((MimeMailMessage) mailMessage).getAttachments();
+        }
+
+        if (attachments != null) {
+            for (final Attachment attachment : attachments) {
                 if (attachment.getFileName().trim().length() > 0) {
                     final HorizontalLayout attachmentLayout = new HorizontalLayout();
                     attachmentLayout.setHeight("16px");
@@ -126,44 +128,51 @@ public class EmailView extends Panel {
                     this.addComponent(attachmentLayout);
                 }
 
-			}
-		}
+            }
+        }
 
-		final HorizontalLayout bodyLayout = new HorizontalLayout();
-		bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
-		bodyLayout.setSizeFull();
-		SearchHits hits = indexService.search(
-				indexService.getNewBuilder(indexPrefix).withCriteria(criteria)
-						.withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
-		String bodyText = IndexUtils.getFieldValue(hits.getAt(0),
-				IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");
-		System.out.println(bodyText);
-		final Label body = new Label(bodyText);
-		body.setContentMode(Label.CONTENT_RAW);
-		bodyLayout.addComponent(body);
+        final HorizontalLayout bodyLayout = new HorizontalLayout();
+        bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
+        bodyLayout.setSizeFull();
+        SearchHits hits = indexService.search(
+                indexService.getNewBuilder(indexPrefix).withCriteria(criteria)
+                        .withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
 
-		this.addComponent(bodyLayout);
+        String bodyText = null;
+        if (displayHTML) {
+            MimeMailMessage mimeMessage = storageService.getMimeMailMessage(item.getId());
+            bodyText = mimeMessage.getBodyHTML().isEmpty() ? mimeMessage.getBody() : mimeMessage.getBodyHTML();
+        } else {
+            bodyText = IndexUtils.getFieldValue(hits.getAt(0),
+                    IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");
+        }
 
-	}
+        final Label body = new Label(bodyText);
+        body.setContentMode(Label.CONTENT_RAW);
+        bodyLayout.addComponent(body);
 
-	private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
-		String value = IndexUtils.getFieldValue(item, field, subField);
-		if (!value.equals(StringUtils.EMPTY)) {
-			HorizontalLayout hl = new HorizontalLayout();
-			final Label typeLabel = new Label(field.getLabel() + ":");
-			typeLabel.setContentMode(Label.CONTENT_XHTML);
-			hl.addComponent(typeLabel);
-			final Label valueLabel = new Label(value);
-			valueLabel.setContentMode(Label.CONTENT_XHTML);
-			hl.addComponent(valueLabel);
-			
+        this.addComponent(bodyLayout);
 
-			typeLabel.setWidth("35px");
-			valueLabel.setWidth(null);
-			hl.setExpandRatio(valueLabel, 1.0f);
+    }
 
-			this.addComponent(hl);
-		}
+    private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
+        String value = IndexUtils.getFieldValue(item, field, subField);
+        if (!value.equals(StringUtils.EMPTY)) {
+            HorizontalLayout hl = new HorizontalLayout();
+            final Label typeLabel = new Label(field.getLabel() + ":");
+            typeLabel.setContentMode(Label.CONTENT_XHTML);
+            hl.addComponent(typeLabel);
+            final Label valueLabel = new Label(value);
+            valueLabel.setContentMode(Label.CONTENT_XHTML);
+            hl.addComponent(valueLabel);
 
-	}
+
+            typeLabel.setWidth("35px");
+            valueLabel.setWidth(null);
+            hl.setExpandRatio(valueLabel, 1.0f);
+
+            this.addComponent(hl);
+        }
+
+    }
 }

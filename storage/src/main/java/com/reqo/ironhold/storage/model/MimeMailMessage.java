@@ -121,8 +121,27 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
         loadMimeMessage(mimeMessage, true);
     }
 
+    public static MimeMailMessage getMimeMailMessage(PSTMessage originalPSTMessage) throws IOException, MessagingException, PSTException, EmailException {
+        MimeMessage mimeMessage = getMimeMessage(originalPSTMessage);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mimeMessage.writeTo(baos);
+        String rawContents = baos.toString();
+        rawContents = rawContents.replaceFirst(mimeMessage.getMessageID(), Matcher.quoteReplacement(originalPSTMessage.getInternetMessageId()));
+
+        MimeMailMessage mimeMailMessage = new MimeMailMessage();
+        mimeMailMessage.loadMimeMessageFromSource(rawContents);
+
+        return mimeMailMessage;
+    }
+
     public static MimeMessage getMimeMessage(PSTMessage originalPSTMessage) throws EmailException, PSTException, IOException, MessagingException {
         HtmlEmail email = new HtmlEmail();
+        if (originalPSTMessage.getPriority() == PSTMessage.IMPORTANCE_HIGH) {
+            email.addHeader("Priority", "urgent");
+        } else if (originalPSTMessage.getPriority() == PSTMessage.IMPORTANCE_LOW) {
+            email.addHeader("Priority", "non-urgent");
+        }
+
         try {
             for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
                 try {
@@ -185,9 +204,7 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
                         embeddedMessage.writeTo(baos);
                         String rawContents = baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(attachment.getEmbeddedPSTMessage().getInternetMessageId()));
 
-                        System.out.println(rawContents);
-
-                        email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), embeddedMessage.getSubject(), embeddedMessage.getSubject());
+                        email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), "embeddedMessage.eml", embeddedMessage.getSubject());
                     } else {
                         String fileName = attachment.getLongFilename();
                         if (fileName.isEmpty()) {
