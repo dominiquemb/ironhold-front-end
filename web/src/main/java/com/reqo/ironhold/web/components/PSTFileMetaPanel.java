@@ -1,7 +1,9 @@
 package com.reqo.ironhold.web.components;
 
-import java.text.SimpleDateFormat;
-
+import com.reqo.ironhold.storage.model.PSTFileMeta;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.common.joda.time.DateTime;
@@ -9,16 +11,7 @@ import org.elasticsearch.common.joda.time.Period;
 import org.elasticsearch.common.joda.time.format.PeriodFormatter;
 import org.elasticsearch.common.joda.time.format.PeriodFormatterBuilder;
 
-import com.reqo.ironhold.storage.model.PSTFileMeta;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
+import java.text.SimpleDateFormat;
 
 public class PSTFileMetaPanel extends Panel {
 	private static final String TYPE = "Type";
@@ -142,9 +135,6 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getAverageSize())), 3, 1);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
-						.getAverageAttachmentSize())), 4, 1);
 
 		Label averageCompressedSizeLabel = new Label("<b>Avg Zipped Size:</b>");
 		averageCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -152,9 +142,6 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getCompressedAverageSize())), 3, 2);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
-						.getCompressedAverageAttachmentSize())), 4, 2);
 
 		Label medianSizeLabel = new Label("<b>Median Size:</b>");
 		medianSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -162,9 +149,6 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getMedianSize())), 3, 3);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
-						.getMedianAttachmentSize())), 4, 3);
 
 		Label medianCompressedSizeLabel = new Label(
 				"<b>Median Zipped Size:</b>");
@@ -173,9 +157,6 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getMedianCompressedSize())), 3, 4);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
-						.getMedianCompressedAttachmentSize())), 4, 4);
 
 		Label maxSizeLabel = new Label("<b>Max Size:</b>");
 		maxSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -183,9 +164,6 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getMaxSize())), 3, 5);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
-						.getMaxAttachmentSize())), 4, 5);
 
 		Label maxCompressedSizeLabel = new Label("<b>Max Zipped Size:</b>");
 		maxCompressedSizeLabel.setContentMode(Label.CONTENT_XHTML);
@@ -193,9 +171,6 @@ public class PSTFileMetaPanel extends Panel {
 		grid.addComponent(
 				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
 						.getCompressedMaxSize())), 3, 6);
-		grid.addComponent(
-				new Label(FileUtils.byteCountToDisplaySize((long) pstFile
-						.getCompressedMaxAttachmentSize())), 4, 6);
 
 		Label noAttachmentsLabel = new Label("<b>Count:</b>");
 		noAttachmentsLabel.setContentMode(Label.CONTENT_XHTML);

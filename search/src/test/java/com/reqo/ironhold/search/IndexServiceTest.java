@@ -3,9 +3,10 @@ package com.reqo.ironhold.search;
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
 import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
+import com.pff.PSTMessage;
 import com.reqo.ironhold.search.model.IndexedMailMessage;
-import com.reqo.ironhold.search.model.MailMessageTestModel;
-import com.reqo.ironhold.storage.model.MailMessage;
+import com.reqo.ironhold.search.model.PSTMessageTestModel;
+import com.reqo.ironhold.storage.model.MimeMailMessage;
 import junit.framework.Assert;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -25,197 +26,200 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class IndexServiceTest {
 
-	private static final String INDEX_PREFIX = "unittest";
-	private IndexService indexService;
+    private static final String INDEX_PREFIX = "unittest";
+    private IndexService indexService;
 
-	@ElasticsearchNode
-	private static Node node;
+    @ElasticsearchNode
+    private static Node node;
 
-	@ElasticsearchClient
-	private static Client client;
+    @ElasticsearchClient
+    private static Client client;
 
-	private MailMessageTestModel testModel;
+    private PSTMessageTestModel testModel;
 
-	@Before
-	public void setUp() throws Exception {
-		indexService = new IndexService(client);
-		testModel = new MailMessageTestModel("/attachments.pst");
-	}
+    @Before
+    public void setUp() throws Exception {
+        indexService = new IndexService(client);
+        testModel = new PSTMessageTestModel("/attachments.pst");
+    }
 
-	@After
-	public void tearDown() {
-		client.admin().indices().prepareDelete(INDEX_PREFIX);
-	}
+    @After
+    public void tearDown() {
+        client.admin().indices().prepareDelete(INDEX_PREFIX);
+    }
 
-	@Test
-	public void testStore() throws Exception {
-		MailMessage inputMessage = testModel.generatePSTMessage();
+    @Test
+    public void testStore() throws Exception {
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-				inputMessage);
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                inputMessage);
 
-		Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
-		indexService.refresh(INDEX_PREFIX);
+        Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
+        indexService.refresh(INDEX_PREFIX);
 
-		String indexName = INDEX_PREFIX + "." + indexedMailMessage.getYear();
-		IndicesExistsResponse exists = client.admin().indices()
-				.prepareExists(indexName).execute().actionGet();
+        String indexName = INDEX_PREFIX + "." + indexedMailMessage.getYear();
+        IndicesExistsResponse exists = client.admin().indices()
+                .prepareExists(indexName).execute().actionGet();
 
-		Assert.assertTrue(exists.exists());
+        Assert.assertTrue(exists.exists());
 
-		GetResponse response = client
-				.prepareGet(indexName, "message",
-						indexedMailMessage.getMessageId()).execute()
-				.actionGet();
-		Assert.assertTrue(response.exists());
-	}
+        GetResponse response = client
+                .prepareGet(indexName, "mimeMessage",
+                        indexedMailMessage.getMessageId()).execute()
+                .actionGet();
+        Assert.assertTrue(response.exists());
+    }
 
-	@Test
-	public void testGetMatchCountWithString() throws Exception {
-		MailMessage inputMessage = testModel.generatePSTMessage();
+    @Test
+    public void testGetMatchCountWithString() throws Exception {
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-				inputMessage);
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                inputMessage);
 
-		Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
-		indexService.refresh(INDEX_PREFIX);
+        Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
+        indexService.refresh(INDEX_PREFIX);
 
-		String searchWord = inputMessage.getPstMessage().getBody().split(" ")[0];
-		long matchCount = indexService.getMatchCount(INDEX_PREFIX, searchWord);
+        String searchWord = inputMessage.getBody().split(" ")[0];
+        long matchCount = indexService.getMatchCount(INDEX_PREFIX, searchWord);
 
-		Assert.assertEquals(1, matchCount);
+        Assert.assertEquals(1, matchCount);
 
-		long notFound = indexService.getMatchCount(INDEX_PREFIX,"xxyyzz");
+        long notFound = indexService.getMatchCount(INDEX_PREFIX, "xxyyzz");
 
-		Assert.assertEquals(0, notFound);
+        Assert.assertEquals(0, notFound);
 
-	}
+    }
 
-	@Test
-	public void testInvalidSearchTerm() throws Exception {
-		MailMessage inputMessage = testModel.generatePSTMessage();
+    @Test
+    public void testInvalidSearchTerm() throws Exception {
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-				inputMessage);
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                inputMessage);
 
-		Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
-		indexService.refresh(INDEX_PREFIX);
+        Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
+        indexService.refresh(INDEX_PREFIX);
 
-		long invalidSearchTerm = indexService.getMatchCount(INDEX_PREFIX, "xxyyzz(");
+        long invalidSearchTerm = indexService.getMatchCount(INDEX_PREFIX, "xxyyzz(");
 
-		Assert.assertEquals(-1, invalidSearchTerm);
+        Assert.assertEquals(-1, invalidSearchTerm);
 
-	}
+    }
 
-	@Test
-	public void testGetMatchCountWithBuilder() throws Exception {
-		MailMessage inputMessage = testModel.generatePSTMessage();
+    @Test
+    public void testGetMatchCountWithBuilder() throws Exception {
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-				inputMessage);
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                inputMessage);
 
-		Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
-		indexService.refresh(INDEX_PREFIX);
+        Assert.assertTrue(indexService.store(INDEX_PREFIX, indexedMailMessage));
+        indexService.refresh(INDEX_PREFIX);
 
-		String searchWord = inputMessage.getPstMessage().getBody().split(" ")[0];
-		MessageSearchBuilder builder1 = indexService.getNewBuilder(INDEX_PREFIX);
-		builder1.withCriteria(searchWord);
-		builder1.withResultsLimit(1, 10);
-		builder1.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
+        String searchWord = inputMessage.getBody().split(" ")[0];
+        MessageSearchBuilder builder1 = indexService.getNewBuilder(INDEX_PREFIX);
+        builder1.withCriteria(searchWord);
+        builder1.withResultsLimit(1, 10);
+        builder1.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
 
-		SearchResponse matchCount = indexService.getMatchCount(builder1);
+        SearchResponse matchCount = indexService.getMatchCount(builder1);
 
-		Assert.assertEquals(1, matchCount.getHits().getTotalHits());
+        Assert.assertEquals(1, matchCount.getHits().getTotalHits());
 
-		MessageSearchBuilder builder2 = indexService.getNewBuilder(INDEX_PREFIX, builder1);
-		builder2.withCriteria("xxyyzz");
+        MessageSearchBuilder builder2 = indexService.getNewBuilder(INDEX_PREFIX, builder1);
+        builder2.withCriteria("xxyyzz");
 
-		SearchResponse notFound = indexService.getMatchCount(builder2);
+        SearchResponse notFound = indexService.getMatchCount(builder2);
 
-		Assert.assertEquals(0, notFound.getHits().getTotalHits());
-	}
+        Assert.assertEquals(0, notFound.getHits().getTotalHits());
+    }
 
-	@Test
-	public void testSearchWithFacets() throws Exception {
-		List<MailMessage> inputMessages = testModel.generatePSTMessages();
+    @Test
+    public void testSearchWithFacets() throws Exception {
 
-		
-		for (MailMessage inputMessage : inputMessages) {
-			IndexedMailMessage toBeStored = new IndexedMailMessage(
-					inputMessage);
+        List<PSTMessage> inputMessages = testModel.generateOriginalPSTMessages();
 
-			Assert.assertTrue(indexService.store(INDEX_PREFIX, toBeStored));
-		}
-		indexService.refresh(INDEX_PREFIX);
-		
-		IndexedMailMessage indexedMailMessage = new IndexedMailMessage(inputMessages.get(0));
 
-		String searchWord = inputMessages.get(0).getPstMessage().getSenderName().split(" ")[1];
-		MessageSearchBuilder builder = indexService.getNewBuilder(INDEX_PREFIX);
-		builder.withResultsLimit(1, 10);
-		builder.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
-		builder.withCriteria(searchWord);
-		builder.withDateFacet().withFileExtFacet().withFromDomainFacet()
-				.withFromFacet().withFullBody().withToFacet()
-				.withToDomainFacet();
-		SearchResponse response = indexService.search(builder);
+        for (PSTMessage inputMessage : inputMessages) {
+            MimeMailMessage message = MimeMailMessage.getMimeMailMessage(inputMessage);
 
-		Assert.assertEquals(1, response.getHits().getTotalHits());
+            IndexedMailMessage toBeStored = new IndexedMailMessage(
+                    message);
 
-		TermsFacet dateFacet = response.getFacets().facet(
-				MessageSearchBuilder.FACET_YEAR);
-		List<TermsFacet.Entry> years = (List<TermsFacet.Entry>) dateFacet
-				.getEntries();
-		Assert.assertEquals(1, years.size());
-		Assert.assertEquals(indexedMailMessage.getYear(), years.get(0)
-				.getTerm());
-		Assert.assertEquals(1, years.get(0).getCount());
+            Assert.assertTrue(indexService.store(INDEX_PREFIX, toBeStored));
+        }
+        indexService.refresh(INDEX_PREFIX);
 
-		TermsFacet toFacet = response.getFacets().facet(
-				MessageSearchBuilder.FACET_TO_NAME);
-		List<TermsFacet.Entry> toNames = (List<TermsFacet.Entry>) toFacet
-				.getEntries();
-		Assert.assertEquals(1, toNames.size());
-		Assert.assertEquals(indexedMailMessage.getTo()[0].getName(), toNames
-				.get(0).getTerm());
-		Assert.assertEquals(1, toNames.get(0).getCount());
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(MimeMailMessage.getMimeMailMessage(inputMessages.get(0)));
 
-		TermsFacet fromFacet = response.getFacets().facet(
-				MessageSearchBuilder.FACET_FROM_NAME);
-		List<TermsFacet.Entry> fromNames = (List<TermsFacet.Entry>) fromFacet
-				.getEntries();
-		Assert.assertEquals(1, fromNames.size());
-		Assert.assertEquals(indexedMailMessage.getSender().getName(), fromNames
-				.get(0).getTerm());
-		Assert.assertEquals(1, fromNames.get(0).getCount());
+        String searchWord = inputMessages.get(0).getSenderName().split(" ")[1];
+        MessageSearchBuilder builder = indexService.getNewBuilder(INDEX_PREFIX);
+        builder.withResultsLimit(1, 10);
+        builder.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
+        builder.withCriteria(searchWord);
+        builder.withDateFacet().withFileExtFacet().withFromDomainFacet()
+                .withFromFacet().withFullBody().withToFacet()
+                .withToDomainFacet();
+        SearchResponse response = indexService.search(builder);
 
-		TermsFacet toDomainFacet = response.getFacets().facet(
-				MessageSearchBuilder.FACET_TO_DOMAIN);
-		List<TermsFacet.Entry> toDomains = (List<TermsFacet.Entry>) toDomainFacet
-				.getEntries();
-		Assert.assertEquals(1, toDomains.size());
-		Assert.assertEquals(indexedMailMessage.getTo()[0].getDomain(),
-				toDomains.get(0).getTerm());
-		Assert.assertEquals(1, toDomains.get(0).getCount());
+        Assert.assertEquals(1, response.getHits().getTotalHits());
 
-		TermsFacet fromDomainFacet = response.getFacets().facet(
-				MessageSearchBuilder.FACET_FROM_DOMAIN);
-		List<TermsFacet.Entry> fromDomains = (List<TermsFacet.Entry>) fromDomainFacet
-				.getEntries();
-		Assert.assertEquals(1, fromDomains.size());
-		Assert.assertEquals(indexedMailMessage.getSender().getDomain(),
-				fromDomains.get(0).getTerm());
-		Assert.assertEquals(1, fromDomains.get(0).getCount());
+        TermsFacet dateFacet = response.getFacets().facet(
+                MessageSearchBuilder.FACET_YEAR);
+        List<TermsFacet.Entry> years = (List<TermsFacet.Entry>) dateFacet
+                .getEntries();
+        Assert.assertEquals(1, years.size());
+        Assert.assertEquals(indexedMailMessage.getYear(), years.get(0)
+                .getTerm());
+        Assert.assertEquals(1, years.get(0).getCount());
 
-		TermsFacet fileExtFacet = response.getFacets().facet(
-				MessageSearchBuilder.FACET_FILEEXT);
-		List<TermsFacet.Entry> fileExts = (List<TermsFacet.Entry>) fileExtFacet
-				.getEntries();
-		Assert.assertEquals(1, fileExts.size());
-		Assert.assertEquals(
-				indexedMailMessage.getAttachments()[0].getFileExt(), fileExts
-						.get(0).getTerm());
-		Assert.assertEquals(1, fileExts.get(0).getCount());
-	}
+        TermsFacet toFacet = response.getFacets().facet(
+                MessageSearchBuilder.FACET_TO_NAME);
+        List<TermsFacet.Entry> toNames = (List<TermsFacet.Entry>) toFacet
+                .getEntries();
+        Assert.assertEquals(1, toNames.size());
+        Assert.assertEquals(indexedMailMessage.getTo()[0].getName(), toNames
+                .get(0).getTerm());
+        Assert.assertEquals(1, toNames.get(0).getCount());
+
+        TermsFacet fromFacet = response.getFacets().facet(
+                MessageSearchBuilder.FACET_FROM_NAME);
+        List<TermsFacet.Entry> fromNames = (List<TermsFacet.Entry>) fromFacet
+                .getEntries();
+        Assert.assertEquals(1, fromNames.size());
+        Assert.assertEquals(indexedMailMessage.getSender().getName(), fromNames
+                .get(0).getTerm());
+        Assert.assertEquals(1, fromNames.get(0).getCount());
+
+        TermsFacet toDomainFacet = response.getFacets().facet(
+                MessageSearchBuilder.FACET_TO_DOMAIN);
+        List<TermsFacet.Entry> toDomains = (List<TermsFacet.Entry>) toDomainFacet
+                .getEntries();
+        Assert.assertEquals(1, toDomains.size());
+        Assert.assertEquals(indexedMailMessage.getTo()[0].getDomain(),
+                toDomains.get(0).getTerm());
+        Assert.assertEquals(1, toDomains.get(0).getCount());
+
+        TermsFacet fromDomainFacet = response.getFacets().facet(
+                MessageSearchBuilder.FACET_FROM_DOMAIN);
+        List<TermsFacet.Entry> fromDomains = (List<TermsFacet.Entry>) fromDomainFacet
+                .getEntries();
+        Assert.assertEquals(1, fromDomains.size());
+        Assert.assertEquals(indexedMailMessage.getSender().getDomain(),
+                fromDomains.get(0).getTerm());
+        Assert.assertEquals(1, fromDomains.get(0).getCount());
+
+        TermsFacet fileExtFacet = response.getFacets().facet(
+                MessageSearchBuilder.FACET_FILEEXT);
+        List<TermsFacet.Entry> fileExts = (List<TermsFacet.Entry>) fileExtFacet
+                .getEntries();
+        Assert.assertEquals(1, fileExts.size());
+        Assert.assertEquals(
+                indexedMailMessage.getAttachments()[0].getFileExt(), fileExts
+                .get(0).getTerm());
+        Assert.assertEquals(1, fileExts.get(0).getCount());
+    }
 
 }

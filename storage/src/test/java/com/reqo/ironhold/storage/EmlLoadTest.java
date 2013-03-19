@@ -727,13 +727,7 @@ public class EmlLoadTest {
 		Assert.assertEquals(mimeMessage.getSentDate(),
 				mailMessage.getMessageDate());
 
-		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getSender()).getAddress(),
-				mailMessage.getSender().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getSender())
-				.getPersonal() == null ? StringUtils.EMPTY
-				: ((InternetAddress) mimeMessage.getSender()).getPersonal(),
-				mailMessage.getSender().getName());
+
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
 				mailMessage.getFrom().getAddress());
@@ -792,7 +786,20 @@ public class EmlLoadTest {
 				mailMessage.getMessageId());
 	}
 
-	@Test
+
+    @Test
+    public void testLowImportance() throws Exception {
+        MimeMailMessage mailMessage = performBasicCheckout("/testLowImportance.eml");
+        Assert.assertEquals(MimeMailMessage.IMPORTANCE_LOW, mailMessage.getImportance());
+    }
+
+    @Test
+    public void testHighImportance() throws Exception {
+        MimeMailMessage mailMessage = performBasicCheckout("/testHighImportance.eml");
+        Assert.assertEquals(MimeMailMessage.IMPORTANCE_HIGH, mailMessage.getImportance());
+    }
+
+    @Test
 	public void testMimeMessageBig() throws Exception {
 		performBasicCheckout("/testMimeMessageBig.eml");
 	}
@@ -822,7 +829,7 @@ public class EmlLoadTest {
 		performBasicCheckout("/testBlankContent.eml");
 	}
 	
-	private void performBasicCheckout(String fileName) throws MessagingException, IOException {
+	private MimeMailMessage performBasicCheckout(String fileName) throws MessagingException, IOException {
 		File file = FileUtils.toFile(EmlLoadTest.class
 				.getResource(fileName));
 		InputStream is = new FileInputStream(file);
@@ -837,12 +844,12 @@ public class EmlLoadTest {
 				mailMessage.getMessageDate());
 
 		Assert.assertEquals(
-				((InternetAddress) mimeMessage.getSender()).getAddress(),
-				mailMessage.getSender().getAddress());
-		Assert.assertEquals(((InternetAddress) mimeMessage.getSender())
+				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
+				mailMessage.getFrom().getAddress());
+		Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
 				.getPersonal() == null ? StringUtils.EMPTY
-				: ((InternetAddress) mimeMessage.getSender()).getPersonal(),
-				mailMessage.getSender().getName());
+				: ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
+				mailMessage.getFrom().getName());
 		Assert.assertEquals(
 				((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
 				mailMessage.getFrom().getAddress());
@@ -889,5 +896,6 @@ public class EmlLoadTest {
 			Assert.assertEquals(0, mailMessage.getBcc().length);
 		}
 
+        return mailMessage;
 	}
 }

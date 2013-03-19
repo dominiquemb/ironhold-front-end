@@ -4,6 +4,7 @@ import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.gridfs.GridFS;
 import com.pff.PSTException;
+import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.model.*;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
@@ -13,19 +14,18 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
+import org.apache.commons.mail.ByteArrayDataSource;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
 import org.junit.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ public class MongoServiceTest {
 
     private Mongo mongo;
     private DB db;
-    private MailMessageTestModel testModel;
+    private PSTMessageTestModel testModel;
     private static final String DATABASENAME = "MongoServiceTest";
 
     @BeforeClass
@@ -55,7 +55,7 @@ public class MongoServiceTest {
         mongo = new Mongo("localhost", 12345);
         db = mongo.getDB(DATABASENAME);
 
-        testModel = new MailMessageTestModel("/data.pst");
+        testModel = new PSTMessageTestModel("/data.pst");
     }
 
     @After
@@ -66,136 +66,122 @@ public class MongoServiceTest {
 
     @Test
     public void testExistsPositive() throws Exception {
-        try {
-            IStorageService storageService = new MongoService(mongo, db);
+        IStorageService storageService = new MongoService(mongo, db);
 
-            MailMessage inputMessage = testModel.generatePSTMessage();
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+        inputMessage.addSource(MessageSourceTestModel
+                .generatePSTMessageSource());
 
-            storageService.store(inputMessage);
 
-            testModel.verifyStorage(storageService, inputMessage);
+        storageService.store(inputMessage);
 
-            Assert.assertTrue(storageService.existsMailMessage(inputMessage
-                    .getMessageId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.assertNull(e);
-        }
+        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
+
+        Assert.assertTrue(storageService.existsMimeMailMessage(inputMessage
+                .getMessageId()));
     }
 
     @Test
-    public void testCompressedSerialization() throws JsonGenerationException,
-            JsonMappingException, IOException {
-        MailMessage inputMessage = testModel.generatePSTMessage();
+    public void testAttachmentsAbsence() throws IOException, PSTException, MessagingException, EmailException {
+        testModel = new PSTMessageTestModel("/data.pst");
 
-        String serializedMessage = MailMessage
-                .serializeCompressedMailMessage(inputMessage);
-        MailMessage deserializedMessage = MailMessage
-                .deserializeCompressedMailMessage(serializedMessage);
+        MimeMailMessage pstMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        Assert.assertEquals(inputMessage, deserializedMessage);
+        Assert.assertTrue(pstMessage.getAttachments().length == 0);
+
 
     }
 
     @Test
-    public void testAttachmentsAbsence() throws IOException, PSTException {
-        testModel = new MailMessageTestModel("/attachments.pst");
+    public void testAttachmentsPresence() throws IOException, PSTException, MessagingException, EmailException {
+        testModel = new PSTMessageTestModel("/attachments.pst");
 
-        MailMessage pstMessage = testModel.generatePSTMessage();
+        MimeMailMessage pstMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         Assert.assertTrue(pstMessage.getAttachments().length > 0);
 
-        String serializedMessage = MailMessage.serializeMailMessage(pstMessage);
+        String serializedMessage = MimeMailMessage.serialize(pstMessage);
 
         Assert.assertFalse(serializedMessage.contains("\"attachments\":"));
 
-
-    }
-
-    @Test
-    public void testAttachmentsPresence() throws IOException, PSTException {
-        testModel = new MailMessageTestModel("/attachments.pst");
-
-        MailMessage pstMessage = testModel.generatePSTMessage();
-
-        Assert.assertTrue(pstMessage.getAttachments().length > 0);
-
-        String serializedMessage = MailMessage.serializeMailMessageWithAttachments(pstMessage);
-
-        Assert.assertTrue(serializedMessage.contains("\"attachments\":"));
-
     }
 
 
-
     @Test
-    public void testAttachmentsSerialization() throws IOException, PSTException {
-        testModel = new MailMessageTestModel("/attachments.pst");
+    public void testAttachmentsSerialization() throws IOException, PSTException, MessagingException, EmailException {
+        testModel = new PSTMessageTestModel("/attachments.pst");
 
-        MailMessage pstMessage = testModel.generatePSTMessage();
+        PSTMessage originalPSTMessage = testModel.generateOriginalPSTMessage();
+        MimeMailMessage pstMessage = MimeMailMessage.getMimeMailMessage(originalPSTMessage);
 
         Assert.assertTrue(pstMessage.getAttachments().length > 0);
 
-        String serializedMessage = MailMessage.serializeMailMessageWithAttachments(pstMessage);
+        Attachment[] attachments = pstMessage.getAttachments();
 
-        Assert.assertTrue(serializedMessage.contains("\"attachments\":"));
+        Assert.assertTrue(attachments.length > 0);
 
-        MailMessage deserializedMessage = MailMessage.deserializeMailMessageWithAttachments(serializedMessage);
+        Assert.assertEquals(originalPSTMessage.getNumberOfAttachments(), pstMessage.getAttachments().length);
 
-        Assert.assertEquals(pstMessage.getAttachments().length, deserializedMessage.getAttachments().length);
-
-        for (int i = 0; i<pstMessage.getAttachments().length; i++) {
-            Assert.assertEquals(pstMessage.getAttachments()[i].getBody(), deserializedMessage.getAttachments()[i].getBody());
-            Assert.assertEquals(pstMessage.getAttachments()[i].getFileName(), deserializedMessage.getAttachments()[i].getFileName());
-            Assert.assertEquals(pstMessage.getAttachments()[i].getSize(), deserializedMessage.getAttachments()[i].getSize());
-            Assert.assertEquals(pstMessage.getAttachments()[i].getFileExt(), deserializedMessage.getAttachments()[i].getFileExt());
+        for (int i = 0; i < pstMessage.getAttachments().length; i++) {
+            Assert.assertEquals(originalPSTMessage.getAttachment(i).getLongFilename(), pstMessage.getAttachments()[i].getFileName());
         }
     }
 
     @Test
     public void testLargeMessage() throws Exception {
-        try {
-            IStorageService storageService = new MongoService(mongo, db);
+        IStorageService storageService = new MongoService(mongo, db);
 
-            MailMessage inputMessage = testModel.generatePSTMessage();
+        HtmlEmail email = new HtmlEmail();
+        email.addTo("ilya@erudites.com", "Ilya");
+        email.setMsg("abc");
 
-            inputMessage.removeAttachments();
+        email.setFrom("ilya@erudites.com", "Ilya");
 
-            Attachment attachment = new Attachment();
-            StringBuilder sb = new StringBuilder();
-            for (long i = 0; i < GridFS.MAX_CHUNKSIZE * 3; i++) {
-                sb.append('a');
-            }
-            attachment.setBody(sb.toString());
-            attachment.setCreationTime(new Date());
-            attachment.setFileName("test.txt");
-            attachment.setModificationTime(new Date());
-            attachment.setSize((int) (GridFS.MAX_CHUNKSIZE * 3));
-            inputMessage.addAttachment(attachment);
+        email.setSubject("subject");
 
-            storageService.store(inputMessage);
-
-            testModel.verifyStorage(storageService, inputMessage);
-
-            Assert.assertTrue(storageService.existsMailMessage(inputMessage
-                    .getMessageId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.assertNull(e);
+        byte[] bytes = new byte[(int) GridFS.MAX_CHUNKSIZE * 3];
+        for (int i = 0; i < GridFS.MAX_CHUNKSIZE * 3; i++) {
+            bytes[i] = 2;
         }
+
+        email.attach(new ByteArrayDataSource(bytes, "text/plain"), "fileName", "attachment");
+
+        String hostname = java.net.InetAddress.getLocalHost().getHostName();
+        email.setHostName(hostname);
+        email.buildMimeMessage();
+
+        MimeMessage sourceMimeMessage = email.getMimeMessage();
+
+        MimeMessage mimeMessage = sourceMimeMessage;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        mimeMessage.writeTo(baos);
+
+        MimeMailMessage mimeMailMessage = new MimeMailMessage();
+        mimeMailMessage.loadMimeMessageFromSource(baos.toString());
+
+
+        mimeMailMessage.addSource(MessageSourceTestModel
+                .generatePSTMessageSource());
+        storageService.store(mimeMailMessage);
+
+        MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
+
+        Assert.assertTrue(storageService.existsMimeMailMessage(mimeMailMessage
+                .getMessageId()));
     }
 
     @Test
     public void testExistsNegative() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
 
-        MailMessage inputMessage = testModel.generatePSTMessage();
-
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+        inputMessage.addSource(MessageSourceTestModel
+                .generatePSTMessageSource());
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
 
-        Assert.assertFalse(storageService.existsMailMessage(UUID.randomUUID()
+        Assert.assertFalse(storageService.existsMimeMailMessage(UUID.randomUUID()
                 .toString()));
     }
 
@@ -203,31 +189,15 @@ public class MongoServiceTest {
     public void testStore() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
 
-        MailMessage inputMessage = testModel.generatePSTMessage();
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+        inputMessage.addSource(MessageSourceTestModel
+                .generatePSTMessageSource());
 
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
     }
 
-    @Test
-    public void testFindUnindexedPSTMessages() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-
-        int storedCount = 0;
-        for (MailMessage inputMessage : testModel.generatePSTMessages()) {
-
-            storageService.store(inputMessage);
-
-            testModel.verifyStorage(storageService, inputMessage);
-            storedCount++;
-        }
-
-        List<MailMessage> unindexedMessages = storageService
-                .findUnindexedPSTMessages(100);
-        Assert.assertEquals(storedCount, unindexedMessages.size());
-
-    }
 
     @Test
     public void testFindUnindexedIMAPMessages() throws Exception {
@@ -269,11 +239,13 @@ public class MongoServiceTest {
     public void testAddPSTSource() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
 
-        MailMessage inputMessage = testModel.generatePSTMessage();
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+        inputMessage.addSource(MessageSourceTestModel
+                .generatePSTMessageSource());
 
         storageService.store(inputMessage);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
 
         PSTMessageSource source = MessageSourceTestModel
                 .generatePSTMessageSource();
@@ -281,7 +253,7 @@ public class MongoServiceTest {
 
         inputMessage.addSource(source);
 
-        testModel.verifyStorage(storageService, inputMessage);
+        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
 
     }
 
@@ -319,30 +291,6 @@ public class MongoServiceTest {
 
     }
 
-    @Test
-    public void testPSTMarkAsIndexed() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-
-        MailMessage inputMessage = testModel.generatePSTMessage();
-
-        storageService.store(inputMessage);
-
-        testModel.verifyStorage(storageService, inputMessage);
-
-        List<MailMessage> unindexedMessages1 = storageService
-                .findUnindexedPSTMessages(100);
-        Assert.assertEquals(1, unindexedMessages1.size());
-
-        storageService.updateIndexStatus(inputMessage, IndexStatus.INDEXED);
-
-        inputMessage.setIndexed(IndexStatus.INDEXED);
-
-        testModel.verifyStorage(storageService, inputMessage);
-
-        List<MailMessage> unindexedMessages2 = storageService
-                .findUnindexedPSTMessages(100);
-        Assert.assertEquals(0, unindexedMessages2.size());
-    }
 
     @Test
     public void testIMAPMarkAsIndexed() throws Exception {
@@ -388,11 +336,15 @@ public class MongoServiceTest {
     public void testGetTotalMessageCount() throws Exception {
         IStorageService storageService = new MongoService(mongo, db);
 
-        List<MailMessage> messages = testModel.generatePSTMessages();
-        for (MailMessage inputMessage : messages) {
+        List<PSTMessage> messages = testModel.generateOriginalPSTMessages();
+        for (PSTMessage message : messages) {
+            MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(message);
+            inputMessage.addSource(MessageSourceTestModel
+                    .generatePSTMessageSource());
+
             storageService.store(inputMessage);
 
-            testModel.verifyStorage(storageService, inputMessage);
+            MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
         }
 
         Assert.assertEquals(messages.size(),

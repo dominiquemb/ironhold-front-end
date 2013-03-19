@@ -101,6 +101,8 @@ public class IndexUtils {
 				} catch (ParseException e) {
 				}
 				break;
+            case IMPORTANCE:
+                return hit.getFields().get(key).getValue();
 			case SIZE:
 				int size = (Integer) (hit.getFields().get(key).getValue());
 				return FileUtils.byteCountToDisplaySize(size);
@@ -124,6 +126,7 @@ public class IndexUtils {
 							+ "...";
 				}
 			}
+
 		}
 
 		return StringUtils.EMPTY;

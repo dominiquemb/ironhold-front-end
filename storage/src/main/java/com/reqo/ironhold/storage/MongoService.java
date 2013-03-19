@@ -155,104 +155,17 @@ public class MongoService implements IStorageService {
 
 		return fs.findOne(messageId) != null;
 	}
-
-	public long store(MailMessage mailMessage) throws JsonGenerationException,
-			JsonMappingException, MongoException, IOException {
-		if (!existsMailMessage(mailMessage.getMessageId())) {
-			Date storedDate = new Date();
-			mailMessage.setStoredDate(storedDate);
-			String jsonString = MailMessage
-					.serializeCompressedMailMessage(mailMessage);
-			GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-			String attachmentsString = MailMessage
-					.serializeCompressedAttachments(mailMessage
-							.getAttachments());
-			ByteArrayInputStream bis = new ByteArrayInputStream(
-					attachmentsString.getBytes());
-			GridFSInputFile fsFile = fs.createFile(bis,
-					mailMessage.getMessageId());
-
-			DBObject metaData = (DBObject) JSON.parse(jsonString);
-
-			fsFile.setMetaData(metaData);
-			fsFile.setChunkSize(GridFS.MAX_CHUNKSIZE);
-			fsFile.saveChunks();
-			fsFile.save();
-			mongo.fsync(false);
-			return fsFile.getLength();
-		} else {
-			return 0;
-		}
-	}
-
 	public void stopSession() {
 		mongo.close();
 
 	}
 
-	public List<MailMessage> findUnindexedPSTMessages(int limit)
-			throws JsonParseException, JsonMappingException, IOException {
-		logger.debug("Statistics: findUnindexedMessages, phase 1 started");
-
-		long started = System.currentTimeMillis();
-		List<MailMessage> result = new ArrayList<MailMessage>();
-		DBObject query = QueryBuilder.start().put("metadata.indexed")
-				.is(IndexStatus.NOT_INDEXED.toString()).get();
-
-		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-
-		DBCursor cur = fs.getFileList(query).limit(limit);
-
-		List<String> toBeReturned = new ArrayList<String>();
-
-		while (cur.hasNext()) {
-			GridFSDBFile object = (GridFSDBFile) cur.next();
-
-			toBeReturned.add(object.getFilename());
-
-		}
-		long finished = System.currentTimeMillis();
-
-		logger.info(String.format(
-				"Statistics: findUnindexedMessages, phase 1 %d", finished
-						- started));
-
-		long started2 = System.currentTimeMillis();
-		for (String fileName : toBeReturned) {
-
-			GridFSDBFile object = fs.findOne(fileName);
-			MailMessage mailMessage = MailMessage
-					.deserializeCompressedMailMessage(object.getMetaData()
-							.toString());
-			ByteArrayOutputStream byos = new ByteArrayOutputStream();
-			object.writeTo(byos);
-
-			Attachment[] attachments = MailMessage
-					.deserializeCompressedAttachments(new String(byos
-							.toByteArray()));
-			mailMessage.setAttachments(attachments);
-			result.add(mailMessage);
-
-		}
-		long finished2 = System.currentTimeMillis();
-
-		logger.info(String.format(
-				"Statistics: findUnindexedMessages, phase 2 %d", finished2
-						- started2));
-
-		logger.info(String.format(
-				"Statistics: findUnindexedMessages took %dms", finished2
-						- started));
-		return result;
-
-	}
-
 	public void addSource(String messageId, PSTMessageSource source)
-			throws JsonParseException, JsonMappingException, IOException {
-		MailMessage message = getMailMessage(messageId);
-		message.addSource(source);
+            throws Exception {
+        MimeMailMessage message = getMimeMailMessage(messageId);
+        message.addSource(source);
 
-		update(message);
+        update(message);
 
 	}
 
@@ -263,11 +176,6 @@ public class MongoService implements IStorageService {
 
 		update(message);
 
-	}
-
-	public void updateIndexStatus(MailMessage message, IndexStatus status)
-			throws JsonParseException, JsonMappingException, IOException {
-		updateIndexStatus(message.getMessageId(), status, MESSAGE_COLLECTION);
 	}
 
 	public void updateIndexStatus(MimeMailMessage message, IndexStatus status)
@@ -300,20 +208,6 @@ public class MongoService implements IStorageService {
 				- started));
 	}
 
-	public void update(MailMessage mailMessage) throws JsonGenerationException,
-			JsonMappingException, MongoException, IOException {
-		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-		GridFSDBFile fsFile = fs.findOne(mailMessage.getMessageId());
-		String jsonString = MailMessage
-				.serializeCompressedMailMessage(mailMessage);
-		DBObject metaData = (DBObject) JSON.parse(jsonString);
-
-		fsFile.setMetaData(metaData);
-		logger.info("Saving " + metaData.toString());
-		fsFile.save();
-		mongo.fsync(false);
-	}
-
 	public void update(MimeMailMessage mailMessage)
 			throws JsonGenerationException, JsonMappingException,
 			MongoException, IOException {
@@ -328,38 +222,8 @@ public class MongoService implements IStorageService {
 
 	@Override
 	public long getTotalMessageCount() {
-		return db.getCollection(MESSAGE_COLLECTION + ".files").getCount()
-				+ db.getCollection(MIME_MESSAGE_COLLECTION + ".files")
+		return db.getCollection(MIME_MESSAGE_COLLECTION + ".files")
 						.getCount();
-	}
-
-	public MailMessage getMailMessage(String messageId)
-			throws JsonParseException, JsonMappingException, IOException {
-		return getMailMessage(messageId, false);
-	}
-
-	public MailMessage getMailMessage(String messageId,
-			boolean includeAttachments) throws JsonParseException,
-			JsonMappingException, IOException {
-		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-		GridFSDBFile fsFile = fs.findOne(messageId);
-		String compressedMessage = fsFile.getMetaData().toString();
-		MailMessage matchMessage = MailMessage
-				.deserializeCompressedMailMessage(compressedMessage);
-
-		if (includeAttachments) {
-
-			ByteArrayOutputStream byos = new ByteArrayOutputStream();
-			fsFile.writeTo(byos);
-
-			Attachment[] attachments = MailMessage
-					.deserializeCompressedAttachments(new String(byos
-							.toByteArray()));
-			matchMessage.setAttachments(attachments);
-
-		}
-
-		return matchMessage;
 	}
 
 	public void store(LogMessage logMessage) throws JsonGenerationException,
@@ -528,63 +392,6 @@ public class MongoService implements IStorageService {
 		return result;
 	}
 
-	@Override
-	public List<ExportableMessage> findNewMailMessagesSince(Date date, int limit)
-			throws Exception {
-		logger.debug("Statistics: findNewMailMessagesSince, phase 1 started");
-
-		long started = System.currentTimeMillis();
-		List<ExportableMessage> result = new ArrayList<ExportableMessage>();
-		DBObject query = QueryBuilder.start().put("uploadDate")
-				.greaterThan(date).get();
-
-		GridFS fs = new GridFS(db, MESSAGE_COLLECTION);
-
-		
-		DBCursor cur = fs.getFileList(query).limit(limit).sort(new BasicDBObject("uploadDate", 1));
-
-		List<String> toBeReturned = new ArrayList<String>();
-
-		while (cur.hasNext()) {
-			GridFSDBFile object = (GridFSDBFile) cur.next();
-
-			toBeReturned.add(object.getFilename());
-			date = object.getUploadDate();
-		}
-		long finished = System.currentTimeMillis();
-
-		logger.info(String.format(
-				"Statistics: findNewMailMessagesSince, phase 1 %d", finished
-						- started));
-
-		long started2 = System.currentTimeMillis();
-		for (String fileName : toBeReturned) {
-
-			GridFSDBFile object = fs.findOne(fileName);
-			MailMessage mailMessage = MailMessage
-					.deserializeCompressedMailMessage(object.getMetaData()
-							.toString());
-			ByteArrayOutputStream byos = new ByteArrayOutputStream();
-			object.writeTo(byos);
-
-			Attachment[] attachments = MailMessage
-					.deserializeCompressedAttachments(new String(byos
-							.toByteArray()));
-			mailMessage.setAttachments(attachments);
-			result.add(mailMessage);
-
-		}
-		long finished2 = System.currentTimeMillis();
-
-		logger.info(String.format(
-				"Statistics: findNewMailMessagesSince, phase 2 %d", finished2
-						- started2));
-
-		logger.info(String.format(
-				"Statistics: findNewMailMessagesSince took %dms", finished2
-						- started));
-		return result;
-	}
 
 	@Override
 	public List<ExportableMessage> findNewMimeMailMessagesSince(Date date,
@@ -637,13 +444,6 @@ public class MongoService implements IStorageService {
 	@Override
 	public Date getMimeMailMessageUploadDate(String messageId) {
 		GridFS fs = new GridFS(db, MIME_MESSAGE_COLLECTION);
-		
-		return fs.findOne(messageId).getUploadDate();
-	}
-
-	@Override
-	public Date getMailMessageUploadDate(String messageId) {
-		GridFS fs = new GridFS(db,MESSAGE_COLLECTION);
 		
 		return fs.findOne(messageId).getUploadDate();
 	}

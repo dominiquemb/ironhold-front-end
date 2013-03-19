@@ -1,17 +1,9 @@
 package com.reqo.ironhold.storage.model;
 
-import com.pff.PSTException;
-import com.pff.PSTFile;
-import com.pff.PSTFolder;
-import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IStorageService;
 import junit.framework.Assert;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.util.*;
 
 public class MimeMailMessageTestModel extends CommonTestModel {
 
@@ -25,8 +17,8 @@ public class MimeMailMessageTestModel extends CommonTestModel {
 				MimeMailMessage.serialize(storedMessage));
 		Assert.assertEquals(inputMessage.getAttachments().length,
 				storedMessage.getAttachments().length);
-		Assert.assertEquals(MailMessage.serializeAttachments(inputMessage
-				.getAttachments()), MailMessage
+		Assert.assertEquals(MimeMailMessage.serializeAttachments(inputMessage
+				.getAttachments()), MimeMailMessage
 				.serializeAttachments(storedMessage.getAttachments()));
 		Assert.assertNotNull(storedMessage.getStoredDate());
 
@@ -46,8 +38,8 @@ public class MimeMailMessageTestModel extends CommonTestModel {
 				MimeMailMessage.serialize(actual));
 		Assert.assertEquals(expected.getAttachments().length,
 				actual.getAttachments().length);
-		Assert.assertEquals(MailMessage.serializeAttachments(expected
-				.getAttachments()), MailMessage
+		Assert.assertEquals(MimeMailMessage.serializeAttachments(expected
+				.getAttachments()), MimeMailMessage
 				.serializeAttachments(actual.getAttachments()));
 		
 		for (int i = 0; i < expected.getSources().length; i++) {

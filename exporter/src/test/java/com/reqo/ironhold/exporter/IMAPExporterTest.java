@@ -2,7 +2,6 @@ package com.reqo.ironhold.exporter;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
-import com.reqo.ironhold.exporter.model.MailMessageTestModel;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
@@ -43,7 +42,6 @@ public class IMAPExporterTest {
 
     private Mongo mongo;
     private DB db;
-    private MailMessageTestModel testModel;
     private static final String DATABASENAME = "MongoServiceTest";
 
     private String[] messages = new String[]{"/message1.eml", "/message2.eml", "/message3.eml", "/message4.eml"};
@@ -66,7 +64,6 @@ public class IMAPExporterTest {
         db = mongo.getDB(DATABASENAME);
 
 
-        testModel = new MailMessageTestModel("/attachments.pst");
     }
 
     @After
@@ -95,7 +92,7 @@ public class IMAPExporterTest {
             storageService.store(mailMessage);
         }
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
         IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, messages.length, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
         exporter.start();
@@ -152,7 +149,7 @@ public class IMAPExporterTest {
 
         storageService.store(mailMessage);
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", CompressorStreamFactory.GZIP, recoveryFile, storageService);
 
@@ -181,7 +178,7 @@ public class IMAPExporterTest {
 
         storageService.store(mailMessage);
 
-        String recoveryFile = backupFolder.getRoot().getPath()+File.separator + "recovery.txt";
+        String recoveryFile = backupFolder.getRoot().getPath() + File.separator + "recovery.txt";
 
         IMAPExporter exporter = new IMAPExporter(backupFolder.getRoot().getAbsolutePath(), 100, 1, "test", "NONE", recoveryFile, storageService);
 

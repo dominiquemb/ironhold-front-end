@@ -9,7 +9,7 @@ public enum IndexFieldEnum {
 			"CC", "cc.address"), CC_DOMAIN("CC Domain", "cc.domain"), SIZE(
 			"Size", "size"), BODY("Body", "body"), FILENAME("Filename",
 			"attachments.fileName"), FILEEXT("File Ext", "attachments.fileExt"), ATTACHMENT(
-			"Attachment", "attachments.body"), SCORE("Score", "_score");
+			"Attachment", "attachments.body"), SCORE("Score", "_score"), IMPORTANCE("Importance", "importance");
 
 	private final String value;
 	private final String label;

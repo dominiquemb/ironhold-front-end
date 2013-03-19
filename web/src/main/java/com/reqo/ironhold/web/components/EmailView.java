@@ -6,7 +6,6 @@ import com.reqo.ironhold.search.IndexUtils;
 import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.StreamResource;
@@ -54,10 +53,27 @@ public class EmailView extends Panel {
         if (subjectValue.equals(StringUtils.EMPTY)) {
             subjectValue = "&lt;No subject&gt;";
         }
+        HorizontalLayout subjectLayout = new HorizontalLayout();
+
         final Label subject = new Label(subjectValue);
         subject.setStyleName(Reindeer.LABEL_H2);
         subject.setContentMode(Label.CONTENT_XHTML);
-        this.addComponent(subject);
+        subjectLayout.addComponent(subject);
+
+        String importance = IndexUtils.getFieldValue(item, IndexFieldEnum.IMPORTANCE);
+        if (importance != null && !importance.isEmpty()) {
+            switch (importance) {
+                case MimeMailMessage.IMPORTANCE_HIGH:
+                case MimeMailMessage.IMPORTANCE_LOW:
+                    final Button icon = new Button();
+                    icon.setStyleName(BaseTheme.BUTTON_LINK);
+                    icon.setIcon(new ClassResource("images/" + importance + ".png",
+                            getApplication()));
+                    subjectLayout.addComponent(icon);
+            }
+        }
+
+        this.addComponent(subjectLayout);
 
         final Label date = new Label(IndexUtils.getFieldValue(item,
                 IndexFieldEnum.DATE));
@@ -78,10 +94,7 @@ public class EmailView extends Panel {
         Object mailMessage = null;
         Attachment[] attachments = null;
 
-        if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
-            mailMessage = storageService.getMailMessage(item.getId(), true);
-            attachments = ((MailMessage) mailMessage).getAttachments();
-        } else if (item.getType().equals(
+        if (item.getType().equals(
                 IndexedObjectType.MIME_MESSAGE.getValue())) {
             mailMessage = storageService.getMimeMailMessage(item.getId());
             attachments = ((MimeMailMessage) mailMessage).getAttachments();

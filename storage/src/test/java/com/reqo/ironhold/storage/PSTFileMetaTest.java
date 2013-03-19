@@ -1,15 +1,13 @@
 package com.reqo.ironhold.storage;
 
-import java.io.IOException;
-import java.util.Date;
-
+import com.reqo.ironhold.storage.model.PSTFileMeta;
 import junit.framework.Assert;
-
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Test;
 
-import com.reqo.ironhold.storage.model.PSTFileMeta;
+import java.io.IOException;
+import java.util.Date;
 
 public class PSTFileMetaTest {
 
@@ -25,28 +23,17 @@ public class PSTFileMetaTest {
 		for (double dsize : sizes) {
 			int size = (int) dsize;
 			metaData.updateSizeStatistics(size, size / 10);
-			metaData.updateAttachmentSizeStatistics(size * 10, size);
 		}
 
 		metaData.persistCalculations();
 		Assert.assertEquals(550, Math.round(metaData.getAverageSize()));
 		Assert.assertEquals(55, Math.round(metaData.getCompressedAverageSize()));
-		Assert.assertEquals(5500,
-				Math.round(metaData.getAverageAttachmentSize()));
-		Assert.assertEquals(550,
-				Math.round(metaData.getCompressedAverageAttachmentSize()));
 
 		Assert.assertEquals(550, Math.round(metaData.getMedianSize()));
 		Assert.assertEquals(55, Math.round(metaData.getMedianCompressedSize()));
-		Assert.assertEquals(5500,
-				Math.round(metaData.getMedianAttachmentSize()));
-		Assert.assertEquals(550,
-				Math.round(metaData.getMedianCompressedAttachmentSize()));
 
 		Assert.assertEquals(1000, metaData.getMaxSize());
-		Assert.assertEquals(10000, metaData.getMaxAttachmentSize());
 		Assert.assertEquals(100, metaData.getCompressedMaxSize());
-		Assert.assertEquals(1000, metaData.getCompressedMaxAttachmentSize());
 	}
 
 	@Test
@@ -62,7 +49,6 @@ public class PSTFileMetaTest {
 		for (double dsize : sizes) {
 			int size = (int) dsize;
 			metaData.updateSizeStatistics(size, size / 10);
-			metaData.updateAttachmentSizeStatistics(size * 10, size);
 		}
 		String jsonString = PSTFileMeta.toJSON(metaData);
 		Assert.assertTrue(jsonString.length() > 0);

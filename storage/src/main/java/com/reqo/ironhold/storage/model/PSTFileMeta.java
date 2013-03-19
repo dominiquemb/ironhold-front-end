@@ -1,11 +1,5 @@
 package com.reqo.ironhold.storage.model;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,6 +10,12 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PSTFileMeta {
 	public static final String DOT_REPLACEMENT = Character.toString((char) 182);
@@ -37,9 +37,6 @@ public class PSTFileMeta {
 	private long maxSize;
 	private long compressedMaxSize;
 
-	private long maxAttachmentSize;
-	private long compressedMaxAttachmentSize;
-
 	private long messagesWithAttachments;
 	private long messagesWithoutAttachments;
 	private Map<String, Long> typeMap = new HashMap<String, Long>();
@@ -48,27 +45,16 @@ public class PSTFileMeta {
 	@JsonIgnore
 	private Mean sizeMean = new Mean();
 	@JsonIgnore
-	private Mean attachmentSizeMean = new Mean();
-	@JsonIgnore
 	private Median sizeMedian = new Median();
-	@JsonIgnore
-	private Median attachmentSizeMedian = new Median();
 	@JsonIgnore
 	private Mean compressedSizeMean = new Mean();
 	@JsonIgnore
-	private Mean compressedAttachmentSizeMean = new Mean();
-	@JsonIgnore
 	private Median compressedSizeMedian = new Median();
-	@JsonIgnore
-	private Median compressedAttachmentSizeMedian = new Median();
 	private double compressedAverageSize;
-	private double compressedAverageAttachmentSize;
 	private double averageSize;
-	private double averageAttachmentSize;
 	private double medianSize;
-	private double medianAttachmentSize;
 	private double medianCompressedSize;
-	private double medianCompressedAttachmentSize;
+
 	@JsonIgnore
 	private boolean isDirty = false;
 
@@ -83,18 +69,11 @@ public class PSTFileMeta {
 	public void persistCalculations() {
 		if (isDirty) {
 			this.averageSize = sizeMean.evaluate();
-			this.averageAttachmentSize = attachmentSizeMean.evaluate();
 			this.compressedAverageSize = compressedSizeMean.evaluate();
-			this.compressedAverageAttachmentSize = compressedAttachmentSizeMean
-					.evaluate();
 
 			this.medianSize = sizeMedian.evaluate(sizeMean.getData());
-			this.medianAttachmentSize = attachmentSizeMedian
-					.evaluate(attachmentSizeMean.getData());
 			this.medianCompressedSize = compressedSizeMedian
 					.evaluate(compressedSizeMean.getData());
-			this.medianCompressedAttachmentSize = compressedAttachmentSizeMedian
-					.evaluate(compressedAttachmentSizeMean.getData());
 
 			isDirty = false;
 		}
@@ -122,9 +101,7 @@ public class PSTFileMeta {
 		this.size = size;
 		this.started = started;
 		this.sizeMean.setData(new double[] {});
-		this.attachmentSizeMean.setData(new double[] {});
-		this.compressedSizeMean.setData(new double[] {});
-		this.compressedAttachmentSizeMean.setData(new double[] {});
+		this.compressedSizeMean.setData(new double[]{});
 	}
 
 	public void addFolder(String folderPath, int contentCount) {
@@ -164,7 +141,7 @@ public class PSTFileMeta {
 		}
 	}
 
-	public void updateSizeStatistics(int size, int compressedSize) {
+	public void updateSizeStatistics(long size, long compressedSize) {
 		isDirty = true;
 		double[] sizes = Arrays.copyOf(sizeMean.getData(),
 				sizeMean.getData().length + 1);
@@ -185,27 +162,6 @@ public class PSTFileMeta {
 		}
 	}
 
-	public void updateAttachmentSizeStatistics(int size, int compressedSize) {
-		isDirty = true;
-		double[] sizes = Arrays.copyOf(attachmentSizeMean.getData(),
-				attachmentSizeMean.getData().length + 1);
-		sizes[attachmentSizeMean.getData().length] = size;
-		attachmentSizeMean.setData(sizes);
-
-		double[] csizes = Arrays.copyOf(compressedAttachmentSizeMean.getData(),
-				compressedAttachmentSizeMean.getData().length + 1);
-		csizes[compressedAttachmentSizeMean.getData().length] = compressedSize;
-		compressedAttachmentSizeMean.setData(csizes);
-
-		if (size > maxAttachmentSize) {
-			maxAttachmentSize = size;
-		}
-
-		if (compressedSize > compressedMaxAttachmentSize) {
-			compressedMaxAttachmentSize = compressedSize;
-		}
-	}
-
 	public double getCompressedAverageSize() {
 		return compressedAverageSize;
 	}
@@ -216,14 +172,6 @@ public class PSTFileMeta {
 	
 	public String getHostname() {
 		return hostname;
-	}
-
-	public double getCompressedAverageAttachmentSize() {
-		return compressedAverageAttachmentSize;
-	}
-
-	public long getCompressedMaxAttachmentSize() {
-		return compressedMaxAttachmentSize;
 	}
 
 	public long getPartialFailures() {
@@ -282,14 +230,6 @@ public class PSTFileMeta {
 		return maxSize;
 	}
 
-	public double getAverageAttachmentSize() {
-		return averageAttachmentSize;
-	}
-
-	public long getMaxAttachmentSize() {
-		return maxAttachmentSize;
-	}
-
 	public long getMessagesWithAttachments() {
 		return messagesWithAttachments;
 	}
@@ -306,16 +246,8 @@ public class PSTFileMeta {
 		return medianSize;
 	}
 
-	public double getMedianAttachmentSize() {
-		return medianAttachmentSize;
-	}
-
 	public double getMedianCompressedSize() {
 		return medianCompressedSize;
-	}
-
-	public double getMedianCompressedAttachmentSize() {
-		return medianCompressedAttachmentSize;
 	}
 
 	public Map<String, Long> getTypeMap() {

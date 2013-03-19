@@ -3,7 +3,6 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.MailMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessage;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -48,36 +47,7 @@ public class SourceView extends Panel {
 
         Object mailMessage = null;
         String rawBody = null;
-        if (item.getType().equals(IndexedObjectType.PST_MESSAGE.getValue())) {
-            mailMessage = storageService.getMailMessage(item.getId(), false);
-            rawBody = MailMessage.serializeMailMessage((MailMessage) mailMessage);
-
-
-            final Button download = new Button("Download");
-            download.setStyleName(BaseTheme.BUTTON_LINK);
-            download.addListener(new ClickListener() {
-
-                public void buttonClick(ClickEvent event) {
-                    event.getButton().getWindow()
-                            .open(new StreamResource(new StreamSource() {
-
-                                public InputStream getStream() {
-
-                                    String downloadableContent = null;
-                                    try {
-                                        downloadableContent = MailMessage.serializeMailMessageWithAttachments(storageService.getMailMessage(item.getId(), true));
-                                    } catch (Exception e) {
-                                        logger.error("Failed to retrieve content in source view", e);
-                                    };
-
-                                    return new ByteArrayInputStream(downloadableContent.getBytes());
-                                }
-                            }, item.getId() + ".json", me
-                                    .getApplication()));
-                }
-            });
-            this.addComponent(download);
-        } else if (item.getType().equals(
+        if (item.getType().equals(
                 IndexedObjectType.MIME_MESSAGE.getValue())) {
             mailMessage = storageService.getMimeMailMessage(item.getId());
             rawBody = ((MimeMailMessage) mailMessage).getRawContents();

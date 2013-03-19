@@ -39,6 +39,9 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"serial", "unchecked"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MimeMailMessage implements ExportableMessage, Serializable {
+    public static final String IMPORTANCE_HIGH = "high";
+    public static final String IMPORTANCE_LOW = "low";
+
     private static final int BUFFER_SIZE = 20000;
 
     private static Logger logger = Logger.getLogger(MimeMailMessage.class);
@@ -69,8 +72,6 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
     @JsonIgnore
     private Recipient from;
     @JsonIgnore
-    private Recipient sender;
-    @JsonIgnore
     private Recipient[] to = new Recipient[0];
     @JsonIgnore
     private Recipient[] cc = new Recipient[0];
@@ -96,6 +97,8 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
     private String rawContents;
     @JsonIgnore
     private boolean hasAttachments;
+    @JsonIgnore
+    private String importance;
 
     private IndexStatus indexed = IndexStatus.NOT_INDEXED;
     private Date storedDate;
@@ -137,9 +140,7 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
     public static MimeMessage getMimeMessage(PSTMessage originalPSTMessage) throws EmailException, PSTException, IOException, MessagingException {
         HtmlEmail email = new HtmlEmail();
         if (originalPSTMessage.getPriority() == PSTMessage.IMPORTANCE_HIGH) {
-            email.addHeader("Priority", "urgent");
-        } else if (originalPSTMessage.getPriority() == PSTMessage.IMPORTANCE_LOW) {
-            email.addHeader("Priority", "non-urgent");
+            email.addHeader("Importance", IMPORTANCE_HIGH);
         }
 
         try {
@@ -244,6 +245,9 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
 
             this.messageDate = mimeMessage.getSentDate();
             this.size = rawContents.getBytes().length;
+            if (mimeMessage.getHeader("Importance") != null) {
+                this.importance = mimeMessage.getHeader("Importance")[0];
+            }
 
             InternetAddress internetAddress;
             try {
@@ -257,9 +261,9 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
             }
 
             try {
-                internetAddress = (InternetAddress) mimeMessage.getSender();
+                internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
                 if (internetAddress != null) {
-                    this.setSender(new Recipient(internetAddress.getPersonal(),
+                    this.setFrom(new Recipient(internetAddress.getPersonal(),
                             internetAddress.getAddress()));
                 }
 
@@ -373,7 +377,6 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
 
     private void reset() {
         from = null;
-        sender = null;
         to = new Recipient[0];
         cc = new Recipient[0];
         bcc = new Recipient[0];
@@ -738,12 +741,11 @@ public class MimeMailMessage implements ExportableMessage, Serializable {
         this.hasAttachments = hasAttachments;
     }
 
-    public Recipient getSender() {
-        return sender;
+    public String getImportance() {
+        return importance;
     }
 
-    public void setSender(Recipient sender) {
-        this.sender = sender;
+    public void setImportance(String importance) {
+        this.importance = importance;
     }
-
 }
