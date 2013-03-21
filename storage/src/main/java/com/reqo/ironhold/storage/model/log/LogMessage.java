@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -27,13 +28,16 @@ public class LogMessage implements IHasMessageId, IPartitioned {
 
 	public LogMessage() throws UnknownHostException {
 		super();
-		
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+                false);
 		this.host = InetAddress.getLocalHost().getHostName();
 		this.timestamp = new Date();
 	}
 
 	public LogMessage(LogLevel level, String messageId, String message) throws UnknownHostException {
 		super();
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+                false);
 		this.messageId = messageId;
 		this.message = message;
 		this.level = level;

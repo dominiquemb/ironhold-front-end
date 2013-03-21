@@ -107,7 +107,7 @@ public class AttachmentExtractorTest {
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
                 mailMessage);
-        String json = IndexedMailMessage.toJSON(indexedMailMessage).replace("\\n","").replace(" ","");
+        String json = IndexedMailMessage.serialize(indexedMailMessage).replace("\\n","").replace(" ","");
 
         String assertContent = FileUtils.readFileToString(assertFile)
                 .replace("\\n","").replace(" ","");

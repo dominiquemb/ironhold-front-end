@@ -8,10 +8,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.jsoup.Jsoup;
@@ -29,12 +26,8 @@ import java.util.Date;
 public class IndexedMailMessage {
     private static Logger logger = Logger.getLogger(IndexedMailMessage.class);
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
-    static {
-        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
-                false);
-    }
 
     private String messageId;
     private String subject;
@@ -55,11 +48,14 @@ public class IndexedMailMessage {
     private SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
 
     public IndexedMailMessage() {
-
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+                false);
     }
 
 
     public IndexedMailMessage(MimeMailMessage mimeMessage) {
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+                false);
         messageId = mimeMessage.getMessageId();
         load(mimeMessage);
 
@@ -109,22 +105,12 @@ public class IndexedMailMessage {
     }
 
 
-    public static String toJSON(IndexedMailMessage message)
-            throws JsonGenerationException, JsonMappingException, IOException {
-        String result = null;
-        logger.debug("Starting toJSON serialization");
-        try {
-            result = mapper.writeValueAsString(message);
-        } finally {
-            logger.debug("Finished toJSON serialization " + result.length()
-                    + " bytes");
-        }
-
-        return result;
+    public String serialize() throws IOException {
+        return mapper.writeValueAsString(this);
     }
 
-    public static IndexedMailMessage fromJSON(String json)
-            throws JsonParseException, JsonMappingException, IOException {
+    public IndexedMailMessage deserialize(String json)
+            throws IOException {
         return mapper.readValue(json, IndexedMailMessage.class);
     }
 

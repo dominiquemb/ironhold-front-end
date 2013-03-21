@@ -287,52 +287,5 @@ public class MimeMailMessageStorageServiceTest {
         Assert.assertEquals(messages.size(),
                 storageService.getTotalMessageCount());
     }
-
-    @Test
-    public void testLog() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-
-        LogMessage inputMessage = LogMessageTestModel.generate();
-
-        storageService.store(inputMessage);
-
-        List<LogMessage> storedMessages = storageService
-                .getLogMessages(inputMessage.getMessageId());
-
-        Assert.assertEquals(1, storedMessages.size());
-        LogMessage storedMessage = storedMessages.get(0);
-        Assert.assertEquals(LogMessage.toJSON(inputMessage),
-                LogMessage.toJSON(storedMessage));
-        Assert.assertEquals(inputMessage, storedMessage);
-    }
-
-    @Test
-    public void testGetLogMessages() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-        String messageId = UUID.randomUUID().toString();
-        List<LogMessage> inputMessages = new ArrayList<LogMessage>();
-        for (int i = 0; i < 10; i++) {
-
-            LogMessage inputMessage = LogMessageTestModel.generate();
-            inputMessage.setMessageId(messageId);
-
-            storageService.store(inputMessage);
-
-            inputMessages.add(inputMessage);
-        }
-
-        List<LogMessage> storedMessages = storageService
-                .getLogMessages(messageId);
-
-        Assert.assertEquals(10, storedMessages.size());
-
-        int counter = 0;
-        for (LogMessage storedMessage : storedMessages) {
-            Assert.assertEquals(LogMessage.toJSON(inputMessages.get(counter)),
-                    LogMessage.toJSON(storedMessage));
-            Assert.assertEquals(inputMessages.get(counter), storedMessage);
-            counter++;
-        }
-
-    }    */
+ */
 }

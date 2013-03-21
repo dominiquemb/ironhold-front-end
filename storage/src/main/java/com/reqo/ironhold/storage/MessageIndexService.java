@@ -46,7 +46,7 @@ public class MessageIndexService {
                 indexName,
                 IndexedObjectType.MIME_MESSAGE,
                 message.getMessageId(),
-                IndexedMailMessage.toJSON(message));
+                message.serialize());
 
         logger.debug("Returned from ES");
         return true;
@@ -119,4 +119,7 @@ public class MessageIndexService {
     }
 
 
+    public long getTotalMessageCount(String indexPrefix) {
+        return client.getTotalMessageCount(indexPrefix);
+    }
 }
