@@ -1,19 +1,14 @@
 package com.reqo.ironhold.web.components;
 
-import java.text.SimpleDateFormat;
-
+import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
+import com.vaadin.ui.*;
 import org.apache.commons.io.FileUtils;
 import org.elasticsearch.common.joda.time.DateTime;
 import org.elasticsearch.common.joda.time.Period;
 import org.elasticsearch.common.joda.time.format.PeriodFormatter;
 import org.elasticsearch.common.joda.time.format.PeriodFormatterBuilder;
 
-import com.reqo.ironhold.storage.model.IMAPBatchMeta;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
+import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
 public class IMAPBatchMetaPanel extends Panel {

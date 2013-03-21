@@ -4,6 +4,7 @@ import com.pff.PSTException;
 import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
+import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

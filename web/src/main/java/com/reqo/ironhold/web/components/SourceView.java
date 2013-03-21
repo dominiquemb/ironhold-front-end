@@ -1,9 +1,9 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.search.IndexService;
-import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.ui.Button;
@@ -25,13 +25,13 @@ public class SourceView extends Panel {
 
 
     private final IStorageService storageService;
-    private final IndexService indexService;
+    private final MessageIndexService messageIndexService;
     private final SourceView me;
     private SearchHitPanel currentHitPanel;
 
-    public SourceView(IStorageService storageService, IndexService indexService) {
+    public SourceView(IStorageService storageService, MessageIndexService messageIndexService) {
         this.storageService = storageService;
-        this.indexService = indexService;
+        this.messageIndexService = messageIndexService;
         this.setSizeFull();
         this.me = this;
     }

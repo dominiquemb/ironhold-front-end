@@ -1,21 +1,15 @@
 package com.reqo.ironhold.reader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
+import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.*;
 
 public class FileReader {
 	static {

@@ -2,7 +2,7 @@ package com.reqo.ironhold.reader;
 
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;

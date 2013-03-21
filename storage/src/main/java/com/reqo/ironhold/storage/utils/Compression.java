@@ -1,15 +1,13 @@
 package com.reqo.ironhold.storage.utils;
 
+import org.apache.log4j.Logger;
+import org.elasticsearch.common.Base64;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.apache.log4j.Logger;
-import org.elasticsearch.common.Base64;
-
-import com.reqo.ironhold.storage.model.MimeMailMessage;
 
 public class Compression {
 	private static Logger logger = Logger.getLogger(Compression.class);

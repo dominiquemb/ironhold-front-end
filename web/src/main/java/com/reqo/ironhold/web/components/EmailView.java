@@ -1,12 +1,12 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.search.IndexFieldEnum;
-import com.reqo.ironhold.search.IndexService;
-import com.reqo.ironhold.search.IndexUtils;
-import com.reqo.ironhold.search.model.IndexedObjectType;
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.Attachment;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.es.IndexFieldEnum;
+import com.reqo.ironhold.storage.es.IndexUtils;
+import com.reqo.ironhold.storage.model.message.Attachment;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
@@ -28,16 +28,16 @@ import java.io.InputStream;
 public class EmailView extends Panel {
 
     private final IStorageService storageService;
-    private final IndexService indexService;
+    private final MessageIndexService messageIndexService;
     private final EmailView me;
     private final String indexPrefix;
     private SearchHitPanel currentHitPanel;
     private final boolean displayHTML;
 
-    public EmailView(String indexPrefix, IStorageService storageService, IndexService indexService, boolean displayHTML) {
+    public EmailView(String indexPrefix, IStorageService storageService, MessageIndexService messageIndexService, boolean displayHTML) {
         this.indexPrefix = indexPrefix;
         this.storageService = storageService;
-        this.indexService = indexService;
+        this.messageIndexService = messageIndexService;
         this.displayHTML = displayHTML;
         this.setSizeFull();
         this.me = this;
@@ -147,8 +147,8 @@ public class EmailView extends Panel {
         final HorizontalLayout bodyLayout = new HorizontalLayout();
         bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
         bodyLayout.setSizeFull();
-        SearchHits hits = indexService.search(
-                indexService.getNewBuilder(indexPrefix).withCriteria(criteria)
+        SearchHits hits = messageIndexService.search(
+                messageIndexService.getNewBuilder(indexPrefix).withCriteria(criteria)
                         .withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
 
         String bodyText = null;

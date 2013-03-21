@@ -1,5 +1,8 @@
 package com.reqo.ironhold.storage.model;
 
+import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
+import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
+
 public class MessageSourceTestModel extends CommonTestModel {
 
     public static PSTMessageSource generatePSTMessageSource() {

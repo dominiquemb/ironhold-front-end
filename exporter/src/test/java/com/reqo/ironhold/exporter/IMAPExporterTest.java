@@ -4,7 +4,7 @@ import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.reqo.ironhold.storage.IStorageService;
 import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -42,7 +42,7 @@ public class IMAPExporterTest {
 
     private Mongo mongo;
     private DB db;
-    private static final String DATABASENAME = "MongoServiceTest";
+    private static final String DATABASENAME = "MimeMailMessageStorageServiceTest";
 
     private String[] messages = new String[]{"/message1.eml", "/message2.eml", "/message3.eml", "/message4.eml"};
 

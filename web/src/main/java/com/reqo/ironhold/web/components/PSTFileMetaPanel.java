@@ -1,6 +1,6 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.model.PSTFileMeta;
+import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;

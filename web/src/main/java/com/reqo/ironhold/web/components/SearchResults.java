@@ -1,9 +1,9 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.search.IndexFieldEnum;
-import com.reqo.ironhold.search.IndexService;
-import com.reqo.ironhold.search.MessageSearchBuilder;
 import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.es.IndexFieldEnum;
+import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
@@ -25,7 +25,7 @@ import java.util.List;
 public class SearchResults extends HorizontalLayout {
 
 	protected static final int MAX_RESULTS_TO_BE_FACETED = 30000;
-	private final IndexService indexService;
+	private final MessageIndexService messageIndexService;
 	private final IStorageService storageService;
 	private String criteria;
 	private VerticalLayout leftPane;
@@ -48,23 +48,23 @@ public class SearchResults extends HorizontalLayout {
 	private Label resultLabel;
     private final String indexPrefix;
 
-    public SearchResults(String indexPrefix, IndexService indexService,
+    public SearchResults(String indexPrefix, MessageIndexService messageIndexService,
 			IStorageService storageService) {
         this.indexPrefix = indexPrefix;
-		this.indexService = indexService;
+		this.messageIndexService = messageIndexService;
 		this.storageService = storageService;
 		this.me = this;
 		this.setSpacing(true);
 		this.setMargin(true);
 		this.setSizeFull();
-		this.builder = indexService.getNewBuilder(indexPrefix);
+		this.builder = messageIndexService.getNewBuilder(indexPrefix);
 	}
 
 	public void setCriteria(String criteria) {
 		long started = System.currentTimeMillis();
 		this.criteria = criteria;
 		this.facetsSetup = false;
-		builder = indexService.getNewBuilder(indexPrefix).withCriteria(criteria);
+		builder = messageIndexService.getNewBuilder(indexPrefix).withCriteria(criteria);
 		reset();
 
 		sortFieldSelector.setVisible(true);
@@ -83,7 +83,7 @@ public class SearchResults extends HorizontalLayout {
 	}
 
 	private void performSearch() {
-		final SearchResponse response = indexService.getMatchCount(builder);
+		final SearchResponse response = messageIndexService.getMatchCount(builder);
 		if (response == null) {
 			resultLabel.setCaption("Invalid search query");
 			return;
@@ -114,7 +114,7 @@ public class SearchResults extends HorizontalLayout {
 					@Override
 					protected Collection<SearchHit> getItemsList(
 							int startIndex, int endIndex) {
-						builder = indexService.getNewBuilder(indexPrefix, builder);
+						builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
 						if (!facetsSetup) {
 							if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
@@ -148,7 +148,7 @@ public class SearchResults extends HorizontalLayout {
 
 						}
 
-						SearchResponse response = indexService.search(builder);
+						SearchResponse response = messageIndexService.search(builder);
 						
 						setUpFacets(response);
 
@@ -191,7 +191,7 @@ public class SearchResults extends HorizontalLayout {
 						@Override
 						public void buttonClick(Button.ClickEvent event) {
 							boolean enabled = event.getButton().booleanValue();
-							builder = indexService.getNewBuilder(indexPrefix, builder);
+							builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
 							if (enabled) {
 								builder.withYearFacetValue(entry.getTerm());
@@ -239,7 +239,7 @@ public class SearchResults extends HorizontalLayout {
                             @Override
                             public void buttonClick(Button.ClickEvent event) {
                                 boolean enabled = event.getButton().booleanValue();
-                                builder = indexService.getNewBuilder(indexPrefix, builder);
+                                builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                                 if (enabled) {
                                     builder.withFileExtFacetValue(entry.getTerm());
@@ -291,7 +291,7 @@ public class SearchResults extends HorizontalLayout {
 						@Override
 						public void buttonClick(Button.ClickEvent event) {
 							boolean enabled = event.getButton().booleanValue();
-							builder = indexService.getNewBuilder(indexPrefix, builder);
+							builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
 							if (enabled) {
 								builder.withFromFacetValue(entry.getTerm());
@@ -340,7 +340,7 @@ public class SearchResults extends HorizontalLayout {
 							public void buttonClick(Button.ClickEvent event) {
 								boolean enabled = event.getButton()
 										.booleanValue();
-								builder = indexService.getNewBuilder(indexPrefix, builder);
+								builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
 								if (enabled) {
 									builder.withFromDomainFacetValue(entry
@@ -388,7 +388,7 @@ public class SearchResults extends HorizontalLayout {
 						@Override
 						public void buttonClick(Button.ClickEvent event) {
 							boolean enabled = event.getButton().booleanValue();
-							builder = indexService.getNewBuilder(indexPrefix, builder);
+							builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
 							if (enabled) {
 								builder.withToFacetValue(entry.getTerm());
@@ -435,7 +435,7 @@ public class SearchResults extends HorizontalLayout {
 							public void buttonClick(Button.ClickEvent event) {
 								boolean enabled = event.getButton()
 										.booleanValue();
-								builder = indexService.getNewBuilder(indexPrefix, builder);
+								builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
 								if (enabled) {
 									builder.withToDomainFacetValue(entry
@@ -485,7 +485,7 @@ public class SearchResults extends HorizontalLayout {
 		resultLabel = new Label();
 		resultLabel.setStyleName(Reindeer.LABEL_SMALL);
 
-		emailPreview = new EmailPreviewPanel(indexPrefix, storageService, indexService);
+		emailPreview = new EmailPreviewPanel(indexPrefix, storageService, messageIndexService);
 		rightPane.addComponent(emailPreview);
 
 		sortFieldSelector = new NativeSelect("Sort By");
@@ -499,7 +499,7 @@ public class SearchResults extends HorizontalLayout {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				builder = indexService.getNewBuilder(indexPrefix, builder);
+				builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 				System.out.println("in sort field listener");
 				performSearch();
 			}
@@ -515,7 +515,7 @@ public class SearchResults extends HorizontalLayout {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				builder = indexService.getNewBuilder(indexPrefix, builder);
+				builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 				performSearch();
 			}
 		});

@@ -1,7 +1,7 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.log4j.Logger;
@@ -20,14 +20,14 @@ public class EmailPreviewPanel extends TabSheet {
     private SearchHit item;
     private String criteria;
 
-    public EmailPreviewPanel(String indexPrefix, IStorageService storageService, IndexService indexService) {
+    public EmailPreviewPanel(String indexPrefix, IStorageService storageService, MessageIndexService messageIndexService) {
         this.setVisible(false);
         this.setSizeFull();
 
-        this.htmlView = new EmailView(indexPrefix, storageService, indexService, true);
-        this.textView = new EmailView(indexPrefix, storageService, indexService, false);
+        this.htmlView = new EmailView(indexPrefix, storageService, messageIndexService, true);
+        this.textView = new EmailView(indexPrefix, storageService, messageIndexService, false);
 
-        this.sourceView = new SourceView(storageService, indexService);
+        this.sourceView = new SourceView(storageService, messageIndexService);
         this.auditView = new AuditView(storageService);
 
         this.addTab(textView, "Text");

@@ -1,14 +1,14 @@
 package com.reqo.ironhold.web.components;
 
-import java.util.List;
-
 import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.model.IMAPBatchMeta;
+import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+import java.util.List;
 
 public class IMAPStatisticsWindow extends Window {
 

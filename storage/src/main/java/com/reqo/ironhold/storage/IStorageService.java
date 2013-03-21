@@ -1,6 +1,13 @@
 package com.reqo.ironhold.storage;
 
-import com.reqo.ironhold.storage.model.*;
+import com.reqo.ironhold.storage.model.ExportableMessage;
+import com.reqo.ironhold.storage.model.IndexStatus;
+import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
+import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
+import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
+import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 
 import java.util.Date;
 import java.util.List;
@@ -11,9 +18,7 @@ public interface IStorageService {
 
     Date getMimeMailMessageUploadDate(String messageId);
 
-    boolean existsMimeMailMessage(String messageId) throws Exception;
 
-    long store(MimeMailMessage mailMessage) throws Exception;
 
     void addSource(String messageId, IMAPMessageSource source) throws Exception;
 
@@ -24,9 +29,6 @@ public interface IStorageService {
 
     List<MimeMailMessage> findUnindexedIMAPMessages(int limit) throws Exception;
 
-    MimeMailMessage getMimeMailMessage(String messageId) throws Exception;
-
-    long getTotalMessageCount();
 
     void store(LogMessage logMessage) throws Exception;
 

@@ -1,33 +1,23 @@
 package com.reqo.ironhold.reader;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
-import javax.mail.AuthenticationFailedException;
-import javax.mail.Flags.Flag;
-import javax.mail.Folder;
-import javax.mail.FolderClosedException;
-import javax.mail.FolderNotFoundException;
-import javax.mail.Message;
-import javax.mail.ReadOnlyFolderException;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.StoreClosedException;
-import javax.mail.internet.MimeMessage;
-
+import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MongoService;
+import com.reqo.ironhold.storage.model.log.LogLevel;
+import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
+import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.storage.model.IMAPBatchMeta;
-import com.reqo.ironhold.storage.model.IMAPMessageSource;
-import com.reqo.ironhold.storage.model.LogLevel;
-import com.reqo.ironhold.storage.model.LogMessage;
-import com.reqo.ironhold.storage.model.MimeMailMessage;
+import javax.mail.*;
+import javax.mail.Flags.Flag;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 public class IMAPReader {
 	static {

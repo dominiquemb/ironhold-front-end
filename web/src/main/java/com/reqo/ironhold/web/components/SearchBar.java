@@ -1,7 +1,7 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.search.IndexService;
 import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
@@ -14,7 +14,7 @@ public class SearchBar extends VerticalLayout {
 
 	private SearchTextField filterField;
 
-	public SearchBar(final String indexPrefix, final Window window, final IndexService indexService,
+	public SearchBar(final String indexPrefix, final Window window, final MessageIndexService messageIndexService,
 			final IStorageService storageService, SearchResults searchResults) {
 
 		filterField = new SearchTextField(window, searchResults);
@@ -30,7 +30,7 @@ public class SearchBar extends VerticalLayout {
 			public void textChange(TextChangeEvent event) {
 				String criteria = event.getText();
 				if (criteria.trim().length() > 0) {
-					long results = indexService.getMatchCount(indexPrefix, event.getText());
+					long results = messageIndexService.getMatchCount(indexPrefix, event.getText());
 					if (results >= 0) {
 						previewLabel.setValue(String.format(
 								"%,d matched messages", results));

@@ -33,6 +33,11 @@
     <sonar.password>j0hns0n</sonar.password>
   </properties>
   <dependencies>
+      <dependency>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libthrift</artifactId>
+          <version>0.9.0</version>
+      </dependency>
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
