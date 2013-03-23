@@ -1,10 +1,11 @@
 package com.reqo.ironhold.storage;
 
-import com.mongodb.gridfs.GridFS;
 import com.reqo.ironhold.storage.model.MimeMailMessageTestModel;
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.model.exceptions.MessageExistsException;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.security.RSAHelper;
+import com.reqo.ironhold.storage.security.SecurityUtilities;
 import junit.framework.Assert;
 import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.commons.mail.HtmlEmail;
@@ -13,14 +14,22 @@ import org.junit.rules.TemporaryFolder;
 
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 public class MimeMailMessageStorageServiceTest {
     private PSTMessageTestModel testModel;
+    private File keyStoreFile;
     private static final String TEST_CLIENT = "test";
 
     @Rule
     public TemporaryFolder parentFolder = new TemporaryFolder();
+    private KeyPair keyPair;
 
 
     @BeforeClass
@@ -34,15 +43,41 @@ public class MimeMailMessageStorageServiceTest {
     @Before
     public void setUp() throws Exception {
         testModel = new PSTMessageTestModel("/data.pst");
+
+        String keyStorePath = parentFolder.getRoot().getAbsoluteFile() + File.separator + "keyStore";
+        keyStoreFile = new File(keyStorePath);
+
+
+        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(null, null);
+        // get user password and file input stream
+        char[] password = "password".toCharArray();
+
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(1024);
+        keyPair = kpg.generateKeyPair();
+        X509Certificate certificate = SecurityUtilities.generateCertificate("CN=Test, L=London, C=GB", keyPair, 1, "SHA1withRSA");
+        ks.setCertificateEntry(TEST_CLIENT, certificate);
+
+        KeyStore.PrivateKeyEntry skEntry =
+                new KeyStore.PrivateKeyEntry(keyPair.getPrivate(), new Certificate[]{certificate});
+        ks.setEntry(TEST_CLIENT, skEntry, new KeyStore.PasswordProtection(password));
+
+        // store away the keystore
+        java.io.FileOutputStream fos =
+                new java.io.FileOutputStream(keyStorePath);
+        ks.store(fos, password);
+        fos.close();
+
     }
 
     @Test
     public void testExistsPositive() throws Exception {
-        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot());
+        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), keyStoreFile);
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), inputMessage.getRawContents());
+        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), RSAHelper.encrypt(inputMessage.getRawContents(), keyPair.getPublic()), inputMessage.getCheckSum());
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -52,7 +87,7 @@ public class MimeMailMessageStorageServiceTest {
 
     @Test
     public void testLargeMessage() throws Exception {
-        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot());
+        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), keyStoreFile);
 
         HtmlEmail email = new HtmlEmail();
         email.addTo("ilya@erudites.com", "Ilya");
@@ -62,8 +97,8 @@ public class MimeMailMessageStorageServiceTest {
 
         email.setSubject("subject");
 
-        byte[] bytes = new byte[(int) GridFS.MAX_CHUNKSIZE * 3];
-        for (int i = 0; i < GridFS.MAX_CHUNKSIZE * 3; i++) {
+        byte[] bytes = new byte[4096 * 100];
+        for (int i = 0; i < bytes.length; i++) {
             bytes[i] = 2;
         }
 
@@ -82,7 +117,7 @@ public class MimeMailMessageStorageServiceTest {
         MimeMailMessage mimeMailMessage = new MimeMailMessage();
         mimeMailMessage.loadMimeMessageFromSource(baos.toString());
 
-        storageService.store(TEST_CLIENT, mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents());
+        storageService.store(TEST_CLIENT, mimeMailMessage.getMessageId(), RSAHelper.encrypt(mimeMailMessage.getRawContents(), keyPair.getPublic()), mimeMailMessage.getCheckSum());
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, mimeMailMessage);
 
@@ -92,11 +127,12 @@ public class MimeMailMessageStorageServiceTest {
 
     @Test
     public void testExistsNegative() throws Exception {
-        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot());
+        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), keyStoreFile);
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), inputMessage.getRawContents());
+
+        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), RSAHelper.encrypt(inputMessage.getRawContents(), keyPair.getPublic()), inputMessage.getCheckSum());
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -106,11 +142,11 @@ public class MimeMailMessageStorageServiceTest {
 
     @Test
     public void testStore() throws Exception {
-        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot());
+        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), keyStoreFile);
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), inputMessage.getRawContents());
+        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), RSAHelper.encrypt(inputMessage.getRawContents(), keyPair.getPublic()), inputMessage.getCheckSum());
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
     }
@@ -118,16 +154,17 @@ public class MimeMailMessageStorageServiceTest {
     @Test
     public void testStoreIfExists() throws Exception {
 
-        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot());
+        IMimeMailMessageStorageService storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), keyStoreFile);
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), inputMessage.getRawContents());
+        storageService.store(TEST_CLIENT, inputMessage.getMessageId(), RSAHelper.encrypt(inputMessage.getRawContents(), keyPair.getPublic()), inputMessage.getCheckSum());
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
         try {
-            storageService.store(TEST_CLIENT, inputMessage.getMessageId(), "test");
+            storageService.store(TEST_CLIENT, inputMessage.getMessageId(), "test", inputMessage.getCheckSum());
+
             Assert.assertTrue(false);
         } catch (MessageExistsException e) {
 
@@ -172,62 +209,6 @@ public class MimeMailMessageStorageServiceTest {
 
     }
 
-    @Test
-    public void testAddPSTSource() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-
-        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
-        inputMessage.addSource(MessageSourceTestModel
-                .generatePSTMessageSource());
-
-        storageService.store(inputMessage);
-
-        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
-
-        PSTMessageSource source = MessageSourceTestModel
-                .generatePSTMessageSource();
-        storageService.addSource(inputMessage.getMessageId(), source);
-
-        inputMessage.addSource(source);
-
-        MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
-
-    }
-
-    @Test
-    public void testAddIMAPSource() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-
-        File file = FileUtils.toFile(EmlLoadTest.class
-                .getResource("/testMimeMessageWithHTML.eml"));
-        InputStream is = new FileInputStream(file);
-
-        List<String> orioginalLines = Files.readAllLines(
-                Paths.get(file.toURI()), Charset.defaultCharset());
-        StringBuilder original = new StringBuilder();
-        for (String line : orioginalLines) {
-            original.append(line + "\n");
-        }
-
-        MimeMailMessage mimeMailMessage = new MimeMailMessage();
-        mimeMailMessage.loadMimeMessageFromSource(original.toString());
-        mimeMailMessage.addSource(MessageSourceTestModel
-                .generateIMAPMessageSource());
-
-        storageService.store(mimeMailMessage);
-
-        MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
-
-        IMAPMessageSource source = MessageSourceTestModel
-                .generateIMAPMessageSource();
-        storageService.addSource(mimeMailMessage.getMessageId(), source);
-
-        mimeMailMessage.addSource(source);
-
-        MimeMailMessageTestModel.verifyStorage(storageService, mimeMailMessage);
-
-    }
-
 
     @Test
     public void testIMAPMarkAsIndexed() throws Exception {
@@ -269,23 +250,5 @@ public class MimeMailMessageStorageServiceTest {
 
     }
 
-    @Test
-    public void testGetTotalMessageCount() throws Exception {
-        IStorageService storageService = new MongoService(mongo, db);
-
-        List<PSTMessage> messages = testModel.generateOriginalPSTMessages();
-        for (PSTMessage message : messages) {
-            MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(message);
-            inputMessage.addSource(MessageSourceTestModel
-                    .generatePSTMessageSource());
-
-            storageService.store(inputMessage);
-
-            MimeMailMessageTestModel.verifyStorage(storageService, inputMessage);
-        }
-
-        Assert.assertEquals(messages.size(),
-                storageService.getTotalMessageCount());
-    }
  */
 }

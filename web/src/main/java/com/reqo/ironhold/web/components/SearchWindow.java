@@ -12,15 +12,15 @@ import java.util.Properties;
 
 @SuppressWarnings("serial")
 public class SearchWindow extends Window {
-	private static Logger logger = Logger.getLogger(SearchWindow.class);
-	
+    private static Logger logger = Logger.getLogger(SearchWindow.class);
+
     private final SearchWindow me;
 
     public SearchWindow(String title) throws Exception {
         super(title);
         final Properties prop = new Properties();
-		prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
-		
+        prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
+
         this.me = this;
         LoginForm loginForm = new LoginForm();
         loginForm.setWidth("100%");
@@ -35,11 +35,11 @@ public class SearchWindow extends Window {
                 String[] validUserNames = prop.getProperty("usernames").toString().split(",");
                 boolean foundValidUsername = false;
                 for (String validUserName : validUserNames) {
-                	foundValidUsername = validUserName.equals(username);
-                	if (foundValidUsername) break;
+                    foundValidUsername = validUserName.equals(username);
+                    if (foundValidUsername) break;
                 }
                 if (password.equals(prop.getProperty("password").toString()) && foundValidUsername) {
-                	try {
+                    try {
                         login(username);
                     } catch (Exception e) {
                         logger.warn(e);
@@ -61,11 +61,10 @@ public class SearchWindow extends Window {
         vl.setMargin(true);
 
 
-
         final IStorageService storageService = new MongoService(username, "web");
 
-        final SearchResults searchResults = new SearchResults(username, ((IronholdApplication)this.getApplication()).getIndexService(), storageService);
-        final SearchBar searchBar = new SearchBar(username, this, ((IronholdApplication)this.getApplication()).getIndexService(), storageService, searchResults);
+        final SearchResults searchResults = new SearchResults(username, ((IronholdApplication) this.getApplication()).getIndexService(), storageService);
+        final SearchBar searchBar = new SearchBar(username, this, ((IronholdApplication) this.getApplication()).getIndexService(), storageService, searchResults);
         final Button searchButton = new Button("Search");
 
         searchButton.addListener(new ClickListener() {

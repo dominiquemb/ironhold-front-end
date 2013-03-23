@@ -21,6 +21,14 @@ public class IMAPMessageSource extends MessageSource {
         super();
     }
 
+    public IMAPMessageSource(String messageId, String imapSource, String username, int imapPort, String protocol) {
+        super(messageId);
+        this.imapSource = imapSource;
+        this.username = username;
+        this.imapPort = imapPort;
+        this.protocol = protocol;
+    }
+
     public String serialize() throws IOException {
         return mapper.writeValueAsString(this);
     }

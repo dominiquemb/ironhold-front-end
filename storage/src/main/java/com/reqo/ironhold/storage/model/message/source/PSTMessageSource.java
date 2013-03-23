@@ -20,9 +20,9 @@ public class PSTMessageSource extends MessageSource {
 		super();
 	}
 
-	public PSTMessageSource(String pstFileName, String folder, long size,
+	public PSTMessageSource(String messageId, String pstFileName, String folder, long size,
 			Date fileTimestamp) {
-		super();
+		super(messageId);
 		this.pstFileName = pstFileName;
 		this.folder = folder;
 		this.size = size;
@@ -33,8 +33,8 @@ public class PSTMessageSource extends MessageSource {
         return mapper.writeValueAsString(this);
     }
 
-    public IMAPMessageSource deserialize(String source) throws IOException {
-        return mapper.readValue(source, IMAPMessageSource.class);
+    public PSTMessageSource deserialize(String source) throws IOException {
+        return mapper.readValue(source, PSTMessageSource.class);
     }
 
 	public String getPstFileName() {

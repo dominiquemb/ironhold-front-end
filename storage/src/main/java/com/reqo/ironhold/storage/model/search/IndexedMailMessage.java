@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.model.search;
 
+import com.reqo.ironhold.storage.model.IPartitioned;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.Recipient;
@@ -23,7 +24,7 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class IndexedMailMessage {
+public class IndexedMailMessage implements IPartitioned {
     private static Logger logger = Logger.getLogger(IndexedMailMessage.class);
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -224,5 +225,11 @@ public class IndexedMailMessage {
 
     public void setImportance(String importance) {
         this.importance = importance;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getPartition() {
+        return year;
     }
 }

@@ -14,33 +14,28 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MessageIndexService {
-    private static Logger logger = Logger.getLogger(MessageIndexService.class);
-    private Set<String> indexes;
-    private final IndexClient client;
+public class MessageIndexService extends AbstractIndexService {
+    private static Logger logger = Logger.getLogger(LogIndexService.class);
 
-    public MessageIndexService(IndexClient client) throws Exception {
+    private static Map<IndexedObjectType, String> mappings;
 
-        indexes = Collections.synchronizedSet(new HashSet<String>());
-        this.client = client;
+    static {
+        mappings = new HashMap<>();
+        mappings.put(IndexedObjectType.MIME_MESSAGE, "messageIndexMappings.json");
     }
 
-    private void createMessageIndex(String indexPrefix, String year) throws Exception {
-        String indexName = indexPrefix + "." + year;
-        client.createIndex(indexName, indexPrefix, "messageIndexSettings.json");
-        client.addTypeMapping(indexName, IndexedObjectType.MIME_MESSAGE, "messageIndexMappings.json");
+    public MessageIndexService(IndexClient client) {
+        super(client, "messageIndexSettings.json", mappings);
     }
 
-    public boolean store(String indexPrefix, IndexedMailMessage message) throws Exception {
-        String indexName = indexPrefix + "." + message.getYear();
+    public void store(String indexPrefix, IndexedMailMessage message) throws Exception {
+        String alias = getIndexAlias(indexPrefix);
+        String indexName = getIndexName(alias, message.getPartition());
 
-        createMessageIndexIfMissing(indexPrefix, message.getYear());
-
-        logger.debug("Trying to index " + message.getMessageId());
+        createIndexIfMissing(indexPrefix, message.getPartition());
 
         IndexResponse response = client.store(
                 indexName,
@@ -48,8 +43,7 @@ public class MessageIndexService {
                 message.getMessageId(),
                 message.serialize());
 
-        logger.debug("Returned from ES");
-        return true;
+
     }
 
 
@@ -61,19 +55,6 @@ public class MessageIndexService {
         MessageSearchBuilder newBuilder = MessageSearchBuilder
                 .newBuilder(client.getSearchRequestBuilder(alias));
         return newBuilder.buildFrom(oldBuilder);
-    }
-
-    private void createMessageIndexIfMissing(String indexPrefix, String year) throws Exception {
-        if (!indexes.contains(year)) {
-            String indexName = indexPrefix + "." + year;
-
-            if (!client.indexExists(indexName)) {
-                createMessageIndex(indexPrefix, year);
-            }
-
-            this.indexes.add(year);
-        }
-
     }
 
     public SearchResponse search(MessageSearchBuilder builder) {

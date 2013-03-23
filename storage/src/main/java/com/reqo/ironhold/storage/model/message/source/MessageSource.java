@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
@@ -37,6 +38,11 @@ public abstract class MessageSource  implements IHasMessageId, IPartitioned {
 		this.loadTimestamp = new Date();
 
 	}
+
+    public MessageSource(String messageId) {
+        this();
+        this.messageId = messageId;
+    }
 
 	public Date getLoadTimestamp() {
 		return loadTimestamp;
@@ -76,6 +82,7 @@ public abstract class MessageSource  implements IHasMessageId, IPartitioned {
     }
 
     @Override
+    @JsonIgnore
     public String getPartition() {
         return year;
     }

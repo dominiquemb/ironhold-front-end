@@ -15,6 +15,7 @@ import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.elasticsearch.common.Base64;
 
 import javax.mail.*;
@@ -23,6 +24,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -666,6 +669,7 @@ public class MimeMailMessage implements ExportableMessage, IHasMessageId, IParti
     }
 
     @Override
+    @JsonIgnore
     public String getPartition() {
         return yearFormat.format(this.getMessageDate());
     }
@@ -673,6 +677,14 @@ public class MimeMailMessage implements ExportableMessage, IHasMessageId, IParti
     @Override
     public String getMessageId() {
         return messageId;
+    }
+
+    @JsonIgnore
+    public String getCheckSum() throws NoSuchAlgorithmException {
+        MessageDigest complete = MessageDigest.getInstance("MD5");
+        complete.update(getRawContents().getBytes());
+
+        return Base64.encodeBytes(complete.digest());
     }
 
 
