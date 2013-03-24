@@ -1,6 +1,6 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.IndexUtils;
@@ -20,24 +20,25 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @SuppressWarnings("serial")
 public class EmailView extends Panel {
+    @Autowired
+    private IMimeMailMessageStorageService mimeMailMessageStorageService;
+    @Autowired
+    private MessageIndexService messageIndexService;
 
-    private final IStorageService storageService;
-    private final MessageIndexService messageIndexService;
     private final EmailView me;
     private final String indexPrefix;
     private SearchHitPanel currentHitPanel;
     private final boolean displayHTML;
 
-    public EmailView(String indexPrefix, IStorageService storageService, MessageIndexService messageIndexService, boolean displayHTML) {
+    public EmailView(String indexPrefix, boolean displayHTML) {
         this.indexPrefix = indexPrefix;
-        this.storageService = storageService;
-        this.messageIndexService = messageIndexService;
         this.displayHTML = displayHTML;
         this.setSizeFull();
         this.me = this;
@@ -91,13 +92,13 @@ public class EmailView extends Panel {
         size.setStyleName(Reindeer.LABEL_SMALL);
         this.addComponent(size);
 
-        Object mailMessage = null;
+        MimeMailMessage mailMessage = new MimeMailMessage();
         Attachment[] attachments = null;
 
         if (item.getType().equals(
                 IndexedObjectType.MIME_MESSAGE.getValue())) {
-            mailMessage = storageService.getMimeMailMessage(item.getId());
-            attachments = ((MimeMailMessage) mailMessage).getAttachments();
+            mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
+            attachments = mailMessage.getAttachments();
         }
 
         if (attachments != null) {
@@ -153,8 +154,7 @@ public class EmailView extends Panel {
 
         String bodyText = null;
         if (displayHTML) {
-            MimeMailMessage mimeMessage = storageService.getMimeMailMessage(item.getId());
-            bodyText = mimeMessage.getBodyHTML().isEmpty() ? mimeMessage.getBody() : mimeMessage.getBodyHTML();
+            bodyText = mailMessage.getBodyHTML().isEmpty() ? mailMessage.getBody() : mailMessage.getBodyHTML();
         } else {
             bodyText = IndexUtils.getFieldValue(hits.getAt(0),
                     IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");

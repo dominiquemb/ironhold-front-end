@@ -1,7 +1,8 @@
 package com.reqo.ironhold.storage.model.search;
 
 public enum IndexedObjectType {
-	MIME_MESSAGE("mimeMessage"), IMAP_MESSAGE_SOURCE("imapMessageSource"), PST_MESSAGE_SOURCE("pstMessageSource"), LOG_MESSAGE("logMessage");
+	MIME_MESSAGE("mimeMessage"), IMAP_MESSAGE_SOURCE("imapMessageSource"), PST_MESSAGE_SOURCE("pstMessageSource"), LOG_MESSAGE("logMessage"),
+    IMAP_BATCH_META("imapBatchMeta"), PST_FILE_META("pstFileMeta");
 
 	private String value;
 
@@ -23,6 +24,10 @@ public enum IndexedObjectType {
                 return PST_MESSAGE_SOURCE;
             case "logMessage":
                 return LOG_MESSAGE;
+            case "imapBatchMeta":
+                return IMAP_BATCH_META;
+            case "pstFileMeta":
+                return PST_FILE_META;
             default:
                 return null;
         }

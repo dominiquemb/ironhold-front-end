@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.utils.ChecksumUtils;
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.mail.EmailException;
 import org.elasticsearch.common.Base64;
 import org.junit.Before;
@@ -43,16 +44,14 @@ public class MimeMailMessageTest {
 
 
             for (Attachment attachment : mimeMailMessage.getAttachments()) {
-                System.out.println("Checking attachment in " + mimeMailMessage.getExportFileName(null) + "/" + attachment.getFileName());
-
-                File actualFile = new File(tempFolder.getRoot().getAbsolutePath() + File.separator + mimeMailMessage.getExportFileName(null) + File.separator + attachment.getFileName());
+                System.out.println("Normalized dir name: " + FilenameUtils.normalize(mimeMailMessage.getMessageId()));
+                File actualFile = new File(tempFolder.getRoot().getAbsolutePath() + File.separator + FilenameUtils.normalize(mimeMailMessage.getMessageId()) + File.separator + attachment.getFileName());
                 FileUtils.writeByteArrayToFile(actualFile, Base64.decode(attachment.getBody()));
 
                 File expectedFile = FileUtils.toFile(MimeMailMessageTest.class
-                        .getResource("/attachments/" + mimeMailMessage.getExportFileName(null) + "/" + attachment.getFileName()));
+                        .getResource("/attachments/" + FilenameUtils.normalize(mimeMailMessage.getMessageId()) + "/" + attachment.getFileName()));
 
                 System.out.println("Comparing " + actualFile.length() + " v " + expectedFile.length() + " byte file " + actualFile.getAbsolutePath() + " against " + expectedFile.getAbsolutePath());
-
 
 
                 String actualChecksum = ChecksumUtils.getMD5Checksum(actualFile);

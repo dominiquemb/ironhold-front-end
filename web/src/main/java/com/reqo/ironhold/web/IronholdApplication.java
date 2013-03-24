@@ -15,7 +15,6 @@
  */
 package com.reqo.ironhold.web;
 
-import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.web.components.SearchWindow;
 import com.vaadin.Application;
 import com.vaadin.ui.Window;
@@ -28,20 +27,7 @@ import org.apache.log4j.Logger;
 public class IronholdApplication extends Application {
     private Window window;
     private static Logger logger = Logger.getLogger(IronholdApplication.class);
-    private static MessageIndexService messageIndexService;
 
-    //TODO: is there a better way to ensure that there is only 1 ES cient?
-    static {
-        try {
-            messageIndexService = new MessageIndexService("WebServer");
-        } catch (Exception e) {
-            logger.error("Failed to create index node", e);
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private Object lock = new Object();
 
     @Override
     public void init() {
@@ -55,9 +41,5 @@ public class IronholdApplication extends Application {
         } catch (Exception e) {
             logger.warn(e);
         }
-    }
-
-    public MessageIndexService getIndexService() {
-        return messageIndexService;
     }
 }

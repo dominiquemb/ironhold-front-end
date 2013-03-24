@@ -3,15 +3,19 @@ package com.reqo.ironhold.importer;
 import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
-import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
+import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -21,140 +25,143 @@ import java.util.List;
 
 public class PSTImporter {
 
-	private static final int MILLIS_IN_A_SEC = 1000;
+    private static final int MILLIS_IN_A_SEC = 1000;
 
-	private static final int INFO_BATCH_SIZE = 100;
+    private static final int INFO_BATCH_SIZE = 100;
 
-	private static Logger logger = Logger.getLogger(PSTImporter.class);
+    private static Logger logger = Logger.getLogger(PSTImporter.class);
 
-	private final PSTFileMeta metaData;
-	private final File file;
-	private final IStorageService storageService;
+    @Autowired
+    private MiscIndexService miscIndexService;
 
-	private String hostname;
+    @Autowired
+    private MessageMetaDataIndexService messageMetaDataIndexService;
 
-	public PSTImporter(File file, String md5, String mailBoxName,
-			String originalFilePath, String commentary,
-			IStorageService storageService) throws UnknownHostException {
-		this.file = file;
-		this.hostname = InetAddress.getLocalHost().getHostName();
-		this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
-				originalFilePath, commentary, md5, hostname, file.length(), new Date());
-		this.storageService = storageService;
+    @Autowired
+    private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
-	}
+    private final PSTFileMeta metaData;
+    private final File file;
+    private final String client;
+    private final String hostname;
 
-	private boolean wasFileProcessedPreviously() throws Exception {
-		for (PSTFileMeta pstFileMeta : storageService.getPSTFiles()) {
-			if (pstFileMeta.sameAs(this.metaData)) {
-				return true;
-			}
-		}
+    public PSTImporter(File file, String md5, String mailBoxName,
+                       String originalFilePath, String commentary, String client) throws UnknownHostException {
+        this.file = file;
+        this.hostname = InetAddress.getLocalHost().getHostName();
+        this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
+                originalFilePath, commentary, md5, hostname, file.length(), new Date());
+        this.client = client;
+    }
 
-		return false;
-	}
+    private boolean wasFileProcessedPreviously() throws Exception {
+        return miscIndexService.exists(client, this.metaData);
+    }
 
-	public String processMessages() throws Exception {
-		if (wasFileProcessedPreviously()) {
-			throw new Exception("This file has been processed already");
-		}
+    public String processMessages() throws Exception {
+        if (wasFileProcessedPreviously()) {
+            throw new Exception("This file has been processed already");
+        }
 
-		PSTFile pstFile = new PSTFile(file);
-		try {
-			String fileSizeDisplay = FileUtils.byteCountToDisplaySize(file
-					.length());
+        PSTFile pstFile = new PSTFile(file);
+        try {
+            String fileSizeDisplay = FileUtils.byteCountToDisplaySize(file
+                    .length());
 
-			LogMessage startedMessage = new LogMessage(LogLevel.Success,
-					file.toString(), "Started pst import: File: ["
-							+ file.toString() + "] File size: ["
-							+ fileSizeDisplay + "]");
+            LogMessage startedMessage = new LogMessage(LogLevel.Success,
+                    file.toString(), "Started pst import: File: ["
+                    + file.toString() + "] File size: ["
+                    + fileSizeDisplay + "]");
 
-			storageService.store(startedMessage);
+            messageMetaDataIndexService.store(client, startedMessage);
 
-			long started = System.currentTimeMillis();
+            long started = System.currentTimeMillis();
 
-			processFolder("", pstFile.getRootFolder());
+            processFolder("", pstFile.getRootFolder());
 
-			metaData.setFinished(new Date());
-			long finished = System.currentTimeMillis();
+            metaData.setFinished(new Date());
+            long finished = System.currentTimeMillis();
 
-			String timeTook = DurationFormatUtils.formatDurationWords(finished
-					- started, true, true);
-			float duration = (finished - started) / MILLIS_IN_A_SEC;
-			float rate = metaData.getMessages() / duration;
+            String timeTook = DurationFormatUtils.formatDurationWords(finished
+                    - started, true, true);
+            float duration = (finished - started) / MILLIS_IN_A_SEC;
+            float rate = metaData.getMessages() / duration;
 
-			String messageString = "Finished pst import: File: ["
-					+ file.toString() + "] File size: [" + fileSizeDisplay
-					+ "] Success " + "count: [" + metaData.getMessages()
-					+ "] Duplicate count: [" + metaData.getDuplicates()
-					+ "] Fail count: [" + metaData.getFailures() + "] Time "
-					+ "taken: [" + timeTook + "] Rate: [" + rate
-					+ " messages per sec]";
-			LogMessage finishedMessage = new LogMessage(LogLevel.Success,
-					file.toString(), messageString);
+            String messageString = "Finished pst import: File: ["
+                    + file.toString() + "] File size: [" + fileSizeDisplay
+                    + "] Success " + "count: [" + metaData.getMessages()
+                    + "] Duplicate count: [" + metaData.getDuplicates()
+                    + "] Fail count: [" + metaData.getFailures() + "] Time "
+                    + "taken: [" + timeTook + "] Rate: [" + rate
+                    + " messages per sec]";
+            LogMessage finishedMessage = new LogMessage(LogLevel.Success,
+                    file.toString(), messageString);
 
-			storageService.store(finishedMessage);
 
-			storageService.addPSTFile(metaData);
+            messageMetaDataIndexService.store(client, finishedMessage);
+            miscIndexService.store(client, metaData);
 
-			return messageString;
-		} finally {
-			pstFile.getFileHandle().close();
-		}
 
-	}
+            return messageString;
+        } finally {
+            pstFile.getFileHandle().close();
+        }
 
-	private void processFolder(String folderPath, PSTFolder folder)
-			throws Exception {
+    }
 
-		LogMessage folderMessage = new LogMessage(LogLevel.Success,
-				file.toString(), "Processing " + folderPath + " ["
-						+ folder.getContentCount() + " items]");
-		storageService.store(folderMessage);
-		// go through the folders...
-		if (folder.hasSubfolders()) {
-			List<PSTFolder> childFolders = folder.getSubFolders();
-			for (PSTFolder childFolder : childFolders) {
-				processFolder(folderPath + "/" + childFolder.getDisplayName(),
-						childFolder);
-			}
-		}
+    private void processFolder(String folderPath, PSTFolder folder)
+            throws Exception {
 
-		// and now the emails for this folder
-		if (folder.getContentCount() > 0) {
-			metaData.addFolder(folderPath, folder.getContentCount());
+        LogMessage folderMessage = new LogMessage(LogLevel.Success,
+                file.toString(), "Processing " + folderPath + " ["
+                + folder.getContentCount() + " items]");
+        messageMetaDataIndexService.store(client, folderMessage);
 
-			PSTMessage message = (PSTMessage) folder.getNextChild();
-			while (message != null) {
-				String messageId = "unknown";
+        // go through the folders...
+        if (folder.hasSubfolders()) {
+            List<PSTFolder> childFolders = folder.getSubFolders();
+            for (PSTFolder childFolder : childFolders) {
+                processFolder(folderPath + "/" + childFolder.getDisplayName(),
+                        childFolder);
+            }
+        }
 
-				try {
+        // and now the emails for this folder
+        if (folder.getContentCount() > 0) {
+            metaData.addFolder(folderPath, folder.getContentCount());
 
-					messageId = message.getInternetMessageId();
+            PSTMessage message = (PSTMessage) folder.getNextChild();
+            while (message != null) {
+                String messageId = "unknown";
 
-					PSTMessageSource source = new PSTMessageSource(
-							file.toString(), folderPath, file.length(),
-							new Date(file.lastModified()));
+                try {
+
+                    messageId = message.getInternetMessageId();
+
+                    PSTMessageSource source = new PSTMessageSource(messageId,
+                            file.toString(), folderPath, file.length(),
+                            new Date(file.lastModified()));
                     MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
-					if (storageService.existsMimeMailMessage(messageId)) {
-						logger.warn("Found duplicate " + messageId);
+                    if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId())) {
+                        logger.warn("Found duplicate " + messageId);
                         metaData.incrementDuplicates();
-                        storageService.addSource(messageId, source);
-						if (metaData.getDuplicates() % INFO_BATCH_SIZE == 0) {
-							logger.info("New Messages: "
-									+ metaData.getMessages() + " Duplicates: "
-									+ metaData.getDuplicates() + " Failures:"
-									+ metaData.getFailures());
-						}
-					} else {
-						if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
-							logger.info("New Messages: "
-									+ metaData.getMessages() + " Duplicates: "
-									+ metaData.getDuplicates() + " Failures:"
-									+ metaData.getFailures());
-						}
-						long storedSize = storageService.store(mimeMailMessage);
+                        messageMetaDataIndexService.store(client, source);
+
+                        if (metaData.getDuplicates() % INFO_BATCH_SIZE == 0) {
+                            logger.info("New Messages: "
+                                    + metaData.getMessages() + " Duplicates: "
+                                    + metaData.getDuplicates() + " Failures:"
+                                    + metaData.getFailures());
+                        }
+                    } else {
+                        if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
+                            logger.info("New Messages: "
+                                    + metaData.getMessages() + " Duplicates: "
+                                    + metaData.getDuplicates() + " Failures:"
+                                    + metaData.getFailures());
+                        }
+                        long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()));
                         metaData.updateSizeStatistics(mimeMailMessage.getRawContents().length(), storedSize);
                     }
 
@@ -163,24 +170,23 @@ public class PSTImporter {
                     metaData.incrementAttachmentStatistics(mimeMailMessage.isHasAttachments());
 
                     metaData.incrementMessages();
-					LogMessage processedMessage = new LogMessage(
-							LogLevel.Success, messageId,
-							"Processed pst message");
+                    LogMessage processedMessage = new LogMessage(
+                            LogLevel.Success, messageId,
+                            "Processed pst message");
+                    messageMetaDataIndexService.store(client, processedMessage);
+                } catch (Exception e) {
+                    LogMessage processedMessage = new LogMessage(
+                            LogLevel.Failure, messageId,
+                            "Failed to process message " + e.getMessage());
 
-					storageService.store(processedMessage);
-				} catch (Exception e) {
-					LogMessage processedMessage = new LogMessage(
-							LogLevel.Failure, messageId,
-							"Failed to process message " + e.getMessage());
+                    messageMetaDataIndexService.store(client, processedMessage);
+                    metaData.incrementFailures();
+                }
+                message = (PSTMessage) folder.getNextChild();
 
-					storageService.store(processedMessage);
-					metaData.incrementFailures();
-				}
-				message = (PSTMessage) folder.getNextChild();
+            }
+        }
 
-			}
-		}
-
-	}
+    }
 
 }

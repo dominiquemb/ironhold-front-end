@@ -130,6 +130,17 @@ public class IndexClient {
                 .execute().actionGet();
     }
 
+
+    public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) {
+        SearchRequestBuilder request = esClient.prepareSearch(indexName)
+                .setTypes(type.getValue())
+                .addField("_source").setFrom(start).setSize(limit);
+        logger.debug(request.toString());
+        return request
+
+                .execute().actionGet();
+    }
+
     /**
      * INDEX OPERATIONS *
      */

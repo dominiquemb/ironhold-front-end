@@ -3,14 +3,14 @@ package com.reqo.ironhold.storage;
 import com.reqo.ironhold.storage.model.exceptions.CheckSumFailedException;
 import com.reqo.ironhold.storage.model.exceptions.MessageExistsException;
 import com.reqo.ironhold.storage.security.AESHelper;
+import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
+import com.reqo.ironhold.storage.utils.Compression;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.elasticsearch.common.Base64;
 
 import java.io.File;
-import java.security.MessageDigest;
 
 /**
  * User: ilya
@@ -40,7 +40,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         File file = getFile(client, partition, messageId);
         File checkSumFile = getCheckSumFile(client, partition, messageId);
         if (!exists(client, partition, messageId)) {
-            FileUtils.writeStringToFile(file, AESHelper.encrypt(serializedMailMessage, keyStoreService.getKey(client, partition)));
+            FileUtils.writeStringToFile(file, AESHelper.encrypt(Compression.compress(serializedMailMessage), keyStoreService.getKey(client, partition)));
             FileUtils.writeStringToFile(checkSumFile, checkSum);
             verifyFile(client, partition, messageId);
         } else {
@@ -64,14 +64,11 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         File file = getFile(client, partition, messageId);
         File checkSumFile = getCheckSumFile(client, partition, messageId);
 
-        String decrypted = AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition));
+        String decrypted = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
 
         byte[] decryptedBytes = decrypted.getBytes();
 
-        MessageDigest complete = MessageDigest.getInstance("MD5");
-        complete.update(decryptedBytes);
-
-        String actualChecksum = Base64.encodeBytes(complete.digest());
+        String actualChecksum = CheckSumHelper.getCheckSum(decryptedBytes);
         String expectedChecksum = FileUtils.readFileToString(checkSumFile);
         if (!actualChecksum.equals(expectedChecksum)) {
             throw new CheckSumFailedException(file);
@@ -85,7 +82,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     private File getFile(String client, String partition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + FilenameUtils.normalize(messageId) + ".eml");
+        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
     }
 
 

@@ -1,8 +1,5 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MongoService;
-import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -61,10 +58,8 @@ public class SearchWindow extends Window {
         vl.setMargin(true);
 
 
-        final IStorageService storageService = new MongoService(username, "web");
-
-        final SearchResults searchResults = new SearchResults(username, ((IronholdApplication) this.getApplication()).getIndexService(), storageService);
-        final SearchBar searchBar = new SearchBar(username, this, ((IronholdApplication) this.getApplication()).getIndexService(), storageService, searchResults);
+        final SearchResults searchResults = new SearchResults(username);
+        final SearchBar searchBar = new SearchBar(this, searchResults);
         final Button searchButton = new Button("Search");
 
         searchButton.addListener(new ClickListener() {
@@ -79,7 +74,7 @@ public class SearchWindow extends Window {
             }
         });
 
-        Header header = new Header(getApplication(), username, storageService);
+        Header header = new Header(getApplication(), username);
         addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();

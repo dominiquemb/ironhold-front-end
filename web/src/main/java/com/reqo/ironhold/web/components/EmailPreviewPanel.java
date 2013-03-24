@@ -1,7 +1,5 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.IStorageService;
-import com.reqo.ironhold.storage.MessageIndexService;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.log4j.Logger;
@@ -20,15 +18,15 @@ public class EmailPreviewPanel extends TabSheet {
     private SearchHit item;
     private String criteria;
 
-    public EmailPreviewPanel(String indexPrefix, IStorageService storageService, MessageIndexService messageIndexService) {
+    public EmailPreviewPanel(String indexPrefix) {
         this.setVisible(false);
         this.setSizeFull();
 
-        this.htmlView = new EmailView(indexPrefix, storageService, messageIndexService, true);
-        this.textView = new EmailView(indexPrefix, storageService, messageIndexService, false);
+        this.htmlView = new EmailView(indexPrefix, true);
+        this.textView = new EmailView(indexPrefix, false);
 
-        this.sourceView = new SourceView(storageService, messageIndexService);
-        this.auditView = new AuditView(storageService);
+        this.sourceView = new SourceView();
+        this.auditView = new AuditView();
 
         this.addTab(textView, "Text");
         this.addTab(htmlView, "Graphical");
@@ -66,7 +64,7 @@ public class EmailPreviewPanel extends TabSheet {
 
     private synchronized void updateCurrentTab() throws Exception {
         if (this.getSelectedTab() instanceof EmailView) {
-            ((EmailView)this.getSelectedTab()).show(newHitPanel, item, criteria);
+            ((EmailView) this.getSelectedTab()).show(newHitPanel, item, criteria);
         } else if (this.getSelectedTab() instanceof SourceView) {
             this.sourceView.show(newHitPanel, item, criteria);
         } else if (this.getSelectedTab() instanceof AuditView) {

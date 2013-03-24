@@ -37,6 +37,18 @@ public class IMAPMessageSource extends MessageSource {
         return mapper.readValue(source, IMAPMessageSource.class);
     }
 
+    public String getDescription() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(protocol);
+        sb.append("://");
+        sb.append(username);
+        sb.append("@");
+        sb.append(imapSource);
+        sb.append(":");
+        sb.append(imapPort);
+        return sb.toString();
+    }
+
     public String getImapSource() {
         return imapSource;
     }

@@ -6,9 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.commons.math.stat.descriptive.rank.Median;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
@@ -56,11 +54,14 @@ public class IMAPBatchMeta {
 	@JsonIgnore
 	private boolean isDirty = false;
 
-	public static String toJSON(IMAPBatchMeta meta)
-			throws JsonGenerationException, JsonMappingException, IOException {
-		meta.persistCalculations();
-		return mapper.writeValueAsString(meta);
-	}
+    public String serialize() throws IOException {
+        persistCalculations();
+        return mapper.writeValueAsString(this);
+    }
+
+    public IMAPBatchMeta deserialize(String source) throws IOException {
+        return mapper.readValue(source, IMAPBatchMeta.class);
+    }
 
 	public void persistCalculations() {
 		if (isDirty) {
@@ -75,12 +76,7 @@ public class IMAPBatchMeta {
 		}
 	}
 
-	public static IMAPBatchMeta fromJSON(String meta)
-			throws JsonMappingException, IOException {
-		return mapper.readValue(meta, IMAPBatchMeta.class);
-	}
-
-	protected IMAPBatchMeta() {
+	public IMAPBatchMeta() {
 
 	}
 

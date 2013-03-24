@@ -1,6 +1,5 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.IStorageService;
 import com.vaadin.Application;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
@@ -11,25 +10,24 @@ import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
 public class Header extends HorizontalLayout {
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G");
-	private static Logger logger = Logger.getLogger(Header.class);
-	
-	public Header(final Application application, final String username,
-			final IStorageService storageService) {
-		this.setWidth("100%");
-		setSizeFull();
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G");
+    private static Logger logger = Logger.getLogger(Header.class);
 
-		// Button logo = new Button();
-		// logo.setStyleName(BaseTheme.BUTTON_LINK);
-		// logo.setIcon(new ClassResource("images/logo.png", application));
-		//
-		// this.addComponent(logo);
-		//
-		// this.setComponentAlignment(logo, Alignment.TOP_LEFT);
+    public Header(final Application application, final String username) {
+        this.setWidth("100%");
+        setSizeFull();
 
-		VerticalLayout vl = new VerticalLayout();
+        // Button logo = new Button();
+        // logo.setStyleName(BaseTheme.BUTTON_LINK);
+        // logo.setIcon(new ClassResource("images/logo.png", application));
+        //
+        // this.addComponent(logo);
+        //
+        // this.setComponentAlignment(logo, Alignment.TOP_LEFT);
+
+        VerticalLayout vl = new VerticalLayout();
 /*		Button pstStatistics = new Button("PST Stats");
-		pstStatistics.addListener(new ClickListener() {
+        pstStatistics.addListener(new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -64,30 +62,30 @@ public class Header extends HorizontalLayout {
 			}
 		});
 */
-		Button logout = new Button("Logout");
-		logout.addListener(new ClickListener() {
+        Button logout = new Button("Logout");
+        logout.addListener(new ClickListener() {
 
-			public void buttonClick(ClickEvent event) {
-				getApplication().close();
+            public void buttonClick(ClickEvent event) {
+                getApplication().close();
 
-			}
-		});
-		vl.setSizeFull();
-		vl.setWidth("300");
-		Label label = new Label("Welcome, " + username);
-		label.setWidth(null);
+            }
+        });
+        vl.setSizeFull();
+        vl.setWidth("300");
+        Label label = new Label("Welcome, " + username);
+        label.setWidth(null);
 
-		vl.addComponent(label);
+        vl.addComponent(label);
 
-		HorizontalLayout hl = new HorizontalLayout();
-		hl.setSpacing(true);
-	//	hl.addComponent(pstStatistics);
-		//hl.addComponent(imapStatistics);
-		hl.addComponent(logout);
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.setSpacing(true);
+        //	hl.addComponent(pstStatistics);
+        //hl.addComponent(imapStatistics);
+        hl.addComponent(logout);
 
-		vl.addComponent(hl);
+        vl.addComponent(hl);
 
-		this.addComponent(vl);
-		this.setComponentAlignment(vl, Alignment.TOP_RIGHT);
-	}
+        this.addComponent(vl);
+        this.setComponentAlignment(vl, Alignment.TOP_RIGHT);
+    }
 }

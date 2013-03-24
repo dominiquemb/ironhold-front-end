@@ -46,11 +46,11 @@ public class PSTFileMetaTest {
             int size = (int) dsize;
             metaData.updateSizeStatistics(size, size / 10);
         }
-        String jsonString = PSTFileMeta.toJSON(metaData);
+        String jsonString = metaData.serialize();
         Assert.assertTrue(jsonString.length() > 0);
-        PSTFileMeta metaData2 = PSTFileMeta.fromJSON(jsonString);
+        PSTFileMeta metaData2 = new PSTFileMeta().deserialize(jsonString);
         Assert.assertTrue(metaData2 != null);
-        String jsonString2 = PSTFileMeta.toJSON(metaData2);
+        String jsonString2 = metaData2.serialize();
         Assert.assertEquals(jsonString, jsonString2);
 
         System.out.println(jsonString2);
@@ -67,11 +67,11 @@ public class PSTFileMetaTest {
         for (int i = 0; i < folders.length; i++) {
             metaData.addFolder(folders[i], counts[i]);
         }
-        String jsonString = PSTFileMeta.toJSON(metaData);
+        String jsonString = metaData.serialize();
         Assert.assertTrue(jsonString.length() > 0);
-        PSTFileMeta metaData2 = PSTFileMeta.fromJSON(jsonString);
+        PSTFileMeta metaData2 = new PSTFileMeta().deserialize(jsonString);
         Assert.assertTrue(metaData2 != null);
-        String jsonString2 = PSTFileMeta.toJSON(metaData2);
+        String jsonString2 = metaData2.serialize();
         Assert.assertEquals(jsonString, jsonString2);
 
         Assert.assertEquals(metaData.getFolderMap().size(), metaData

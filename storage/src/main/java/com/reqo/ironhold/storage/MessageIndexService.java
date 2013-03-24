@@ -18,13 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MessageIndexService extends AbstractIndexService {
-    private static Logger logger = Logger.getLogger(LogIndexService.class);
+    private static Logger logger = Logger.getLogger(MessageIndexService.class);
 
     private static Map<IndexedObjectType, String> mappings;
 
     static {
         mappings = new HashMap<>();
-        mappings.put(IndexedObjectType.MIME_MESSAGE, "messageIndexMappings.json");
+        mappings.put(IndexedObjectType.MIME_MESSAGE, "messageIndexMapping.json");
     }
 
     public MessageIndexService(IndexClient client) {

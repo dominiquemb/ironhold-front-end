@@ -70,6 +70,7 @@
 			<properties>
 				<web.usernames>reqo,demo,test</web.usernames>
 				<web.password>test</web.password>
+                <data.root>/tmp/</data.root>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -80,6 +81,7 @@
 			<properties>
 				<web.usernames>glt</web.usernames>
 				<web.password>L00k&amp;f1nd</web.password>
+                <data.root>/</data.root>
 			</properties>
 		</profile>
 		<profile>
@@ -87,6 +89,7 @@
 			<properties>
 				<web.usernames>twf</web.usernames>
 				<web.password>IN.sure@nce</web.password>
+                <data.root>/</data.root>
 			</properties>
 		</profile>
 		<profile>
@@ -94,6 +97,7 @@
 			<properties>
 				<web.usernames>trc</web.usernames>
 				<web.password>Ir0nh0ld</web.password>
+                <data.root>/</data.root>
 			</properties>
 		</profile>
 

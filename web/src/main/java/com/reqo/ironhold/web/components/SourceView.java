@@ -1,6 +1,6 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.IStorageService;
+import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
@@ -15,23 +15,26 @@ import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.search.SearchHit;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @SuppressWarnings("serial")
 public class SourceView extends Panel {
+
     private static Logger logger = Logger.getLogger(SourceView.class);
 
+    @Autowired
+    private IMimeMailMessageStorageService mimeMailMessageStorageService;
+    @Autowired
+    private MessageIndexService messageIndexService;
 
-    private final IStorageService storageService;
-    private final MessageIndexService messageIndexService;
+
     private final SourceView me;
     private SearchHitPanel currentHitPanel;
 
-    public SourceView(IStorageService storageService, MessageIndexService messageIndexService) {
-        this.storageService = storageService;
-        this.messageIndexService = messageIndexService;
+    public SourceView() {
         this.setSizeFull();
         this.me = this;
     }
@@ -49,7 +52,7 @@ public class SourceView extends Panel {
         String rawBody = null;
         if (item.getType().equals(
                 IndexedObjectType.MIME_MESSAGE.getValue())) {
-            mailMessage = storageService.getMimeMailMessage(item.getId());
+            mailMessage = mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId());
             rawBody = ((MimeMailMessage) mailMessage).getRawContents();
 
             final String downloadableContent = rawBody;

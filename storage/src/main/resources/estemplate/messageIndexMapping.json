@@ -1,0 +1,133 @@
+{
+    "mimeMessage": {
+        "properties": {
+            "attachments": {
+                "dynamic": "true",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "term_vector": "with_positions_offsets"
+                    },
+                    "creationTime": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                    },
+                    "fileName": {
+                        "type": "string"
+                    },
+                    "fileExt": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "modificationTime": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                    },
+                    "size": {
+                        "type": "long"
+                    },
+                    "contentType": {
+                        "type": "string"
+                    },
+                    "contentDisposition": {
+                        "type": "string"
+                    }
+                }
+            },
+            "bcc": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            },
+            "body": {
+                "type": "string",
+                "term_vector": "with_positions_offsets"
+            },
+            "importance" : {
+                "type": "string",
+                "format": "keyword"
+            },
+            "cc": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            },
+            "messageDate": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "year": {
+                "type": "string",
+                "format": "keyword"
+            },
+            "messageId": {
+                "type": "string"
+            },
+            "sender": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            },
+            "size": {
+                "type": "long"
+            },
+            "subject": {
+                "type": "string",
+                "term_vector": "with_positions_offsets"
+            },
+            "to": {
+                "dynamic": "true",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "name": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}

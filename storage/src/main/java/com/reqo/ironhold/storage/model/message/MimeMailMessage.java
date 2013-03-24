@@ -4,7 +4,6 @@ import com.pff.PSTAttachment;
 import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
-import com.reqo.ironhold.storage.model.ExportableMessage;
 import com.reqo.ironhold.storage.model.IHasMessageId;
 import com.reqo.ironhold.storage.model.IPartitioned;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings({"unchecked"})
-public class MimeMailMessage implements ExportableMessage, IHasMessageId, IPartitioned {
+public class MimeMailMessage implements IHasMessageId, IPartitioned {
     public static final String IMPORTANCE_HIGH = "high";
     public static final String IMPORTANCE_LOW = "low";
 
@@ -478,38 +477,6 @@ public class MimeMailMessage implements ExportableMessage, IHasMessageId, IParti
             }
         }
     }
-
-
-    @Override
-    public String serializeMessageWithAttachments() throws IOException {
-        return getRawContents();
-    }
-
-    @Override
-    public ExportableMessage deserializeMessageWithAttachments(String serializedMessage) throws Exception {
-        loadMimeMessageFromSource(serializedMessage);
-        return this;
-
-    }
-
-    @Override
-    public String getExportFileName(String compression) {
-        if (compression != null) {
-            return messageId.replaceAll("\\W+", "_") + ".eml." + compression;
-        } else {
-            return messageId.replaceAll("\\W+", "_") + ".eml";
-        }
-    }
-
-    @Override
-    public String getExportDirName(String exportDir, String client) {
-        return exportDir
-                + File.separator
-                + client
-                + File.separator
-                + yearFormat.format(this.getMessageDate());
-    }
-
 
     public void addAttachment(Attachment attachment) {
         Attachment[] copy = Arrays.copyOf(attachments, attachments.length + 1);

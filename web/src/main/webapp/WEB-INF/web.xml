@@ -8,6 +8,10 @@
         <param-name>productionMode</param-name>
         <param-value>true</param-value>
     </context-param>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:applicationContext.xml</param-value>
+    </context-param>
     <servlet>
         <servlet-name>IronHold</servlet-name>
         <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
@@ -21,4 +25,7 @@
         <servlet-name>IronHold</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 </web-app>
