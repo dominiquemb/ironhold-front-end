@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.security;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.codec.CodecSupport;
 import org.apache.shiro.crypto.AesCipherService;
 import org.apache.shiro.util.ByteSource;
@@ -14,6 +15,8 @@ import java.security.Key;
  * Time: 9:27 PM
  */
 public class AESHelper {
+    private static Logger logger = Logger.getLogger(AESHelper.class);
+
     public static String encrypt(String plainText, Key key) {
         long started = System.currentTimeMillis();
         try {
@@ -27,7 +30,7 @@ public class AESHelper {
             return Base64.encodeBytes(encrypted.getBytes());
         } finally {
             long finished = System.currentTimeMillis();
-            System.out.println("Encrypted " + plainText.length() + " bytes in " + (finished - started) + "ms");
+            logger.info("Encrypted " + plainText.length() + " bytes in " + (finished - started) + "ms");
         }
     }
 
@@ -42,7 +45,7 @@ public class AESHelper {
             return new String(decrypted.getBytes());
         } finally {
             long finished = System.currentTimeMillis();
-            System.out.println("Decrypted " + encryptedText.length() + " bytes in " + (finished - started) + "ms");
+            logger.info("Decrypted " + encryptedText.length() + " bytes in " + (finished - started) + "ms");
         }
     }
 

@@ -88,6 +88,8 @@ public class MessageIndexServiceTest {
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
 
+        Thread.sleep(1000);
+
         String searchWord = inputMessage.getBody().split(" ")[0];
         long matchCount = messageIndexService.getMatchCount(INDEX_PREFIX, searchWord);
 
@@ -130,6 +132,8 @@ public class MessageIndexServiceTest {
         builder1.withCriteria(searchWord);
         builder1.withResultsLimit(1, 10);
         builder1.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
+
+        Thread.sleep(1000);
 
         SearchResponse matchCount = messageIndexService.getMatchCount(builder1);
 

@@ -1,9 +1,12 @@
 package com.reqo.ironhold.storage;
 
+import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.model.MimeMailMessageTestModel;
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.model.exceptions.MessageExistsException;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.security.IKeyStoreService;
+import com.reqo.ironhold.storage.security.LocalKeyStoreService;
 import junit.framework.Assert;
 import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.commons.mail.HtmlEmail;
@@ -13,6 +16,7 @@ import org.junit.rules.TemporaryFolder;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 public class MimeMailMessageStorageServiceTest {
@@ -38,8 +42,8 @@ public class MimeMailMessageStorageServiceTest {
         testModel = new PSTMessageTestModel("/data.pst");
 
         String keyStorePath = parentFolder.getRoot().getAbsolutePath() + File.separator + "keystore";
-
-        storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), new File(keyStorePath));
+        IKeyStoreService keyStoreService = new LocalKeyStoreService(new File(keyStorePath));
+        storageService = new LocalMimeMailMessageStorageService(parentFolder.getRoot(), keyStoreService);
 
     }
 
@@ -118,6 +122,31 @@ public class MimeMailMessageStorageServiceTest {
         storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+    }
+
+
+    @Test
+    public void testMultipleStore() throws Exception {
+        List<PSTMessage> pstMessages = testModel.generateOriginalPSTMessages();
+
+        int superficialPartition = 0;
+        for (PSTMessage pstMessage : pstMessages) {
+            superficialPartition++;
+            String partition = Integer.toString(superficialPartition % 3);
+            MimeMessage mimeMessage = MimeMailMessage.getMimeMessage(pstMessage);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            mimeMessage.writeTo(baos);
+            String rawContents = baos.toString();
+            rawContents = rawContents.replaceFirst("2008", partition);
+
+            MimeMailMessage inputMessage = new MimeMailMessage();
+            inputMessage.loadMimeMessageFromSource(rawContents);
+
+
+            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+
+            MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+        }
     }
 
     @Test
