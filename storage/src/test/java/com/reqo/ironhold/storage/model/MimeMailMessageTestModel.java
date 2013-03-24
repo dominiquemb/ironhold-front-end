@@ -12,7 +12,7 @@ public class MimeMailMessageTestModel extends CommonTestModel {
 
 
 		MimeMailMessage storedMessage = new MimeMailMessage();
-        storedMessage.loadMimeMessageFromSource(storageService.get(client,
+        storedMessage.loadMimeMessageFromSource(storageService.get(client, inputMessage.getPartition(),
                 inputMessage.getMessageId()));
 		Assert.assertEquals(inputMessage.getRawContents(),
 				storedMessage.getRawContents());

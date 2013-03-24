@@ -8,15 +8,15 @@ import javax.crypto.Cipher;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 
+
 /**
  * User: ilya
  * Date: 3/23/13
  * Time: 2:10 PM
  */
-public class SecurityUtilitiesTest {
-
+public class RSAHelperTest {
     @Test
-    public void testEncryptionDecryption() throws Exception {
+    public void testRSAEncryptionDecryption() throws Exception {
         DataFactory df = new DataFactory();
         String testString = df.getRandomText(4000);
 
@@ -30,9 +30,7 @@ public class SecurityUtilitiesTest {
         String decrypted = RSAHelper.decrypt(encrypted, keypair.getPrivate());
 
         Assert.assertEquals(testString, decrypted);
-
-
-
     }
+
 
 }

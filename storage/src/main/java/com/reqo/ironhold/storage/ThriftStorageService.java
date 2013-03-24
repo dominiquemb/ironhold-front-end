@@ -10,17 +10,17 @@ public class ThriftStorageService implements IMimeMailMessageStorageService {
 
 
     @Override
-    public long store(String client, String messageId, String serializedMailMessage, String checkSum) throws Exception {
+    public long store(String client, String partition, String messageId, String serializedMailMessage, String checkSum) throws Exception {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public boolean exists(String client, String messageId) throws Exception {
+    public boolean exists(String client, String partition, String messageId) throws Exception {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String get(String client, String messageId) throws Exception {
+    public String get(String client, String partition, String messageId) throws Exception {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
