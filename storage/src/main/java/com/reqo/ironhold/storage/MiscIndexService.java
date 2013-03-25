@@ -92,7 +92,7 @@ public class  MiscIndexService extends AbstractIndexService {
 
     public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) throws IOException {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByType(alias, IndexedObjectType.PST_FILE_META, from, limit);
+        SearchResponse response = client.getByType(alias, IndexedObjectType.IMAP_BATCH_META, from, limit);
         List<IMAPBatchMeta> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             IMAPBatchMeta imapBatchMeta = new IMAPBatchMeta();

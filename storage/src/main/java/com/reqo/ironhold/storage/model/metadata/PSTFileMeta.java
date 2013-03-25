@@ -8,6 +8,7 @@ import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.commons.math.stat.descriptive.rank.Median;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -57,6 +58,11 @@ public class PSTFileMeta {
     private boolean isDirty = false;
 
     private static ObjectMapper mapper = new ObjectMapper();
+
+    static {
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+                false);
+    }
 
     public String serialize() throws IOException {
         persistCalculations();

@@ -18,12 +18,10 @@ public class IMAPBatchMeta {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	static {
-		mapper.enableDefaultTyping();
 		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
 				false);
 	}
 
-	public static final String DOT_REPLACEMENT = Character.toString((char) 182);
 
 	private IMAPMessageSource source;
 	private Date started;

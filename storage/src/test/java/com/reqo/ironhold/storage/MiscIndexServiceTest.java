@@ -4,7 +4,9 @@ import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
 import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.model.IMAPBatchMetaTestModel;
 import com.reqo.ironhold.storage.model.PSTFileMetaTestModel;
+import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import junit.framework.Assert;
 import org.elasticsearch.client.Client;
@@ -64,6 +66,22 @@ public class MiscIndexServiceTest {
 
         Assert.assertFalse(miscIndexService.exists(INDEX_PREFIX, metaData2));
 
+    }
+
+    @Test
+    public void testStoreIMAPBatchMeta() throws Exception {
+        IMAPBatchMeta metaData = IMAPBatchMetaTestModel.generate();
+
+        miscIndexService.store(INDEX_PREFIX, metaData);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<IMAPBatchMeta> imapBatchMetaList = miscIndexService.getIMAPBatchMeta(INDEX_PREFIX, 0, 10);
+
+        Assert.assertEquals(1, imapBatchMetaList.size());
+        for (IMAPBatchMeta imapBatchMeta : imapBatchMetaList) {
+            Assert.assertEquals(metaData.serialize(), imapBatchMeta.serialize());
+        }
     }
 
 
