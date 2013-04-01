@@ -34,6 +34,7 @@ import java.util.Properties;
 public class IndexClient {
     private static Logger logger = Logger.getLogger(IndexClient.class);
 
+
     private Client esClient;
     private String[] esHosts;
     private int esPort;
@@ -57,7 +58,6 @@ public class IndexClient {
     public IndexClient(Client esClient) {
         this.esClient = esClient;
     }
-
 
     private void reconnect() throws Exception {
         if (esClient != null) {
@@ -212,7 +212,6 @@ public class IndexClient {
     /**
      * Helper methods
      */
-
     private static String readJsonDefinition(String fileName) throws Exception {
         return readFileInClasspath("/estemplate/" + fileName);
     }
@@ -243,5 +242,4 @@ public class IndexClient {
 
         return bufferJSON.toString();
     }
-
 }

@@ -3,6 +3,9 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
+import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
+import com.reqo.ironhold.web.components.pagingcomponent.listener.impl.LazyPagingComponentListener;
+import com.reqo.ironhold.web.components.pagingcomponent.utilities.FakeList;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
@@ -13,9 +16,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.pagingcomponent.PagingComponent;
-import org.vaadin.pagingcomponent.listener.impl.LazyPagingComponentListener;
-import org.vaadin.pagingcomponent.utilities.FakeList;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +30,8 @@ public class SearchResults extends HorizontalLayout {
     @Autowired
     private MessageIndexService messageIndexService;
 
+    @Autowired
+    private EmailPreviewPanel emailPreview;
 
     private String criteria;
     private VerticalLayout leftPane;
@@ -37,31 +39,30 @@ public class SearchResults extends HorizontalLayout {
     private VerticalLayout messageList;
     private NativeSelect sortFieldSelector;
     private NativeSelect sortOrderSelector;
-    private EmailPreviewPanel emailPreview;
     private PagingComponent<SearchHit> pager;
     private VerticalLayout middlePane;
-    private Panel yearFacetPanel;
-    private Panel fromFacetPanel;
-    private Panel fromDomainFacetPanel;
-    private Panel toFacetPanel;
-    private Panel toDomainFacetPanel;
-    private Panel fileExtFacetPanel;
+    private FacetPanel yearFacetPanel;
+    private FacetPanel fromFacetPanel;
+    private FacetPanel fromDomainFacetPanel;
+    private FacetPanel toFacetPanel;
+    private FacetPanel toDomainFacetPanel;
+    private FacetPanel fileExtFacetPanel;
     private SearchResults me;
     private MessageSearchBuilder builder;
     private boolean facetsSetup;
     private Label resultLabel;
-    private final String indexPrefix;
+    private String indexPrefix;
 
-    public SearchResults(String indexPrefix) {
-        this.indexPrefix = indexPrefix;
+    public SearchResults() {
         this.me = this;
         this.setSpacing(true);
         this.setMargin(true);
         this.setSizeFull();
-        this.builder = messageIndexService.getNewBuilder(indexPrefix);
     }
 
     public void setCriteria(String criteria) {
+        this.builder = messageIndexService.getNewBuilder(indexPrefix);
+
         long started = System.currentTimeMillis();
         this.criteria = criteria;
         this.facetsSetup = false;
@@ -162,8 +163,7 @@ public class SearchResults extends HorizontalLayout {
 
                     @Override
                     protected Component displayItem(int index, SearchHit item) {
-                        return new SearchHitPanel(item, emailPreview, criteria,
-                                me.getApplication());
+                        return new SearchHitPanel(item, emailPreview, criteria);
                     }
 
                 });
@@ -188,10 +188,10 @@ public class SearchResults extends HorizontalLayout {
 
                     CheckBox checkBox = new CheckBox(entry.getTerm());
                     checkBox.setImmediate(true);
-                    checkBox.addListener(new Button.ClickListener() {
+                    checkBox.addValueChangeListener(new ValueChangeListener() {
                         @Override
-                        public void buttonClick(Button.ClickEvent event) {
-                            boolean enabled = event.getButton().booleanValue();
+                        public void valueChange(ValueChangeEvent event) {
+                            boolean enabled = (Boolean) event.getProperty().getValue();
                             builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                             if (enabled) {
@@ -236,10 +236,10 @@ public class SearchResults extends HorizontalLayout {
                                 entry.getTerm(),
                                 20 - Integer.toString(entry.getCount()).length()));
                         checkBox.setImmediate(true);
-                        checkBox.addListener(new Button.ClickListener() {
+                        checkBox.addValueChangeListener(new ValueChangeListener() {
                             @Override
-                            public void buttonClick(Button.ClickEvent event) {
-                                boolean enabled = event.getButton().booleanValue();
+                            public void valueChange(ValueChangeEvent event) {
+                                boolean enabled = (Boolean) event.getProperty().getValue();
                                 builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                                 if (enabled) {
@@ -288,10 +288,10 @@ public class SearchResults extends HorizontalLayout {
                             entry.getTerm(),
                             20 - Integer.toString(entry.getCount()).length()));
                     checkBox.setImmediate(true);
-                    checkBox.addListener(new Button.ClickListener() {
+                    checkBox.addValueChangeListener(new ValueChangeListener() {
                         @Override
-                        public void buttonClick(Button.ClickEvent event) {
-                            boolean enabled = event.getButton().booleanValue();
+                        public void valueChange(ValueChangeEvent event) {
+                            boolean enabled = (Boolean) event.getProperty().getValue();
                             builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                             if (enabled) {
@@ -336,11 +336,10 @@ public class SearchResults extends HorizontalLayout {
                                         20 - Integer.toString(entry.getCount())
                                                 .length()));
                         checkBox.setImmediate(true);
-                        checkBox.addListener(new Button.ClickListener() {
+                        checkBox.addValueChangeListener(new ValueChangeListener() {
                             @Override
-                            public void buttonClick(Button.ClickEvent event) {
-                                boolean enabled = event.getButton()
-                                        .booleanValue();
+                            public void valueChange(ValueChangeEvent event) {
+                                boolean enabled = (Boolean) event.getProperty().getValue();
                                 builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                                 if (enabled) {
@@ -385,10 +384,10 @@ public class SearchResults extends HorizontalLayout {
                             entry.getTerm(),
                             20 - Integer.toString(entry.getCount()).length()));
                     checkBox.setImmediate(true);
-                    checkBox.addListener(new Button.ClickListener() {
+                    checkBox.addValueChangeListener(new ValueChangeListener() {
                         @Override
-                        public void buttonClick(Button.ClickEvent event) {
-                            boolean enabled = event.getButton().booleanValue();
+                        public void valueChange(ValueChangeEvent event) {
+                            boolean enabled = (Boolean) event.getProperty().getValue();
                             builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                             if (enabled) {
@@ -431,11 +430,10 @@ public class SearchResults extends HorizontalLayout {
                                         20 - Integer.toString(entry.getCount())
                                                 .length()));
                         checkBox.setImmediate(true);
-                        checkBox.addListener(new Button.ClickListener() {
+                        checkBox.addValueChangeListener(new ValueChangeListener() {
                             @Override
-                            public void buttonClick(Button.ClickEvent event) {
-                                boolean enabled = event.getButton()
-                                        .booleanValue();
+                            public void valueChange(ValueChangeEvent event) {
+                                boolean enabled = (Boolean) event.getProperty().getValue();
                                 builder = messageIndexService.getNewBuilder(indexPrefix, builder);
 
                                 if (enabled) {
@@ -486,7 +484,7 @@ public class SearchResults extends HorizontalLayout {
         resultLabel = new Label();
         resultLabel.setStyleName(Reindeer.LABEL_SMALL);
 
-        emailPreview = new EmailPreviewPanel(indexPrefix);
+        emailPreview.setIndexPrefix(indexPrefix);
         rightPane.addComponent(emailPreview);
 
         sortFieldSelector = new NativeSelect("Sort By");
@@ -496,7 +494,7 @@ public class SearchResults extends HorizontalLayout {
         sortFieldSelector.setValue("Relevance");
         sortFieldSelector.setNullSelectionAllowed(false);
         sortFieldSelector.setImmediate(true);
-        sortFieldSelector.addListener(new ValueChangeListener() {
+        sortFieldSelector.addValueChangeListener(new ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -512,7 +510,7 @@ public class SearchResults extends HorizontalLayout {
         sortOrderSelector.setValue("Descending");
         sortOrderSelector.setNullSelectionAllowed(false);
         sortOrderSelector.setImmediate(true);
-        sortOrderSelector.addListener(new ValueChangeListener() {
+        sortOrderSelector.addValueChangeListener(new ValueChangeListener() {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -526,29 +524,23 @@ public class SearchResults extends HorizontalLayout {
         sortOptionsBar.addComponent(sortOrderSelector);
         sortOptionsBar.addComponent(sortFieldSelector);
 
-        fromFacetPanel = new Panel("From by name:");
+        fromFacetPanel = new FacetPanel("From by name:");
         fromFacetPanel.setWidth("200px");
-        fromFacetPanel.setScrollable(true);
 
-        fromDomainFacetPanel = new Panel("From by domain:");
+        fromDomainFacetPanel = new FacetPanel("From by domain:");
         fromDomainFacetPanel.setWidth("200px");
-        fromDomainFacetPanel.setScrollable(true);
 
-        toFacetPanel = new Panel("To by name:");
+        toFacetPanel = new FacetPanel("To by name:");
         toFacetPanel.setWidth("200px");
-        toFacetPanel.setScrollable(true);
 
-        toDomainFacetPanel = new Panel("To by domain:");
+        toDomainFacetPanel = new FacetPanel("To by domain:");
         toDomainFacetPanel.setWidth("200px");
-        toDomainFacetPanel.setScrollable(true);
 
-        yearFacetPanel = new Panel("Year:");
+        yearFacetPanel = new FacetPanel("Year:");
         yearFacetPanel.setWidth("200px");
-        yearFacetPanel.setScrollable(true);
 
-        fileExtFacetPanel = new Panel("Attachment file type:");
+        fileExtFacetPanel = new FacetPanel("Attachment file type:");
         fileExtFacetPanel.setWidth("200px");
-        fileExtFacetPanel.setScrollable(true);
 
         leftPane.setSpacing(true);
         leftPane.addComponent(sortOptionsBar);
@@ -587,4 +579,11 @@ public class SearchResults extends HorizontalLayout {
 
     }
 
+    public void setIndexPrefix(String indexPrefix) {
+        this.indexPrefix = indexPrefix;
+    }
+
+    public String getIndexPrefix() {
+        return indexPrefix;
+    }
 }

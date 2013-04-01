@@ -1,0 +1,30 @@
+{
+    "pstMessageSource": {
+        "properties": {
+            "loadTimestamp": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messageId": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "pstFileName": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "folder": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "size": {
+                "type": "integer"
+            },
+            "hostname": {
+                "type": "string",
+                "analyzer": "keyword"
+            }
+        }
+    }
+}
+

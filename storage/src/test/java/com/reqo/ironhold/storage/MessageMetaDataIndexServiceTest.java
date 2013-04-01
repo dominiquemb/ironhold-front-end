@@ -6,10 +6,13 @@ import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRun
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.LogMessageTestModel;
 import com.reqo.ironhold.storage.model.MessageSourceTestModel;
+import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
+import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import junit.framework.Assert;
 import org.elasticsearch.action.get.GetResponse;
@@ -39,11 +42,13 @@ public class MessageMetaDataIndexServiceTest {
     private static Client client;
 
     private IndexClient indexClient;
+    private PSTMessageTestModel testModel;
 
     @Before
     public void setUp() throws Exception {
         indexClient = new IndexClient(client);
         messageMetaDataIndexService = new MessageMetaDataIndexService(indexClient);
+        testModel = new PSTMessageTestModel("/attachments.pst");
     }
 
     @After
@@ -67,7 +72,7 @@ public class MessageMetaDataIndexServiceTest {
                 .getSources(INDEX_PREFIX, pstSource.getMessageId());
 
         Assert.assertEquals(1, sources.size());
-        PSTMessageSource storedSource = (PSTMessageSource)sources.get(0);
+        PSTMessageSource storedSource = (PSTMessageSource) sources.get(0);
         Assert.assertEquals(pstSource.serialize(),
                 storedSource.serialize());
 
@@ -87,13 +92,12 @@ public class MessageMetaDataIndexServiceTest {
                 .getSources(INDEX_PREFIX, imapSource.getMessageId());
 
         Assert.assertEquals(1, sources.size());
-        IMAPMessageSource storedSource = (IMAPMessageSource)sources.get(0);
+        IMAPMessageSource storedSource = (IMAPMessageSource) sources.get(0);
         Assert.assertEquals(imapSource.serialize(),
                 storedSource.serialize());
 
 
     }
-
 
 
     @Test
@@ -144,6 +148,21 @@ public class MessageMetaDataIndexServiceTest {
 
     }
 
+    @Test
+    public void testIndexFailureStore() throws Exception {
+        MimeMailMessage message = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+        IndexFailure indexFailure = new IndexFailure(message.getMessageId(), message.getPartition(), new NullPointerException("test"));
+        messageMetaDataIndexService.store(INDEX_PREFIX, indexFailure);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + message.getPartition());
+
+        List<IndexFailure> indexFailures = messageMetaDataIndexService.getIndexFailures(INDEX_PREFIX, 5);
+
+        Assert.assertEquals(1, indexFailures.size());
+
+
+        Assert.assertEquals(indexFailure.serialize(), indexFailures.get(0).serialize());
+    }
 
 
 }

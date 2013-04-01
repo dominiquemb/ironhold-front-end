@@ -1,6 +1,5 @@
 package com.reqo.ironhold.web.components;
 
-import com.vaadin.Application;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -13,7 +12,7 @@ public class Header extends HorizontalLayout {
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G");
     private static Logger logger = Logger.getLogger(Header.class);
 
-    public Header(final Application application, final String username) {
+    public Header(final String username) {
         this.setWidth("100%");
         setSizeFull();
 
@@ -63,10 +62,10 @@ public class Header extends HorizontalLayout {
 		});
 */
         Button logout = new Button("Logout");
-        logout.addListener(new ClickListener() {
+        logout.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
-                getApplication().close();
+                UI.getCurrent().close();
 
             }
         });

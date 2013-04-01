@@ -1,0 +1,83 @@
+{
+    "imapBatchMeta": {
+        "properties": {
+            "batchSize": {
+                "type": "long"
+            },
+            "started": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "finished": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messages": {
+                "type": "long"
+            },
+            "duplicates": {
+                "type": "long"
+            },
+            "failures": {
+                "type": "long"
+            },
+            "maxSize": {
+                "type": "long"
+            },
+            "compressedMaxSize": {
+                "type": "long"
+            },
+            "messagesWithAttachments": {
+                "type": "long"
+            },
+            "messagesWithoutAttachments": {
+                "type": "long"
+            },
+            "compressedAverageSize": {
+                "type": "double"
+            },
+            "averageSize": {
+                "type": "double"
+            },
+            "medianSize": {
+                "type": "double"
+            },
+            "medianCompressedSize": {
+                "type": "double"
+            },
+            "source": {
+                "dynamic": "true",
+                "properties": {
+                    "loadTimestamp": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                    },
+                    "messageId": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "imapSource": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "username": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "imapPort": {
+                        "type": "integer",
+                        "analyzer": "keyword"
+                    },
+                    "protocol": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "hostname": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -6,6 +6,7 @@ import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -18,20 +19,22 @@ public class QueueWatcher extends FileWatcher {
 
     private static Logger logger = Logger.getLogger(QueueWatcher.class);
 
-    public QueueWatcher(String inputDirName, String outputDirName, String quarantineDirName, String client)
-            throws Exception {
-        super(inputDirName, outputDirName, quarantineDirName, client);
-    }
+    @Autowired
+    private PSTImporter importer;
+
+
 
     @Override
     protected void processFile(File dataFile, MD5CheckSum checksumFile)
             throws Exception {
         logger.info("Processing data file " + dataFile.toString());
 
-        PSTImporter importer = new PSTImporter(dataFile,
-                checksumFile.getCheckSum(), checksumFile.getMailBoxName(),
-                checksumFile.getOriginalFilePath(),
-                checksumFile.getCommentary(), getClient());
+        importer.setMailBoxName(checksumFile.getMailBoxName());
+        importer.setMd5(checksumFile.getCheckSum());
+        importer.setCommentary(checksumFile.getCommentary());
+        importer.setOriginalFilePath(checksumFile.getOriginalFilePath());
+        importer.setFile(dataFile);
+
         String details = importer.processMessages();
 
         EmailNotification.send("Finished processing pst file: " + checksumFile.getDataFileName(), details);
@@ -51,7 +54,12 @@ public class QueueWatcher extends FileWatcher {
         try {
             ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-            QueueWatcher qw = new QueueWatcher(bean.getQueue(), bean.getOut(), bean.getQuarantine(), bean.getClient());
+            QueueWatcher qw = context.getBean(QueueWatcher.class);
+            qw.setInputDirName(bean.getQueue());
+            qw.setOutputDirName(bean.getOut());
+            qw.setQuarantineDirName(bean.getQuarantine());
+            qw.setClient(bean.getClient());
+
             qw.start();
 
         } catch (Exception e) {
@@ -59,5 +67,6 @@ public class QueueWatcher extends FileWatcher {
             System.exit(0);
         }
     }
+
 
 }

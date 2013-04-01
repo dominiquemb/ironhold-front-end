@@ -7,12 +7,12 @@ import com.reqo.ironhold.storage.es.IndexUtils;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
-import com.vaadin.terminal.ClassResource;
-import com.vaadin.terminal.StreamResource;
-import com.vaadin.terminal.StreamResource.StreamSource;
+import com.vaadin.server.ClassResource;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.codec.binary.Base64;
@@ -32,22 +32,21 @@ public class EmailView extends Panel {
     @Autowired
     private MessageIndexService messageIndexService;
 
-    private final EmailView me;
-    private final String indexPrefix;
-    private SearchHitPanel currentHitPanel;
+    private String indexPrefix;
     private final boolean displayHTML;
+    private final VerticalLayout layout;
 
-    public EmailView(String indexPrefix, boolean displayHTML) {
-        this.indexPrefix = indexPrefix;
+    public EmailView(boolean displayHTML) {
         this.displayHTML = displayHTML;
         this.setSizeFull();
-        this.me = this;
+        layout = new VerticalLayout();
+        layout.setMargin(true);
+        this.setContent(layout);
     }
 
     public synchronized void show(SearchHitPanel newHitPanel, SearchHit item,
                                   String criteria) throws Exception {
-
-        this.removeAllComponents();
+        layout.removeAllComponents();
 
         String subjectValue = IndexUtils.getFieldValue(item,
                 IndexFieldEnum.SUBJECT, null, false);
@@ -58,7 +57,7 @@ public class EmailView extends Panel {
 
         final Label subject = new Label(subjectValue);
         subject.setStyleName(Reindeer.LABEL_H2);
-        subject.setContentMode(Label.CONTENT_XHTML);
+        subject.setContentMode(ContentMode.HTML);
         subjectLayout.addComponent(subject);
 
         String importance = IndexUtils.getFieldValue(item, IndexFieldEnum.IMPORTANCE);
@@ -68,19 +67,18 @@ public class EmailView extends Panel {
                 case MimeMailMessage.IMPORTANCE_LOW:
                     final Button icon = new Button();
                     icon.setStyleName(BaseTheme.BUTTON_LINK);
-                    icon.setIcon(new ClassResource("images/" + importance + ".png",
-                            getApplication()));
+                    icon.setIcon(new ClassResource("images/" + importance + ".png"));
                     subjectLayout.addComponent(icon);
             }
         }
 
-        this.addComponent(subjectLayout);
+        layout.addComponent(subjectLayout);
 
         final Label date = new Label(IndexUtils.getFieldValue(item,
                 IndexFieldEnum.DATE));
-        date.setContentMode(Label.CONTENT_XHTML);
+        date.setContentMode(ContentMode.HTML);
         date.setStyleName(Reindeer.LABEL_SMALL);
-        this.addComponent(date);
+        layout.addComponent(date);
 
         addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
@@ -88,9 +86,9 @@ public class EmailView extends Panel {
 
         final Label size = new Label(IndexUtils.getFieldValue(item,
                 IndexFieldEnum.SIZE));
-        size.setContentMode(Label.CONTENT_XHTML);
+        size.setContentMode(ContentMode.HTML);
         size.setStyleName(Reindeer.LABEL_SMALL);
-        this.addComponent(size);
+        layout.addComponent(size);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         Attachment[] attachments = null;
@@ -108,28 +106,18 @@ public class EmailView extends Panel {
                     attachmentLayout.setHeight("16px");
                     attachmentLayout.setSpacing(true);
 
-                    final Button attachmentLink = new Button(
-                            attachment.getFileName());
-                    attachmentLink.setIcon(new ClassResource("images/file.png",
-                            getApplication()));
-                    attachmentLink.setStyleName(BaseTheme.BUTTON_LINK);
-                    attachmentLink.addListener(new ClickListener() {
+                    final Link attachmentLink = new Link(attachment.getFileName(), new StreamResource(new StreamSource() {
 
-                        public void buttonClick(ClickEvent event) {
-                            event.getButton().getWindow()
-                                    .open(new StreamResource(new StreamSource() {
-
-                                        public InputStream getStream() {
-                                            byte[] byteArray = Base64
-                                                    .decodeBase64(attachment
-                                                            .getBody().getBytes());
-                                            return new ByteArrayInputStream(
-                                                    byteArray);
-                                        }
-                                    }, attachment.getFileName(), me
-                                            .getApplication()));
+                        public InputStream getStream() {
+                            byte[] byteArray = Base64
+                                    .decodeBase64(attachment
+                                            .getBody().getBytes());
+                            return new ByteArrayInputStream(
+                                    byteArray);
                         }
-                    });
+                    }, attachment.getFileName()));
+                    attachmentLink.setIcon(new ClassResource("images/file.png"));
+
                     attachmentLayout.addComponent(attachmentLink);
 
                     final Label attachmentSizeLabel = new Label(
@@ -139,14 +127,14 @@ public class EmailView extends Panel {
 
                     attachmentLayout.setComponentAlignment(attachmentSizeLabel,
                             Alignment.MIDDLE_LEFT);
-                    this.addComponent(attachmentLayout);
+                    layout.addComponent(attachmentLayout);
                 }
 
             }
         }
 
         final HorizontalLayout bodyLayout = new HorizontalLayout();
-        bodyLayout.setMargin(new Layout.MarginInfo(true, true, true, true));
+        bodyLayout.setMargin(new MarginInfo(true, true, true, true));
         bodyLayout.setSizeFull();
         SearchHits hits = messageIndexService.search(
                 messageIndexService.getNewBuilder(indexPrefix).withCriteria(criteria)
@@ -164,7 +152,7 @@ public class EmailView extends Panel {
         body.setContentMode(Label.CONTENT_RAW);
         bodyLayout.addComponent(body);
 
-        this.addComponent(bodyLayout);
+        layout.addComponent(bodyLayout);
 
     }
 
@@ -173,10 +161,10 @@ public class EmailView extends Panel {
         if (!value.equals(StringUtils.EMPTY)) {
             HorizontalLayout hl = new HorizontalLayout();
             final Label typeLabel = new Label(field.getLabel() + ":");
-            typeLabel.setContentMode(Label.CONTENT_XHTML);
+            typeLabel.setContentMode(ContentMode.HTML);
             hl.addComponent(typeLabel);
             final Label valueLabel = new Label(value);
-            valueLabel.setContentMode(Label.CONTENT_XHTML);
+            valueLabel.setContentMode(ContentMode.HTML);
             hl.addComponent(valueLabel);
 
 
@@ -184,8 +172,16 @@ public class EmailView extends Panel {
             valueLabel.setWidth(null);
             hl.setExpandRatio(valueLabel, 1.0f);
 
-            this.addComponent(hl);
+            layout.addComponent(hl);
         }
 
+    }
+
+    public void setIndexPrefix(String indexPrefix) {
+        this.indexPrefix = indexPrefix;
+    }
+
+    public String getIndexPrefix() {
+        return indexPrefix;
     }
 }

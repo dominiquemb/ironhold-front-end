@@ -47,6 +47,7 @@
                 <elasticsearch.replicas>0</elasticsearch.replicas>
                 <elasticsearch.shards>10</elasticsearch.shards>
                 <logger>console</logger>
+                <data.root>/tmp/</data.root>
             </properties>
         </profile>
         <profile>
@@ -57,6 +58,7 @@
                 <elasticsearch.replicas>2</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
+                <data.root>/</data.root>
             </properties>
         </profile>
         <profile>
@@ -67,6 +69,7 @@
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
+                <data.root>/</data.root>
             </properties>
         </profile>
         <profile>
@@ -77,6 +80,7 @@
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
+                <data.root>/</data.root>
             </properties>
         </profile>
     </profiles>

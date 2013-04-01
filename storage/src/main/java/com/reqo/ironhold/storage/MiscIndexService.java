@@ -17,7 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class  MiscIndexService extends AbstractIndexService {
+
+public class MiscIndexService extends AbstractIndexService {
     public static final String PARTITION = "1";
     private static Logger logger = Logger.getLogger(MiscIndexService.class);
     public static final String SUFFIX = "misc";
@@ -61,7 +62,9 @@ public class  MiscIndexService extends AbstractIndexService {
 
     }
 
-    public boolean exists(String indexPrefix, PSTFileMeta meta) {
+    public boolean exists(String indexPrefix, PSTFileMeta meta) throws Exception {
+        createIndexIfMissing(indexPrefix, PARTITION);
+
         String alias = getIndexAlias(indexPrefix);
         SearchRequestBuilder searchRequestBuilder = client.getSearchRequestBuilder(alias);
         SearchResponse response = searchRequestBuilder

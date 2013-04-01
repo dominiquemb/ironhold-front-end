@@ -6,26 +6,38 @@
     <context-param>
         <description>Vaadin production mode</description>
         <param-name>productionMode</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:applicationContext.xml</param-value>
+        <param-value>false</param-value>
     </context-param>
     <servlet>
-        <servlet-name>IronHold</servlet-name>
-        <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+        <servlet-name>IronHold Application</servlet-name>
+        <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
         <init-param>
-            <description>Vaadin application class to start</description>
-            <param-name>application</param-name>
+            <param-name>systemMessagesBeanName</param-name>
+            <param-value>DEFAULT</param-value>
+        </init-param>
+        <init-param>
+            <description>Vaadin UI to display</description>
+            <param-name>UI</param-name>
             <param-value>com.reqo.ironhold.web.IronholdApplication</param-value>
+        </init-param>
+        <init-param>
+            <description>Application widgetset</description>
+            <param-name>widgetset</param-name>
+            <param-value>com.reqo.ironhold.web.AppWidgetSet</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
-        <servlet-name>IronHold</servlet-name>
+        <servlet-name>IronHold Application</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/classes/applicationContext.xml</param-value>
+    </context-param>
+
     <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
     </listener>
 </web-app>

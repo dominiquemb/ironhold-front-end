@@ -11,6 +11,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * User: ilya
@@ -24,9 +25,13 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     private final File parent;
     private final IKeyStoreService keyStoreService;
 
-    public LocalMimeMailMessageStorageService(File parent, IKeyStoreService keyStoreService) {
+    public LocalMimeMailMessageStorageService(File parent, IKeyStoreService keyStoreService) throws IOException {
         this.parent = parent;
         this.keyStoreService = keyStoreService;
+
+        if (!parent.exists()) {
+            FileUtils.forceMkdir(parent);
+        }
     }
 
 
@@ -65,7 +70,6 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         File checkSumFile = getCheckSumFile(client, partition, messageId);
 
         String decrypted = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
-
         byte[] decryptedBytes = decrypted.getBytes();
 
         String actualChecksum = CheckSumHelper.getCheckSum(decryptedBytes);
@@ -85,5 +89,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
     }
 
-
+    public File getParent() {
+        return parent;
+    }
 }

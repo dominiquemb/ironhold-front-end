@@ -7,7 +7,6 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
-import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Label;
@@ -38,33 +37,28 @@ public class AuditView extends Panel {
     public static final String LEVEL = "Level";
     private static final String IMAP_HOST = "IMAP Host";
     private static final String IMAP_USER = "IMAP Mailbox";
+    private final VerticalLayout layout;
 
     public AuditView() {
         this.setSizeFull();
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setSpacing(true);
-        verticalLayout.setMargin(true);
-        this.setContent(verticalLayout);
+        layout = new VerticalLayout();
+        layout.setMargin(true);
+        this.setContent(layout);
     }
 
     public synchronized void show(SearchHitPanel newHitPanel, SearchHit item, String criteria) throws Exception {
 
-        this.removeAllComponents();
+        layout.removeAllComponents();
 
 
         final Label messageId = new Label("MessageId: " + item.getId());
-        this.addComponent(messageId);
+        layout.addComponent(messageId);
 
 
-        List<MessageSource> messageSources = null;
-        if (item.getType().equals(
-                IndexedObjectType.MIME_MESSAGE.getValue())) {
-            MimeMailMessage mailMessage = new MimeMailMessage();
-            mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
-            messageSources = messageMetaDataIndexService.getSources("reqo", item.getId());
-            loadIMAPSources(messageSources);
-        }
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
+        List<MessageSource> messageSources = messageMetaDataIndexService.getSources("reqo", item.getId());
+        loadIMAPSources(messageSources);
 
 
         final Table logTable = new Table("Message Log");
@@ -86,7 +80,7 @@ public class AuditView extends Panel {
             logCount++;
             logItem.getItemProperty(TIMESTAMP).setValue(logMessage.getTimestamp());
             logItem.getItemProperty(HOSTNAME).setValue(logMessage.getHost());
-            logItem.getItemProperty(LEVEL).setValue(logMessage.getLevel());
+            logItem.getItemProperty(LEVEL).setValue(logMessage.getLevel().name());
             logItem.getItemProperty(MESSAGE).setValue(logMessage.getMessage());
         }
 
@@ -94,7 +88,7 @@ public class AuditView extends Panel {
         logTable.setContainerDataSource(logs);
 
 
-        this.addComponent(logTable);
+        layout.addComponent(logTable);
 
     }
 
@@ -139,7 +133,7 @@ public class AuditView extends Panel {
         sourcesTable.setHeight("100px");
 
 
-        this.addComponent(sourcesTable);
+        layout.addComponent(sourcesTable);
 
     }
 
@@ -179,7 +173,7 @@ public class AuditView extends Panel {
         sourcesTable.setHeight("100px");
 
 
-        this.addComponent(sourcesTable);
+        layout.addComponent(sourcesTable);
 
     }
 

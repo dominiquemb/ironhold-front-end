@@ -1,45 +1,35 @@
-/*
- * Copyright 2009 IT Mill Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.reqo.ironhold.web;
 
 import com.reqo.ironhold.web.components.SearchWindow;
-import com.vaadin.Application;
-import com.vaadin.ui.Window;
+import com.vaadin.annotations.Theme;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.UI;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * The Application's "main" class
  */
 @SuppressWarnings("serial")
-public class IronholdApplication extends Application {
-    private Window window;
+@Theme(value = "ironhold")
+@Scope("prototype")
+@Component
+public class IronholdApplication extends UI {
     private static Logger logger = Logger.getLogger(IronholdApplication.class);
 
+    @Autowired
+    private SearchWindow searchWindow;
 
     @Override
-    public void init() {
+    protected void init(VaadinRequest vaadinRequest) {
+        this.addWindow(searchWindow);
+       /* final VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(true);
+        setContent(layout);
 
-        try {
-            setTheme("ironhold");
-
-            window = new SearchWindow("IronHold Search");
-
-            setMainWindow(window);
-        } catch (Exception e) {
-            logger.warn(e);
-        }
+        layout.addComponent(searchWindow);      */
+        searchWindow.show();
     }
 }

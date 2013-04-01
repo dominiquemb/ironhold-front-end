@@ -1,9 +1,11 @@
 package com.reqo.ironhold.web.components;
 
+import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Properties;
 
@@ -11,18 +13,30 @@ import java.util.Properties;
 public class SearchWindow extends Window {
     private static Logger logger = Logger.getLogger(SearchWindow.class);
 
-    private final SearchWindow me;
+    @Autowired
+    private SearchResults searchResults;
+
+    @Autowired
+    private SearchBar searchBar;
+    private final VerticalLayout layout;
+    private final String title;
 
     public SearchWindow(String title) throws Exception {
-        super(title);
+        this.title = title;
+        this.setClosable(false);
+        this.setSizeFull();
+        layout = new VerticalLayout();
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        layout.setMargin(true);
+        this.setContent(layout);
         final Properties prop = new Properties();
         prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
 
-        this.me = this;
         LoginForm loginForm = new LoginForm();
         loginForm.setWidth("100%");
         loginForm.setHeight("350px");
-        loginForm.addListener(new LoginForm.LoginListener() {
+        loginForm.addLoginListener(new LoginForm.LoginListener() {
             @Override
             public void onLogin(LoginForm.LoginEvent event) {
                 String username = event.getLoginParameter("username");
@@ -42,27 +56,30 @@ public class SearchWindow extends Window {
                         logger.warn(e);
                     }
                 } else {
-                    getWindow().showNotification("Invalid credentials");
+                    Notification.show("Invalid credentials");
                 }
             }
         });
-        addComponent(loginForm);
+        layout.addComponent(loginForm);
 
     }
 
+    public void show() {
+        this.searchBar.show();
+        Page.getCurrent().setTitle(title);
+
+    }
+
+
     private void login(String username) throws Exception {
-        this.removeAllComponents();
-        VerticalLayout vl = new VerticalLayout();
-        this.setContent(vl);
-        vl.setSpacing(true);
-        vl.setMargin(true);
+        layout.removeAllComponents();
 
 
-        final SearchResults searchResults = new SearchResults(username);
-        final SearchBar searchBar = new SearchBar(this, searchResults);
+        searchResults.setIndexPrefix(username);
+
         final Button searchButton = new Button("Search");
 
-        searchButton.addListener(new ClickListener() {
+        searchButton.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
                 String criteria = searchBar.getCriteria();
@@ -74,18 +91,18 @@ public class SearchWindow extends Window {
             }
         });
 
-        Header header = new Header(getApplication(), username);
-        addComponent(header);
+        Header header = new Header(username);
+        layout.addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setSpacing(true);
         topLayout.addComponent(searchBar);
         topLayout.addComponent(searchButton);
-        addComponent(topLayout);
+        layout.addComponent(topLayout);
 
-        addComponent(searchResults);
+        layout.addComponent(searchResults);
 
-        vl.setComponentAlignment(topLayout, Alignment.MIDDLE_CENTER);
+        layout.setComponentAlignment(topLayout, Alignment.MIDDLE_CENTER);
 
     }
 }

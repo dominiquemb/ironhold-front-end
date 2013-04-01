@@ -1,6 +1,7 @@
 package com.reqo.ironhold.reader;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MessageMetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
@@ -8,6 +9,8 @@ import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
+import com.reqo.ironhold.storage.model.search.IndexFailure;
+import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -39,6 +42,9 @@ public class IMAPReader {
 
     @Autowired
     private MiscIndexService miscIndexService;
+
+    @Autowired
+    private MessageIndexService messageIndexService;
 
 
     private String hostname;
@@ -75,6 +81,7 @@ public class IMAPReader {
         source.setImapSource(hostname);
         source.setImapPort(port);
         source.setProtocol(protocol);
+
 
         final IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
 
@@ -150,6 +157,13 @@ public class IMAPReader {
 
                             metaData.updateSizeStatistics(mailMessage
                                     .getRawContents().length(), storedSize);
+
+                            try {
+                                messageIndexService.store(client, new IndexedMailMessage(mailMessage));
+                            } catch(Exception e) {
+                                logger.error("Failed to index message " + mailMessage.getMessageId(), e);
+                                messageMetaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+                            }
 
                         }
 

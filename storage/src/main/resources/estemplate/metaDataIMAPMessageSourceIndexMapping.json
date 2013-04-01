@@ -1,0 +1,34 @@
+{
+    "imapMessageSource": {
+        "properties": {
+            "loadTimestamp": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messageId": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "imapSource": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "username": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "imapPort": {
+                "type": "integer",
+                "analyzer": "keyword"
+            },
+            "protocol": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "hostname": {
+                "type": "string",
+                "analyzer": "keyword"
+            }
+        }
+    }
+}

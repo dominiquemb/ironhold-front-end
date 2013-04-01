@@ -35,7 +35,7 @@ public class MimeMailMessageTest {
     }
 
     @Test
-    public void testGetMimeMessage1() throws Exception {
+    public void testGetMimeMessage() throws Exception {
         PSTMessageTestModel testModel = new PSTMessageTestModel("/ilya.pst", 500);
 
         for (PSTMessage pstMessage : testModel.generateOriginalPSTMessages()) {

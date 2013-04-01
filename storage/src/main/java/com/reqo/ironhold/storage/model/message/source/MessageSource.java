@@ -18,7 +18,7 @@ public abstract class MessageSource  implements IHasMessageId, IPartitioned {
     protected ObjectMapper mapper = new ObjectMapper();
 
     private String messageId;
-    private String year;
+    private String partition;
 	private Date loadTimestamp;
 	private String hostname;
 	private static Logger logger = Logger.getLogger(MessageSource.class);
@@ -84,18 +84,14 @@ public abstract class MessageSource  implements IHasMessageId, IPartitioned {
     @Override
     @JsonIgnore
     public String getPartition() {
-        return year;
+        return partition;
     }
 
     public void setMessageId(String messageId) {
         this.messageId = messageId;
     }
 
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
+    public void setPartition(String partition) {
+        this.partition = partition;
     }
 }

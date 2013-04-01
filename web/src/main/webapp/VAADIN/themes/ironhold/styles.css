@@ -1,6 +1,7 @@
-@import "../reindeer/styles.css";
+@import "../reindeer/legacy-styles.css";
 
 b {
 	background: #FFF8C6;
 	font-weight: bold;
 }
+

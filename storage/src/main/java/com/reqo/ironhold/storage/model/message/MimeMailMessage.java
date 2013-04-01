@@ -26,10 +26,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,7 +98,14 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         mimeMessage.writeTo(baos);
         String rawContents = baos.toString();
-        rawContents = rawContents.replaceFirst(mimeMessage.getMessageID(), Matcher.quoteReplacement(originalPSTMessage.getInternetMessageId()));
+
+        String messageId = originalPSTMessage.getInternetMessageId();
+        if (messageId.length()< 10) {
+            logger.warn("Found messageId that is too short, replacing with surrogate id: " + messageId);
+            messageId = UUID.randomUUID().toString() + "-generated";
+
+        }
+        rawContents = rawContents.replaceFirst(mimeMessage.getMessageID(), Matcher.quoteReplacement(messageId));
 
         MimeMailMessage mimeMailMessage = new MimeMailMessage();
         mimeMailMessage.loadMimeMessageFromSource(rawContents);
@@ -371,7 +375,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned {
         long started = System.currentTimeMillis();
         int bufferCount = 0;
         try {
-            logger.info("populateRawContents - starting");
+            logger.debug("populateRawContents - starting");
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             List<String> lines = Collections.list(mimeMessage
                     .getAllHeaderLines());

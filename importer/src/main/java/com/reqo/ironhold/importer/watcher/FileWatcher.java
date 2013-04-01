@@ -11,10 +11,10 @@ import java.nio.file.*;
 public abstract class FileWatcher {
 	private static Logger logger = Logger.getLogger(FileWatcher.class);
 
-	private final String inputDirName;
-	private final String outputDirName;
-	private final String quarantineDirName;
-	private final String client;
+	private String inputDirName;
+	private String outputDirName;
+	private String quarantineDirName;
+	private String client;
 		
 	private WatchService watchService;
 
@@ -42,15 +42,6 @@ public abstract class FileWatcher {
 	protected abstract void processFile(File dataFile, MD5CheckSum md5File)
 			throws Exception;
 
-	public FileWatcher(String inputDirName, String outputDirName,
-			String quarantineDirName, String client)  {
-		this.inputDirName = inputDirName;
-		this.outputDirName = outputDirName;
-		this.quarantineDirName = quarantineDirName;
-		this.client = client;
-
-		
-	}
 
 	public void start() throws IOException {
 		logger.info("Watching " + inputDirName + " directory for " + client);
@@ -173,12 +164,23 @@ public abstract class FileWatcher {
 		return outputDirName;
 	}
 
-	public String getClient() {
-		return client;
-	}
-
 	public String getQuarantineDirName() {
 		return quarantineDirName;
 	}
 
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+    public void setInputDirName(String inputDirName) {
+        this.inputDirName = inputDirName;
+    }
+
+    public void setOutputDirName(String outputDirName) {
+        this.outputDirName = outputDirName;
+    }
+
+    public void setQuarantineDirName(String quarantineDirName) {
+        this.quarantineDirName = quarantineDirName;
+    }
 }

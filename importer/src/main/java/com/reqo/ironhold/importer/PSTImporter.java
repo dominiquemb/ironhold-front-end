@@ -4,6 +4,7 @@ import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MessageMetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
@@ -11,6 +12,8 @@ import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
+import com.reqo.ironhold.storage.model.search.IndexFailure;
+import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -40,18 +43,22 @@ public class PSTImporter {
     @Autowired
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
-    private final PSTFileMeta metaData;
-    private final File file;
-    private final String client;
-    private final String hostname;
+    @Autowired
+    private MessageIndexService messageIndexService;
 
-    public PSTImporter(File file, String md5, String mailBoxName,
-                       String originalFilePath, String commentary, String client) throws UnknownHostException {
-        this.file = file;
+    private PSTFileMeta metaData;
+
+    private File file;
+    private String client;
+    private final String hostname;
+    private String md5;
+    private String mailBoxName;
+    private String originalFilePath;
+    private String commentary;
+
+    public PSTImporter() throws UnknownHostException {
         this.hostname = InetAddress.getLocalHost().getHostName();
-        this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
-                originalFilePath, commentary, md5, hostname, file.length(), new Date());
-        this.client = client;
+
     }
 
     private boolean wasFileProcessedPreviously() throws Exception {
@@ -59,6 +66,9 @@ public class PSTImporter {
     }
 
     public String processMessages() throws Exception {
+        this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
+                originalFilePath, commentary, md5, hostname, file.length(), new Date());
+
         if (wasFileProcessedPreviously()) {
             throw new Exception("This file has been processed already");
         }
@@ -138,15 +148,12 @@ public class PSTImporter {
 
                     messageId = message.getInternetMessageId();
 
-                    PSTMessageSource source = new PSTMessageSource(messageId,
-                            file.toString(), folderPath, file.length(),
-                            new Date(file.lastModified()));
                     MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
                     if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId())) {
                         logger.warn("Found duplicate " + messageId);
                         metaData.incrementDuplicates();
-                        messageMetaDataIndexService.store(client, source);
+
 
                         if (metaData.getDuplicates() % INFO_BATCH_SIZE == 0) {
                             logger.info("New Messages: "
@@ -155,6 +162,7 @@ public class PSTImporter {
                                     + metaData.getFailures());
                         }
                     } else {
+                        logger.info("New message " + messageId);
                         if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
                             logger.info("New Messages: "
                                     + metaData.getMessages() + " Duplicates: "
@@ -165,6 +173,11 @@ public class PSTImporter {
                         metaData.updateSizeStatistics(mimeMailMessage.getRawContents().length(), storedSize);
                     }
 
+                    PSTMessageSource source = new PSTMessageSource(messageId,
+                            file.toString(), folderPath, file.length(),
+                            new Date(file.lastModified()));
+
+                    messageMetaDataIndexService.store(client, source);
                     metaData.incrementObjectType(message.getClass().getSimpleName());
 
                     metaData.incrementAttachmentStatistics(mimeMailMessage.isHasAttachments());
@@ -174,7 +187,15 @@ public class PSTImporter {
                             LogLevel.Success, messageId,
                             "Processed pst message");
                     messageMetaDataIndexService.store(client, processedMessage);
+
+                    try {
+                        messageIndexService.store(client, new IndexedMailMessage(mimeMailMessage));
+                    } catch(Exception e) {
+                        logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
+                        messageMetaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
+                    }
                 } catch (Exception e) {
+                    logger.warn("Failed tp process message", e);
                     LogMessage processedMessage = new LogMessage(
                             LogLevel.Failure, messageId,
                             "Failed to process message " + e.getMessage());
@@ -189,4 +210,27 @@ public class PSTImporter {
 
     }
 
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
+    public void setMailBoxName(String mailBoxName) {
+        this.mailBoxName = mailBoxName;
+    }
+
+    public void setOriginalFilePath(String originalFilePath) {
+        this.originalFilePath = originalFilePath;
+    }
+
+    public void setCommentary(String commentary) {
+        this.commentary = commentary;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
 }

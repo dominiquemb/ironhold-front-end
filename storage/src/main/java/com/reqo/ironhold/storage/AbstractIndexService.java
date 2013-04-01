@@ -65,4 +65,8 @@ public abstract class AbstractIndexService {
 
     }
 
+    public void clearCache() {
+        indexes.clear();
+    }
+
 }

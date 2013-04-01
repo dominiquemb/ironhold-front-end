@@ -4,7 +4,7 @@ import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.UI;
 
 @SuppressWarnings({"serial", "unchecked"})
 public class SearchTextField extends TextField implements Handler {
@@ -12,7 +12,7 @@ public class SearchTextField extends TextField implements Handler {
 
     private final SearchResults searchResults;
 
-    public SearchTextField(Window mainWindow, SearchResults searchResults) {
+    public SearchTextField(SearchWindow mainWindow, SearchResults searchResults) {
         super();
         this.searchResults = searchResults;
         mainWindow.addActionHandler(this);
@@ -24,15 +24,14 @@ public class SearchTextField extends TextField implements Handler {
 
     public void handleAction(Action action, Object sender, Object target) {
         if (action == action_ok) {
-            String criteria = (String) this.getValue();
+            String criteria = this.getValue();
             if (criteria.trim().length() > 0) {
                 searchResults.setCriteria(criteria);
             } else {
                 searchResults.reset();
             }
 
-
-            getWindow().scrollIntoView(this.getParent().getParent());
+            UI.getCurrent().scrollIntoView(this.getParent().getParent());
 
         }
 

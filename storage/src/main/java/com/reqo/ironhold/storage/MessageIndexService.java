@@ -60,7 +60,7 @@ public class MessageIndexService extends AbstractIndexService {
     public SearchResponse search(MessageSearchBuilder builder) {
         try {
             SearchRequestBuilder search = builder.build();
-            logger.info(search.toString());
+            logger.debug(search.toString());
             SearchResponse response = search.execute().actionGet();
             return response;
         } catch (SearchPhaseExecutionException e) {

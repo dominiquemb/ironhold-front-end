@@ -1,25 +1,19 @@
 package com.reqo.ironhold.importer.watcher;
 
-import java.io.File;
-
+import com.reqo.ironhold.importer.notification.EmailNotification;
+import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.reqo.ironhold.importer.notification.EmailNotification;
-import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import java.io.File;
 
 public class InboundWatcher extends FileWatcher {
 	static {
 		System.setProperty("jobname", InboundWatcher.class.getSimpleName());
 	}
     private static Logger logger = Logger.getLogger(InboundWatcher.class);
-
-    
-    public InboundWatcher(String inputDirName, String queueDirName, String quarantineDirName,  String client) throws Exception {
-        super(inputDirName, queueDirName, quarantineDirName, client);
-    }
 
 
     @Override
@@ -39,8 +33,15 @@ public class InboundWatcher extends FileWatcher {
             return;
         }
         try {
-            InboundWatcher iw = new InboundWatcher(bean.getIn(), bean.getQueue(), bean.getQuarantine(), bean.getClient());
+            InboundWatcher iw = new InboundWatcher();
+
+            iw.setInputDirName(bean.getIn());
+            iw.setOutputDirName(bean.getQueue());
+            iw.setQuarantineDirName(bean.getQuarantine());
+            iw.setClient(bean.getClient());
+
             iw.start();
+
         } catch (Exception e) {
             logger.error("Critical error detected. Exiting.", e);
             System.exit(0);

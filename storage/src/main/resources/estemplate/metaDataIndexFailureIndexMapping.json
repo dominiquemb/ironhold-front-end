@@ -1,0 +1,18 @@
+{
+    "indexFailure": {
+        "properties": {
+            "messageId": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "partition": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "exceptionText": {
+                "type": "string",
+                "analyzer": "keyword"
+            }
+        }
+    }
+}

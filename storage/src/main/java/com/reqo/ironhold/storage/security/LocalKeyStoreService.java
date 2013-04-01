@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.security;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.crypto.AesCipherService;
 
@@ -23,9 +24,13 @@ public class LocalKeyStoreService implements IKeyStoreService {
     private final File keyStore;
     private final Map<String, Key> keyCache;
 
-    public LocalKeyStoreService(File keyStore) {
+    public LocalKeyStoreService(File keyStore) throws IOException {
         this.keyStore = keyStore;
         this.keyCache = new ConcurrentHashMap<>();
+
+        if (!keyStore.getParentFile().exists()) {
+            FileUtils.forceMkdir(keyStore.getParentFile());
+        }
     }
 
     private String getCacheKey(String client, String partition) {
@@ -94,6 +99,10 @@ public class LocalKeyStoreService implements IKeyStoreService {
         }
 
 
+    }
+
+    public File getKeyStore() {
+        return keyStore;
     }
 
 }

@@ -6,7 +6,6 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
@@ -15,9 +14,13 @@ public class SearchBar extends VerticalLayout {
     private MessageIndexService messageIndexService;
     private SearchTextField filterField;
 
-    public SearchBar(final Window window, SearchResults searchResults) {
-
+    public SearchBar(final SearchWindow window, SearchResults searchResults) {
         filterField = new SearchTextField(window, searchResults);
+
+    }
+
+    public void show() {
+
 
         final Label previewLabel = new Label(String.format(
                 "%,d total messages", messageIndexService.getTotalMessageCount("reqo")));
@@ -25,7 +28,7 @@ public class SearchBar extends VerticalLayout {
         filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
         filterField.setTextChangeTimeout(200);
         filterField.setWidth("400px");
-        filterField.addListener(new TextChangeListener() {
+        filterField.addTextChangeListener(new TextChangeListener() {
 
             public void textChange(TextChangeEvent event) {
                 String criteria = event.getText();

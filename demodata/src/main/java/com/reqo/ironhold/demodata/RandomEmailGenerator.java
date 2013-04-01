@@ -7,7 +7,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
+import org.apache.commons.mail.HtmlEmail;
 import org.fluttercode.datafactory.impl.DataFactory;
 
 import javax.mail.MessagingException;
@@ -52,7 +52,7 @@ public class RandomEmailGenerator {
 	public String generate() throws EmailException, IOException,
 			MessagingException, DocumentException {
 
-		MultiPartEmail email = new MultiPartEmail();
+		HtmlEmail email = new HtmlEmail();
 		email.setHostName("abc");
 		int toCount = (int) (Math.random() * 5) + 1;
 		for (int i = 0; i < toCount; i++) {
@@ -100,6 +100,7 @@ public class RandomEmailGenerator {
 		email.setSentDate(gc.getTime());
 
 		email.setMsg(text);
+        email.setHtmlMsg("<pre>" + text + "</pre>");
 
 		int attachmentFlag = (int) (Math.random() * 3);
 		List<File> toBeDeleted = new ArrayList<File>();
