@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.reqo.ironhold"/>
+
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+    <!-- Storage beans -->
+    <bean id="keyStoreService" class="com.reqo.ironhold.storage.security.LocalKeyStoreService">
+        <constructor-arg type="java.io.File" value="/tmp/unittest/data/keystore"/>
+    </bean>
+
+    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService">
+        <constructor-arg type="java.io.File" value="/tmp/unittest/data"/>
+        <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
+    </bean>
+
+    <!-- ES beans -->
+    <bean id="esNode" class="fr.pilato.spring.elasticsearch.ElasticsearchNodeFactoryBean"/>
+
+
+    <bean id="esClient" class="fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean"/>
+
+
+    <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient">
+        <constructor-arg type="org.elasticsearch.client.Client" ref="esClient"/>
+    </bean>
+
+    <bean id="messageIndexService" class="com.reqo.ironhold.storage.MessageIndexService">
+        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
+    </bean>
+
+    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MessageMetaDataIndexService">
+        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
+    </bean>
+
+    <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService">
+        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
+    </bean>
+
+    <!-- PST Importer Test bean -->
+    <bean id="pstImporter" class="com.reqo.ironhold.importer.PSTImporter">
+        <property name="client" value="test"/>
+    </bean>
+
+</beans>
