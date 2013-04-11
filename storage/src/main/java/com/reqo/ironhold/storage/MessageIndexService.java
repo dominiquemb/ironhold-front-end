@@ -4,6 +4,7 @@ import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
@@ -16,6 +17,7 @@ import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MessageIndexService extends AbstractIndexService {
     private static Logger logger = Logger.getLogger(MessageIndexService.class);
@@ -47,7 +49,10 @@ public class MessageIndexService extends AbstractIndexService {
     }
 
 
-    public MessageSearchBuilder getNewBuilder(String alias) {
+    public MessageSearchBuilder getNewBuilder(String alias) throws Exception {
+        if (alias == null || StringUtils.isEmpty(alias)) {
+            throw new Exception("Alias cannot be blank");
+        }
         return MessageSearchBuilder.newBuilder(client.getSearchRequestBuilder(alias));
     }
 
@@ -100,7 +105,7 @@ public class MessageIndexService extends AbstractIndexService {
     }
 
 
-    public long getTotalMessageCount(String indexPrefix) {
+    public long getTotalMessageCount(String indexPrefix) throws ExecutionException, InterruptedException {
         return client.getTotalMessageCount(indexPrefix);
     }
 }

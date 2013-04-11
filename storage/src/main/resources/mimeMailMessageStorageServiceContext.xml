@@ -18,22 +18,7 @@
         <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
     </bean>
 
-    <!-- ES beans -->
-    <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient" scope="singleton">
-        <constructor-arg type="java.lang.String" value="WebApp"/>
-    </bean>
-    <bean id="messageIndexService" class="com.reqo.ironhold.storage.MessageIndexService" scope="singleton">
-        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
-    </bean>
-    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MetaDataIndexService" scope="singleton">
-        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
-    </bean>
-    <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService" scope="singleton">
-        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
-    </bean>
-
-    <!-- PST Importer Test bean -->
-    <bean id="pstImporter" class="com.reqo.ironhold.importer.PSTImporter"/>
+    <bean id="mimeMailMessageStorageServiceHandler" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageServiceHandler" scope="singleton"/>
 
 
 </beans>

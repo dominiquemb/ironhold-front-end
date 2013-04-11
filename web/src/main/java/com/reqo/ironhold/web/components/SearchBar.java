@@ -1,38 +1,31 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 public class SearchBar extends VerticalLayout {
-    @Autowired
-    private MessageIndexService messageIndexService;
-    private SearchTextField filterField;
+    private final SearchTextField searchTextField;
 
-    public SearchBar(final SearchWindow window, SearchResults searchResults) {
-        filterField = new SearchTextField(window, searchResults);
-
+    public SearchBar(SearchTextField searchTextField) {
+        this.searchTextField = searchTextField;
     }
 
-    public void show() {
-
-
+    public void init(IronholdApplication ironholdApplication) {
+        final MessageIndexService messageIndexService = ironholdApplication.getMessageIndexService();
         final Label previewLabel = new Label(String.format(
                 "%,d total messages", messageIndexService.getTotalMessageCount("reqo")));
 
-        filterField.setTextChangeEventMode(TextChangeEventMode.LAZY);
-        filterField.setTextChangeTimeout(200);
-        filterField.setWidth("400px");
-        filterField.addTextChangeListener(new TextChangeListener() {
+        searchTextField.addTextChangeListener(new TextChangeListener() {
 
             public void textChange(TextChangeEvent event) {
                 String criteria = event.getText();
                 if (criteria.trim().length() > 0) {
+
                     long results = messageIndexService.getMatchCount("reqo", event.getText());
                     if (results >= 0) {
                         previewLabel.setValue(String.format(
@@ -46,14 +39,14 @@ public class SearchBar extends VerticalLayout {
                 }
             }
         });
-        this.addComponent(filterField);
+        this.addComponent(searchTextField);
         this.addComponent(previewLabel);
 
-        filterField.focus();
+        searchTextField.focus();
     }
 
     public String getCriteria() {
-        return (String) filterField.getValue();
+        return searchTextField.getValue();
     }
 
 }

@@ -5,7 +5,7 @@ import com.pff.PSTFolder;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
-import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
 import com.reqo.ironhold.storage.model.log.LogMessage;
@@ -38,7 +38,7 @@ public class PSTImporter {
     private MiscIndexService miscIndexService;
 
     @Autowired
-    private MessageMetaDataIndexService messageMetaDataIndexService;
+    private MetaDataIndexService metaDataIndexService;
 
     @Autowired
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
@@ -83,7 +83,7 @@ public class PSTImporter {
                     + file.toString() + "] File size: ["
                     + fileSizeDisplay + "]");
 
-            messageMetaDataIndexService.store(client, startedMessage);
+            metaDataIndexService.store(client, startedMessage);
 
             long started = System.currentTimeMillis();
 
@@ -108,7 +108,7 @@ public class PSTImporter {
                     file.toString(), messageString);
 
 
-            messageMetaDataIndexService.store(client, finishedMessage);
+            metaDataIndexService.store(client, finishedMessage);
             miscIndexService.store(client, metaData);
 
 
@@ -125,7 +125,7 @@ public class PSTImporter {
         LogMessage folderMessage = new LogMessage(LogLevel.Success,
                 file.toString(), "Processing " + folderPath + " ["
                 + folder.getContentCount() + " items]");
-        messageMetaDataIndexService.store(client, folderMessage);
+        metaDataIndexService.store(client, folderMessage);
 
         // go through the folders...
         if (folder.hasSubfolders()) {
@@ -177,7 +177,7 @@ public class PSTImporter {
                             file.toString(), folderPath, file.length(),
                             new Date(file.lastModified()));
 
-                    messageMetaDataIndexService.store(client, source);
+                    metaDataIndexService.store(client, source);
                     metaData.incrementObjectType(message.getClass().getSimpleName());
 
                     metaData.incrementAttachmentStatistics(mimeMailMessage.isHasAttachments());
@@ -186,13 +186,13 @@ public class PSTImporter {
                     LogMessage processedMessage = new LogMessage(
                             LogLevel.Success, messageId,
                             "Processed pst message");
-                    messageMetaDataIndexService.store(client, processedMessage);
+                    metaDataIndexService.store(client, processedMessage);
 
                     try {
                         messageIndexService.store(client, new IndexedMailMessage(mimeMailMessage));
                     } catch(Exception e) {
                         logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
-                        messageMetaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
+                        metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
                     }
                 } catch (Exception e) {
                     logger.warn("Failed tp process message", e);
@@ -200,7 +200,7 @@ public class PSTImporter {
                             LogLevel.Failure, messageId,
                             "Failed to process message " + e.getMessage());
 
-                    messageMetaDataIndexService.store(client, processedMessage);
+                    metaDataIndexService.store(client, processedMessage);
                     metaData.incrementFailures();
                 }
                 message = (PSTMessage) folder.getNextChild();

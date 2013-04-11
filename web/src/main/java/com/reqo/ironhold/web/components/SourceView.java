@@ -1,7 +1,7 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -12,7 +12,6 @@ import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.search.SearchHit;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -21,12 +20,6 @@ import java.io.InputStream;
 public class SourceView extends Panel {
 
     private static Logger logger = Logger.getLogger(SourceView.class);
-
-    @Autowired
-    private IMimeMailMessageStorageService mimeMailMessageStorageService;
-    @Autowired
-    private MessageIndexService messageIndexService;
-
 
     private final SourceView me;
     private SearchHitPanel currentHitPanel;
@@ -48,8 +41,9 @@ public class SourceView extends Panel {
         messageId.setContentMode(ContentMode.HTML);
         layout.addComponent(messageId);
 
+        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
 
-        final   String mailMessage = mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId());
+        final String mailMessage = mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId());
 
 
         final Link download = new Link("Download", new StreamResource(new StreamSource() {

@@ -27,13 +27,14 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RunWith(ElasticsearchRunner.class)
 @SuppressWarnings("unchecked")
-public class MessageMetaDataIndexServiceTest {
+public class MetaDataIndexServiceTest {
 
     private static final String INDEX_PREFIX = "unittest";
-    private MessageMetaDataIndexService messageMetaDataIndexService;
+    private MetaDataIndexService metaDataIndexService;
 
     @ElasticsearchNode
     private static Node node;
@@ -44,16 +45,19 @@ public class MessageMetaDataIndexServiceTest {
     private IndexClient indexClient;
     private PSTMessageTestModel testModel;
 
+
     @Before
     public void setUp() throws Exception {
         indexClient = new IndexClient(client);
-        messageMetaDataIndexService = new MessageMetaDataIndexService(indexClient);
+        metaDataIndexService = new MetaDataIndexService(indexClient);
         testModel = new PSTMessageTestModel("/attachments.pst");
     }
 
     @After
-    public void tearDown() {
-        client.admin().indices().prepareDelete(INDEX_PREFIX);
+    public void tearDown() throws ExecutionException, InterruptedException {
+
+        client.admin().indices().prepareDelete().execute().get();
+
     }
 
 
@@ -63,12 +67,12 @@ public class MessageMetaDataIndexServiceTest {
         PSTMessageSource pstSource = MessageSourceTestModel
                 .generatePSTMessageSource();
 
-        messageMetaDataIndexService.store(INDEX_PREFIX, pstSource);
+        metaDataIndexService.store(INDEX_PREFIX, pstSource);
 
 
-        indexClient.refresh(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + pstSource.getPartition());
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + pstSource.getPartition());
 
-        List<MessageSource> sources = messageMetaDataIndexService
+        List<MessageSource> sources = metaDataIndexService
                 .getSources(INDEX_PREFIX, pstSource.getMessageId());
 
         Assert.assertEquals(1, sources.size());
@@ -83,12 +87,12 @@ public class MessageMetaDataIndexServiceTest {
         IMAPMessageSource imapSource = MessageSourceTestModel
                 .generateIMAPMessageSource();
 
-        messageMetaDataIndexService.store(INDEX_PREFIX, imapSource);
+        metaDataIndexService.store(INDEX_PREFIX, imapSource);
 
 
-        indexClient.refresh(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + imapSource.getPartition());
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + imapSource.getPartition());
 
-        List<MessageSource> sources = messageMetaDataIndexService
+        List<MessageSource> sources = metaDataIndexService
                 .getSources(INDEX_PREFIX, imapSource.getMessageId());
 
         Assert.assertEquals(1, sources.size());
@@ -104,17 +108,17 @@ public class MessageMetaDataIndexServiceTest {
     public void testLog() throws Exception {
         LogMessage inputMessage = LogMessageTestModel.generate();
 
-        IndexResponse response = messageMetaDataIndexService.store(INDEX_PREFIX, inputMessage);
+        IndexResponse response = metaDataIndexService.store(INDEX_PREFIX, inputMessage);
 
-        Assert.assertTrue(indexClient.itemExists(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + inputMessage.getPartition(), IndexedObjectType.LOG_MESSAGE, response.getId()));
+        Assert.assertTrue(indexClient.itemExists(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition(), IndexedObjectType.LOG_MESSAGE, response.getId()));
 
-        GetResponse response2 = indexClient.getById(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + inputMessage.getPartition(), IndexedObjectType.LOG_MESSAGE, response.getId());
+        GetResponse response2 = indexClient.getById(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition(), IndexedObjectType.LOG_MESSAGE, response.getId());
 
         Assert.assertEquals(inputMessage.serialize(), response2.getSourceAsString());
 
-        indexClient.refresh(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + inputMessage.getPartition());
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition());
 
-        List<LogMessage> storedMessages = messageMetaDataIndexService
+        List<LogMessage> storedMessages = metaDataIndexService
                 .getLogMessages(INDEX_PREFIX, inputMessage.getMessageId());
 
         Assert.assertEquals(1, storedMessages.size());
@@ -132,14 +136,14 @@ public class MessageMetaDataIndexServiceTest {
             LogMessage inputMessage = LogMessageTestModel.generate();
             inputMessage.setMessageId(messageId);
 
-            messageMetaDataIndexService.store(INDEX_PREFIX, inputMessage);
+            metaDataIndexService.store(INDEX_PREFIX, inputMessage);
 
-            indexClient.refresh(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + inputMessage.getPartition());
+            indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition());
 
             inputMessages.add(inputMessage);
         }
 
-        List<LogMessage> storedMessages = messageMetaDataIndexService
+        List<LogMessage> storedMessages = metaDataIndexService
                 .getLogMessages(INDEX_PREFIX, messageId);
 
 
@@ -152,11 +156,11 @@ public class MessageMetaDataIndexServiceTest {
     public void testIndexFailureStore() throws Exception {
         MimeMailMessage message = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
         IndexFailure indexFailure = new IndexFailure(message.getMessageId(), message.getPartition(), new NullPointerException("test"));
-        messageMetaDataIndexService.store(INDEX_PREFIX, indexFailure);
+        metaDataIndexService.store(INDEX_PREFIX, indexFailure);
 
-        indexClient.refresh(INDEX_PREFIX + "." + MessageMetaDataIndexService.SUFFIX + "." + message.getPartition());
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + message.getPartition());
 
-        List<IndexFailure> indexFailures = messageMetaDataIndexService.getIndexFailures(INDEX_PREFIX, 5);
+        List<IndexFailure> indexFailures = metaDataIndexService.getIndexFailures(INDEX_PREFIX, 5);
 
         Assert.assertEquals(1, indexFailures.size());
 

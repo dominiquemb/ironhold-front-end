@@ -119,7 +119,7 @@
             <properties>
                 <web.usernames>reqo,demo,test</web.usernames>
                 <web.password>test</web.password>
-                <data.root>/Users/ilya/dataroot</data.root>
+                <data.root>/Users/ilya/dataroot/</data.root>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>

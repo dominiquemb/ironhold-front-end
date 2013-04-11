@@ -43,7 +43,7 @@
             </activation>
             <properties>
                 <logger>console</logger>
-                <data.root>/Users/ilya/dataroot</data.root>
+                <data.root>/Users/ilya/dataroot/</data.root>
             </properties>
         </profile>
         <profile>

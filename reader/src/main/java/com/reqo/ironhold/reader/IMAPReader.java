@@ -2,7 +2,7 @@ package com.reqo.ironhold.reader;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
-import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
 import com.reqo.ironhold.storage.model.log.LogMessage;
@@ -38,7 +38,7 @@ public class IMAPReader {
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     @Autowired
-    private MessageMetaDataIndexService messageMetaDataIndexService;
+    private MetaDataIndexService metaDataIndexService;
 
     @Autowired
     private MiscIndexService miscIndexService;
@@ -136,15 +136,15 @@ public class IMAPReader {
                         if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), messageId)) {
                             logger.warn("Found duplicate " + messageId);
                             metaData.incrementDuplicates();
-                            messageMetaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
+                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
 
                         } else {
                             long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
-                            messageMetaDataIndexService.store(client, source);
+                            metaDataIndexService.store(client, source);
 
                             metaData.incrementBatchSize(storedSize);
 
-                            messageMetaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
+                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
 
                             logger.info("Stored journaled message["
                                     + currentMessageNumber
@@ -162,7 +162,7 @@ public class IMAPReader {
                                 messageIndexService.store(client, new IndexedMailMessage(mailMessage));
                             } catch(Exception e) {
                                 logger.error("Failed to index message " + mailMessage.getMessageId(), e);
-                                messageMetaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+                                metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
                             }
 
                         }

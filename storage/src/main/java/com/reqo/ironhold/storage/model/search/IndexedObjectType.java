@@ -2,7 +2,7 @@ package com.reqo.ironhold.storage.model.search;
 
 public enum IndexedObjectType {
 	MIME_MESSAGE("mimeMessage"), IMAP_MESSAGE_SOURCE("imapMessageSource"), PST_MESSAGE_SOURCE("pstMessageSource"), LOG_MESSAGE("logMessage"),
-    IMAP_BATCH_META("imapBatchMeta"), PST_FILE_META("pstFileMeta"), INDEX_FAILURE("indexFailure");
+    IMAP_BATCH_META("imapBatchMeta"), PST_FILE_META("pstFileMeta"), INDEX_FAILURE("indexFailure"), LOGIN_USER("loginUser");
 
 	private String value;
 

@@ -5,7 +5,7 @@ import com.reqo.ironhold.importer.notification.EmailNotification;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
@@ -50,7 +50,7 @@ public class QueueWatcherTest  extends AbstractJUnit4SpringContextTests {
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     @Autowired
-    private MessageMetaDataIndexService messageMetaDataIndexService;
+    private MetaDataIndexService metaDataIndexService;
 
     @Autowired
     private MiscIndexService miscIndexService;
@@ -94,7 +94,7 @@ public class QueueWatcherTest  extends AbstractJUnit4SpringContextTests {
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent().getParentFile());
         esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
-        this.messageMetaDataIndexService.clearCache();
+        this.metaDataIndexService.clearCache();
         this.miscIndexService.clearCache();
 
     }

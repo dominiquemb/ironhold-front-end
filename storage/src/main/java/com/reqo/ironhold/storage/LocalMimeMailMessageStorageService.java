@@ -82,12 +82,19 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     private File getCheckSumFile(String client, String partition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
+        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + getFilePrefix(messageId) + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
     }
 
     private File getFile(String client, String partition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
+        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + getFilePrefix(messageId) + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
     }
+
+    private String getFilePrefix(String messageId) {
+        String cleanedUpMessageId = messageId.toLowerCase().replaceAll("[^a-z0-9]", "");
+        cleanedUpMessageId = cleanedUpMessageId.substring(0, Math.min(cleanedUpMessageId.length(), 3));
+        return cleanedUpMessageId;
+    }
+
 
     public File getParent() {
         return parent;

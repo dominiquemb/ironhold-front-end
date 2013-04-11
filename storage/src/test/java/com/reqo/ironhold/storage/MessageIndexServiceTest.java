@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RunWith(ElasticsearchRunner.class)
 @SuppressWarnings("unchecked")
@@ -49,8 +50,8 @@ public class MessageIndexServiceTest {
     }
 
     @After
-    public void tearDown() {
-        client.admin().indices().prepareDelete(INDEX_PREFIX);
+    public void tearDown() throws ExecutionException, InterruptedException {
+        client.admin().indices().prepareDelete().execute().get();
     }
 
     @Test

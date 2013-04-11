@@ -35,7 +35,7 @@
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
 
-    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MessageMetaDataIndexService">
+    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MetaDataIndexService">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
 

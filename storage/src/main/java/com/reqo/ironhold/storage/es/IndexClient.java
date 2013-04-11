@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 /**
  * User: ilya
@@ -82,63 +83,59 @@ public class IndexClient {
      * ITEM OPERATIONS *
      */
 
-    public IndexResponse store(String indexName, IndexedObjectType type, String id, String object) {
+    public IndexResponse store(String indexName, IndexedObjectType type, String id, String object) throws ExecutionException, InterruptedException {
         IndexResponse result =
                 esClient.prepareIndex(indexName, type.getValue(), id)
                         .setSource(object)
                         .execute()
-                        .actionGet();
+                        .get();
 
         return result;
     }
 
-    public IndexResponse store(String indexName, IndexedObjectType type, String object) {
+    public IndexResponse store(String indexName, IndexedObjectType type, String object) throws ExecutionException, InterruptedException {
         IndexResponse result =
                 esClient.prepareIndex(indexName, type.getValue())
                         .setSource(object)
                         .execute()
-                        .actionGet();
+                        .get();
 
         return result;
     }
 
-    public DeleteResponse delete(String indexName, IndexedObjectType type, String id) {
+    public DeleteResponse delete(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
         return esClient.prepareDelete(indexName, type.getValue(),
-                id).execute().actionGet();
+                id).execute().get();
 
     }
 
-    public boolean itemExists(String indexName, IndexedObjectType type, String id) {
+    public boolean itemExists(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
         GetResponse response = esClient
                 .prepareGet(indexName, type.getValue(), id)
-                .setFields("_id").execute().actionGet();
+                .setFields("_id").execute().get();
         return response.isExists();
     }
 
-    public GetResponse getById(String indexName, IndexedObjectType type, String id) {
-        return esClient.prepareGet(indexName, type.getValue(), id).execute().actionGet();
+    public GetResponse getById(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
+        return esClient.prepareGet(indexName, type.getValue(), id).execute().get();
     }
 
-    public SearchResponse getByField(String indexName, IndexedObjectType type, String field, String value) {
+    public SearchResponse getByField(String indexName, IndexedObjectType type, String field, String value) throws ExecutionException, InterruptedException {
         SearchRequestBuilder request = esClient.prepareSearch(indexName)
                 .setTypes(type.getValue())
                 .addField("_source")
                 .setFilter(FilterBuilders.termFilter(field, value));
         logger.debug(request.toString());
-        return request
-
-                .execute().actionGet();
+        return request.execute().get();
     }
 
 
-    public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) {
+    public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) throws ExecutionException, InterruptedException {
         SearchRequestBuilder request = esClient.prepareSearch(indexName)
                 .setTypes(type.getValue())
                 .addField("_source").setFrom(start).setSize(limit);
         logger.debug(request.toString());
-        return request
-
-                .execute().actionGet();
+        return request.execute().get();
     }
 
     /**
@@ -146,19 +143,22 @@ public class IndexClient {
      */
 
 
-    public boolean indexExists(String indexName) {
+    public boolean indexExists(String indexName) throws ExecutionException, InterruptedException {
         IndicesExistsResponse exists = esClient.admin().indices()
-                .prepareExists(indexName).execute().actionGet();
+                .prepareExists(indexName).execute().get();
 
         return exists.isExists();
     }
 
     public void createIndex(String indexName, String alias, String indexSettingsFile) throws Exception {
+        if (indexName == null || alias == null) {
+            throw new IllegalArgumentException("Index or alias cannot be null");
+        }
         String indexSettingsFileContents = readJsonDefinition(indexSettingsFile);
 
         CreateIndexResponse response1 = esClient.admin().indices()
                 .prepareCreate(indexName).setSettings(indexSettingsFileContents).execute()
-                .actionGet();
+                .get();
         if (!response1.acknowledged()) {
             throw new Exception("ES Request did not get acknowledged: "
                     + response1.toString());
@@ -167,7 +167,7 @@ public class IndexClient {
 
         IndicesAliasesResponse response3 = esClient.admin().indices()
                 .prepareAliases().addAlias(indexName, alias).execute()
-                .actionGet();
+                .get();
         if (!response3.acknowledged()) {
             throw new Exception("ES Request did not get acknowledged: "
                     + response3.toString());
@@ -180,7 +180,7 @@ public class IndexClient {
         PutMappingResponse response2 = esClient.admin().indices()
                 .preparePutMapping(indexName)
                 .setType(type.getValue())
-                .setSource(mappingFileContents).execute().actionGet();
+                .setSource(mappingFileContents).execute().get();
         if (!response2.acknowledged()) {
             throw new Exception("ES Request did not get acknowledged: "
                     + response2.toString());
@@ -190,7 +190,7 @@ public class IndexClient {
 
     public void refresh(String indexPrefix) throws Exception {
         RefreshResponse refresh = esClient.admin().indices()
-                .prepareRefresh(indexPrefix).execute().actionGet();
+                .prepareRefresh(indexPrefix).execute().get();
         if (refresh.getFailedShards() > 0) {
             throw new Exception("Refresh failed");
         }
@@ -205,8 +205,8 @@ public class IndexClient {
     }
 
 
-    public long getTotalMessageCount(String alias) {
-        return esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).execute().actionGet().getHits().getTotalHits();
+    public long getTotalMessageCount(String alias) throws ExecutionException, InterruptedException {
+        return esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).execute().get().getHits().getTotalHits();
     }
 
     /**

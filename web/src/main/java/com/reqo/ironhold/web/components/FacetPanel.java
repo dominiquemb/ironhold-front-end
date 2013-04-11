@@ -15,8 +15,10 @@ public class FacetPanel extends Panel {
 
     public FacetPanel(String caption) {
         super(caption);
+        this.setSizeFull();
         layout = new VerticalLayout();
         layout.setMargin(true);
+        this.setContent(layout);
     }
 
     public void removeAllComponents() {

@@ -25,6 +25,10 @@
             <param-name>widgetset</param-name>
             <param-value>com.reqo.ironhold.web.AppWidgetSet</param-value>
         </init-param>
+        <init-param>
+            <param-name>beanName</param-name>
+            <param-value>ui</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>IronHold Application</servlet-name>

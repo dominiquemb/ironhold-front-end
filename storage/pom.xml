@@ -47,7 +47,7 @@
                 <elasticsearch.replicas>0</elasticsearch.replicas>
                 <elasticsearch.shards>10</elasticsearch.shards>
                 <logger>console</logger>
-                <data.root>/tmp/</data.root>
+                <data.root>/Users/ilya/dataroot/</data.root>
             </properties>
         </profile>
         <profile>

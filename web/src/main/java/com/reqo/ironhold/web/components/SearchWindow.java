@@ -1,41 +1,36 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Properties;
 
 @SuppressWarnings("serial")
-public class SearchWindow extends Window {
+public class SearchWindow extends Panel {
     private static Logger logger = Logger.getLogger(SearchWindow.class);
 
-    @Autowired
-    private SearchResults searchResults;
+    private final SearchResults searchResults;
 
-    @Autowired
-    private SearchBar searchBar;
+    private final SearchBar searchBar;
+
     private final VerticalLayout layout;
-    private final String title;
 
-    public SearchWindow(String title) throws Exception {
-        this.title = title;
-        this.setClosable(false);
+    public SearchWindow(SearchResults searchResults, SearchBar searchBar) throws Exception {
+        this.searchResults = searchResults;
+        this.searchBar = searchBar;
         this.setSizeFull();
         layout = new VerticalLayout();
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.setMargin(true);
         this.setContent(layout);
+        layout.setMargin(true);
         final Properties prop = new Properties();
         prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
 
         LoginForm loginForm = new LoginForm();
-        loginForm.setWidth("100%");
-        loginForm.setHeight("350px");
+        loginForm.setSizeFull();
         loginForm.addLoginListener(new LoginForm.LoginListener() {
             @Override
             public void onLogin(LoginForm.LoginEvent event) {
@@ -64,9 +59,11 @@ public class SearchWindow extends Window {
 
     }
 
-    public void show() {
-        this.searchBar.show();
-        Page.getCurrent().setTitle(title);
+    public void init(IronholdApplication ironholdApplication) {
+        this.searchBar.init(ironholdApplication);
+        //  this.addActionHandler(searchTextField);
+
+        Page.getCurrent().setTitle("Ironhold");
 
     }
 
@@ -84,7 +81,11 @@ public class SearchWindow extends Window {
             public void buttonClick(ClickEvent event) {
                 String criteria = searchBar.getCriteria();
                 if (criteria.trim().length() > 0) {
-                    searchResults.setCriteria(criteria);
+                    try {
+                        searchResults.setCriteria(criteria);
+                    } catch (Exception e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                 } else {
                     searchResults.reset();
                 }
@@ -103,6 +104,6 @@ public class SearchWindow extends Window {
         layout.addComponent(searchResults);
 
         layout.setComponentAlignment(topLayout, Alignment.MIDDLE_CENTER);
-
+        searchResults.setIndexPrefix("reqo");
     }
 }

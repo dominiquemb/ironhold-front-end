@@ -17,9 +17,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-public class MessageMetaDataIndexService extends AbstractIndexService {
-    private static Logger logger = Logger.getLogger(MessageMetaDataIndexService.class);
+public class MetaDataIndexService extends AbstractIndexService {
+    private static Logger logger = Logger.getLogger(MetaDataIndexService.class);
     public static final String SUFFIX = "meta";
     private static Map<IndexedObjectType, String> mappings;
 
@@ -31,9 +32,10 @@ public class MessageMetaDataIndexService extends AbstractIndexService {
         mappings.put(IndexedObjectType.INDEX_FAILURE, "metaDataIndexFailureIndexMapping.json");
     }
 
-    public MessageMetaDataIndexService(IndexClient client) {
+    public MetaDataIndexService(IndexClient client) {
         super(SUFFIX, client, "metaDataIndexSettings.json", mappings);
     }
+
 
 
     public void store(String indexPrefix, IndexFailure failure) throws Exception {
@@ -69,7 +71,7 @@ public class MessageMetaDataIndexService extends AbstractIndexService {
 
     }
 
-    public List<MessageSource> getSources(String indexPrefix, String messageId) throws IOException {
+    public List<MessageSource> getSources(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByField(alias, IndexedObjectType.PST_MESSAGE_SOURCE, "messageId", messageId);
         List<MessageSource> result = new ArrayList<>();
@@ -90,6 +92,8 @@ public class MessageMetaDataIndexService extends AbstractIndexService {
     }
 
 
+
+
     public IndexResponse store(String indexPrefix, LogMessage logMessage) throws Exception {
 
         createIndexIfMissing(indexPrefix, logMessage.getPartition());
@@ -102,7 +106,7 @@ public class MessageMetaDataIndexService extends AbstractIndexService {
 
     }
 
-    public List<LogMessage> getLogMessages(String indexPrefix, String messageId) throws IOException {
+    public List<LogMessage> getLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByField(alias, IndexedObjectType.LOG_MESSAGE, "messageId", messageId);
         List<LogMessage> result = new ArrayList<>();
@@ -127,5 +131,6 @@ public class MessageMetaDataIndexService extends AbstractIndexService {
 
         return result;
     }
+
 
 }

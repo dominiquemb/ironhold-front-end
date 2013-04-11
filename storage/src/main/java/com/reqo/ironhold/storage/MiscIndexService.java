@@ -4,7 +4,10 @@ import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -12,10 +15,8 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.SearchHit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 
 public class MiscIndexService extends AbstractIndexService {
@@ -28,7 +29,7 @@ public class MiscIndexService extends AbstractIndexService {
         mappings = new HashMap<>();
         mappings.put(IndexedObjectType.PST_FILE_META, "miscPSTFileMetaIndexMapping.json");
         mappings.put(IndexedObjectType.IMAP_BATCH_META, "miscIMAPBatchMetaIndexMapping.json");
-
+        mappings.put(IndexedObjectType.LOGIN_USER, "metaDataLoginUserIndexMapping.json");
     }
 
     public MiscIndexService(IndexClient client) {
@@ -80,7 +81,7 @@ public class MiscIndexService extends AbstractIndexService {
 
     }
 
-    public List<PSTFileMeta> getPSTFileMeta(String indexPrefix, int from, int limit) throws IOException {
+    public List<PSTFileMeta> getPSTFileMeta(String indexPrefix, int from, int limit) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByType(alias, IndexedObjectType.PST_FILE_META, from, limit);
         List<PSTFileMeta> result = new ArrayList<>();
@@ -93,7 +94,7 @@ public class MiscIndexService extends AbstractIndexService {
         return result;
     }
 
-    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) throws IOException {
+    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByType(alias, IndexedObjectType.IMAP_BATCH_META, from, limit);
         List<IMAPBatchMeta> result = new ArrayList<>();
@@ -104,6 +105,55 @@ public class MiscIndexService extends AbstractIndexService {
         }
 
         return result;
+    }
+
+
+    public void store(String indexPrefix, LoginUser loginUser) throws Exception {
+        String alias = getIndexAlias(indexPrefix);
+        String indexName = getIndexName(alias, PARTITION);
+
+        createIndexIfMissing(indexPrefix, PARTITION);
+
+        client.store(
+                indexName,
+                IndexedObjectType.LOGIN_USER,
+                loginUser.getUsername(),
+                loginUser.serialize());
+    }
+
+
+    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit) throws IOException, ExecutionException, InterruptedException {
+        String alias = getIndexAlias(indexPrefix);
+        SearchResponse response = client.getByType(alias, IndexedObjectType.LOGIN_USER, start, limit);
+        List<LoginUser> result = new ArrayList<>();
+        for (SearchHit hit : response.getHits()) {
+            LoginUser loginUser = new LoginUser();
+
+            result.add(loginUser.deserialize(hit.getSourceAsString()));
+        }
+
+        return result;
+    }
+
+    public LoginUser authenticate(String indexPrefix, String username, String password) throws Exception {
+        String alias = getIndexAlias(indexPrefix);
+        GetResponse response = client.getById(alias, IndexedObjectType.LOGIN_USER, username);
+
+        if (!response.exists())   {
+            return null;
+        }
+
+        LoginUser storedUser = new LoginUser();
+        storedUser = storedUser.deserialize(response.getSourceAsString());
+
+        if (storedUser.getHashedPassword().equals(CheckSumHelper.getCheckSum(password.getBytes()))) {
+            storedUser.setLastLogin(new Date());
+            store(indexPrefix, storedUser);
+            return storedUser;
+        }
+
+        return null;
+
     }
 
 

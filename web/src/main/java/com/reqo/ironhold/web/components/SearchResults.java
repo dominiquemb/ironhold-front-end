@@ -3,6 +3,7 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
 import com.reqo.ironhold.web.components.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import com.reqo.ironhold.web.components.pagingcomponent.utilities.FakeList;
@@ -15,7 +16,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,12 +26,7 @@ public class SearchResults extends HorizontalLayout {
 
     protected static final int MAX_RESULTS_TO_BE_FACETED = 30000;
 
-
-    @Autowired
-    private MessageIndexService messageIndexService;
-
-    @Autowired
-    private EmailPreviewPanel emailPreview;
+    private final EmailPreviewPanel emailPreview;
 
     private String criteria;
     private VerticalLayout leftPane;
@@ -53,14 +48,16 @@ public class SearchResults extends HorizontalLayout {
     private Label resultLabel;
     private String indexPrefix;
 
-    public SearchResults() {
-        this.me = this;
+    public SearchResults(EmailPreviewPanel emailPreview) {
+        this.emailPreview = emailPreview;
         this.setSpacing(true);
         this.setMargin(true);
         this.setSizeFull();
     }
 
-    public void setCriteria(String criteria) {
+    public void setCriteria(String criteria) throws Exception {
+
+        MessageIndexService messageIndexService =  ((IronholdApplication)this.getUI()).getMessageIndexService();
         this.builder = messageIndexService.getNewBuilder(indexPrefix);
 
         long started = System.currentTimeMillis();
@@ -78,13 +75,13 @@ public class SearchResults extends HorizontalLayout {
         yearFacetPanel.setVisible(true);
         fileExtFacetPanel.setVisible(true);
 
-        performSearch();
+        performSearch(messageIndexService);
         long finished = System.currentTimeMillis();
         resultLabel.setDescription(String.format(
                 "Server rendering took %,d ms", (finished - started)));
     }
 
-    private void performSearch() {
+    private void performSearch(final MessageIndexService messageIndexService) {
         final SearchResponse response = messageIndexService.getMatchCount(builder);
         if (response == null) {
             resultLabel.setCaption("Invalid search query");
@@ -152,7 +149,7 @@ public class SearchResults extends HorizontalLayout {
 
                         SearchResponse response = messageIndexService.search(builder);
 
-                        setUpFacets(response);
+                        setUpFacets(response, messageIndexService);
 
                         resultLabel.setCaption(String.format(
                                 "%s, Search took %,d ms",
@@ -171,7 +168,7 @@ public class SearchResults extends HorizontalLayout {
         middlePane.addComponent(pager, 1);
     }
 
-    private void setUpFacets(SearchResponse response) {
+    private void setUpFacets(SearchResponse response, final MessageIndexService messageIndexService) {
 
         if (!facetsSetup) {
             if (builder.isDateFacet()) {
@@ -199,7 +196,7 @@ public class SearchResults extends HorizontalLayout {
                             } else {
                                 builder.withoutYearFacetValue(entry.getTerm());
                             }
-                            performSearch();
+                            performSearch(messageIndexService);
                         }
                     });
 
@@ -248,7 +245,7 @@ public class SearchResults extends HorizontalLayout {
                                     builder.withoutFileExtFacetValue(entry
                                             .getTerm());
                                 }
-                                performSearch();
+                                performSearch(messageIndexService);
                             }
                         });
 
@@ -299,7 +296,7 @@ public class SearchResults extends HorizontalLayout {
                             } else {
                                 builder.withoutFromFacetValue(entry.getTerm());
                             }
-                            performSearch();
+                            performSearch(messageIndexService);
                         }
                     });
 
@@ -349,7 +346,7 @@ public class SearchResults extends HorizontalLayout {
                                     builder.withoutFromDomainFacetValue(entry
                                             .getTerm());
                                 }
-                                performSearch();
+                                performSearch(messageIndexService);
                             }
                         });
                         hl.addComponent(checkBox);
@@ -395,7 +392,7 @@ public class SearchResults extends HorizontalLayout {
                             } else {
                                 builder.withoutToFacetValue(entry.getTerm());
                             }
-                            performSearch();
+                            performSearch(messageIndexService);
                         }
                     });
                     hl.addComponent(checkBox);
@@ -443,7 +440,7 @@ public class SearchResults extends HorizontalLayout {
                                     builder.withoutToDomainFacetValue(entry
                                             .getTerm());
                                 }
-                                performSearch();
+                                performSearch(messageIndexService);
                             }
                         });
                         hl.addComponent(checkBox);
@@ -468,7 +465,10 @@ public class SearchResults extends HorizontalLayout {
         facetsSetup = true;
     }
 
+
     public void reset() {
+        final MessageIndexService messageIndexService = ((IronholdApplication)this.getUI()).getMessageIndexService();
+
         this.removeAllComponents();
 
         leftPane = new VerticalLayout();
@@ -500,7 +500,7 @@ public class SearchResults extends HorizontalLayout {
             public void valueChange(ValueChangeEvent event) {
                 builder = messageIndexService.getNewBuilder(indexPrefix, builder);
                 System.out.println("in sort field listener");
-                performSearch();
+                performSearch(messageIndexService);
             }
         });
 
@@ -515,7 +515,7 @@ public class SearchResults extends HorizontalLayout {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 builder = messageIndexService.getNewBuilder(indexPrefix, builder);
-                performSearch();
+                performSearch(messageIndexService);
             }
         });
 

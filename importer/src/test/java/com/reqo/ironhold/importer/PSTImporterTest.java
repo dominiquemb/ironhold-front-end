@@ -3,7 +3,7 @@ package com.reqo.ironhold.importer;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
@@ -45,7 +45,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     @Autowired
-    private MessageMetaDataIndexService messageMetaDataIndexService;
+    private MetaDataIndexService metaDataIndexService;
 
     @Autowired
     private MiscIndexService miscIndexService;
@@ -100,7 +100,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent().getParentFile());
         esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
-        this.messageMetaDataIndexService.clearCache();
+        this.metaDataIndexService.clearCache();
         this.miscIndexService.clearCache();
 
     }
@@ -166,15 +166,15 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
                 .get(TEST_CLIENT, "2008", "<984867.51882.qm@web30305.mail.mud.yahoo.com>"));
         Assert.assertNotNull(testMailMessage);
 
-        indexClient.refresh(TEST_CLIENT + "." + MessageMetaDataIndexService.SUFFIX);
-        List<MessageSource> sources = messageMetaDataIndexService.getSources(TEST_CLIENT, "<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+        indexClient.refresh(TEST_CLIENT + "." + MetaDataIndexService.SUFFIX);
+        List<MessageSource> sources = metaDataIndexService.getSources(TEST_CLIENT, "<984867.51882.qm@web30305.mail.mud.yahoo.com>");
 
         for (MessageSource source : sources) {
             System.out.println(source.toString());
         }
         Assert.assertEquals(2, sources.size());
 
-        List<MessageSource> sources2 = messageMetaDataIndexService.getSources(TEST_CLIENT, "<fb57d8a0811071645n76f4c2e6o10d5aa19c78b49bf@mail.gmail.com>");
+        List<MessageSource> sources2 = metaDataIndexService.getSources(TEST_CLIENT, "<fb57d8a0811071645n76f4c2e6o10d5aa19c78b49bf@mail.gmail.com>");
 
         for (MessageSource source : sources2) {
             System.out.println(source.toString());
@@ -223,8 +223,8 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
                 .get(TEST_CLIENT, "2008", "<984867.51882.qm@web30305.mail.mud.yahoo.com>"));
         Assert.assertNotNull(testMailMessage);
 
-        indexClient.refresh(TEST_CLIENT + "." + MessageMetaDataIndexService.SUFFIX);
-        List<MessageSource> sources = messageMetaDataIndexService.getSources(TEST_CLIENT, "<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+        indexClient.refresh(TEST_CLIENT + "." + MetaDataIndexService.SUFFIX);
+        List<MessageSource> sources = metaDataIndexService.getSources(TEST_CLIENT, "<984867.51882.qm@web30305.mail.mud.yahoo.com>");
 
         for (MessageSource source : sources) {
             System.out.println(source.toString());

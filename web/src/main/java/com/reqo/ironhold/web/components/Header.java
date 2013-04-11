@@ -1,5 +1,6 @@
 package com.reqo.ironhold.web.components;
 
+import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -65,8 +66,8 @@ public class Header extends HorizontalLayout {
         logout.addClickListener(new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
-                UI.getCurrent().close();
-
+                UI.getCurrent().getSession().close();
+                Page.getCurrent().setLocation(Page.getCurrent().getLocation());
             }
         });
         vl.setSizeFull();

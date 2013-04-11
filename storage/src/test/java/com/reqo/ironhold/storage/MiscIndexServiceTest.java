@@ -5,9 +5,11 @@ import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
 import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.IMAPBatchMetaTestModel;
+import com.reqo.ironhold.storage.model.LoginUserTestModel;
 import com.reqo.ironhold.storage.model.PSTFileMetaTestModel;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
+import com.reqo.ironhold.storage.model.user.LoginUser;
 import junit.framework.Assert;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
@@ -17,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RunWith(ElasticsearchRunner.class)
 @SuppressWarnings("unchecked")
@@ -40,8 +43,8 @@ public class MiscIndexServiceTest {
     }
 
     @After
-    public void tearDown() {
-        client.admin().indices().prepareDelete(INDEX_PREFIX);
+    public void tearDown() throws ExecutionException, InterruptedException {
+        client.admin().indices().prepareDelete().execute().get();
     }
 
 
@@ -85,4 +88,79 @@ public class MiscIndexServiceTest {
     }
 
 
+    @Test
+    public void testLoginUserStore() throws Exception {
+        LoginUser loginUser = LoginUserTestModel.generate();
+        miscIndexService.store(INDEX_PREFIX, loginUser);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+
+        Assert.assertEquals(1, loginUsers.size());
+
+
+        Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
+
+    }
+
+
+    @Test
+    public void testAuthenticateNoSuchUser() throws Exception {
+        LoginUser loginUser = LoginUserTestModel.generate();
+        miscIndexService.store(INDEX_PREFIX, loginUser);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+
+        Assert.assertEquals(1, loginUsers.size());
+
+
+        Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
+
+        Assert.assertNull(miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername() + "!", loginUser.getUsername()));
+
+    }
+
+    @Test
+    public void testAuthenticateBadPassword() throws Exception {
+        LoginUser loginUser = LoginUserTestModel.generate();
+        miscIndexService.store(INDEX_PREFIX, loginUser);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+
+        Assert.assertEquals(1, loginUsers.size());
+
+
+        Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
+
+        Assert.assertNull(miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername() + "!"));
+
+    }
+
+    @Test
+    public void testAuthenticateCorrect() throws Exception {
+        LoginUser loginUser = LoginUserTestModel.generate();
+        miscIndexService.store(INDEX_PREFIX, loginUser);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+
+        Assert.assertEquals(1, loginUsers.size());
+
+
+        Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
+
+        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername());
+
+        Assert.assertNotNull(authenticatedUser);
+
+        Assert.assertEquals(loginUser.getUsername(), authenticatedUser.getUsername());
+        Assert.assertNotSame(loginUser.getLastLogin(), authenticatedUser.getLastLogin());
+
+    }
 }

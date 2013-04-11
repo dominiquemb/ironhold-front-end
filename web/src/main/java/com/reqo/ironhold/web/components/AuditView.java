@@ -1,12 +1,13 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Label;
@@ -15,19 +16,12 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.io.FileUtils;
 import org.elasticsearch.search.SearchHit;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
 public class AuditView extends Panel {
-    @Autowired
-    private IMimeMailMessageStorageService mimeMailMessageStorageService;
-
-    @Autowired
-    private MessageMetaDataIndexService messageMetaDataIndexService;
-
     public static final String TIMESTAMP = "Timestamp";
     public static final String HOSTNAME = "Hostname";
     public static final String FOLDER = "Folder";
@@ -55,9 +49,11 @@ public class AuditView extends Panel {
         layout.addComponent(messageId);
 
 
+        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
+        MetaDataIndexService metaDataIndexService = ((IronholdApplication)this.getUI()).getMetaDataIndexService();
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
-        List<MessageSource> messageSources = messageMetaDataIndexService.getSources("reqo", item.getId());
+        List<MessageSource> messageSources = metaDataIndexService.getSources("reqo", item.getId());
         loadIMAPSources(messageSources);
 
 
@@ -75,7 +71,7 @@ public class AuditView extends Panel {
         logs.addContainerProperty(MESSAGE, String.class, "");
 
         int logCount = 0;
-        for (LogMessage logMessage : messageMetaDataIndexService.getLogMessages("reqo", item.getId())) {
+        for (LogMessage logMessage : metaDataIndexService.getLogMessages("reqo", item.getId())) {
             Item logItem = logs.addItem(logCount);
             logCount++;
             logItem.getItemProperty(TIMESTAMP).setValue(logMessage.getTimestamp());

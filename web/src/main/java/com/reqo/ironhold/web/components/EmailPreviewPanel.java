@@ -4,23 +4,18 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.log4j.Logger;
 import org.elasticsearch.search.SearchHit;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 public class EmailPreviewPanel extends TabSheet {
     private static Logger logger = Logger.getLogger(EmailPreviewPanel.class);
 
-    @Autowired
-    private EmailView htmlView;
+    private final EmailView htmlView;
 
-    @Autowired
-    private EmailView textView;
+    private final EmailView textView;
 
-    @Autowired
-    private SourceView sourceView;
+    private final SourceView sourceView;
 
-    @Autowired
-    private AuditView auditView;
+    private final AuditView auditView;
 
     private SearchHitPanel currentHitPanel;
 
@@ -30,7 +25,11 @@ public class EmailPreviewPanel extends TabSheet {
     private String indexPrefix;
     private boolean tabsConfigured = false;
 
-    public EmailPreviewPanel() {
+    public EmailPreviewPanel(EmailView htmlView, EmailView textView, SourceView sourceView, AuditView auditView) {
+        this.htmlView = htmlView;
+        this.textView = textView;
+        this.sourceView = sourceView;
+        this.auditView = auditView;
         this.setVisible(false);
 
 

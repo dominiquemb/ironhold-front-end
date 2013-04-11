@@ -2,7 +2,7 @@ package com.reqo.ironhold.demodata;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
-import com.reqo.ironhold.storage.MessageMetaDataIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
@@ -27,7 +27,7 @@ public class RandomEmailReader {
 
 
     @Autowired
-    private MessageMetaDataIndexService messageMetaDataIndexService;
+    private MetaDataIndexService metaDataIndexService;
 
     @Autowired
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
@@ -54,7 +54,7 @@ public class RandomEmailReader {
             source.setLoadTimestamp(new Date());
             source.setMessageId(mailMessage.getMessageId());
             source.setPartition(mailMessage.getPartition());
-            messageMetaDataIndexService.store(client, source);
+            metaDataIndexService.store(client, source);
 
             mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getMessageId(), mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
 
@@ -63,7 +63,7 @@ public class RandomEmailReader {
                     "Stored journaled message from " + source.getProtocol()
                             + "://" + source.getImapSource() + ":"
                             + source.getImapPort());
-            messageMetaDataIndexService.store(client, logMessage);
+            metaDataIndexService.store(client, logMessage);
 
             messageIndexService.store(client, new IndexedMailMessage(mailMessage));
         }

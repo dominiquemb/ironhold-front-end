@@ -7,6 +7,7 @@ import com.reqo.ironhold.storage.es.IndexUtils;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
@@ -20,18 +21,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @SuppressWarnings("serial")
 public class EmailView extends Panel {
-    @Autowired
-    private IMimeMailMessageStorageService mimeMailMessageStorageService;
-    @Autowired
-    private MessageIndexService messageIndexService;
-
     private String indexPrefix;
     private final boolean displayHTML;
     private final VerticalLayout layout;
@@ -93,11 +88,10 @@ public class EmailView extends Panel {
         MimeMailMessage mailMessage = new MimeMailMessage();
         Attachment[] attachments = null;
 
-        if (item.getType().equals(
-                IndexedObjectType.MIME_MESSAGE.getValue())) {
-            mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
-            attachments = mailMessage.getAttachments();
-        }
+        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
+
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
+        attachments = mailMessage.getAttachments();
 
         if (attachments != null) {
             for (final Attachment attachment : attachments) {
@@ -136,6 +130,7 @@ public class EmailView extends Panel {
         final HorizontalLayout bodyLayout = new HorizontalLayout();
         bodyLayout.setMargin(new MarginInfo(true, true, true, true));
         bodyLayout.setSizeFull();
+        MessageIndexService messageIndexService = ((IronholdApplication)this.getUI()).getMessageIndexService();
         SearchHits hits = messageIndexService.search(
                 messageIndexService.getNewBuilder(indexPrefix).withCriteria(criteria)
                         .withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();

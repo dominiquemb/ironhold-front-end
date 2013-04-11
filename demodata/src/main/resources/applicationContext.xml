@@ -27,7 +27,7 @@
     <bean id="messageIndexService" class="com.reqo.ironhold.storage.MessageIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
-    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MessageMetaDataIndexService" scope="singleton">
+    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MetaDataIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
     <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService" scope="singleton">
