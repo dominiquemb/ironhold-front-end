@@ -29,11 +29,14 @@ public class SearchWindow extends Panel {
         layout = new VerticalLayout();
         this.setContent(layout);
         layout.setMargin(true);
+        layout.setSizeFull();
         final Properties prop = new Properties();
         prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
 
         this.loginPanel = loginPanel;
         layout.addComponent(loginPanel);
+        layout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
+
 
     }
 
@@ -43,13 +46,14 @@ public class SearchWindow extends Panel {
 
         Page.getCurrent().setTitle("Ironhold");
         this.loginPanel.init(ironholdApplication);
-
     }
 
 
     public void login() throws Exception {
         this.searchBar.init((IronholdApplication) this.getUI());
         layout.removeAllComponents();
+
+        VerticalLayout vl = new VerticalLayout();
 
         LoginUser authenticatedUser = (LoginUser) getSession().getAttribute("loginUser");
         String client = (String) getSession().getAttribute("client");
@@ -74,16 +78,18 @@ public class SearchWindow extends Panel {
         });
 
         Header header = new Header(authenticatedUser.getName());
-        layout.addComponent(header);
+        vl.addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setSpacing(true);
         topLayout.addComponent(searchBar);
         topLayout.addComponent(searchButton);
-        layout.addComponent(topLayout);
+        vl.addComponent(topLayout);
 
-        layout.addComponent(searchResults);
+        vl.addComponent(searchResults);
 
-        layout.setComponentAlignment(topLayout, Alignment.MIDDLE_CENTER);
+        vl.setComponentAlignment(topLayout, Alignment.TOP_CENTER);
+
+        layout.addComponent(vl);
     }
 }

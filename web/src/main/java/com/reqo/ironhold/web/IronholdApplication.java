@@ -68,6 +68,7 @@ public class IronholdApplication extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
+        layout.setSizeFull();
         setContent(layout);
 
         layout.addComponent(searchWindow);
@@ -79,6 +80,7 @@ public class IronholdApplication extends UI {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
 
     public SearchWindow getSearchWindow() {
         return searchWindow;

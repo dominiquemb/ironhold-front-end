@@ -7,14 +7,14 @@ import com.reqo.ironhold.web.components.pagingcomponent.strategy.PageChangeStrat
  * Strategy for an odd number of buttons page.
  */
 public final class OddPageChangeStrategy extends PageChangeStrategy {
-	
-	public OddPageChangeStrategy(ComponentsManager manager) {
-		super(manager);
-	}
 
-	@Override
-	protected int calculatePageNumberWhereStartTheIteration(int currentPage, int buttonPageMargin) {
-		return currentPage - buttonPageMargin;
-	}
+    public OddPageChangeStrategy(ComponentsManager manager) {
+        super(manager);
+    }
+
+    @Override
+    protected int calculatePageNumberWhereStartTheIteration(int currentPage, int buttonPageMargin) {
+        return currentPage - buttonPageMargin;
+    }
 
 }
