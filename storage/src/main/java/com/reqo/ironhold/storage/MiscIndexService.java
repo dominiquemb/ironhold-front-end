@@ -5,6 +5,7 @@ import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.get.GetResponse;
@@ -139,14 +140,15 @@ public class MiscIndexService extends AbstractIndexService {
         String alias = getIndexAlias(indexPrefix);
         GetResponse response = client.getById(alias, IndexedObjectType.LOGIN_USER, username);
 
-        if (!response.exists())   {
+        if (!response.exists()) {
             return null;
         }
 
         LoginUser storedUser = new LoginUser();
         storedUser = storedUser.deserialize(response.getSourceAsString());
 
-        if (storedUser.getHashedPassword().equals(CheckSumHelper.getCheckSum(password.getBytes()))) {
+        if (storedUser.getHashedPassword().equals(CheckSumHelper.getCheckSum(password.getBytes())) &&
+                hasRole(storedUser.getRolesBitMask(), RoleEnum.CAN_LOGIN)) {
             storedUser.setLastLogin(new Date());
             store(indexPrefix, storedUser);
             return storedUser;
@@ -154,6 +156,11 @@ public class MiscIndexService extends AbstractIndexService {
 
         return null;
 
+    }
+
+    private boolean hasRole(int rolesBitMask, RoleEnum roleEnum) {
+        int andResult = rolesBitMask & roleEnum.getValue();
+        return andResult == roleEnum.getValue();
     }
 
 

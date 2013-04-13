@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * The Application's "main" class
  */
@@ -33,6 +35,7 @@ public class IronholdApplication extends UI {
     private EmailView textView;
     private SourceView sourceView;
     private AuditView auditView;
+    private LoginPanel loginPanel;
 
     @Autowired
     private MessageIndexService messageIndexService;
@@ -48,6 +51,7 @@ public class IronholdApplication extends UI {
 
 
     public IronholdApplication() throws Exception {
+        loginPanel = new LoginPanel();
         htmlView = new EmailView(true);
         textView = new EmailView(false);
         sourceView = new SourceView();
@@ -56,7 +60,7 @@ public class IronholdApplication extends UI {
         searchResults = new SearchResults(emailPreview);
         searchTextField = new SearchTextField(searchResults);
         searchBar = new SearchBar(searchTextField);
-        searchWindow = new SearchWindow(searchResults, searchBar);
+        searchWindow = new SearchWindow(searchResults, searchBar, loginPanel);
 
     }
 
@@ -67,7 +71,13 @@ public class IronholdApplication extends UI {
         setContent(layout);
 
         layout.addComponent(searchWindow);
-        searchWindow.init(this);
+        try {
+            searchWindow.init(this);
+        } catch (ExecutionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public SearchWindow getSearchWindow() {

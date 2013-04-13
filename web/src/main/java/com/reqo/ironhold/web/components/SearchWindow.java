@@ -1,5 +1,6 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
@@ -8,6 +9,7 @@ import com.vaadin.ui.Button.ClickListener;
 import org.apache.log4j.Logger;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 @SuppressWarnings("serial")
 public class SearchWindow extends Panel {
@@ -18,8 +20,9 @@ public class SearchWindow extends Panel {
     private final SearchBar searchBar;
 
     private final VerticalLayout layout;
+    private final LoginPanel loginPanel;
 
-    public SearchWindow(SearchResults searchResults, SearchBar searchBar) throws Exception {
+    public SearchWindow(SearchResults searchResults, SearchBar searchBar, LoginPanel loginPanel) throws Exception {
         this.searchResults = searchResults;
         this.searchBar = searchBar;
         this.setSizeFull();
@@ -29,50 +32,28 @@ public class SearchWindow extends Panel {
         final Properties prop = new Properties();
         prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
 
-        LoginForm loginForm = new LoginForm();
-        loginForm.setSizeFull();
-        loginForm.addLoginListener(new LoginForm.LoginListener() {
-            @Override
-            public void onLogin(LoginForm.LoginEvent event) {
-                String username = event.getLoginParameter("username");
-                String password = event.getLoginParameter("password");
-
-
-                String[] validUserNames = prop.getProperty("usernames").toString().split(",");
-                boolean foundValidUsername = false;
-                for (String validUserName : validUserNames) {
-                    foundValidUsername = validUserName.equals(username);
-                    if (foundValidUsername) break;
-                }
-                if (password.equals(prop.getProperty("password").toString()) && foundValidUsername) {
-                    try {
-                        login(username);
-                    } catch (Exception e) {
-                        logger.warn(e);
-                    }
-                } else {
-                    Notification.show("Invalid credentials");
-                }
-            }
-        });
-        layout.addComponent(loginForm);
+        this.loginPanel = loginPanel;
+        layout.addComponent(loginPanel);
 
     }
 
-    public void init(IronholdApplication ironholdApplication) {
-        this.searchBar.init(ironholdApplication);
+    public void init(IronholdApplication ironholdApplication) throws ExecutionException, InterruptedException {
+
         //  this.addActionHandler(searchTextField);
 
         Page.getCurrent().setTitle("Ironhold");
+        this.loginPanel.init(ironholdApplication);
 
     }
 
 
-    private void login(String username) throws Exception {
+    public void login() throws Exception {
+        this.searchBar.init((IronholdApplication) this.getUI());
         layout.removeAllComponents();
 
-
-        searchResults.setIndexPrefix(username);
+        LoginUser authenticatedUser = (LoginUser) getSession().getAttribute("loginUser");
+        String client = (String) getSession().getAttribute("client");
+        searchResults.setIndexPrefix(client);
 
         final Button searchButton = new Button("Search");
 
@@ -92,7 +73,7 @@ public class SearchWindow extends Panel {
             }
         });
 
-        Header header = new Header(username);
+        Header header = new Header(authenticatedUser.getName());
         layout.addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();
@@ -104,6 +85,5 @@ public class SearchWindow extends Panel {
         layout.addComponent(searchResults);
 
         layout.setComponentAlignment(topLayout, Alignment.MIDDLE_CENTER);
-        searchResults.setIndexPrefix("reqo");
     }
 }

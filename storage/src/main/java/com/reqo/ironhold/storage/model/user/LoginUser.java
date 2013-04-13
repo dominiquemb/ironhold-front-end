@@ -30,10 +30,12 @@ public class LoginUser {
 
     private String username;
     private String hashedPassword;
+    private int rolesBitMask;
     private String name;
     private List<Recipient> recipients;
     private Date lastLogin;
     private Date created;
+
     public LoginUser() {
         this.created = new Date();
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
@@ -89,6 +91,13 @@ public class LoginUser {
         this.lastLogin = lastLogin;
     }
 
+    public int getRolesBitMask() {
+        return rolesBitMask;
+    }
+
+    public void setRolesBitMask(int rolesBitMask) {
+        this.rolesBitMask = rolesBitMask;
+    }
 
     public String serialize() throws IOException {
         return mapper.writeValueAsString(this);

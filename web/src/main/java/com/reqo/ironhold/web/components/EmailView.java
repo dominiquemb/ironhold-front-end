@@ -41,6 +41,8 @@ public class EmailView extends Panel {
 
     public synchronized void show(SearchHitPanel newHitPanel, SearchHit item,
                                   String criteria) throws Exception {
+        String client = (String) getSession().getAttribute("client");
+
         layout.removeAllComponents();
 
         String subjectValue = IndexUtils.getFieldValue(item,
@@ -90,7 +92,7 @@ public class EmailView extends Panel {
 
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
 
-        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId()));
         attachments = mailMessage.getAttachments();
 
         if (attachments != null) {

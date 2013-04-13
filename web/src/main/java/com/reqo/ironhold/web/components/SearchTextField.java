@@ -60,4 +60,8 @@ public class SearchTextField extends Panel {
     public String getValue() {
         return this.textField.getValue();
     }
+
+    public void init() {
+        this.textField.focus();
+    }
 }

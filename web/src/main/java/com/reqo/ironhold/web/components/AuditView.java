@@ -41,7 +41,7 @@ public class AuditView extends Panel {
     }
 
     public synchronized void show(SearchHitPanel newHitPanel, SearchHit item, String criteria) throws Exception {
-
+        String client = (String) getSession().getAttribute("client");
         layout.removeAllComponents();
 
 
@@ -52,8 +52,8 @@ public class AuditView extends Panel {
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
         MetaDataIndexService metaDataIndexService = ((IronholdApplication)this.getUI()).getMetaDataIndexService();
         MimeMailMessage mailMessage = new MimeMailMessage();
-        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId()));
-        List<MessageSource> messageSources = metaDataIndexService.getSources("reqo", item.getId());
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId()));
+        List<MessageSource> messageSources = metaDataIndexService.getSources(client, item.getId());
         loadIMAPSources(messageSources);
 
 
@@ -71,7 +71,7 @@ public class AuditView extends Panel {
         logs.addContainerProperty(MESSAGE, String.class, "");
 
         int logCount = 0;
-        for (LogMessage logMessage : metaDataIndexService.getLogMessages("reqo", item.getId())) {
+        for (LogMessage logMessage : metaDataIndexService.getLogMessages(client, item.getId())) {
             Item logItem = logs.addItem(logCount);
             logCount++;
             logItem.getItemProperty(TIMESTAMP).setValue(logMessage.getTimestamp());

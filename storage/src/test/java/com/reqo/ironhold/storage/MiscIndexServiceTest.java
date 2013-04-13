@@ -10,6 +10,7 @@ import com.reqo.ironhold.storage.model.PSTFileMetaTestModel;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import junit.framework.Assert;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
@@ -90,7 +91,7 @@ public class MiscIndexServiceTest {
 
     @Test
     public void testLoginUserStore() throws Exception {
-        LoginUser loginUser = LoginUserTestModel.generate();
+        LoginUser loginUser = LoginUserTestModel.generate(RoleEnum.CAN_LOGIN);
         miscIndexService.store(INDEX_PREFIX, loginUser);
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
@@ -107,7 +108,7 @@ public class MiscIndexServiceTest {
 
     @Test
     public void testAuthenticateNoSuchUser() throws Exception {
-        LoginUser loginUser = LoginUserTestModel.generate();
+        LoginUser loginUser = LoginUserTestModel.generate(RoleEnum.CAN_LOGIN);
         miscIndexService.store(INDEX_PREFIX, loginUser);
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
@@ -125,7 +126,7 @@ public class MiscIndexServiceTest {
 
     @Test
     public void testAuthenticateBadPassword() throws Exception {
-        LoginUser loginUser = LoginUserTestModel.generate();
+        LoginUser loginUser = LoginUserTestModel.generate(RoleEnum.CAN_LOGIN);
         miscIndexService.store(INDEX_PREFIX, loginUser);
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
@@ -143,7 +144,7 @@ public class MiscIndexServiceTest {
 
     @Test
     public void testAuthenticateCorrect() throws Exception {
-        LoginUser loginUser = LoginUserTestModel.generate();
+        LoginUser loginUser = LoginUserTestModel.generate(RoleEnum.CAN_LOGIN);
         miscIndexService.store(INDEX_PREFIX, loginUser);
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
@@ -161,6 +162,49 @@ public class MiscIndexServiceTest {
 
         Assert.assertEquals(loginUser.getUsername(), authenticatedUser.getUsername());
         Assert.assertNotSame(loginUser.getLastLogin(), authenticatedUser.getLastLogin());
+
+    }
+
+    @Test
+    public void testAuthenticateCorrectSuperUser() throws Exception {
+        LoginUser loginUser = LoginUserTestModel.generate(RoleEnum.SUPER_USER);
+        miscIndexService.store(INDEX_PREFIX, loginUser);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+
+        Assert.assertEquals(1, loginUsers.size());
+
+
+        Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
+
+        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername());
+
+        Assert.assertNotNull(authenticatedUser);
+
+        Assert.assertEquals(loginUser.getUsername(), authenticatedUser.getUsername());
+        Assert.assertNotSame(loginUser.getLastLogin(), authenticatedUser.getLastLogin());
+
+    }
+
+    @Test
+    public void testAuthenticateCorrectButNoRole() throws Exception {
+        LoginUser loginUser = LoginUserTestModel.generate(RoleEnum.NONE);
+        miscIndexService.store(INDEX_PREFIX, loginUser);
+
+        indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+
+        Assert.assertEquals(1, loginUsers.size());
+
+
+        Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
+
+        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername());
+
+        Assert.assertNull(authenticatedUser);
 
     }
 }

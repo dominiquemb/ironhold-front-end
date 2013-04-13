@@ -34,6 +34,7 @@ public class SourceView extends Panel {
     }
 
     public synchronized void show(SearchHitPanel newHitPanel, final SearchHit item, String criteria) throws Exception {
+        String client = (String) getSession().getAttribute("client");
 
         layout.removeAllComponents();
 
@@ -43,7 +44,7 @@ public class SourceView extends Panel {
 
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
 
-        final String mailMessage = mimeMailMessageStorageService.get("reqo", (String) item.getFields().get("year").getValue(), item.getId());
+        final String mailMessage = mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId());
 
 
         final Link download = new Link("Download", new StreamResource(new StreamSource() {
