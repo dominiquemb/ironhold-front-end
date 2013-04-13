@@ -1,6 +1,9 @@
 package com.reqo.ironhold.storage.es;
 
+import com.reqo.ironhold.storage.model.message.Recipient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
@@ -18,6 +21,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 
@@ -201,12 +205,40 @@ public class IndexClient {
      */
 
     public SearchRequestBuilder getSearchRequestBuilder(String alias) {
-        return esClient.prepareSearch(alias);
+        SearchRequestBuilder search = esClient.prepareSearch(alias);
+        return search;
+    }
+
+    public SearchRequestBuilder getSearchRequestBuilder(String alias, LoginUser loginUser) throws Exception {
+        SearchRequestBuilder search = esClient.prepareSearch(alias);
+        applyFilters(search, loginUser);
+        return search;
     }
 
 
-    public long getTotalMessageCount(String alias) throws ExecutionException, InterruptedException {
-        return esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).execute().get().getHits().getTotalHits();
+    public long getTotalMessageCount(String alias, LoginUser loginUser) throws Exception {
+        SearchRequestBuilder search = esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).setNoFields();
+        applyFilters(search, loginUser);
+        return search.execute().get().getHits().getTotalHits();
+
+    }
+
+    private void applyFilters(SearchRequestBuilder search, LoginUser loginUser) throws Exception {
+        if (loginUser.hasRole(RoleEnum.CAN_SEARCH)) {
+            if (!loginUser.hasRole(RoleEnum.SUPER_USER)) {
+                OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
+                for (Recipient recipient : loginUser.getRecipients()) {
+                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("sender.address", recipient.getAddress())));
+                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("to.address", recipient.getAddress())));
+                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("cc.address", recipient.getAddress())));
+                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("bcc.address", recipient.getAddress())));
+                }
+                search.setFilter(filterBuilders);
+            }
+        } else {
+            throw new Exception("This user does not have search role");
+        }
+
     }
 
     /**
@@ -242,4 +274,5 @@ public class IndexClient {
 
         return bufferJSON.toString();
     }
+
 }

@@ -5,6 +5,7 @@ import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.web.components.*;
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
@@ -23,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 @Theme(value = "ironhold")
 @Scope("prototype")
 @Component
+@PreserveOnRefresh
 public class IronholdApplication extends UI {
     private static Logger logger = Logger.getLogger(IronholdApplication.class);
 

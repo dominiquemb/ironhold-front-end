@@ -55,7 +55,7 @@ public class SearchWindow extends Panel {
 
         VerticalLayout vl = new VerticalLayout();
 
-        LoginUser authenticatedUser = (LoginUser) getSession().getAttribute("loginUser");
+        final LoginUser authenticatedUser = (LoginUser) getSession().getAttribute("loginUser");
         String client = (String) getSession().getAttribute("client");
         searchResults.setIndexPrefix(client);
 
@@ -72,7 +72,7 @@ public class SearchWindow extends Panel {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 } else {
-                    searchResults.reset();
+                    searchResults.reset(authenticatedUser);
                 }
             }
         });

@@ -2,11 +2,15 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.IndexUtils;
+import com.reqo.ironhold.storage.model.log.LogLevel;
+import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.StreamResource;
@@ -39,9 +43,10 @@ public class EmailView extends Panel {
         this.setContent(layout);
     }
 
-    public synchronized void show(SearchHitPanel newHitPanel, SearchHit item,
+    public synchronized void show(SearchHitPanel newHitPanel, final SearchHit item,
                                   String criteria) throws Exception {
-        String client = (String) getSession().getAttribute("client");
+        final String client = (String) getSession().getAttribute("client");
+        final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
 
         layout.removeAllComponents();
 
@@ -80,6 +85,7 @@ public class EmailView extends Panel {
         addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
+        addPartyLabel(item, IndexFieldEnum.BCC_NAME, IndexFieldEnum.BCC_ADDRESS);
 
         final Label size = new Label(IndexUtils.getFieldValue(item,
                 IndexFieldEnum.SIZE));
@@ -90,7 +96,7 @@ public class EmailView extends Panel {
         MimeMailMessage mailMessage = new MimeMailMessage();
         Attachment[] attachments = null;
 
-        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
+        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
 
         mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId()));
         attachments = mailMessage.getAttachments();
@@ -105,6 +111,18 @@ public class EmailView extends Panel {
                     final Link attachmentLink = new Link(attachment.getFileName(), new StreamResource(new StreamSource() {
 
                         public InputStream getStream() {
+                            try {
+
+                                MetaDataIndexService metaDataIndexService = ((IronholdApplication) getUI()).getMetaDataIndexService();
+                                final String client = (String) getSession().getAttribute("client");
+                                final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
+                                LogMessage logMessage = null;
+                                logMessage = new LogMessage(LogLevel.Success, item.getId(), loginUser.getName() + " downloaded " + attachment.getFileName());
+                                metaDataIndexService.store(client, logMessage);
+                            } catch (Exception e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
+
                             byte[] byteArray = Base64
                                     .decodeBase64(attachment
                                             .getBody().getBytes());
@@ -132,10 +150,10 @@ public class EmailView extends Panel {
         final HorizontalLayout bodyLayout = new HorizontalLayout();
         bodyLayout.setMargin(new MarginInfo(true, true, true, true));
         bodyLayout.setSizeFull();
-        MessageIndexService messageIndexService = ((IronholdApplication)this.getUI()).getMessageIndexService();
+        MessageIndexService messageIndexService = ((IronholdApplication) this.getUI()).getMessageIndexService();
         SearchHits hits = messageIndexService.search(
-                messageIndexService.getNewBuilder(indexPrefix).withCriteria(criteria)
-                        .withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody()).getHits();
+                messageIndexService.getNewBuilder(indexPrefix, loginUser).withCriteria(criteria)
+                        .withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody(), loginUser).getHits();
 
         String bodyText = null;
         if (displayHTML) {

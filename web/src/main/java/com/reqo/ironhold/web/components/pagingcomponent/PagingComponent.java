@@ -423,7 +423,7 @@ public class PagingComponent<E> extends HorizontalLayout implements Button.Click
          *
          * @param event
          */
-        public void displayPage(ChangePageEvent<I> event);
+        public void displayPage(ChangePageEvent<I> event) throws Exception;
     }
 
     /**

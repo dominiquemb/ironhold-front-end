@@ -1,5 +1,6 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -18,6 +19,7 @@ public class SearchTextField extends Panel {
 
     public SearchTextField(final SearchResults searchResults) {
         super();
+
         this.searchResults = searchResults;
         this.textField = new TextField();
         this.setContent(textField);
@@ -36,7 +38,8 @@ public class SearchTextField extends Panel {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 } else {
-                    searchResults.reset();
+                    final LoginUser authenticatedUser = (LoginUser) getSession().getAttribute("loginUser");
+                    searchResults.reset(authenticatedUser);
                 }
 
                 UI.getCurrent().getScrollTop();

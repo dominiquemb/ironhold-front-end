@@ -105,6 +105,7 @@ public class IndexUtils {
                 case FROM_NAME:
                 case TO_NAME:
                 case CC_NAME:
+                case BCC_NAME:
                     return getRecipientInfo(hit, field, subField, preview);
                 case BODY:
                 case SUBJECT:

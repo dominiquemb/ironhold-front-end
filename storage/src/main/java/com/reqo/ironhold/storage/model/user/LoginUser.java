@@ -124,4 +124,8 @@ public class LoginUser {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    public boolean hasRole(RoleEnum roleEnum) {
+        int andResult = rolesBitMask & roleEnum.getValue();
+        return andResult == roleEnum.getValue();
+    }
 }

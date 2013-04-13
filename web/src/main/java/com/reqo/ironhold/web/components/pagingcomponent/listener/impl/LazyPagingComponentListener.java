@@ -35,7 +35,7 @@ public abstract class LazyPagingComponentListener<I> implements PagingComponentL
     }
 
     @Override
-    public void displayPage(ChangePageEvent<I> event) {
+    public void displayPage(ChangePageEvent<I> event) throws Exception {
         componentContainer.removeAllComponents();
 
         PageRange<I> pageRange = event.getPageRange();
@@ -53,7 +53,7 @@ public abstract class LazyPagingComponentListener<I> implements PagingComponentL
      * @param endIndex   the index number of the last item to display (this number is exclusive)
      * @return a list of items to display.
      */
-    protected abstract Collection<I> getItemsList(int startIndex, int endIndex);
+    protected abstract Collection<I> getItemsList(int startIndex, int endIndex) throws Exception;
 
     /**
      * This method is called each time that an item must be displayed.
@@ -63,6 +63,6 @@ public abstract class LazyPagingComponentListener<I> implements PagingComponentL
      * @param item  the item to display
      * @return a {@link Component} to display the item in the layout.
      */
-    protected abstract Component displayItem(int index, I item);
+    protected abstract Component displayItem(int index, I item) throws Exception;
 
 }

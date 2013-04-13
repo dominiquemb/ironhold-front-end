@@ -3,6 +3,7 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
+import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
 import com.reqo.ironhold.web.components.pagingcomponent.listener.impl.LazyPagingComponentListener;
@@ -57,14 +58,15 @@ public class SearchResults extends HorizontalLayout {
 
     public void setCriteria(String criteria) throws Exception {
 
-        MessageIndexService messageIndexService =  ((IronholdApplication)this.getUI()).getMessageIndexService();
-        this.builder = messageIndexService.getNewBuilder(indexPrefix);
+        MessageIndexService messageIndexService = ((IronholdApplication) this.getUI()).getMessageIndexService();
+        LoginUser authenticatedUser = (LoginUser) this.getUI().getSession().getAttribute("loginUser");
+        this.builder = messageIndexService.getNewBuilder(indexPrefix, authenticatedUser);
 
         long started = System.currentTimeMillis();
         this.criteria = criteria;
         this.facetsSetup = false;
-        builder = messageIndexService.getNewBuilder(indexPrefix).withCriteria(criteria);
-        reset();
+        builder = messageIndexService.getNewBuilder(indexPrefix, authenticatedUser).withCriteria(criteria);
+        reset(authenticatedUser);
 
         sortFieldSelector.setVisible(true);
         sortOrderSelector.setVisible(true);
@@ -75,14 +77,14 @@ public class SearchResults extends HorizontalLayout {
         yearFacetPanel.setVisible(true);
         fileExtFacetPanel.setVisible(true);
 
-        performSearch(messageIndexService);
+        performSearch(messageIndexService, authenticatedUser);
         long finished = System.currentTimeMillis();
         resultLabel.setDescription(String.format(
                 "Server rendering took %,d ms", (finished - started)));
     }
 
-    private void performSearch(final MessageIndexService messageIndexService) {
-        final SearchResponse response = messageIndexService.getMatchCount(builder);
+    private void performSearch(final MessageIndexService messageIndexService, final LoginUser authenticatedUser) {
+        final SearchResponse response = messageIndexService.getMatchCount(builder, authenticatedUser);
         if (response == null) {
             resultLabel.setCaption("Invalid search query");
             return;
@@ -112,8 +114,8 @@ public class SearchResults extends HorizontalLayout {
 
                     @Override
                     protected Collection<SearchHit> getItemsList(
-                            int startIndex, int endIndex) {
-                        builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                            int startIndex, int endIndex) throws Exception {
+                        builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                         if (!facetsSetup) {
                             if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
@@ -147,9 +149,9 @@ public class SearchResults extends HorizontalLayout {
 
                         }
 
-                        SearchResponse response = messageIndexService.search(builder);
+                        SearchResponse response = messageIndexService.search(builder, authenticatedUser);
 
-                        setUpFacets(response, messageIndexService);
+                        setUpFacets(response, messageIndexService, authenticatedUser);
 
                         resultLabel.setCaption(String.format(
                                 "%s, Search took %,d ms",
@@ -159,8 +161,8 @@ public class SearchResults extends HorizontalLayout {
                     }
 
                     @Override
-                    protected Component displayItem(int index, SearchHit item) {
-                        return new SearchHitPanel(item, emailPreview, criteria);
+                    protected Component displayItem(int index, SearchHit item) throws Exception {
+                        return new SearchHitPanel(item, emailPreview, criteria, ((IronholdApplication) getUI()));
                     }
 
                 });
@@ -168,7 +170,7 @@ public class SearchResults extends HorizontalLayout {
         middlePane.addComponent(pager, 1);
     }
 
-    private void setUpFacets(SearchResponse response, final MessageIndexService messageIndexService) {
+    private void setUpFacets(SearchResponse response, final MessageIndexService messageIndexService, final LoginUser authenticatedUser) {
 
         if (!facetsSetup) {
             if (builder.isDateFacet()) {
@@ -189,14 +191,19 @@ public class SearchResults extends HorizontalLayout {
                         @Override
                         public void valueChange(ValueChangeEvent event) {
                             boolean enabled = (Boolean) event.getProperty().getValue();
-                            builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                            try {
+                                builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
-                            if (enabled) {
-                                builder.withYearFacetValue(entry.getTerm());
-                            } else {
-                                builder.withoutYearFacetValue(entry.getTerm());
+                                if (enabled) {
+                                    builder.withYearFacetValue(entry.getTerm());
+                                } else {
+                                    builder.withoutYearFacetValue(entry.getTerm());
+                                }
+                                performSearch(messageIndexService, authenticatedUser);
+                            } catch (Exception e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }
-                            performSearch(messageIndexService);
+
                         }
                     });
 
@@ -237,15 +244,20 @@ public class SearchResults extends HorizontalLayout {
                             @Override
                             public void valueChange(ValueChangeEvent event) {
                                 boolean enabled = (Boolean) event.getProperty().getValue();
-                                builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                                try {
+                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
-                                if (enabled) {
-                                    builder.withFileExtFacetValue(entry.getTerm());
-                                } else {
-                                    builder.withoutFileExtFacetValue(entry
-                                            .getTerm());
+                                    if (enabled) {
+                                        builder.withFileExtFacetValue(entry.getTerm());
+                                    } else {
+                                        builder.withoutFileExtFacetValue(entry
+                                                .getTerm());
+                                    }
+                                    performSearch(messageIndexService, authenticatedUser);
+                                } catch (Exception e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                 }
-                                performSearch(messageIndexService);
+
                             }
                         });
 
@@ -289,14 +301,19 @@ public class SearchResults extends HorizontalLayout {
                         @Override
                         public void valueChange(ValueChangeEvent event) {
                             boolean enabled = (Boolean) event.getProperty().getValue();
-                            builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                            try {
+                                builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
-                            if (enabled) {
-                                builder.withFromFacetValue(entry.getTerm());
-                            } else {
-                                builder.withoutFromFacetValue(entry.getTerm());
+                                if (enabled) {
+                                    builder.withFromFacetValue(entry.getTerm());
+                                } else {
+                                    builder.withoutFromFacetValue(entry.getTerm());
+                                }
+                                performSearch(messageIndexService, authenticatedUser);
+                            } catch (Exception e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }
-                            performSearch(messageIndexService);
+
                         }
                     });
 
@@ -337,16 +354,21 @@ public class SearchResults extends HorizontalLayout {
                             @Override
                             public void valueChange(ValueChangeEvent event) {
                                 boolean enabled = (Boolean) event.getProperty().getValue();
-                                builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                                try {
+                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
-                                if (enabled) {
-                                    builder.withFromDomainFacetValue(entry
-                                            .getTerm());
-                                } else {
-                                    builder.withoutFromDomainFacetValue(entry
-                                            .getTerm());
+                                    if (enabled) {
+                                        builder.withFromDomainFacetValue(entry
+                                                .getTerm());
+                                    } else {
+                                        builder.withoutFromDomainFacetValue(entry
+                                                .getTerm());
+                                    }
+                                    performSearch(messageIndexService, authenticatedUser);
+                                } catch (Exception e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                 }
-                                performSearch(messageIndexService);
+
                             }
                         });
                         hl.addComponent(checkBox);
@@ -385,14 +407,19 @@ public class SearchResults extends HorizontalLayout {
                         @Override
                         public void valueChange(ValueChangeEvent event) {
                             boolean enabled = (Boolean) event.getProperty().getValue();
-                            builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                            try {
+                                builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
-                            if (enabled) {
-                                builder.withToFacetValue(entry.getTerm());
-                            } else {
-                                builder.withoutToFacetValue(entry.getTerm());
+                                if (enabled) {
+                                    builder.withToFacetValue(entry.getTerm());
+                                } else {
+                                    builder.withoutToFacetValue(entry.getTerm());
+                                }
+                                performSearch(messageIndexService, authenticatedUser);
+                            } catch (Exception e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }
-                            performSearch(messageIndexService);
+
                         }
                     });
                     hl.addComponent(checkBox);
@@ -431,16 +458,21 @@ public class SearchResults extends HorizontalLayout {
                             @Override
                             public void valueChange(ValueChangeEvent event) {
                                 boolean enabled = (Boolean) event.getProperty().getValue();
-                                builder = messageIndexService.getNewBuilder(indexPrefix, builder);
+                                try {
+                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
-                                if (enabled) {
-                                    builder.withToDomainFacetValue(entry
-                                            .getTerm());
-                                } else {
-                                    builder.withoutToDomainFacetValue(entry
-                                            .getTerm());
+                                    if (enabled) {
+                                        builder.withToDomainFacetValue(entry
+                                                .getTerm());
+                                    } else {
+                                        builder.withoutToDomainFacetValue(entry
+                                                .getTerm());
+                                    }
+                                    performSearch(messageIndexService, authenticatedUser);
+                                } catch (Exception e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                 }
-                                performSearch(messageIndexService);
+
                             }
                         });
                         hl.addComponent(checkBox);
@@ -466,8 +498,8 @@ public class SearchResults extends HorizontalLayout {
     }
 
 
-    public void reset() {
-        final MessageIndexService messageIndexService = ((IronholdApplication)this.getUI()).getMessageIndexService();
+    public void reset(final LoginUser authenticatedUser) {
+        final MessageIndexService messageIndexService = ((IronholdApplication) this.getUI()).getMessageIndexService();
 
         this.removeAllComponents();
 
@@ -498,9 +530,12 @@ public class SearchResults extends HorizontalLayout {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                builder = messageIndexService.getNewBuilder(indexPrefix, builder);
-                System.out.println("in sort field listener");
-                performSearch(messageIndexService);
+                try {
+                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+                    performSearch(messageIndexService, authenticatedUser);
+                } catch (Exception e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         });
 
@@ -514,8 +549,12 @@ public class SearchResults extends HorizontalLayout {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                builder = messageIndexService.getNewBuilder(indexPrefix, builder);
-                performSearch(messageIndexService);
+                try {
+                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+                    performSearch(messageIndexService, authenticatedUser);
+                } catch (Exception e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         });
 

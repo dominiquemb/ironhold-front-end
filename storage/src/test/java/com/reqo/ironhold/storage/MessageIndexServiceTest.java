@@ -7,9 +7,12 @@ import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
+import com.reqo.ironhold.storage.model.LoginUserTestModel;
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import junit.framework.Assert;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -41,12 +44,16 @@ public class MessageIndexServiceTest {
 
     private PSTMessageTestModel testModel;
     private IndexClient indexClient;
+    private LoginUser superUser;
 
     @Before
     public void setUp() throws Exception {
         indexClient = new IndexClient(client);
         messageIndexService = new MessageIndexService(indexClient);
         testModel = new PSTMessageTestModel("/attachments.pst");
+        superUser = LoginUserTestModel.generate(RoleEnum.SUPER_USER);
+
+
     }
 
     @After
@@ -92,11 +99,11 @@ public class MessageIndexServiceTest {
         Thread.sleep(1000);
 
         String searchWord = inputMessage.getBody().split(" ")[0];
-        long matchCount = messageIndexService.getMatchCount(INDEX_PREFIX, searchWord);
+        long matchCount = messageIndexService.getMatchCount(INDEX_PREFIX, searchWord, superUser);
 
         Assert.assertEquals(1, matchCount);
 
-        long notFound = messageIndexService.getMatchCount(INDEX_PREFIX, "xxyyzz");
+        long notFound = messageIndexService.getMatchCount(INDEX_PREFIX, "xxyyzz", superUser);
 
         Assert.assertEquals(0, notFound);
 
@@ -112,7 +119,7 @@ public class MessageIndexServiceTest {
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
 
-        long invalidSearchTerm = messageIndexService.getMatchCount(INDEX_PREFIX, "xxyyzz(");
+        long invalidSearchTerm = messageIndexService.getMatchCount(INDEX_PREFIX, "xxyyzz(", superUser);
 
         Assert.assertEquals(-1, invalidSearchTerm);
 
@@ -129,21 +136,21 @@ public class MessageIndexServiceTest {
         indexClient.refresh(INDEX_PREFIX);
 
         String searchWord = inputMessage.getBody().split(" ")[0];
-        MessageSearchBuilder builder1 = messageIndexService.getNewBuilder(INDEX_PREFIX);
+        MessageSearchBuilder builder1 = messageIndexService.getNewBuilder(INDEX_PREFIX, superUser);
         builder1.withCriteria(searchWord);
         builder1.withResultsLimit(1, 10);
         builder1.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
 
         Thread.sleep(1000);
 
-        SearchResponse matchCount = messageIndexService.getMatchCount(builder1);
+        SearchResponse matchCount = messageIndexService.getMatchCount(builder1, superUser);
 
         Assert.assertEquals(1, matchCount.getHits().getTotalHits());
 
-        MessageSearchBuilder builder2 = messageIndexService.getNewBuilder(INDEX_PREFIX, builder1);
+        MessageSearchBuilder builder2 = messageIndexService.getNewBuilder(INDEX_PREFIX, builder1, superUser);
         builder2.withCriteria("xxyyzz");
 
-        SearchResponse notFound = messageIndexService.getMatchCount(builder2);
+        SearchResponse notFound = messageIndexService.getMatchCount(builder2, superUser);
 
         Assert.assertEquals(0, notFound.getHits().getTotalHits());
     }
@@ -167,14 +174,14 @@ public class MessageIndexServiceTest {
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(MimeMailMessage.getMimeMailMessage(inputMessages.get(0)));
 
         String searchWord = inputMessages.get(0).getSenderName().split(" ")[1];
-        MessageSearchBuilder builder = messageIndexService.getNewBuilder(INDEX_PREFIX);
+        MessageSearchBuilder builder = messageIndexService.getNewBuilder(INDEX_PREFIX, superUser);
         builder.withResultsLimit(1, 10);
         builder.withSort(IndexFieldEnum.DATE, SortOrder.ASC);
         builder.withCriteria(searchWord);
         builder.withDateFacet().withFileExtFacet().withFromDomainFacet()
                 .withFromFacet().withFullBody().withToFacet()
                 .withToDomainFacet();
-        SearchResponse response = messageIndexService.search(builder);
+        SearchResponse response = messageIndexService.search(builder, superUser);
 
         Assert.assertEquals(1, response.getHits().getTotalHits());
 
@@ -235,7 +242,6 @@ public class MessageIndexServiceTest {
     }
 
 
-
     @Test
     public void testGetTotalMessageCount() throws Exception {
 
@@ -251,6 +257,6 @@ public class MessageIndexServiceTest {
         }
 
         Assert.assertEquals(messages.size(),
-                messageIndexService.getTotalMessageCount(INDEX_PREFIX));
+                messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser));
     }
 }

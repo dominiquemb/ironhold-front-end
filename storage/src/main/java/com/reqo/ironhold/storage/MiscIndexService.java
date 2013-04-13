@@ -148,7 +148,7 @@ public class MiscIndexService extends AbstractIndexService {
         storedUser = storedUser.deserialize(response.getSourceAsString());
 
         if (storedUser.getHashedPassword().equals(CheckSumHelper.getCheckSum(password.getBytes())) &&
-                hasRole(storedUser.getRolesBitMask(), RoleEnum.CAN_LOGIN)) {
+                storedUser.hasRole(RoleEnum.CAN_LOGIN)) {
             storedUser.setLastLogin(new Date());
             store(indexPrefix, storedUser);
             return storedUser;
@@ -156,11 +156,6 @@ public class MiscIndexService extends AbstractIndexService {
 
         return null;
 
-    }
-
-    private boolean hasRole(int rolesBitMask, RoleEnum roleEnum) {
-        int andResult = rolesBitMask & roleEnum.getValue();
-        return andResult == roleEnum.getValue();
     }
 
 

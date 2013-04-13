@@ -1,7 +1,12 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.IndexUtils;
+import com.reqo.ironhold.storage.model.log.LogLevel;
+import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -20,8 +25,13 @@ public class SearchHitPanel extends Panel {
     private static Logger logger = Logger.getLogger(SearchHitPanel.class);
     private final VerticalLayout layout;
 
-    public SearchHitPanel(final SearchHit item, final EmailPreviewPanel emailPreview, final String criteria) {
+    public SearchHitPanel(final SearchHit item, final EmailPreviewPanel emailPreview, final String criteria, final IronholdApplication ironholdApplication) throws Exception {
         this.me = this;
+        MetaDataIndexService metaDataIndexService = ironholdApplication.getMetaDataIndexService();
+        final String client = (String) ironholdApplication.getSession().getAttribute("client");
+        final LoginUser loginUser = (LoginUser) ironholdApplication.getSession().getAttribute("loginUser");
+        LogMessage logMessage = new LogMessage(LogLevel.Success, item.getId(), loginUser.getName() + " previewed this message");
+        metaDataIndexService.store(client, logMessage);
 
         layout = new VerticalLayout();
         layout.setMargin(true);
@@ -82,7 +92,7 @@ public class SearchHitPanel extends Panel {
         addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
-
+        addPartyLabel(item, IndexFieldEnum.BCC_NAME, IndexFieldEnum.BCC_ADDRESS);
 
         layout.addComponent(renderKeyValuePair("Body:", IndexUtils.getFieldValue(item, IndexFieldEnum.BODY) + "..."));
 
