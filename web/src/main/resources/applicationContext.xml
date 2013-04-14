@@ -11,13 +11,10 @@
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
 
     <!-- Storage beans -->
-    <bean id="keyStoreService" class="com.reqo.ironhold.storage.security.LocalKeyStoreService" scope="singleton">
-        <constructor-arg type="java.io.File" value="${data.root}data/keystore"/>
-    </bean>
-    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService"
+    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient"
           scope="singleton">
-        <constructor-arg type="java.io.File" value="${data.root}data"/>
-        <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
+        <constructor-arg name="host" value="${data.host}"/>
+        <constructor-arg name="port" value="${data.port}"/>
     </bean>
 
     <!-- ES beans -->
@@ -38,41 +35,41 @@
     <bean id="ui" class="com.reqo.ironhold.web.IronholdApplication" scope="prototype">
     </bean>
 
-  <!--  <bean id="searchWindow" class="com.reqo.ironhold.web.components.SearchWindow" scope="prototype">
-        <constructor-arg ref="searchResults"/>
-        <constructor-arg ref="searchBar"/>
-    </bean>
+    <!--  <bean id="searchWindow" class="com.reqo.ironhold.web.components.SearchWindow" scope="prototype">
+          <constructor-arg ref="searchResults"/>
+          <constructor-arg ref="searchBar"/>
+      </bean>
 
-    <bean id="searchResults" class="com.reqo.ironhold.web.components.SearchResults" scope="prototype">
-        <constructor-arg ref="emailPreview"/>
-    </bean>
+      <bean id="searchResults" class="com.reqo.ironhold.web.components.SearchResults" scope="prototype">
+          <constructor-arg ref="emailPreview"/>
+      </bean>
 
-    <bean id="searchBar" class="com.reqo.ironhold.web.components.SearchBar" scope="prototype">
-        <constructor-arg ref="searchTextField"/>
-    </bean>
+      <bean id="searchBar" class="com.reqo.ironhold.web.components.SearchBar" scope="prototype">
+          <constructor-arg ref="searchTextField"/>
+      </bean>
 
-    <bean id="searchTextField" class="com.reqo.ironhold.web.components.SearchTextField" scope="prototype">
-        <constructor-arg ref="searchResults"/>
-    </bean>
+      <bean id="searchTextField" class="com.reqo.ironhold.web.components.SearchTextField" scope="prototype">
+          <constructor-arg ref="searchResults"/>
+      </bean>
 
-    <bean id="emailPreview" class="com.reqo.ironhold.web.components.EmailPreviewPanel" scope="prototype">
+      <bean id="emailPreview" class="com.reqo.ironhold.web.components.EmailPreviewPanel" scope="prototype">
 
-        <constructor-arg ref="htmlView"/>
-        <constructor-arg ref="textView"/>
-        <constructor-arg ref="sourceView"/>
-        <constructor-arg ref="auditView"/>
-    </bean>
+          <constructor-arg ref="htmlView"/>
+          <constructor-arg ref="textView"/>
+          <constructor-arg ref="sourceView"/>
+          <constructor-arg ref="auditView"/>
+      </bean>
 
-    <bean id="htmlView" class="com.reqo.ironhold.web.components.EmailView" scope="prototype">
-        <constructor-arg type="boolean" value="true"/>
-    </bean>
+      <bean id="htmlView" class="com.reqo.ironhold.web.components.EmailView" scope="prototype">
+          <constructor-arg type="boolean" value="true"/>
+      </bean>
 
-    <bean id="textView" class="com.reqo.ironhold.web.components.EmailView" scope="prototype">
-        <constructor-arg type="boolean" value="false"/>
-    </bean>
+      <bean id="textView" class="com.reqo.ironhold.web.components.EmailView" scope="prototype">
+          <constructor-arg type="boolean" value="false"/>
+      </bean>
 
-    <bean id="sourceView" class="com.reqo.ironhold.web.components.SourceView" scope="prototype"/>
+      <bean id="sourceView" class="com.reqo.ironhold.web.components.SourceView" scope="prototype"/>
 
-    <bean id="auditView" class="com.reqo.ironhold.web.components.AuditView" scope="prototype"/>
-                 -->
+      <bean id="auditView" class="com.reqo.ironhold.web.components.AuditView" scope="prototype"/>
+                   -->
 </beans>

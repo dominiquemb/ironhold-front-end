@@ -247,4 +247,71 @@
         </plugins>
 
     </build>
+
+    <profiles>
+        <profile>
+            <id>development</id>
+            <properties>
+                <data.host>localhost</data.host>
+                <data.port>9090</data.port>
+                <data.root>/tmp/dataroot</data.root>
+                <keystore.root>/tmp/keystore</keystore.root>
+                <elasticsearch.hosts>172.16.144.128:9300</elasticsearch.hosts>
+                <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.replicas>0</elasticsearch.replicas>
+                <elasticsearch.shards>10</elasticsearch.shards>
+                <logger>console</logger>
+                <mailserver>127.0.0.1</mailserver>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>650</id>
+            <properties>
+                <data.host>ih650db001</data.host>
+                <data.port>9090</data.port>
+                <data.root>/data/dataroot</data.root>
+                <keystore.root>/data/keystore</keystore.root>
+                <elasticsearch.hosts>ih650es011</elasticsearch.hosts>
+                <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.replicas>2</elasticsearch.replicas>
+                <elasticsearch.shards>5</elasticsearch.shards>
+                <logger>file</logger>
+                <mailserver>10.65.0.78</mailserver>
+            </properties>
+        </profile>
+        <profile>
+            <id>108</id>
+            <properties>
+                <data.host>ih108db001</data.host>
+                <data.port>9090</data.port>
+                <data.root>/data/dataroot</data.root>
+                <keystore.root>/data/keystore</keystore.root>
+                <elasticsearch.hosts>ih108es001:9300,ih108es002:9300</elasticsearch.hosts>
+                <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.replicas>1</elasticsearch.replicas>
+                <elasticsearch.shards>5</elasticsearch.shards>
+                <logger>file</logger>
+                <mailserver>10.108.18.70</mailserver>
+            </properties>
+        </profile>
+        <profile>
+            <id>trc</id>
+            <properties>
+                <data.host>ihtrcdb001</data.host>
+                <data.port>9090</data.port>
+                <data.root>/data/dataroot</data.root>
+                <keystore.root>/data/keystore</keystore.root>
+                <elasticsearch.hosts>ihtrces001</elasticsearch.hosts>
+                <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.replicas>1</elasticsearch.replicas>
+                <elasticsearch.shards>5</elasticsearch.shards>
+                <logger>file</logger>
+                <mailserver>127.0.0.1</mailserver>
+            </properties>
+        </profile>
+
+    </profiles>
 </project>

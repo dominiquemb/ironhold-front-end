@@ -40,41 +40,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>development</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <logger>console</logger>
-                <mailserver>127.0.0.1</mailserver>
-                <data.root>/tmp/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>650</id>
-            <properties>
-                <logger>file</logger>
-                <mailserver>10.65.0.78</mailserver>
-                <data.root>/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>108</id>
-            <properties>
-                <logger>file</logger>
-                <mailserver>10.108.18.70</mailserver>
-                <data.root>/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>trc</id>
-            <properties>
-                <logger>file</logger>
-                <mailserver>127.0.0.1</mailserver>
-                <data.root>/</data.root>
-            </properties>
-        </profile>
-    </profiles>
 </project>

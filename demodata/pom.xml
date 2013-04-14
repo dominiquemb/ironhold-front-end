@@ -35,37 +35,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>development</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <logger>console</logger>
-                <data.root>/Users/ilya/dataroot/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>650</id>
-            <properties>
-                <logger>file</logger>
-                <data.root>/data/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>108</id>
-            <properties>
-                <logger>file</logger>
-                <data.root>/data/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>trc</id>
-            <properties>
-                <logger>file</logger>
-                <data.root>/data/</data.root>
-            </properties>
-        </profile>
-    </profiles>
 </project>

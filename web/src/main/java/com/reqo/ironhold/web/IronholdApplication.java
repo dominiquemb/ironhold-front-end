@@ -1,9 +1,9 @@
 package com.reqo.ironhold.web;
 
-import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
+import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
 import com.reqo.ironhold.web.components.*;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
@@ -49,7 +49,7 @@ public class IronholdApplication extends UI {
     private MiscIndexService miscIndexService;
 
     @Autowired
-    private LocalMimeMailMessageStorageService mimeMailMessageStorageService;
+    private MimeMailMessageStorageClient mimeMailMessageStorageService;
 
 
     public IronholdApplication() throws Exception {
@@ -132,7 +132,7 @@ public class IronholdApplication extends UI {
         return miscIndexService;
     }
 
-    public LocalMimeMailMessageStorageService getMimeMailMessageStorageService() {
+    public MimeMailMessageStorageClient getMimeMailMessageStorageService() {
         return mimeMailMessageStorageService;
     }
 }

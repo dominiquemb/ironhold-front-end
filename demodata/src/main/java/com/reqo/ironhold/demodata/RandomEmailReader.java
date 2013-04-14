@@ -1,6 +1,5 @@
 package com.reqo.ironhold.demodata;
 
-import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.log.LogLevel;
@@ -9,6 +8,7 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class RandomEmailReader {
     private MetaDataIndexService metaDataIndexService;
 
     @Autowired
-    private IMimeMailMessageStorageService mimeMailMessageStorageService;
+    private MimeMailMessageStorageClient mimeMailMessageStorageService;
 
     @Autowired
     private MessageIndexService messageIndexService;

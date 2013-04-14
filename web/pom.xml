@@ -113,44 +113,6 @@
 
     </build>
 
-    <profiles>
-        <profile>
-            <id>development</id>
-            <properties>
-                <web.usernames>reqo,demo,test</web.usernames>
-                <web.password>test</web.password>
-                <data.root>/Users/ilya/dataroot/</data.root>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>650</id>
-            <properties>
-                <web.usernames>glt</web.usernames>
-                <web.password>L00k&amp;f1nd</web.password>
-                <data.root>/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>108</id>
-            <properties>
-                <web.usernames>twf</web.usernames>
-                <web.password>IN.sure@nce</web.password>
-                <data.root>/</data.root>
-            </properties>
-        </profile>
-        <profile>
-            <id>trc</id>
-            <properties>
-                <web.usernames>trc</web.usernames>
-                <web.password>Ir0nh0ld</web.password>
-                <data.root>/</data.root>
-            </properties>
-        </profile>
-
-    </profiles>
     <dependencies>
 
         <dependency>

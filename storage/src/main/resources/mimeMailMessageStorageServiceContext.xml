@@ -4,21 +4,27 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:annotation-config />
+    <context:annotation-config/>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
 
+    <bean class="java.lang.Integer" name="data.port">
+        <constructor-arg index="0" value="${data.port}"/>
+    </bean>
+
     <!-- Storage beans -->
     <bean id="keyStoreService" class="com.reqo.ironhold.storage.security.LocalKeyStoreService" scope="singleton">
-        <constructor-arg type="java.io.File" value="${data.root}data/keystore"/>
+        <constructor-arg type="java.io.File" value="${keystore.root}"/>
     </bean>
-    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService" scope="singleton">
-        <constructor-arg type="java.io.File" value="${data.root}data"/>
+    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService"
+          scope="singleton">
+        <constructor-arg type="java.io.File" value="${data.root}"/>
         <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
     </bean>
 
-    <bean id="mimeMailMessageStorageServiceHandler" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageServiceHandler" scope="singleton"/>
+    <bean id="mimeMailMessageStorageServiceHandler"
+          class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageServiceHandler" scope="singleton"/>
 
 
 </beans>
