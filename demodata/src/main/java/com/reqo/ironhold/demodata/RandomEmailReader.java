@@ -56,7 +56,7 @@ public class RandomEmailReader {
             source.setPartition(mailMessage.getPartition());
             metaDataIndexService.store(client, source);
 
-            mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getMessageId(), mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+            mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId(), mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
 
             LogMessage logMessage = new LogMessage(LogLevel.Success,
                     mailMessage.getMessageId(),
@@ -70,7 +70,6 @@ public class RandomEmailReader {
 
 
     }
-
 
 
     /**

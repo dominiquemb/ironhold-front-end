@@ -150,7 +150,7 @@ public class PSTImporter {
 
                     MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
-                    if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId())) {
+                    if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId())) {
                         logger.warn("Found duplicate " + messageId);
                         metaData.incrementDuplicates();
 
@@ -169,7 +169,7 @@ public class PSTImporter {
                                     + metaData.getDuplicates() + " Failures:"
                                     + metaData.getFailures());
                         }
-                        long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()));
+                        long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()));
                         metaData.updateSizeStatistics(mimeMailMessage.getRawContents().length(), storedSize);
                     }
 
@@ -190,7 +190,7 @@ public class PSTImporter {
 
                     try {
                         messageIndexService.store(client, new IndexedMailMessage(mimeMailMessage));
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
                         metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
                     }

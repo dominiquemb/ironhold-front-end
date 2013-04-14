@@ -98,7 +98,7 @@ public class EmailView extends Panel {
 
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
 
-        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId()));
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId()));
         attachments = mailMessage.getAttachments();
 
         if (attachments != null) {

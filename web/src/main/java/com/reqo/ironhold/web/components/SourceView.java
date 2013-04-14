@@ -1,6 +1,7 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
@@ -42,9 +43,9 @@ public class SourceView extends Panel {
         messageId.setContentMode(ContentMode.HTML);
         layout.addComponent(messageId);
 
-        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
+        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
 
-        final String mailMessage = mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId());
+        final String mailMessage = mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId());
 
 
         final Link download = new Link("Download", new StreamResource(new StreamSource() {

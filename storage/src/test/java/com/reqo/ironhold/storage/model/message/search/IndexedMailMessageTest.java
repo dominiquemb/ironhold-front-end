@@ -16,6 +16,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 
 public class IndexedMailMessageTest {
     @Rule
@@ -23,6 +24,8 @@ public class IndexedMailMessageTest {
 
     private PSTMessageTestModel testModel;
     private static final String TEST_CLIENT = "test";
+    private SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    private SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMdd");
 
     @Before
     public void setUp() throws Exception {
@@ -55,6 +58,8 @@ public class IndexedMailMessageTest {
                 .getAddress());
         Assert.assertEquals(inputMessage.getSize(),
                 indexedMailMessage.getSize());
+        Assert.assertEquals(yearFormat.format(inputMessage.getMessageDate()), indexedMailMessage.getYear());
+        Assert.assertEquals(monthDayFormat.format(inputMessage.getMessageDate()), indexedMailMessage.getMonthDay());
 
     }
 

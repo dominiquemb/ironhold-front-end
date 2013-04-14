@@ -36,18 +36,18 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
 
     @Override
-    public boolean exists(String client, String partition, String messageId) throws Exception {
-        return getFile(client, partition, messageId).exists();
+    public boolean exists(String client, String partition, String subPartition, String messageId) throws Exception {
+        return getFile(client, partition, subPartition, messageId).exists();
     }
 
     @Override
-    public long store(String client, String partition, String messageId, String serializedMailMessage, String checkSum) throws Exception {
-        File file = getFile(client, partition, messageId);
-        File checkSumFile = getCheckSumFile(client, partition, messageId);
-        if (!exists(client, partition, messageId)) {
+    public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum) throws Exception {
+        File file = getFile(client, partition, subPartition, messageId);
+        File checkSumFile = getCheckSumFile(client, partition, subPartition, messageId);
+        if (!exists(client, partition, subPartition, messageId)) {
             FileUtils.writeStringToFile(file, AESHelper.encrypt(Compression.compress(serializedMailMessage), keyStoreService.getKey(client, partition)));
             FileUtils.writeStringToFile(checkSumFile, checkSum);
-            verifyFile(client, partition, messageId);
+            verifyFile(client, partition, subPartition, messageId);
         } else {
             throw new MessageExistsException(client, messageId);
         }
@@ -57,17 +57,17 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
 
     @Override
-    public String get(String client, String partition, String messageId) throws Exception {
-        return verifyFile(client, partition, messageId);
+    public String get(String client, String partition, String subPartition, String messageId) throws Exception {
+        return verifyFile(client, partition, subPartition, messageId);
     }
 
     /**
      * Utility Methods *
      */
 
-    private String verifyFile(String client, String partition, String messageId) throws Exception {
-        File file = getFile(client, partition, messageId);
-        File checkSumFile = getCheckSumFile(client, partition, messageId);
+    private String verifyFile(String client, String partition, String subPartition, String messageId) throws Exception {
+        File file = getFile(client, partition, subPartition, messageId);
+        File checkSumFile = getCheckSumFile(client, partition, subPartition, messageId);
 
         String decrypted = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
         byte[] decryptedBytes = decrypted.getBytes();
@@ -81,18 +81,12 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         return decrypted;
     }
 
-    private File getCheckSumFile(String client, String partition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + getFilePrefix(messageId) + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
+    private File getCheckSumFile(String client, String partition, String subPartition, String messageId) {
+        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
     }
 
-    private File getFile(String client, String partition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + getFilePrefix(messageId) + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
-    }
-
-    private String getFilePrefix(String messageId) {
-        String cleanedUpMessageId = messageId.toLowerCase().replaceAll("[^a-z0-9]", "");
-        cleanedUpMessageId = cleanedUpMessageId.substring(0, Math.min(cleanedUpMessageId.length(), 3));
-        return cleanedUpMessageId;
+    private File getFile(String client, String partition, String subPartition, String messageId) {
+        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
     }
 
 

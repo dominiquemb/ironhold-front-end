@@ -31,14 +31,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings({"unchecked"})
-public class MimeMailMessage implements IHasMessageId, IPartitioned {
+public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartitioned {
     public static final String IMPORTANCE_HIGH = "high";
     public static final String IMPORTANCE_LOW = "low";
 
     private static final int BUFFER_SIZE = 20000;
 
     private static Logger logger = Logger.getLogger(MimeMailMessage.class);
-    protected SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
+    protected SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    protected SimpleDateFormat dayMonthFormat = new SimpleDateFormat("MMdd");
 
 
     // Derived fields
@@ -100,7 +101,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned {
         String rawContents = baos.toString();
 
         String messageId = originalPSTMessage.getInternetMessageId();
-        if (messageId.length()< 10) {
+        if (messageId.length() < 10) {
             logger.warn("Found messageId that is too short, replacing with surrogate id: " + messageId);
             messageId = UUID.randomUUID().toString() + "-generated";
 
@@ -659,4 +660,8 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned {
     }
 
 
+    @Override
+    public String getSubPartition() {
+        return dayMonthFormat.format(this.getMessageDate());
+    }
 }

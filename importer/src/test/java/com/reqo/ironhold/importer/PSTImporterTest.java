@@ -164,7 +164,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         MimeMailMessage testMailMessage = new MimeMailMessage();
         testMailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService
-                .get(TEST_CLIENT, "2008", "<984867.51882.qm@web30305.mail.mud.yahoo.com>"));
+                .get(TEST_CLIENT, "2008", "1007", "<984867.51882.qm@web30305.mail.mud.yahoo.com>"));
         Assert.assertNotNull(testMailMessage);
 
         indexClient.refresh(TEST_CLIENT + "." + MetaDataIndexService.SUFFIX);
@@ -221,7 +221,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         MimeMailMessage testMailMessage = new MimeMailMessage();
         testMailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService
-                .get(TEST_CLIENT, "2008", "<984867.51882.qm@web30305.mail.mud.yahoo.com>"));
+                .get(TEST_CLIENT, "2008", "1007", "<984867.51882.qm@web30305.mail.mud.yahoo.com>"));
         Assert.assertNotNull(testMailMessage);
 
         indexClient.refresh(TEST_CLIENT + "." + MetaDataIndexService.SUFFIX);

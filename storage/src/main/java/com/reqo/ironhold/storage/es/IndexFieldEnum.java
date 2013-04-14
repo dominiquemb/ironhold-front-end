@@ -2,7 +2,7 @@ package com.reqo.ironhold.storage.es;
 
 public enum IndexFieldEnum {
     SUBJECT("Subject", "subject"), DATE("Date", "messageDate"), YEAR("Year",
-            "year"), FROM_NAME("From", "sender.name"), FROM_ADDRESS("From",
+            "year"), MONTH_DAY("MonthDay", "monthDay"), FROM_NAME("From", "sender.name"), FROM_ADDRESS("From",
             "sender.address"), FROM_DOMAIN("From Domain", "sender.domain"), TO_NAME(
             "To", "to.name"), TO_ADDRESS("To", "to.address"), TO_DOMAIN(
             "To Domain", "to.domain"), CC_NAME("CC", "cc.name"), CC_ADDRESS(

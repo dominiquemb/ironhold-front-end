@@ -45,11 +45,11 @@ public class FileReader {
 
             String messageId = mailMessage.getMessageId();
 
-            if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), messageId)) {
+            if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
                 logger.warn("Found duplicate " + messageId);
             } else {
 
-                mimeMailMessageStorageService.store(client, mailMessage.getPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+                mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
             }
 
         } catch (Exception e) {

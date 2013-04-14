@@ -133,13 +133,13 @@ public class IMAPReader {
 
                         messageId = mailMessage.getMessageId();
 
-                        if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), messageId)) {
+                        if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
                             logger.warn("Found duplicate " + messageId);
                             metaData.incrementDuplicates();
                             metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
 
                         } else {
-                            long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+                            long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
                             metaDataIndexService.store(client, source);
 
                             metaData.incrementBatchSize(storedSize);
@@ -160,7 +160,7 @@ public class IMAPReader {
 
                             try {
                                 messageIndexService.store(client, new IndexedMailMessage(mailMessage));
-                            } catch(Exception e) {
+                            } catch (Exception e) {
                                 logger.error("Failed to index message " + mailMessage.getMessageId(), e);
                                 metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
                             }

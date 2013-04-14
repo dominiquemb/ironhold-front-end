@@ -34,6 +34,7 @@ public class IndexedMailMessage implements IPartitioned {
     private String subject;
     private Date messageDate;
     private String year;
+    private String monthDay;
     private Recipient sender;
     private Recipient realSender;
     private Recipient[] to;
@@ -47,6 +48,9 @@ public class IndexedMailMessage implements IPartitioned {
 
     @JsonIgnore
     private SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+
+    @JsonIgnore
+    private SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMdd");
 
     public IndexedMailMessage() {
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
@@ -68,6 +72,7 @@ public class IndexedMailMessage implements IPartitioned {
         subject = imapMailMessage.getSubject();
         messageDate = imapMailMessage.getMessageDate();
         year = yearFormat.format(messageDate);
+        monthDay = monthDayFormat.format(messageDate);
         sender = Recipient.normalize(imapMailMessage.getFrom());
         to = Recipient.normalize(imapMailMessage.getTo());
         cc = Recipient.normalize(imapMailMessage.getCc());
@@ -201,6 +206,14 @@ public class IndexedMailMessage implements IPartitioned {
 
     public void setYear(String year) {
         this.year = year;
+    }
+
+    public String getMonthDay() {
+        return monthDay;
+    }
+
+    public void setMonthDay(String monthDay) {
+        this.monthDay = monthDay;
     }
 
     @Override

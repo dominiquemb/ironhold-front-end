@@ -2,6 +2,7 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
+import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
@@ -49,10 +50,10 @@ public class AuditView extends Panel {
         layout.addComponent(messageId);
 
 
-        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication)this.getUI()).getMimeMailMessageStorageService();
-        MetaDataIndexService metaDataIndexService = ((IronholdApplication)this.getUI()).getMetaDataIndexService();
+        IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
+        MetaDataIndexService metaDataIndexService = ((IronholdApplication) this.getUI()).getMetaDataIndexService();
         MimeMailMessage mailMessage = new MimeMailMessage();
-        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get("year").getValue(), item.getId()));
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId()));
         List<MessageSource> messageSources = metaDataIndexService.getSources(client, item.getId());
         loadIMAPSources(messageSources);
 
