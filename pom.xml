@@ -214,9 +214,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.codehaus.sonar</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>3.5</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
