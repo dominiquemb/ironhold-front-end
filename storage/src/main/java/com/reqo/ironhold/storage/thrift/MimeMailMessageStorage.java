@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class MimeMailMessageStorage {
-
     public interface Iface {
 
         public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum) throws org.apache.thrift.TException;
