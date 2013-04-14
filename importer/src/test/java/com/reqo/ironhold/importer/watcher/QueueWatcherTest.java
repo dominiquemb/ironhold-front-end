@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @ContextConfiguration(locations = "classpath:QueueWatcherTest_context.xml")
-public class QueueWatcherTest  extends AbstractJUnit4SpringContextTests {
+public class QueueWatcherTest extends AbstractJUnit4SpringContextTests {
 
     private static final String PST_TEST_FILE = "/data.pst";
     private static final String PST_TEST_FILE2 = "/data2.pst";
@@ -78,6 +78,7 @@ public class QueueWatcherTest  extends AbstractJUnit4SpringContextTests {
     public void setUp() throws Exception {
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent().getParentFile());
+        deleteIfExists(new File("/tmp/es/data"));
         FileUtils.forceMkdir(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent());
 
     }
@@ -139,7 +140,7 @@ public class QueueWatcherTest  extends AbstractJUnit4SpringContextTests {
         Map<String, String> metaData = new HashMap<>();
         metaData.put("mailboxname", "testmailbox");
         metaData.put("originalfilepath", "testfilepath");
-        metaData.put("commentary","line1\n'line2");
+        metaData.put("commentary", "line1\n'line2");
         File md5File = MD5CheckSum.createMD5CheckSum(pstFile, metaData);
 
         FileUtils.copyFileToDirectory(md5File, queueFolder.getRoot());

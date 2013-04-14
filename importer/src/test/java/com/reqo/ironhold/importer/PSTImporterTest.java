@@ -71,6 +71,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent().getParentFile());
+        deleteIfExists(new File("/tmp/es/data"));
         FileUtils.forceMkdir(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent());
 
         pstfile = FileUtils.toFile(PSTImporterTest.class
