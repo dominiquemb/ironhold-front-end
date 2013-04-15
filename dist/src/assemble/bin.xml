@@ -12,9 +12,7 @@
             <useAllReactorProjects>true</useAllReactorProjects>
             <includes>
                 <include>com.reqo.ironhold:importer</include>
-                <include>com.reqo.ironhold:exporter</include>
                 <include>com.reqo.ironhold:storage</include>
-                <include>com.reqo.ironhold:search</include>
                 <include>com.reqo.ironhold:reader</include>
                 <include>com.reqo.ironhold:demodata</include>
             </includes>
