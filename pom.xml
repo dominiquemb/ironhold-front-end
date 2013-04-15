@@ -274,7 +274,7 @@
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
                 <keystore.root>/data/keystore</keystore.root>
-                <elasticsearch.hosts>ih650es011</elasticsearch.hosts>
+                <elasticsearch.hosts>ih650es001,ih650es002, ih650es003</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>2</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
