@@ -1,7 +1,6 @@
 package com.reqo.ironhold.importer;
 
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
-import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
@@ -42,7 +41,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     private String md52;
 
     @Autowired
-    private IMimeMailMessageStorageService mimeMailMessageStorageService;
+    private LocalMimeMailMessageStorageService mimeMailMessageStorageService;
 
     @Autowired
     private MetaDataIndexService metaDataIndexService;

@@ -3,6 +3,7 @@ package com.reqo.ironhold.importer;
 import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
+import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
@@ -14,11 +15,11 @@ import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
-import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -41,7 +42,8 @@ public class PSTImporter {
     private MetaDataIndexService metaDataIndexService;
 
     @Autowired
-    private MimeMailMessageStorageClient mimeMailMessageStorageService;
+    @Qualifier("mimeMailMessageStoreService")
+    private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     @Autowired
     private MessageIndexService messageIndexService;
