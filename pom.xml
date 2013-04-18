@@ -279,7 +279,7 @@
                 <elasticsearch.replicas>2</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
-                <mailserver>10.65.0.78</mailserver>
+                <mailserver>sendmail.rqpartners.com</mailserver>
             </properties>
         </profile>
         <profile>
@@ -294,7 +294,7 @@
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
-                <mailserver>10.108.18.70</mailserver>
+                <mailserver>sendmail.rqpartners.com</mailserver>
             </properties>
         </profile>
         <profile>
