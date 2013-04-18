@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class MiscIndexService extends AbstractIndexService {
-    public static final String PARTITION = "1";
+    public static final String PARTITION = null;
     private static Logger logger = Logger.getLogger(MiscIndexService.class);
     public static final String SUFFIX = "misc";
     private static Map<IndexedObjectType, String> mappings;

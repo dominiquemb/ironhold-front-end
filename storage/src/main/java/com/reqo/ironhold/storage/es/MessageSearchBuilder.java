@@ -318,11 +318,11 @@ public class MessageSearchBuilder {
         if (loginUser.hasRole(RoleEnum.CAN_SEARCH)) {
             if (!loginUser.hasRole(RoleEnum.SUPER_USER)) {
                 OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
-                for (Recipient recipient : loginUser.getRecipients()) {
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("sender.address", recipient.getAddress())));
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("to.address", recipient.getAddress())));
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("cc.address", recipient.getAddress())));
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("bcc.address", recipient.getAddress())));
+                IndexClient.addLoginFilter(filterBuilders, loginUser.getMainRecipient().getAddress());
+                if (loginUser.getRecipients() != null) {
+                    for (Recipient recipient : loginUser.getRecipients()) {
+                        IndexClient.addLoginFilter(filterBuilders, recipient.getAddress());
+                    }
                 }
                 termsFacetBuilder.facetFilter(filterBuilders);
             }

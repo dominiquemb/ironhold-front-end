@@ -30,7 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @SuppressWarnings("serial")
-public class EmailView extends Panel {
+public class EmailView extends AbstractEmailView {
     private String indexPrefix;
     private final boolean displayHTML;
     private final VerticalLayout layout;
@@ -49,6 +49,8 @@ public class EmailView extends Panel {
         final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
 
         layout.removeAllComponents();
+
+        addEmailToolBar(layout, client, item);
 
         String subjectValue = IndexUtils.getFieldValue(item,
                 IndexFieldEnum.SUBJECT, null, false);

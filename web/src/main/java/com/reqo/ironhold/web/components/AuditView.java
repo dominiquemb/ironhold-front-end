@@ -12,7 +12,6 @@ import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.io.FileUtils;
@@ -22,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class AuditView extends Panel {
+public class AuditView extends AbstractEmailView {
     public static final String TIMESTAMP = "Timestamp";
     public static final String HOSTNAME = "Hostname";
     public static final String FOLDER = "Folder";
@@ -45,6 +44,7 @@ public class AuditView extends Panel {
         String client = (String) getSession().getAttribute("client");
         layout.removeAllComponents();
 
+        addEmailToolBar(layout, client, item);
 
         final Label messageId = new Label("MessageId: " + item.getId());
         layout.addComponent(messageId);

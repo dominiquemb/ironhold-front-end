@@ -70,7 +70,7 @@ public class MetaDataIndexServiceTest {
         metaDataIndexService.store(INDEX_PREFIX, pstSource);
 
 
-        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + pstSource.getPartition());
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX);
 
         List<MessageSource> sources = metaDataIndexService
                 .getSources(INDEX_PREFIX, pstSource.getMessageId());
@@ -90,7 +90,7 @@ public class MetaDataIndexServiceTest {
         metaDataIndexService.store(INDEX_PREFIX, imapSource);
 
 
-        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + imapSource.getPartition());
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX);
 
         List<MessageSource> sources = metaDataIndexService
                 .getSources(INDEX_PREFIX, imapSource.getMessageId());

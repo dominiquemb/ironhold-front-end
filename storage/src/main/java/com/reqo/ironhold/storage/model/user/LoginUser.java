@@ -26,12 +26,13 @@ public class LoginUser {
     @JsonIgnore
     private ObjectMapper mapper = new ObjectMapper();
     @JsonIgnore
-    protected SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
+    protected SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
 
     private String username;
     private String hashedPassword;
     private int rolesBitMask;
     private String name;
+    private Recipient mainRecipient;
     private List<Recipient> recipients;
     private Date lastLogin;
     private Date created;
@@ -97,6 +98,14 @@ public class LoginUser {
 
     public void setRolesBitMask(int rolesBitMask) {
         this.rolesBitMask = rolesBitMask;
+    }
+
+    public Recipient getMainRecipient() {
+        return mainRecipient;
+    }
+
+    public void setMainRecipient(Recipient mainRecipient) {
+        this.mainRecipient = mainRecipient;
     }
 
     public String serialize() throws IOException {

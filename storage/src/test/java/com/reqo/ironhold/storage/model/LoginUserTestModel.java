@@ -27,6 +27,7 @@ public class LoginUserTestModel extends CommonTestModel {
         loginUser.setRolesBitMask(role.getValue());
 
         loginUser.setHashedPassword(CheckSumHelper.getCheckSum(loginUser.getUsername().getBytes()));
+        loginUser.setMainRecipient(new Recipient(df.getName(), df.getEmailAddress()));
         List<Recipient> recipientList = new ArrayList<>();
         for (int i = 0; i < df.getNumberBetween(0, 10); i++) {
             Recipient recipient = new Recipient(df.getName(), df.getEmailAddress());

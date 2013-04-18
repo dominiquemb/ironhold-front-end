@@ -168,13 +168,14 @@ public class IndexClient {
                     + response1.toString());
         }
 
-
-        IndicesAliasesResponse response3 = esClient.admin().indices()
-                .prepareAliases().addAlias(indexName, alias).execute()
-                .get();
-        if (!response3.acknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: "
-                    + response3.toString());
+        if (!indexName.equals(alias)) {
+            IndicesAliasesResponse response3 = esClient.admin().indices()
+                    .prepareAliases().addAlias(indexName, alias).execute()
+                    .get();
+            if (!response3.acknowledged()) {
+                throw new Exception("ES Request did not get acknowledged: "
+                        + response3.toString());
+            }
         }
 
     }
@@ -227,11 +228,11 @@ public class IndexClient {
         if (loginUser.hasRole(RoleEnum.CAN_SEARCH)) {
             if (!loginUser.hasRole(RoleEnum.SUPER_USER)) {
                 OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
-                for (Recipient recipient : loginUser.getRecipients()) {
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("sender.address", recipient.getAddress())));
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("to.address", recipient.getAddress())));
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("cc.address", recipient.getAddress())));
-                    filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("bcc.address", recipient.getAddress())));
+                addLoginFilter(filterBuilders, loginUser.getMainRecipient().getAddress());
+                if (loginUser.getRecipients() != null) {
+                    for (Recipient recipient : loginUser.getRecipients()) {
+                        addLoginFilter(filterBuilders, recipient.getAddress());
+                    }
                 }
                 search.setFilter(filterBuilders);
             }
@@ -240,6 +241,14 @@ public class IndexClient {
         }
 
     }
+
+    public static void addLoginFilter(OrFilterBuilder filterBuilders, String address) {
+        filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("sender.address", address)));
+        filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("to.address", address)));
+        filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("cc.address", address)));
+        filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("bcc.address", address)));
+    }
+
 
     /**
      * Helper methods

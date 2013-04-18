@@ -43,7 +43,7 @@ public abstract class AbstractIndexService {
     }
 
     public String getIndexName(String alias, String partition) {
-        return alias + "." + partition;
+        return partition == null ? alias : alias + "." + partition;
     }
 
 
