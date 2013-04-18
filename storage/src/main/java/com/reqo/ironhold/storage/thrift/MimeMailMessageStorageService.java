@@ -14,6 +14,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Time: 9:09 PM
  */
 public class MimeMailMessageStorageService {
+    static {
+        System.setProperty("jobname", MimeMailMessageStorageService.class.getSimpleName());
+    }
+
     private static Logger logger = Logger.getLogger(MimeMailMessageStorageService.class);
 
     public static void StartsimpleServer(MimeMailMessageStorage.Processor<MimeMailMessageStorageServiceHandler> processor, Integer port) {
