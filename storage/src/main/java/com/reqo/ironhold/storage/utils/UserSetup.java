@@ -47,7 +47,7 @@ public class UserSetup {
     }
 
     private void generate(String client, String username, String password, String email, int role) throws Exception {
-        System.out.println(Integer.MAX_VALUE);
+        //     System.out.println(Integer.MAX_VALUE);
         LoginUser loginUser = new LoginUser();
         loginUser.setUsername(username);
         loginUser.setName(username);

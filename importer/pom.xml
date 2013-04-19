@@ -22,11 +22,6 @@
                 <filtering>true</filtering>
                 <directory>src/main/resources</directory>
             </resource>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/test/resources</directory>
-            </resource>
-
         </resources>
         <plugins>
             <plugin>
