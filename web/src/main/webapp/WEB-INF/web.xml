@@ -36,7 +36,7 @@
     </servlet-mapping>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/classes/applicationContext.xml</param-value>
+        <param-value>/WEB-INF/classes/webContext.xml</param-value>
     </context-param>
 
     <listener>

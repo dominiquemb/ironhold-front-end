@@ -51,7 +51,7 @@ public class QueueWatcher extends FileWatcher {
             return;
         }
         try {
-            ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+            ApplicationContext context = new ClassPathXmlApplicationContext("importerContext.xml");
 
             QueueWatcher qw = context.getBean(QueueWatcher.class);
             qw.setInputDirName(bean.getQueue());

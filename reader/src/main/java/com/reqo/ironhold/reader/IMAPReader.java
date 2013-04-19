@@ -224,7 +224,7 @@ public class IMAPReader {
             return;
         }
         try {
-            ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+            ApplicationContext context = new ClassPathXmlApplicationContext("readerContext.xml");
 
             IMAPReader readMail = new IMAPReader(bean.getHostname(),
                     bean.getPort(), bean.getUsername(), bean.getPassword(),

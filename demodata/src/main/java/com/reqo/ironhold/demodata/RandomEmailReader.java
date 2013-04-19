@@ -87,7 +87,7 @@ public class RandomEmailReader {
             return;
         }
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("demodataContext.xml");
         RandomEmailReader randomEmailReader = context.getBean(RandomEmailReader.class);
         randomEmailReader.process(bean.getClient(), bean.getNumber());
 

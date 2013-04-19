@@ -73,7 +73,7 @@ public class FileReader {
             return;
         }
         try {
-            ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+            ApplicationContext context = new ClassPathXmlApplicationContext("readerContext.xml");
 
 
             FileReader readMail = new FileReader(bean.getClient(), bean.getEmlFile());
