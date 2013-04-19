@@ -34,4 +34,5 @@
     <bean id="pstImporter" class="com.reqo.ironhold.importer.PSTImporter"/>
 
 
+    <bean id="queueWatcher" class="com.reqo.ironhold.importer.watcher.QueueWatcher"/>
 </beans>
