@@ -23,7 +23,6 @@ public class QueueWatcher extends FileWatcher {
     private PSTImporter importer;
 
 
-
     @Override
     protected void processFile(File dataFile, MD5CheckSum checksumFile)
             throws Exception {
@@ -64,6 +63,7 @@ public class QueueWatcher extends FileWatcher {
 
         } catch (Exception e) {
             logger.error("Critical error detected. Exiting.", e);
+            e.printStackTrace(System.err);
             System.exit(0);
         }
     }
