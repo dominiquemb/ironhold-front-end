@@ -9,164 +9,164 @@ import java.io.IOException;
 import java.nio.file.*;
 
 public abstract class FileWatcher {
-	private static Logger logger = Logger.getLogger(FileWatcher.class);
+    private static Logger logger = Logger.getLogger(FileWatcher.class);
 
-	private String inputDirName;
-	private String outputDirName;
-	private String quarantineDirName;
-	private String client;
-		
-	private WatchService watchService;
+    private String inputDirName;
+    private String outputDirName;
+    private String quarantineDirName;
+    private String client;
 
-	protected void processFileWrapper(String dataFileName, MD5CheckSum checksum)
-			throws Exception {
+    private WatchService watchService;
 
-		File dataFile = new File(getInputDirName(), dataFileName);
+    protected void processFileWrapper(String dataFileName, MD5CheckSum checksum)
+            throws Exception {
 
-		processFile(dataFile, checksum);
+        File dataFile = new File(getInputDirName(), dataFileName);
 
-		if (!dataFile
-				.renameTo(new File(getOutputDirName(), dataFile.getName()))) {
-			logger.warn("Failed to move file " + dataFile.toString() + " to "
-					+ new File(getOutputDirName(), dataFile.getName()));
-		}
-		if (!checksum.getCheckSumFile().renameTo(
-				new File(getOutputDirName(), checksum.getCheckSumFile()
-						.getName()))) {
-			logger.warn("Failed to move file "
-					+ checksum.getCheckSumFile().toString());
-		}
+        processFile(dataFile, checksum);
 
-	}
+        if (!dataFile
+                .renameTo(new File(getOutputDirName(), dataFile.getName()))) {
+            logger.warn("Failed to move file " + dataFile.toString() + " to "
+                    + new File(getOutputDirName(), dataFile.getName()));
+        }
+        if (!checksum.getCheckSumFile().renameTo(
+                new File(getOutputDirName(), checksum.getCheckSumFile()
+                        .getName()))) {
+            logger.warn("Failed to move file "
+                    + checksum.getCheckSumFile().toString());
+        }
 
-	protected abstract void processFile(File dataFile, MD5CheckSum md5File)
-			throws Exception;
+    }
+
+    protected abstract void processFile(File dataFile, MD5CheckSum md5File)
+            throws Exception;
 
 
-	public void start() throws IOException {
-		logger.info("Watching " + inputDirName + " directory for " + client);
-		Path inputDir = Paths.get(inputDirName);
-		watchService = inputDir.getFileSystem().newWatchService();
-		inputDir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+    public void start() throws IOException {
+        logger.info("Watching " + inputDirName + " directory for " + client);
+        Path inputDir = Paths.get(inputDirName);
+        watchService = inputDir.getFileSystem().newWatchService();
+        inputDir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
-		while (true) {
-			WatchKey watckKey;
-			try {
-				watckKey = watchService.take();
-			} catch (InterruptedException | ClosedWatchServiceException e) {
-				return;
-			}
+        while (true) {
+            WatchKey watckKey;
+            try {
+                watckKey = watchService.take();
+            } catch (InterruptedException | ClosedWatchServiceException e) {
+                return;
+            }
 
             for (WatchEvent<?> event : watckKey.pollEvents()) {
-				WatchEvent.Kind<?> kind = event.kind();
-				if (kind == StandardWatchEventKinds.OVERFLOW) {
-					continue;
-				}
+                WatchEvent.Kind<?> kind = event.kind();
+                if (kind == StandardWatchEventKinds.OVERFLOW) {
+                    continue;
+                }
 
-				String fileName = event.context().toString();
-				logger.info("Detected new file: " + fileName);
+                String fileName = event.context().toString();
+                logger.info("Detected new file: " + fileName);
 
-				if (fileName.endsWith(".md5")) {
-					logger.info("Processing md5 file: " + fileName);
+                if (fileName.endsWith(".md5")) {
+                    logger.info("Processing md5 file: " + fileName);
 
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						return;
-					}
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
 
-					MD5CheckSum checkSum = null;
-					try {
-						checkSum = processChecksumFile(inputDirName, fileName);
-						if (checkSum != null) {
+                    MD5CheckSum checkSum = null;
+                    try {
+                        checkSum = processChecksumFile(inputDirName, fileName);
+                        if (checkSum != null) {
 
-							processFileWrapper(checkSum.getDataFileName(),
-									checkSum);
-						}
+                            processFileWrapper(checkSum.getDataFileName(),
+                                    checkSum);
+                        }
 
-					} catch (Exception e) {
-						EmailNotification.send("Failed to process " + fileName,
-								e.getMessage());
-						logger.warn("Failed to process " + fileName, e);
-					}
+                    } catch (Exception e) {
+                        EmailNotification.send("Failed to process " + fileName,
+                                e.getMessage());
+                        logger.warn("Failed to process " + fileName, e);
+                    }
 
-				}
+                }
 
-			}
+            }
 
-			boolean valid = watckKey.reset();
-			if (!valid) {
-				break;
-			}
-		}
-	}
+            boolean valid = watckKey.reset();
+            if (!valid) {
+                break;
+            }
+        }
+    }
 
-	public void deActivate() {
-		try {
-			watchService.close();
-		} catch (IOException e) {
-			logger.warn(e);
-		}
-	}
+    public void deActivate() {
+        try {
+            watchService.close();
+        } catch (IOException e) {
+            logger.warn(e);
+        }
+    }
 
 
+    public boolean isStarted() {
+        return watchService != null;
+    }
 
-	public boolean isStarted() {
-		return watchService != null;
-	}
-	private MD5CheckSum processChecksumFile(String inputDirName,
-			String checkSumfileName) throws Exception  {
+    private MD5CheckSum processChecksumFile(String inputDirName,
+                                            String checkSumfileName) throws Exception {
 
-		MD5CheckSum checkSum = new MD5CheckSum(new File(getInputDirName(),
-				checkSumfileName));
+        MD5CheckSum checkSum = new MD5CheckSum(new File(getInputDirName(),
+                checkSumfileName));
 
-		if (!checkSum.verifyChecksum()) {
-			logger.warn("Checksum check failed for " + checkSumfileName);
-			quarantine(checkSum, "Checksum check failed for "
-					+ checkSumfileName);
-			return null;
-		}
+        if (!checkSum.verifyChecksum()) {
+            logger.warn("Checksum check failed for " + checkSumfileName);
+            quarantine(checkSum, "Checksum check failed for "
+                    + checkSumfileName);
+            return null;
+        }
 
-		return checkSum;
-	}
+        return checkSum;
+    }
 
-	private void quarantine(MD5CheckSum checkSum, String reason) {
-		if (checkSum.getDataFileName() != null) {
-			logger.warn("Quarantining file " + checkSum.getDataFileName()
-					+ ": " + reason);
+    private void quarantine(MD5CheckSum checkSum, String reason) {
+        if (checkSum.getDataFileName() != null) {
+            logger.warn("Quarantining file " + checkSum.getDataFileName()
+                    + ": " + reason);
 
-			File dataFile = new File(getInputDirName(),
-					checkSum.getDataFileName());
+            File dataFile = new File(getInputDirName(),
+                    checkSum.getDataFileName());
 
-			if (!dataFile.renameTo(new File(getQuarantineDirName(), dataFile
-					.getName()))) {
-				logger.warn("Failed to quarantine file " + dataFile.toString()
-						+ " to "
-						+ new File(getOutputDirName(), dataFile.getName()));
-			}
-		}
-		if (!checkSum.getCheckSumFile().renameTo(
-				new File(getQuarantineDirName(), checkSum.getCheckSumFile()
-						.getName()))) {
-			logger.warn("Failed to quarantine file "
-					+ checkSum.getCheckSumFile().toString());
-		}
+            if (!dataFile.renameTo(new File(getQuarantineDirName(), dataFile
+                    .getName()))) {
+                logger.warn("Failed to quarantine file " + dataFile.toString()
+                        + " to "
+                        + new File(getOutputDirName(), dataFile.getName()));
+            }
+        }
+        if (!checkSum.getCheckSumFile().renameTo(
+                new File(getQuarantineDirName(), checkSum.getCheckSumFile()
+                        .getName()))) {
+            logger.warn("Failed to quarantine file "
+                    + checkSum.getCheckSumFile().toString());
+        }
 
-		EmailNotification.send("Quarantining file "
-				+ checkSum.getCheckSumFile().toString(), reason);
-	}
+        EmailNotification.send("Quarantining file "
+                + checkSum.getCheckSumFile().toString(), reason);
+    }
 
-	public String getInputDirName() {
-		return inputDirName;
-	}
+    public String getInputDirName() {
+        return inputDirName;
+    }
 
-	public String getOutputDirName() {
-		return outputDirName;
-	}
+    public String getOutputDirName() {
+        return outputDirName;
+    }
 
-	public String getQuarantineDirName() {
-		return quarantineDirName;
-	}
+    public String getQuarantineDirName() {
+        return quarantineDirName;
+    }
 
     public void setClient(String client) {
         this.client = client;
@@ -182,5 +182,9 @@ public abstract class FileWatcher {
 
     public void setQuarantineDirName(String quarantineDirName) {
         this.quarantineDirName = quarantineDirName;
+    }
+
+    public String getClient() {
+        return client;
     }
 }

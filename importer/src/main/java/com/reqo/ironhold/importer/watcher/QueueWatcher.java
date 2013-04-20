@@ -33,7 +33,7 @@ public class QueueWatcher extends FileWatcher {
         importer.setCommentary(checksumFile.getCommentary());
         importer.setOriginalFilePath(checksumFile.getOriginalFilePath());
         importer.setFile(dataFile);
-
+        importer.setClient(getClient());
         String details = importer.processMessages();
 
         EmailNotification.send("Finished processing pst file: " + checksumFile.getDataFileName(), details);
