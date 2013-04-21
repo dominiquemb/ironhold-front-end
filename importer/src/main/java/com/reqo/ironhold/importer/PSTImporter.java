@@ -179,6 +179,7 @@ public class PSTImporter {
                             file.toString(), folderPath, file.length(),
                             new Date(file.lastModified()));
 
+                    source.setPartition(mimeMailMessage.getPartition());
                     metaDataIndexService.store(client, source);
                     metaData.incrementObjectType(message.getClass().getSimpleName());
 
