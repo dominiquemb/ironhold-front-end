@@ -17,6 +17,7 @@ public class QueueWatcher extends FileWatcher {
         System.setProperty("jobname", QueueWatcher.class.getSimpleName());
     }
 
+
     private static Logger logger = Logger.getLogger(QueueWatcher.class);
 
     @Autowired

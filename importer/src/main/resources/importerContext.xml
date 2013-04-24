@@ -5,6 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
+    <context:component-scan base-package="com.reqo.ironhold"/>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
@@ -18,7 +19,7 @@
 
     <!-- ES beans -->
     <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient" scope="singleton">
-        <constructor-arg type="java.lang.String" value="importer"/>
+        <constructor-arg type="java.lang.String" value="PSTImporter"/>
     </bean>
     <bean id="messageIndexService" class="com.reqo.ironhold.storage.MessageIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
