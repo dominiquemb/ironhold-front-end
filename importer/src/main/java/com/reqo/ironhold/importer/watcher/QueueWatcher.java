@@ -3,7 +3,6 @@ package com.reqo.ironhold.importer.watcher;
 import com.reqo.ironhold.importer.PSTImporter;
 import com.reqo.ironhold.importer.notification.EmailNotification;
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
-import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +17,19 @@ public class QueueWatcher extends FileWatcher {
     }
 
 
-    private static Logger logger = Logger.getLogger(QueueWatcher.class);
+    //  private static Logger logger = Logger.getLogger(QueueWatcher.class);
 
     @Autowired
     private PSTImporter importer;
 
+    public QueueWatcher() {
+
+    }
 
     @Override
     protected void processFile(File dataFile, MD5CheckSum checksumFile)
             throws Exception {
-        logger.info("Processing data file " + dataFile.toString());
+        //    logger.info("Processing data file " + dataFile.toString());
 
         importer.setMailBoxName(checksumFile.getMailBoxName());
         importer.setMd5(checksumFile.getCheckSum());
@@ -63,7 +65,7 @@ public class QueueWatcher extends FileWatcher {
             qw.start();
 
         } catch (Exception e) {
-            logger.error("Critical error detected. Exiting.", e);
+            //     logger.error("Critical error detected. Exiting.", e);
             e.printStackTrace(System.err);
             System.exit(0);
         }
