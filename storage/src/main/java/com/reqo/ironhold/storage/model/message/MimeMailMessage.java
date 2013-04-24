@@ -126,10 +126,20 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     PSTRecipient recipient = originalPSTMessage.getRecipient(i);
                     switch (recipient.getRecipientType()) {
                         case PSTMessage.RECIPIENT_TYPE_TO:
-                            email.addTo(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            try {
+                                email.addTo(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            } catch (EmailException e) {
+                                email.addTo("unknown@unknown", recipient.getDisplayName());
+                            }
+
                             break;
                         case PSTMessage.RECIPIENT_TYPE_CC:
-                            email.addCc(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            try {
+                                email.addCc(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            } catch (EmailException e) {
+                                email.addCc("unknown@unknown", recipient.getDisplayName());
+                            }
+
                             break;
                     }
                 } catch (Exception e) {
@@ -140,20 +150,20 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         } catch (ArrayIndexOutOfBoundsException e) {
             if (originalPSTMessage.getDisplayTo().trim().length() > 0) {
                 for (String displayTo : originalPSTMessage.getDisplayTo().split(";")) {
-                    email.addTo(null, displayTo);
+                    email.addTo("unknown@unknown", displayTo);
                 }
             }
 
             if (originalPSTMessage.getDisplayCC().trim().length() > 0) {
                 for (String displayCc : originalPSTMessage.getDisplayCC().split(";")) {
-                    email.addCc(null, displayCc);
+                    email.addCc("unknown@unknown", displayCc);
                 }
             }
         }
 
         if (originalPSTMessage.getDisplayBCC().trim().length() > 0) {
             for (String displayBcc : originalPSTMessage.getDisplayBCC().split(";")) {
-                email.addBcc(null, displayBcc);
+                email.addBcc("unknown@unknown", displayBcc);
             }
         }
 
@@ -166,7 +176,11 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             email.setHtmlMsg(originalPSTMessage.getBodyHTML());
         }
 
-        email.setFrom(originalPSTMessage.getSenderEmailAddress(), originalPSTMessage.getSenderName());
+        try {
+            email.setFrom(originalPSTMessage.getSenderEmailAddress(), originalPSTMessage.getSenderName());
+        } catch (EmailException e) {
+            email.setFrom("unknown@unknown", originalPSTMessage.getSenderName());
+        }
         email.setSentDate(originalPSTMessage.getMessageDeliveryTime());
         email.setSubject(originalPSTMessage.getSubject());
 
