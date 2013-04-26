@@ -218,6 +218,7 @@ public class PSTImporter {
 
     private void debugLogMessage(PSTMessage message) throws PSTException, IOException {
         logger.info("getNumberOfRecipients:" + message.getNumberOfRecipients());
+        logger.info(message.getClass().getName());
     }
 
     public void setMd5(String md5) {
