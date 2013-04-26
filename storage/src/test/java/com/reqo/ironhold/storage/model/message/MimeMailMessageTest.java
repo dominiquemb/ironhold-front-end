@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
 import org.elasticsearch.common.Base64;
 import org.junit.Before;
 import org.junit.Rule;
@@ -112,6 +113,13 @@ public class MimeMailMessageTest {
         for (int i = 0; i < pstMessage.getAttachments().length; i++) {
             Assert.assertEquals(originalPSTMessage.getAttachment(i).getLongFilename(), pstMessage.getAttachments()[i].getFileName());
         }
+    }
+
+    @Test
+    public void testInvalidEmailAddress() throws EmailException {
+        HtmlEmail email = new HtmlEmail();
+        //email.setFrom("/O=GALTERE/OU=EXCHANGE ADMINISTRATIVE GROUP", "abc");
+        email.setFrom("unknown@unknown", "abc");
     }
 
 }

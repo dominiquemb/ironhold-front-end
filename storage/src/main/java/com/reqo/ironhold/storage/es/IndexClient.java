@@ -284,4 +284,7 @@ public class IndexClient {
         return bufferJSON.toString();
     }
 
+    public Client getClient() {
+        return esClient;
+    }
 }

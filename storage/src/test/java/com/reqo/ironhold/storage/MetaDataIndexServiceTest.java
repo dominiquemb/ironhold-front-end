@@ -83,6 +83,26 @@ public class MetaDataIndexServiceTest {
     }
 
     @Test
+    public void testAddLargePSTSource() throws Exception {
+
+        PSTMessageSource pstSource = MessageSourceTestModel
+                .generatePSTMessageSource();
+        pstSource.setSize(7723967488L);
+        metaDataIndexService.store(INDEX_PREFIX, pstSource);
+
+
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX);
+
+        List<MessageSource> sources = metaDataIndexService
+                .getSources(INDEX_PREFIX, pstSource.getMessageId());
+
+        Assert.assertEquals(1, sources.size());
+        PSTMessageSource storedSource = (PSTMessageSource) sources.get(0);
+        Assert.assertEquals(pstSource.serialize(),
+                storedSource.serialize());
+    }
+
+    @Test
     public void testAddIMAPSource() throws Exception {
         IMAPMessageSource imapSource = MessageSourceTestModel
                 .generateIMAPMessageSource();

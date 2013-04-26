@@ -18,7 +18,7 @@
                 "analyzer": "keyword"
             },
             "size": {
-                "type": "integer"
+                "type": "long"
             },
             "hostname": {
                 "type": "string",
