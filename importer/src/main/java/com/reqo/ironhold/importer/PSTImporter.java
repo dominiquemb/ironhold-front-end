@@ -1,5 +1,6 @@
 package com.reqo.ironhold.importer;
 
+import com.pff.PSTException;
 import com.pff.PSTFile;
 import com.pff.PSTFolder;
 import com.pff.PSTMessage;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -205,12 +207,17 @@ public class PSTImporter {
 
                     metaDataIndexService.store(client, processedMessage);
                     metaData.incrementFailures();
+                    debugLogMessage(message);
                 }
                 message = (PSTMessage) folder.getNextChild();
 
             }
         }
 
+    }
+
+    private void debugLogMessage(PSTMessage message) throws PSTException, IOException {
+        logger.info("getNumberOfRecipients:" + message.getNumberOfRecipients());
     }
 
     public void setMd5(String md5) {
