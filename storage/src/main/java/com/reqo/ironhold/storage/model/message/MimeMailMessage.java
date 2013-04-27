@@ -152,7 +152,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                         String rawContents = baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(attachment.getEmbeddedPSTMessage().getInternetMessageId()));
 
                         email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), "embeddedMessage.eml", embeddedMessage.getSubject());
-                        if (originalPSTMessage.getNumberOfRecipients() == 0) {
+                        if (email.getToAddresses().size() == 0 && email.getCcAddresses().size() == 0 && email.getBccAddresses().size() == 0) {
                             logger.warn("Found 0 recipients and embedded email message, extracting recipients from embedded message");
                             extractRecipients(email, attachment.getEmbeddedPSTMessage());
 
