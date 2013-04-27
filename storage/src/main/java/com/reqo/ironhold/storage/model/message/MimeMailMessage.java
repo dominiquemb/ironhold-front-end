@@ -120,52 +120,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             email.addHeader("Importance", IMPORTANCE_HIGH);
         }
 
-        try {
-            for (int i = 0; i < originalPSTMessage.getNumberOfRecipients(); i++) {
-                try {
-                    PSTRecipient recipient = originalPSTMessage.getRecipient(i);
-                    switch (recipient.getRecipientType()) {
-                        case PSTMessage.RECIPIENT_TYPE_TO:
-                            try {
-                                email.addTo(recipient.getSmtpAddress(), recipient.getDisplayName());
-                            } catch (EmailException e) {
-                                email.addTo("unknown@unknown", recipient.getDisplayName());
-                            }
-
-                            break;
-                        case PSTMessage.RECIPIENT_TYPE_CC:
-                            try {
-                                email.addCc(recipient.getSmtpAddress(), recipient.getDisplayName());
-                            } catch (EmailException e) {
-                                email.addCc("unknown@unknown", recipient.getDisplayName());
-                            }
-
-                            break;
-                    }
-                } catch (Exception e) {
-                    logger.warn(e);
-                }
-
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            if (originalPSTMessage.getDisplayTo().trim().length() > 0) {
-                for (String displayTo : originalPSTMessage.getDisplayTo().split(";")) {
-                    email.addTo("unknown@unknown", displayTo);
-                }
-            }
-
-            if (originalPSTMessage.getDisplayCC().trim().length() > 0) {
-                for (String displayCc : originalPSTMessage.getDisplayCC().split(";")) {
-                    email.addCc("unknown@unknown", displayCc);
-                }
-            }
-        }
-
-        if (originalPSTMessage.getDisplayBCC().trim().length() > 0) {
-            for (String displayBcc : originalPSTMessage.getDisplayBCC().split(";")) {
-                email.addBcc("unknown@unknown", displayBcc);
-            }
-        }
+        extractRecipients(email, originalPSTMessage);
 
         if (originalPSTMessage.getBody().trim().length() > 0) {
             email.setMsg(originalPSTMessage.getBody());
@@ -197,6 +152,11 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                         String rawContents = baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(attachment.getEmbeddedPSTMessage().getInternetMessageId()));
 
                         email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), "embeddedMessage.eml", embeddedMessage.getSubject());
+                        if (originalPSTMessage.getNumberOfRecipients() == 0) {
+                            logger.warn("Found 0 recipients and embedded email message, extracting recipients from embedded message");
+                            extractRecipients(email, attachment.getEmbeddedPSTMessage());
+
+                        }
                     } else {
                         String fileName = attachment.getLongFilename();
                         if (fileName.isEmpty()) {
@@ -219,10 +179,65 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             logger.warn(e2);
         }
 
+        if (email.getToAddresses().size() == 0 && email.getCcAddresses().size() == 0 && email.getBccAddresses().size() == 0) {
+            email.addTo("undisclosed-recipients:;", "undisclosed-recipients:;");
+
+        }
         String hostname = java.net.InetAddress.getLocalHost().getHostName();
         email.setHostName(hostname);
         email.buildMimeMessage();
         return email.getMimeMessage();
+
+    }
+
+    private static void extractRecipients(HtmlEmail email, PSTMessage message) throws PSTException, IOException, EmailException {
+
+        try {
+            for (int i = 0; i < message.getNumberOfRecipients(); i++) {
+                try {
+                    PSTRecipient recipient = message.getRecipient(i);
+                    switch (recipient.getRecipientType()) {
+                        case PSTMessage.RECIPIENT_TYPE_TO:
+                            try {
+                                email.addTo(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            } catch (EmailException e) {
+                                email.addTo("unknown@unknown", recipient.getDisplayName());
+                            }
+
+                            break;
+                        case PSTMessage.RECIPIENT_TYPE_CC:
+                            try {
+                                email.addCc(recipient.getSmtpAddress(), recipient.getDisplayName());
+                            } catch (EmailException e) {
+                                email.addCc("unknown@unknown", recipient.getDisplayName());
+                            }
+
+                            break;
+                    }
+                } catch (Exception e) {
+                    logger.warn(e);
+                }
+
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            if (message.getDisplayTo().trim().length() > 0) {
+                for (String displayTo : message.getDisplayTo().split(";")) {
+                    email.addTo("unknown@unknown", displayTo);
+                }
+            }
+
+            if (message.getDisplayCC().trim().length() > 0) {
+                for (String displayCc : message.getDisplayCC().split(";")) {
+                    email.addCc("unknown@unknown", displayCc);
+                }
+            }
+        }
+
+        if (message.getDisplayBCC().trim().length() > 0) {
+            for (String displayBcc : message.getDisplayBCC().split(";")) {
+                email.addBcc("unknown@unknown", displayBcc);
+            }
+        }
 
     }
 
