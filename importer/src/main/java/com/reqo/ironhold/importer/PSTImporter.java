@@ -207,7 +207,7 @@ public class PSTImporter {
 
                     metaDataIndexService.store(client, processedMessage);
                     metaData.incrementFailures();
-                    debugLogMessage(message);
+                    debugLogMessage(message, folderPath);
                 }
                 message = (PSTMessage) folder.getNextChild();
 
@@ -216,7 +216,9 @@ public class PSTImporter {
 
     }
 
-    private void debugLogMessage(PSTMessage message) throws PSTException, IOException {
+    private void debugLogMessage(PSTMessage message, String folderPath) throws PSTException, IOException {
+        logger.info("folderPath:" + folderPath);
+
         logger.info("getNumberOfRecipients:" + message.getNumberOfRecipients());
         logger.info(message.getClass().getName());
     }
