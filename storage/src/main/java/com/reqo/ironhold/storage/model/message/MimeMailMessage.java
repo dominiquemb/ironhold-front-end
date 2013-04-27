@@ -22,6 +22,9 @@ import javax.mail.Message.RecipientType;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.EditorKit;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -129,7 +132,22 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         }
         if (originalPSTMessage.getBodyHTML().trim().length() > 0) {
             email.setHtmlMsg(originalPSTMessage.getBodyHTML());
+        } else if (originalPSTMessage.getRTFBody().trim().length() > 0) {
+            JEditorPane p = new JEditorPane();
+            p.setContentType("text/rtf");
+            EditorKit kitRtf = p.getEditorKitForContentType("text/rtf");
+            try {
+                kitRtf.read(new ByteArrayInputStream(originalPSTMessage.getRTFBody().trim().getBytes()), p.getDocument(), 0);
+                kitRtf = null;
+                EditorKit kitHtml = p.getEditorKitForContentType("text/html");
+                Writer writer = new StringWriter();
+                kitHtml.write(writer, p.getDocument(), 0, p.getDocument().getLength());
+                email.setHtmlMsg(writer.toString());
+            } catch (BadLocationException e) {
+                logger.warn(e);
+            }
         }
+
 
         try {
             email.setFrom(originalPSTMessage.getSenderEmailAddress(), originalPSTMessage.getSenderName());
