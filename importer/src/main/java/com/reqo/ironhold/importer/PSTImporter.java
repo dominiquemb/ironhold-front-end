@@ -218,7 +218,9 @@ public class PSTImporter {
 
     private void debugLogMessage(PSTMessage message, String folderPath) throws PSTException, IOException {
         logger.info("folderPath:" + folderPath);
-
+        logger.info("from:" + message.getSenderName() + ", " + message.getSenderEmailAddress());
+        logger.info("subject:" + message.getSubject());
+        logger.info("body:" + message.getBody());
         logger.info("getNumberOfRecipients:" + message.getNumberOfRecipients());
         logger.info(message.getClass().getName());
     }
