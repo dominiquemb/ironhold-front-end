@@ -125,6 +125,7 @@ public class PSTImporter {
 
     private void processFolder(String folderPath, PSTFolder folder)
             throws Exception {
+        folder.getSubFolderCount();
 
         LogMessage folderMessage = new LogMessage(LogLevel.Success,
                 file.toString(), "Processing " + folderPath + " ["
@@ -132,7 +133,7 @@ public class PSTImporter {
         metaDataIndexService.store(client, folderMessage);
 
         // go through the folders...
-        if (folder.hasSubfolders()) {
+        if (folder.getSubFolderCount() > 0) {
             List<PSTFolder> childFolders = folder.getSubFolders();
             for (PSTFolder childFolder : childFolders) {
                 processFolder(folderPath + "/" + childFolder.getDisplayName(),
@@ -166,7 +167,7 @@ public class PSTImporter {
                                     + metaData.getFailures());
                         }
                     } else {
-                        logger.info("New message " + messageId);
+                        logger.info("New message " + folderPath + "\\" + messageId);
                         if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
                             logger.info("New Messages: "
                                     + metaData.getMessages() + " Duplicates: "
