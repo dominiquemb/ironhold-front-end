@@ -98,7 +98,12 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     }
 
     public static MimeMailMessage getMimeMailMessage(PSTMessage originalPSTMessage) throws IOException, MessagingException, PSTException, EmailException {
-        MimeMessage mimeMessage = getMimeMessage(originalPSTMessage);
+        MimeMessage mimeMessage;
+        if (isJournaledMessage(originalPSTMessage)) {
+            mimeMessage = getMimeMessage(originalPSTMessage.getAttachment(0).getEmbeddedPSTMessage());
+        } else {
+            mimeMessage = getMimeMessage(originalPSTMessage);
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         mimeMessage.writeTo(baos);
         String rawContents = baos.toString();
@@ -115,6 +120,14 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         mimeMailMessage.loadMimeMessageFromSource(rawContents);
 
         return mimeMailMessage;
+    }
+
+    private static boolean isJournaledMessage(PSTMessage originalPSTMessage) throws PSTException, IOException {
+        if (originalPSTMessage.getNumberOfAttachments() == 1 && originalPSTMessage.getAttachment(0).getEmbeddedPSTMessage() != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static MimeMessage getMimeMessage(PSTMessage originalPSTMessage) throws EmailException, PSTException, IOException, MessagingException {
@@ -152,7 +165,11 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         try {
             email.setFrom(originalPSTMessage.getSenderEmailAddress(), originalPSTMessage.getSenderName());
         } catch (EmailException e) {
-            email.setFrom("unknown@unknown", originalPSTMessage.getSenderName());
+            try {
+                email.setFrom(originalPSTMessage.getSentRepresentingEmailAddress(), originalPSTMessage.getSentRepresentingName());
+            } catch (EmailException e2) {
+                email.setFrom("unknown@unknown", originalPSTMessage.getSenderName());
+            }
         }
         email.setSentDate(originalPSTMessage.getMessageDeliveryTime());
         email.setSubject(originalPSTMessage.getSubject());
@@ -169,7 +186,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                         embeddedMessage.writeTo(baos);
                         String rawContents = baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(attachment.getEmbeddedPSTMessage().getInternetMessageId()));
 
-                        email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), "embeddedMessage.eml", embeddedMessage.getSubject());
+                        email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), embeddedMessage.getSubject() + ".eml", embeddedMessage.getSubject());
                         if (email.getToAddresses().size() == 0 && email.getCcAddresses().size() == 0 && email.getBccAddresses().size() == 0) {
                             logger.warn("Found 0 recipients and embedded email message, extracting recipients from embedded message");
                             extractRecipients(email, attachment.getEmbeddedPSTMessage());
