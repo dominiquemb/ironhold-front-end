@@ -163,7 +163,11 @@ public class EmailView extends AbstractEmailView {
         } else {
             bodyText = IndexUtils.getFieldValue(hits.getAt(0),
                     IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");
+            while (bodyText.contains("<br/> <br/>")) {
+                bodyText = bodyText.replace("<br/> <br/>", "<br/>");
+            }
         }
+
 
         final Label body = new Label(bodyText);
         body.setContentMode(Label.CONTENT_RAW);

@@ -35,7 +35,6 @@ public class SearchHitPanel extends Panel {
 
         layout = new VerticalLayout();
         layout.setMargin(true);
-        this.setSizeFull();
         this.setContent(layout);
         me.setStyleName(Reindeer.PANEL_LIGHT);
         String subjectValue = IndexUtils.getFieldValue(item, IndexFieldEnum.SUBJECT);
@@ -47,6 +46,9 @@ public class SearchHitPanel extends Panel {
         final HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setSpacing(true);
         headerLayout.setWidth("100%");
+        if (subjectValue.length() > 100) {
+            subjectValue = StringUtils.abbreviate(subjectValue, 100) + "...";
+        }
         final NativeButton subject = new NativeButton(subjectValue);
         subject.setHtmlContentAllowed(true);
         subject.setStyleName(BaseTheme.BUTTON_LINK);
@@ -94,7 +96,7 @@ public class SearchHitPanel extends Panel {
         addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
         addPartyLabel(item, IndexFieldEnum.BCC_NAME, IndexFieldEnum.BCC_ADDRESS);
 
-        layout.addComponent(renderKeyValuePair("Body:", IndexUtils.getFieldValue(item, IndexFieldEnum.BODY) + "..."));
+        layout.addComponent(renderKeyValuePair("Body:", StringUtils.abbreviate(IndexUtils.getFieldValue(item, IndexFieldEnum.BODY), 100) + "..."));
 
         String attachmentValue = IndexUtils.getFieldValue(item, IndexFieldEnum.ATTACHMENT);
         if (!attachmentValue.equals(StringUtils.EMPTY)) {
@@ -121,7 +123,6 @@ public class SearchHitPanel extends Panel {
         final Label valueLabel = new Label(value);
         valueLabel.setContentMode(ContentMode.HTML);
         valueLabel.setWidth(null);
-
         hl.addComponent(valueLabel);
         hl.setExpandRatio(valueLabel, 1.0f);
         return hl;
