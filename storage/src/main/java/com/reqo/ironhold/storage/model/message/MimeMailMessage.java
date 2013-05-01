@@ -199,9 +199,9 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                         }
 
                         if (attachment.getAttachmentContentDisposition() != null && attachment.getAttachmentContentDisposition().trim().length() > 0) {
-                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), attachment.getMimeTag() == null ? "application/octet-stream" : attachment.getMimeTag()), fileName, attachment.getDisplayName(), attachment.getAttachmentContentDisposition());
+                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), StringUtils.isEmpty(attachment.getMimeTag()) ? "application/octet-stream" : attachment.getMimeTag()), fileName, attachment.getDisplayName(), attachment.getAttachmentContentDisposition());
                         } else {
-                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), attachment.getMimeTag() == null ? "application/octet-stream" : attachment.getMimeTag()), fileName, attachment.getDisplayName());
+                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), StringUtils.isEmpty(attachment.getMimeTag()) ? "application/octet-stream" : attachment.getMimeTag()), fileName, attachment.getDisplayName());
                         }
                     }
 
