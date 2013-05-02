@@ -19,7 +19,7 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     public MimeMailMessageStorageClient(String host, int port) throws TTransportException {
         TTransport transport;
 
-        transport = new TSocket(host, port);
+        transport = new TSocket(host, port, 3000);
         transport.open();
 
         TProtocol protocol = new TBinaryProtocol(transport);

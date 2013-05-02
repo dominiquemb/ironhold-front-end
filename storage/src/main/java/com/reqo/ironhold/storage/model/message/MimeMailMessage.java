@@ -158,6 +158,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                 email.setHtmlMsg(writer.toString());
             } catch (BadLocationException e) {
                 logger.warn(e);
+                email.setHtmlMsg(originalPSTMessage.getRTFBody().trim());
             }
         }
 
