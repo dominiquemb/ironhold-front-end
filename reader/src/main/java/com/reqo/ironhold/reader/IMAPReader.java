@@ -46,7 +46,6 @@ public class IMAPReader {
     @Autowired
     private MessageIndexService messageIndexService;
 
-
     private String hostname;
     private int port;
     private String username;
@@ -55,6 +54,10 @@ public class IMAPReader {
     private int batchSize;
     private boolean expunge;
     private String client;
+
+    public IMAPReader() {
+
+    }
 
     public IMAPReader(String hostname, int port, String username,
                       String password, String protocol, String client, int batchSize,
@@ -225,11 +228,16 @@ public class IMAPReader {
         }
         try {
             ApplicationContext context = new ClassPathXmlApplicationContext("readerContext.xml");
+            IMAPReader readMail = context.getBean(IMAPReader.class);
 
-            IMAPReader readMail = new IMAPReader(bean.getHostname(),
-                    bean.getPort(), bean.getUsername(), bean.getPassword(),
-                    bean.getProtocol(), bean.getClient(), bean.getBatchSize(),
-                    bean.getExpunge());
+            readMail.setHostname(bean.getHostname());
+            readMail.setPort(bean.getPort());
+            readMail.setUsername(bean.getUsername());
+            readMail.setPassword(bean.getPassword());
+            readMail.setProtocol(bean.getProtocol());
+            readMail.setClient(bean.getClient());
+            readMail.setBatchSize(bean.getBatchSize());
+            readMail.setExpunge(bean.getExpunge());
 
             // Calling processMail Function to read from IMAP Account
             try {
@@ -250,10 +258,76 @@ public class IMAPReader {
             } catch (InterruptedException e) {
                 logger.warn("Got interrupted", e);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Critical error detected, exiting", e);
             System.exit(1);
         }
 
     }
+
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public boolean isExpunge() {
+        return expunge;
+    }
+
+    public void setExpunge(boolean expunge) {
+        this.expunge = expunge;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
+
 }

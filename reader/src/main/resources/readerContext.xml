@@ -30,6 +30,8 @@
     <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
+    <!-- Ima reader bean -->
+    <bean id="imapReader" class="com.reqo.ironhold.reader.IMAPReader"/>
 
 
 </beans>
