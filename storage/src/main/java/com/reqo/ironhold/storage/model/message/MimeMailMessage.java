@@ -23,7 +23,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.EditorKit;
 import java.io.*;
 import java.security.MessageDigest;
@@ -156,7 +155,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                 Writer writer = new StringWriter();
                 kitHtml.write(writer, p.getDocument(), 0, p.getDocument().getLength());
                 email.setHtmlMsg(writer.toString());
-            } catch (BadLocationException e) {
+            } catch (Exception e) {
                 logger.warn(e);
                 email.setHtmlMsg(originalPSTMessage.getRTFBody().trim());
             }
