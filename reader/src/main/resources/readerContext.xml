@@ -10,13 +10,11 @@
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
 
     <!-- Storage beans -->
-    <bean id="keyStoreService" class="com.reqo.ironhold.storage.security.LocalKeyStoreService" scope="singleton">
-        <constructor-arg type="java.io.File" value="${data.root}data/keystore"/>
-    </bean>
-    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService"
+    <!-- Storage beans -->
+    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient"
           scope="singleton">
-        <constructor-arg type="java.io.File" value="${data.root}data"/>
-        <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
+        <constructor-arg name="host" value="${data.host}"/>
+        <constructor-arg name="port" value="${data.port}"/>
     </bean>
 
     <!-- ES beans -->
