@@ -182,11 +182,9 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
                     if (attachment.getEmbeddedPSTMessage() != null) {
                         MimeMessage embeddedMessage = MimeMailMessage.getMimeMessage(attachment.getEmbeddedPSTMessage());
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        embeddedMessage.writeTo(baos);
-                        String rawContents = baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(attachment.getEmbeddedPSTMessage().getInternetMessageId()));
+                        byte[] rawContents = getRawContents(embeddedMessage, attachment.getEmbeddedPSTMessage().getInternetMessageId());
 
-                        email.attach(new ByteArrayDataSource(rawContents.getBytes(), "message/rfc822"), embeddedMessage.getSubject() + ".eml", embeddedMessage.getSubject());
+                        email.attach(new ByteArrayDataSource(rawContents, "message/rfc822"), embeddedMessage.getSubject() + ".eml", embeddedMessage.getSubject());
                         if (email.getToAddresses().size() == 0 && email.getCcAddresses().size() == 0 && email.getBccAddresses().size() == 0) {
                             logger.warn("Found 0 recipients and embedded email message, extracting recipients from embedded message");
                             extractRecipients(email, attachment.getEmbeddedPSTMessage());
@@ -222,6 +220,14 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         email.setHostName(hostname);
         email.buildMimeMessage();
         return email.getMimeMessage();
+
+    }
+
+    private static byte[] getRawContents(MimeMessage embeddedMessage, String newId) throws IOException, MessagingException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        embeddedMessage.writeTo(baos);
+
+        return baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(newId)).getBytes();
 
     }
 
