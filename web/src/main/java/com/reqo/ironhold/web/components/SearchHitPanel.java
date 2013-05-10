@@ -33,7 +33,7 @@ public class SearchHitPanel extends Panel {
         LogMessage logMessage = new LogMessage(LogLevel.Success, item.getId(), loginUser.getName() + " previewed this message");
         metaDataIndexService.store(client, logMessage);
 
-        setWidth("600px");
+        setWidth("596px");
         layout = new VerticalLayout();
         layout.setMargin(true);
         this.setContent(layout);
