@@ -39,7 +39,7 @@ public class QueueWatcher extends FileWatcher {
         importer.setClient(getClient());
         String details = importer.processMessages();
 
-        EmailNotification.send("Finished processing pst file: " + checksumFile.getDataFileName(), details);
+        EmailNotification.sendSystemNotification("Finished processing pst file: " + checksumFile.getDataFileName(), details);
 
     }
 

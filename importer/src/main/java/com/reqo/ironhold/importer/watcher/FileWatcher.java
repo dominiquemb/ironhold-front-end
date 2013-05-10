@@ -85,7 +85,7 @@ public abstract class FileWatcher {
                         }
 
                     } catch (Exception e) {
-                        EmailNotification.send("Failed to process " + fileName,
+                        EmailNotification.sendSystemNotification("Failed to process " + fileName,
                                 e.getMessage());
                         logger.warn("Failed to process " + fileName, e);
                     }
@@ -152,7 +152,7 @@ public abstract class FileWatcher {
                     + checkSum.getCheckSumFile().toString());
         }
 
-        EmailNotification.send("Quarantining file "
+        EmailNotification.sendSystemNotification("Quarantining file "
                 + checkSum.getCheckSumFile().toString(), reason);
     }
 

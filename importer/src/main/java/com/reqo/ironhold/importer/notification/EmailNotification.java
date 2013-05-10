@@ -40,9 +40,9 @@ public class EmailNotification {
 
     }
 
-    public static void send(String subject, String body) {
+    public static void sendSystemNotification(String subject, String body) {
         if (enabled) {
-            // send the email
+            // sendSystemNotification the email
             try {
 
                 HtmlEmail email = new HtmlEmail();

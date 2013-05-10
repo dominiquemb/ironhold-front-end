@@ -33,6 +33,7 @@ public class SearchHitPanel extends Panel {
         LogMessage logMessage = new LogMessage(LogLevel.Success, item.getId(), loginUser.getName() + " previewed this message");
         metaDataIndexService.store(client, logMessage);
 
+        setWidth("600px");
         layout = new VerticalLayout();
         layout.setMargin(true);
         this.setContent(layout);
@@ -122,7 +123,7 @@ public class SearchHitPanel extends Panel {
         hl.addComponent(captionLabel);
         final Label valueLabel = new Label(value);
         valueLabel.setContentMode(ContentMode.HTML);
-        valueLabel.setWidth(null);
+        valueLabel.setWidth("560px");
         hl.addComponent(valueLabel);
         hl.setExpandRatio(valueLabel, 1.0f);
         return hl;

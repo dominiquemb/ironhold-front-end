@@ -43,7 +43,7 @@ public class IndexUtils {
             .appendHours().appendSuffix(" " + "" + "hour", " hours")
             .appendMinutes().appendSuffix(" min", " mins")
             .appendLiteral(" ago").toFormatter();
-    public static final int PREVIEW_RECIPIENT_COUNT = 3;
+    public static final int PREVIEW_RECIPIENT_COUNT = 4;
 
     public static String getFieldValue(SearchHit hit, IndexFieldEnum field) {
         return getFieldValue(hit, field, null, true);
@@ -146,9 +146,11 @@ public class IndexUtils {
             if (name == null || name.equals("unknown")) {
                 name = StringUtils.EMPTY;
             }
-
+                                           /*
             return String.format("%s %s", name,
-                    showAddress((String) name, (String) address));
+                    showAddress((String) name, (String) address));*/
+            return String.format("%s ", name);
+
         } else {
 
             StringBuilder result = new StringBuilder();
@@ -163,9 +165,12 @@ public class IndexUtils {
                 if (name == null || name.equals("unknown")) {
                     name = StringUtils.EMPTY;
                 }
-                result.append(String.format("%s%s %s", leadingComma,
+/*                result.append(String.format("%s%s %s", leadingComma,
                         name,
-                        showAddress((String) name, addressesArray.get(i))));
+                        showAddress((String) name, addressesArray.get(i))));*/
+                result.append(String.format("%s%s ", leadingComma,
+                        name));
+
             }
 
             if (preview && namesArray.size() > PREVIEW_RECIPIENT_COUNT) {

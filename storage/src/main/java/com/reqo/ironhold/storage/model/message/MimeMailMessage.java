@@ -224,11 +224,12 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     }
 
     private static byte[] getRawContents(MimeMessage embeddedMessage, String newId) throws IOException, MessagingException {
+        embeddedMessage.setHeader("Message-ID", newId);
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         embeddedMessage.writeTo(baos);
 
-        return baos.toString().replaceFirst(embeddedMessage.getMessageID(), Matcher.quoteReplacement(newId)).getBytes();
-
+        return baos.toByteArray();
     }
 
     private static void extractRecipients(HtmlEmail email, PSTMessage message) throws PSTException, IOException, EmailException {

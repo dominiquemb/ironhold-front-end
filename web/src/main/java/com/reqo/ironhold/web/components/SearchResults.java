@@ -598,6 +598,7 @@ public class SearchResults extends HorizontalLayout {
         leftPane.setExpandRatio(fileExtFacetPanel, 1);
 
         leftPane.setWidth("200px");
+        middlePane.setWidth("600px");
         middlePane.addComponent(resultLabel);
         middlePane.addComponent(messageList);
 
@@ -613,7 +614,6 @@ public class SearchResults extends HorizontalLayout {
         this.addComponent(leftPane);
         this.addComponent(middlePane);
         this.addComponent(rightPane);
-        this.setExpandRatio(middlePane, 1);
         this.setExpandRatio(rightPane, 1);
 
     }

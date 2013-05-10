@@ -10,16 +10,17 @@ import org.kohsuke.args4j.CmdLineParser;
 import java.io.File;
 
 public class InboundWatcher extends FileWatcher {
-	static {
-		System.setProperty("jobname", InboundWatcher.class.getSimpleName());
-	}
+    static {
+        System.setProperty("jobname", InboundWatcher.class.getSimpleName());
+    }
+
     private static Logger logger = Logger.getLogger(InboundWatcher.class);
 
 
     @Override
     protected void processFile(File dataFile, MD5CheckSum checksumFile) throws Exception {
         logger.info("Queuing valid file " + dataFile.toString());
-        EmailNotification.send("Queuing pst file: " + checksumFile.getDataFileName(),"File size: " + FileUtils.byteCountToDisplaySize(checksumFile.getDataFile().length()));
+        EmailNotification.sendSystemNotification("Queuing pst file: " + checksumFile.getDataFileName(), "File size: " + FileUtils.byteCountToDisplaySize(checksumFile.getDataFile().length()));
     }
 
     public static void main(String[] args) {
@@ -47,7 +48,6 @@ public class InboundWatcher extends FileWatcher {
             System.exit(0);
         }
     }
-
 
 
 }
