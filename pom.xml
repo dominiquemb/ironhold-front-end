@@ -119,13 +119,6 @@
             <systemPath>${user.dir}/lib/jcharset.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>jpst</groupId>
-            <artifactId>jost</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${user.dir}/lib/jpst-1.0.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>1.3</version>
