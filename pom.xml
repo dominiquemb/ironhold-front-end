@@ -119,6 +119,13 @@
             <systemPath>${user.dir}/lib/jcharset.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>jpst</groupId>
+            <artifactId>jost</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${user.dir}/lib/jpst-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>1.3</version>
@@ -285,11 +292,11 @@
         <profile>
             <id>108</id>
             <properties>
-                <data.host>ih108db001</data.host>
+                <data.host>ih108db002</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
                 <keystore.root>/data/keystore</keystore.root>
-                <elasticsearch.hosts>ih108es001:9300,ih108es002:9300</elasticsearch.hosts>
+                <elasticsearch.hosts>ih108es003:9300,ih108es004:9300</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
