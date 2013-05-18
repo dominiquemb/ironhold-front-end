@@ -61,7 +61,7 @@ public class EmailPreviewPanel extends TabSheet {
         metaDataIndexService.store(client, logMessage);
         if (!tabsConfigured) {
             this.addTab(textView, "Text");
-            this.addTab(htmlView, "Graphical");
+            this.addTab(htmlView, "HTML");
             this.addTab(sourceView, "Source");
             this.addTab(auditView, "Audit");
             tabsConfigured = true;

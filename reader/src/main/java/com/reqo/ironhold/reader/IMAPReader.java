@@ -26,6 +26,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 
 public class IMAPReader {
     static {
@@ -89,13 +90,18 @@ public class IMAPReader {
         final IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
 
         try {
+            Properties props = System.getProperties();
+            props.setProperty("mail.imaps.ssl.trust", hostname);
+            props.setProperty("mail.imaps.connectionpoolsize", "10");
+
             logger.info("Journal IMAP Reader started");
-            session = Session.getDefaultInstance(System.getProperties(), null);
+            session = Session.getDefaultInstance(props, null);
 
             logger.info("Getting the session for accessing email.");
             store = session.getStore(protocol);
 
             store.connect(hostname, port, username, password);
+
 
             logger.info("Connection established with IMAP server.");
 
@@ -112,6 +118,12 @@ public class IMAPReader {
 
             // Retrieve the messages
             final Message[] messages = folder.getMessages();
+            FetchProfile fp = new FetchProfile();
+            fp.add(FetchProfile.Item.ENVELOPE);
+            fp.add(FetchProfile.Item.FLAGS);
+            fp.add(FetchProfile.Item.CONTENT_INFO);
+            fp.add("X-mailer");
+            folder.fetch(messages, fp);
 
             logger.info("Found " + messages.length + " messages");
 
