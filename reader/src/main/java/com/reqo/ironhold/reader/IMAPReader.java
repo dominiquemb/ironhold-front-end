@@ -132,7 +132,6 @@ public class IMAPReader {
         inbox.fetch(messages, fp);
         int index = 0;
         int nbMessages = messages.length;
-        final int maxDoc = 5000;
         final long maxSize = 100000000; // 100Mo
 
         // Message numbers limit to fetch
@@ -147,7 +146,7 @@ public class IMAPReader {
             // list
             boolean notend = true;
             // Until we reach one of the limits
-            while (docs < maxDoc && totalSize < maxSize && noskip && notend) {
+            while (docs < batchSize && totalSize < maxSize && noskip && notend) {
                 docs++;
                 totalSize += messages[index].getSize();
                 index++;
