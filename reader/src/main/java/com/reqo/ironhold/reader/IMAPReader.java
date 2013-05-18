@@ -92,7 +92,6 @@ public class IMAPReader {
         try {
             Properties props = System.getProperties();
             props.setProperty("mail.imaps.ssl.trust", hostname);
-            props.setProperty("mail.imaps.connectionpoolsize", "10");
 
             logger.info("Journal IMAP Reader started");
             session = Session.getDefaultInstance(System.getProperties(), null);
@@ -118,10 +117,6 @@ public class IMAPReader {
 
             // Retrieve the messages
             final Message[] messages = folder.getMessages();
-            FetchProfile fp = new FetchProfile();
-            fp.add(FetchProfile.Item.ENVELOPE);
-            fp.add(FetchProfile.Item.FLAGS);
-            folder.fetch(messages, fp);
 
             logger.info("Found " + messages.length + " messages");
 
