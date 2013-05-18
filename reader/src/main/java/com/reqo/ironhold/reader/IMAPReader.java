@@ -4,15 +4,9 @@ import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.storage.model.log.LogLevel;
-import com.reqo.ironhold.storage.model.log.LogMessage;
-import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
-import com.reqo.ironhold.storage.model.search.IndexFailure;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
-import com.reqo.ironhold.storage.security.CheckSumHelper;
-import org.apache.commons.io.FileUtils;
+import com.sun.mail.imap.IMAPFolder;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -21,9 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.mail.*;
-import javax.mail.Flags.Flag;
-import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
@@ -116,105 +107,11 @@ public class IMAPReader {
             // Reading the Email Index in Read / Write Mode
             folder.open(Folder.READ_WRITE);
 
-            // Retrieve the messages
-            final Message[] messages = folder.getMessages();
-            FetchProfile fp = new FetchProfile();
-            fp.add(FetchProfile.Item.ENVELOPE);
-            fp.add(FetchProfile.Item.FLAGS);
-            fp.add(FetchProfile.Item.CONTENT_INFO);
-            fp.add("X-mailer");
-            folder.fetch(messages, fp);
-
-            logger.info("Found " + messages.length + " messages");
-
-            // Loop over all of the messages
-
-            for (messageNumber = 0; messageNumber < Math.min(batchSize,
-                    messages.length); messageNumber++) {
-                logger.info("Starting to process message " + messageNumber);
-                MimeMailMessage mailMessage = null;
-                String messageId = null;
-                try {
-                    final int currentMessageNumber = messageNumber;
-                    // Retrieve the next message to be read
-                    final Message message = messages[currentMessageNumber];
-                    if (!message.getFlags().contains(Flag.DELETED)) {
-                        mailMessage = new MimeMailMessage();
-
-                        source.setLoadTimestamp(new Date());
-                        mailMessage.loadMimeMessage((MimeMessage) message,
-                                false);
-
-
-                        messageId = mailMessage.getMessageId();
-
-                        if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
-                            logger.warn("Found duplicate " + messageId);
-                            metaData.incrementDuplicates();
-                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
-
-                        } else {
-                            long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
-                            metaDataIndexService.store(client, source);
-
-                            metaData.incrementBatchSize(storedSize);
-
-                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
-
-                            logger.info("Stored journaled message["
-                                    + currentMessageNumber
-                                    + "] "
-                                    + mailMessage.getMessageId()
-                                    + " "
-                                    + FileUtils
-                                    .byteCountToDisplaySize(mailMessage
-                                            .getSize()));
-
-                            metaData.updateSizeStatistics(mailMessage
-                                    .getRawContents().length(), storedSize);
-
-                            try {
-                                messageIndexService.store(client, new IndexedMailMessage(mailMessage));
-                            } catch (Exception e) {
-                                logger.error("Failed to index message " + mailMessage.getMessageId(), e);
-                                metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
-                            }
-
-                        }
-
-                        metaData.incrementAttachmentStatistics(mailMessage
-                                .isHasAttachments());
-                        if (expunge) {
-                            message.setFlag(Flag.DELETED, true);
-
-                        }
-                        metaData.incrementMessages();
-                    } else {
-                        logger.info("Skipping message that was marked deleted ["
-                                + messageNumber + "]");
-                    }
-                } catch (AuthenticationFailedException | FolderClosedException | FolderNotFoundException | ReadOnlyFolderException | StoreClosedException e) {
-                    logger.error("Not able to process the mail reading.", e);
-                    System.exit(1);
-                } catch (Exception e) {
-                    metaData.incrementFailures();
-                    if (mailMessage != null) {
-                        File f = new File(mailMessage.getMessageId() + ".eml");
-                        if (!f.exists()) {
-                            FileUtils.writeStringToFile(f,
-                                    mailMessage.getRawContents());
-                        }
-
-                        logger.error("Failed to process message " + mailMessage.getMessageId(), e);
-                    } else {
-                        logger.error("Failed to process message", e);
-                    }
-                }
-
-            }
+            efficientGetContents((IMAPFolder) folder, folder.getMessages(), source, metaData);
 
             metaData.setFinished(new Date());
             miscIndexService.store(client, metaData);
+
             // Close the folder
             folder.close(true);
 
@@ -225,6 +122,51 @@ public class IMAPReader {
         }
 
         return messageNumber;
+    }
+
+    public int efficientGetContents(IMAPFolder inbox, Message[] messages, IMAPMessageSource source, IMAPBatchMeta metaData)
+            throws MessagingException, IOException {
+        FetchProfile fp = new FetchProfile();
+        fp.add(FetchProfile.Item.FLAGS);
+        fp.add(FetchProfile.Item.ENVELOPE);
+        inbox.fetch(messages, fp);
+        int index = 0;
+        int nbMessages = messages.length;
+        final int maxDoc = 5000;
+        final long maxSize = 100000000; // 100Mo
+
+        // Message numbers limit to fetch
+        int start;
+        int end;
+
+        while (index < nbMessages) {
+            start = messages[index].getMessageNumber();
+            int docs = 0;
+            int totalSize = 0;
+            boolean noskip = true; // There are no jumps in the message numbers
+            // list
+            boolean notend = true;
+            // Until we reach one of the limits
+            while (docs < maxDoc && totalSize < maxSize && noskip && notend) {
+                docs++;
+                totalSize += messages[index].getSize();
+                index++;
+                if (notend = (index < nbMessages)) {
+                    noskip = (messages[index - 1].getMessageNumber() + 1 == messages[index]
+                            .getMessageNumber());
+                }
+            }
+
+            end = messages[index - 1].getMessageNumber();
+            inbox.doCommand(new DownloadCommand(mimeMailMessageStorageService, metaDataIndexService, messageIndexService, miscIndexService, client, source, metaData, expunge, start, end));
+
+            System.out.println("Fetching contents for " + start + ":" + end);
+            System.out.println("Size fetched = " + (totalSize / 1000000)
+                    + " Mo");
+
+        }
+
+        return nbMessages;
     }
 
     // Main Function for The readEmail Class
