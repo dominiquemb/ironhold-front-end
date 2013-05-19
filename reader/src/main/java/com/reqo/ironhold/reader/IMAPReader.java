@@ -382,5 +382,9 @@ public class IMAPReader {
                 }
             }
         }
+
+        public boolean lastSuccess() {
+            return lastSuccess;
+        }
     }
 }
