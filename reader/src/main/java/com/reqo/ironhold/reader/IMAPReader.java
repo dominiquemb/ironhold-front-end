@@ -57,6 +57,7 @@ public class IMAPReader {
     private int batchSize;
     private boolean expunge;
     private String client;
+    private int timeout;
 
     public IMAPReader() {
 
@@ -86,7 +87,7 @@ public class IMAPReader {
         } else {
             imap = new IMAPClient();
         }
-        imap.setDefaultTimeout(60000);
+        imap.setDefaultTimeout(timeout);
 
         // suppress login details
         IndexCommandListener indexCommandListener = new IndexCommandListener();
@@ -102,7 +103,7 @@ public class IMAPReader {
             }
 
             logger.info("Journal IMAP Reader started");
-            imap.setSoTimeout(6000);
+            imap.setSoTimeout(timeout);
 
             imap.capability();
 
@@ -157,7 +158,7 @@ public class IMAPReader {
             readMail.setClient(bean.getClient());
             readMail.setBatchSize(bean.getBatchSize());
             readMail.setExpunge(bean.getExpunge());
-
+            readMail.setTimeout(bean.getTimeout());
             // Calling processMail Function to read from IMAP Account
             try {
                 while (true) {
@@ -248,6 +249,12 @@ public class IMAPReader {
     public void setClient(String client) {
         this.client = client;
     }
+
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
 
     private class IndexCommandListener implements ProtocolCommandListener {
         private final IMAPMessageSource source;
