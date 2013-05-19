@@ -13,6 +13,11 @@ import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.net.ProtocolCommandEvent;
+import org.apache.commons.net.ProtocolCommandListener;
+import org.apache.commons.net.imap.IMAPClient;
+import org.apache.commons.net.imap.IMAPSClient;
+import org.apache.commons.net.util.TrustManagerUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -21,12 +26,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.mail.*;
-import javax.mail.Flags.Flag;
-import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Properties;
 
 public class IMAPReader {
     static {
@@ -74,150 +76,62 @@ public class IMAPReader {
     }
 
     public int processMail() throws InterruptedException {
-        Session session = null;
-        Store store = null;
-        Folder folder = null;
-        int messageNumber = 0;
-        final IMAPMessageSource source = new IMAPMessageSource();
+        int count = 1;
 
-        source.setImapPort(port);
-        source.setUsername(username);
-        source.setImapSource(hostname);
-        source.setImapPort(port);
-        source.setProtocol(protocol);
+        IMAPClient imap;
 
+        if (protocol.equals("imaps")) {
+            imap = new IMAPSClient("ssl", true); // implicit
+            ((IMAPSClient) imap).setTrustManager(TrustManagerUtils.getValidateServerCertificateTrustManager());
+        } else {
+            imap = new IMAPClient();
+        }
+        imap.setDefaultTimeout(60000);
 
-        final IMAPBatchMeta metaData = new IMAPBatchMeta(source, new Date());
+        // suppress login details
+        IndexCommandListener indexCommandListener = new IndexCommandListener();
+        imap.addProtocolCommandListener(indexCommandListener);
 
         try {
-            Properties props = System.getProperties();
-            props.setProperty("mail.imaps.ssl.trust", hostname);
+            imap.connect(hostname, port);
+
+            if (!imap.login(username, password)) {
+                System.err.println("Could not login to server. Check password.");
+                imap.disconnect();
+                System.exit(3);
+            }
 
             logger.info("Journal IMAP Reader started");
-            session = Session.getDefaultInstance(System.getProperties(), null);
+            imap.setSoTimeout(6000);
 
-            logger.info("Getting the session for accessing email.");
-            store = session.getStore(protocol);
+            imap.capability();
 
-            store.connect(hostname, port, username, password);
-
-
-            logger.info("Connection established with IMAP server.");
-
-            // Get a handle on the default folder
-            folder = store.getDefaultFolder();
 
             logger.info("Getting the Inbox folder.");
 
-            // Retrieve the "Inbox"
-            folder = folder.getFolder("inbox");
+            imap.select("inbox");
 
-            // Reading the Email Index in Read / Write Mode
-            folder.open(Folder.READ_WRITE);
-
-            // Retrieve the messages
-            final Message[] messages = folder.getMessages();
-
-            logger.info("Found " + messages.length + " messages");
-
-            // Loop over all of the messages
-
-            for (messageNumber = 0; messageNumber < Math.min(batchSize,
-                    messages.length); messageNumber++) {
-                logger.info("Starting to process message " + messageNumber);
-                MimeMailMessage mailMessage = null;
-                String messageId = null;
-                try {
-                    final int currentMessageNumber = messageNumber;
-                    // Retrieve the next message to be read
-                    final Message message = messages[currentMessageNumber];
-                    if (!message.getFlags().contains(Flag.DELETED)) {
-                        mailMessage = new MimeMailMessage();
-
-                        source.setLoadTimestamp(new Date());
-                        mailMessage.loadMimeMessage((MimeMessage) message,
-                                false);
-
-
-                        messageId = mailMessage.getMessageId();
-
-                        if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
-                            logger.warn("Found duplicate " + messageId);
-                            metaData.incrementDuplicates();
-                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
-
-                        } else {
-                            long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
-                            metaDataIndexService.store(client, source);
-
-                            metaData.incrementBatchSize(storedSize);
-
-                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
-
-                            logger.info("Stored journaled message["
-                                    + currentMessageNumber
-                                    + "] "
-                                    + mailMessage.getMessageId()
-                                    + " "
-                                    + FileUtils
-                                    .byteCountToDisplaySize(mailMessage
-                                            .getSize()));
-
-                            metaData.updateSizeStatistics(mailMessage
-                                    .getRawContents().length(), storedSize);
-
-                            try {
-                                messageIndexService.store(client, new IndexedMailMessage(mailMessage));
-                            } catch (Exception e) {
-                                logger.error("Failed to index message " + mailMessage.getMessageId(), e);
-                                metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
-                            }
-
-                        }
-
-                        metaData.incrementAttachmentStatistics(mailMessage
-                                .isHasAttachments());
-                        if (expunge) {
-                            message.setFlag(Flag.DELETED, true);
-
-                        }
-                        metaData.incrementMessages();
-                    } else {
-                        logger.info("Skipping message that was marked deleted ["
-                                + messageNumber + "]");
-                    }
-                } catch (AuthenticationFailedException | FolderClosedException | FolderNotFoundException | ReadOnlyFolderException | StoreClosedException e) {
-                    logger.error("Not able to process the mail reading.", e);
-                    System.exit(1);
-                } catch (Exception e) {
-                    metaData.incrementFailures();
-                    if (mailMessage != null) {
-                        File f = new File(mailMessage.getMessageId() + ".eml");
-                        if (!f.exists()) {
-                            FileUtils.writeStringToFile(f,
-                                    mailMessage.getRawContents());
-                        }
-
-                        logger.error("Failed to process message " + mailMessage.getMessageId(), e);
-                    } else {
-                        logger.error("Failed to process message", e);
-                    }
+            while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
+                if (expunge) {
+                    imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
                 }
-
+                count++;
             }
 
-            metaData.setFinished(new Date());
-            miscIndexService.store(client, metaData);
-            // Close the folder
-            folder.close(true);
 
-            store.close();
+            if (expunge) {
+                imap.expunge();
+            }
+            indexCommandListener.commit();
+
+            imap.logout();
+            imap.disconnect();
         } catch (Exception e) {
             logger.error("Not able to process the mail reading.", e);
             System.exit(1);
         }
 
-        return messageNumber;
+        return count;
     }
 
     // Main Function for The readEmail Class
@@ -251,7 +165,7 @@ public class IMAPReader {
                     long started = System.currentTimeMillis();
                     int number = readMail.processMail();
                     long finished = System.currentTimeMillis();
-                    logger.info("Processed batch with " + number
+                    logger.info("Processed batch with " + (number - 1)
                             + " messages in " + (finished - started) + "ms");
                     if (number < bean.getBatchSize()) {
 
@@ -335,4 +249,117 @@ public class IMAPReader {
         this.client = client;
     }
 
+    private class IndexCommandListener implements ProtocolCommandListener {
+        private final IMAPMessageSource source;
+        private final IMAPBatchMeta metaData;
+        private String currentCommand;
+        private String currentResponse;
+
+        public IndexCommandListener() {
+            source = new IMAPMessageSource();
+            source.setImapPort(port);
+            source.setUsername(username);
+            source.setImapSource(hostname);
+            source.setImapPort(port);
+            source.setProtocol(protocol);
+
+
+            metaData = new IMAPBatchMeta(source, new Date());
+
+
+        }
+
+        public void commit() throws Exception {
+            metaData.setFinished(new Date());
+            miscIndexService.store(client, metaData);
+        }
+
+        public boolean nothingFetched() {
+            return currentCommand.equals("FETCH") && !currentResponse.contains("FETCH");
+        }
+
+        @Override
+        public void protocolCommandSent(ProtocolCommandEvent event) {
+            logger.info(event.getCommand());
+            currentCommand = event.getCommand();
+        }
+
+        @Override
+        public void protocolReplyReceived(ProtocolCommandEvent event) {
+            int firstLineMarker = event.getMessage().indexOf("\n");
+            currentResponse = event.getMessage().substring(0, firstLineMarker);
+            logger.info(currentResponse);
+            if (currentResponse.contains("FETCH")) {
+
+                String messageId = null;
+                MimeMailMessage mailMessage = null;
+                try {
+                    mailMessage = new MimeMailMessage();
+                    mailMessage.loadMimeMessageFromSource(event.getMessage().substring(firstLineMarker + 1));
+
+                    source.setLoadTimestamp(new Date());
+
+                    messageId = mailMessage.getMessageId();
+
+                    if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
+                        logger.warn("Found duplicate " + messageId);
+                        metaData.incrementDuplicates();
+                        metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
+
+                    } else {
+                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+                        metaDataIndexService.store(client, source);
+
+                        metaData.incrementBatchSize(storedSize);
+
+                        metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
+
+                        logger.info("Stored journaled message "
+                                + mailMessage.getMessageId()
+                                + " "
+                                + FileUtils
+                                .byteCountToDisplaySize(mailMessage
+                                        .getSize()));
+
+                        metaData.updateSizeStatistics(mailMessage
+                                .getRawContents().length(), storedSize);
+
+                        try {
+                            messageIndexService.store(client, new IndexedMailMessage(mailMessage));
+                        } catch (Exception e) {
+                            logger.error("Failed to index message " + mailMessage.getMessageId(), e);
+                            metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+                        }
+
+                    }
+
+                    metaData.incrementAttachmentStatistics(mailMessage
+                            .isHasAttachments());
+                    metaData.incrementMessages();
+
+                } catch (AuthenticationFailedException | FolderClosedException | FolderNotFoundException | ReadOnlyFolderException | StoreClosedException e) {
+                    logger.error("Not able to process the mail reading.", e);
+                    System.exit(1);
+                } catch (Exception e) {
+                    try {
+                        metaData.incrementFailures();
+                        if (mailMessage != null) {
+                            File f = new File(mailMessage.getMessageId() + ".eml");
+                            if (!f.exists()) {
+                                FileUtils.writeStringToFile(f,
+                                        mailMessage.getRawContents());
+                            }
+
+                            logger.error("Failed to process message " + mailMessage.getMessageId(), e);
+                        } else {
+                            logger.error("Failed to process message", e);
+                        }
+                    } catch (Exception e1) {
+                        logger.error("Critical error", e1);
+                        System.exit(1);
+                    }
+                }
+            }
+        }
+    }
 }
