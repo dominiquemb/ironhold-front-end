@@ -120,7 +120,8 @@ public class IMAPReader {
 
             while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
                 if (expunge) {
-                    imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
+                    if (indexCommandListener.lastSuccess())
+                        imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
                 }
                 count++;
             }
@@ -269,6 +270,7 @@ public class IMAPReader {
         private String currentResponse;
         private long started;
         private long finished;
+        private boolean lastSuccess;
 
         public IndexCommandListener() {
             source = new IMAPMessageSource();
@@ -298,6 +300,7 @@ public class IMAPReader {
             logger.info("< " + event.getCommand());
             currentCommand = event.getCommand();
             started = System.currentTimeMillis();
+            lastSuccess = false;
         }
 
         @Override
@@ -354,6 +357,7 @@ public class IMAPReader {
                             .isHasAttachments());
                     metaData.incrementMessages();
 
+                    lastSuccess = true;
                 } catch (AuthenticationFailedException | FolderClosedException | FolderNotFoundException | ReadOnlyFolderException | StoreClosedException e) {
                     logger.error("Not able to process the mail reading.", e);
                     System.exit(1);
