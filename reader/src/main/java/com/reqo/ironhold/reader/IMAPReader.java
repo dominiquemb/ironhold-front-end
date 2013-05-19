@@ -266,6 +266,8 @@ public class IMAPReader {
         private final IMAPBatchMeta metaData;
         private String currentCommand;
         private String currentResponse;
+        private long started;
+        private long finished;
 
         public IndexCommandListener() {
             source = new IMAPMessageSource();
@@ -292,15 +294,17 @@ public class IMAPReader {
 
         @Override
         public void protocolCommandSent(ProtocolCommandEvent event) {
-            logger.info(event.getCommand());
+            logger.info("< " + event.getCommand());
             currentCommand = event.getCommand();
+            started = System.currentTimeMillis();
         }
 
         @Override
         public void protocolReplyReceived(ProtocolCommandEvent event) {
+            finished = System.currentTimeMillis();
             int firstLineMarker = event.getMessage().indexOf("\n");
-            currentResponse = event.getMessage().substring(0, firstLineMarker);
-            logger.info(currentResponse);
+            currentResponse = event.getMessage().substring(0, firstLineMarker - 1);
+            logger.info("> " + currentResponse + " (" + (finished - started) + "ms)");
             if (currentResponse.contains("FETCH")) {
 
                 String messageId = null;
