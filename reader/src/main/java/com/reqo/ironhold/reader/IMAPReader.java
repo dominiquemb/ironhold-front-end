@@ -110,7 +110,12 @@ public class IMAPReader {
 
             logger.info("Getting the Inbox folder.");
 
+
+            if (expunge) {
+                imap.expunge();
+            }
             imap.select("inbox");
+
 
             while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
                 if (expunge) {
