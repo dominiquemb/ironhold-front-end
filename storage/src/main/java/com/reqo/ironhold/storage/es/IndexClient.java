@@ -193,6 +193,7 @@ public class IndexClient {
 
     public void addTypeMapping(String indexName, IndexedObjectType type, String mappingsFile) throws Exception {
         String mappingFileContents = readJsonDefinition(mappingsFile);
+        logger.info("Applying mapping for " + indexName + " of type " + type.getValue());
         PutMappingResponse response2 = esClient.admin().indices()
                 .preparePutMapping(indexName)
                 .setType(type.getValue())
