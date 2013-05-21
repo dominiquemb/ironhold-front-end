@@ -3,6 +3,7 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
+import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
@@ -29,6 +30,7 @@ public class AuditView extends AbstractEmailView {
     public static final String FILE_SIZE = "PST File Size";
     public static final String MESSAGE = "Entry";
     public static final String LEVEL = "Level";
+    public static final String USER = "User";
     private static final String IMAP_HOST = "IMAP Host";
     private static final String IMAP_USER = "IMAP Mailbox";
     private final VerticalLayout layout;
@@ -56,7 +58,29 @@ public class AuditView extends AbstractEmailView {
         mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId()));
         List<MessageSource> messageSources = metaDataIndexService.getSources(client, item.getId());
         loadIMAPSources(messageSources);
+        loadPSTSources(messageSources);
 
+        final Table auditTable = new Table("Audit Log");
+        auditTable.setSizeFull();
+        auditTable.setColumnWidth(TIMESTAMP, 150);
+        auditTable.setColumnExpandRatio(MESSAGE, 1);
+
+        IndexedContainer auditLogs = new IndexedContainer();
+        auditLogs.addContainerProperty(TIMESTAMP, Date.class, "");
+        auditLogs.addContainerProperty(MESSAGE, String.class, "");
+
+        int logCount = 0;
+        for (AuditLogMessage logMessage : metaDataIndexService.getAuditLogMessages(client, item.getId())) {
+            Item logItem = auditLogs.addItem(logCount);
+            logCount++;
+            logItem.getItemProperty(TIMESTAMP).setValue(logMessage.getTimestamp());
+            logItem.getItemProperty(MESSAGE).setValue(String.format(logMessage.getAction().getValue(), logMessage.getLoginUser().getName(), logMessage.getContext()));
+        }
+
+        auditTable.setContainerDataSource(auditLogs);
+
+
+        layout.addComponent(auditTable);
 
         final Table logTable = new Table("Message Log");
         logTable.setSizeFull();
@@ -71,7 +95,7 @@ public class AuditView extends AbstractEmailView {
         logs.addContainerProperty(LEVEL, String.class, "");
         logs.addContainerProperty(MESSAGE, String.class, "");
 
-        int logCount = 0;
+        logCount = 0;
         for (LogMessage logMessage : metaDataIndexService.getLogMessages(client, item.getId())) {
             Item logItem = logs.addItem(logCount);
             logCount++;
@@ -89,7 +113,7 @@ public class AuditView extends AbstractEmailView {
 
     }
 
-    private void loadPSTSources(MessageSource[] messageSources) {
+    private void loadPSTSources(List<MessageSource> messageSources) {
 
         final Table sourcesTable = new Table("Message Source");
         sourcesTable.setSizeFull();
@@ -129,13 +153,12 @@ public class AuditView extends AbstractEmailView {
         sourcesTable.setContainerDataSource(sources);
         sourcesTable.setHeight("100px");
 
-
-        layout.addComponent(sourcesTable);
-
+        if (sourceCount > 0) {
+            layout.addComponent(sourcesTable);
+        }
     }
 
     private void loadIMAPSources(List<MessageSource> messageSources) {
-
         final Table sourcesTable = new Table("Message Source");
         sourcesTable.setSizeFull();
         sourcesTable.setColumnWidth(TIMESTAMP, 150);
@@ -170,8 +193,9 @@ public class AuditView extends AbstractEmailView {
         sourcesTable.setHeight("100px");
 
 
-        layout.addComponent(sourcesTable);
-
+        if (sourceCount > 0) {
+            layout.addComponent(sourcesTable);
+        }
     }
 
 }

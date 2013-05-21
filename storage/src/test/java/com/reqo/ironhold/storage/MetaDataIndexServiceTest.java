@@ -4,9 +4,11 @@ import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
 import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.model.AuditLogMessageTestModel;
 import com.reqo.ironhold.storage.model.LogMessageTestModel;
 import com.reqo.ironhold.storage.model.MessageSourceTestModel;
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
+import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
@@ -165,6 +167,54 @@ public class MetaDataIndexServiceTest {
 
         List<LogMessage> storedMessages = metaDataIndexService
                 .getLogMessages(INDEX_PREFIX, messageId);
+
+
+        Assert.assertEquals(10, storedMessages.size());
+
+
+    }
+
+    @Test
+    public void testAuditLog() throws Exception {
+        AuditLogMessage inputMessage = AuditLogMessageTestModel.generate();
+
+        IndexResponse response = metaDataIndexService.store(INDEX_PREFIX, inputMessage);
+
+        Assert.assertTrue(indexClient.itemExists(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition(), IndexedObjectType.AUDIT_LOG_MESSAGE, response.getId()));
+
+        GetResponse response2 = indexClient.getById(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition(), IndexedObjectType.AUDIT_LOG_MESSAGE, response.getId());
+
+        Assert.assertEquals(inputMessage.serialize(), response2.getSourceAsString());
+
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition());
+
+        List<AuditLogMessage> storedMessages = metaDataIndexService
+                .getAuditLogMessages(INDEX_PREFIX, inputMessage.getMessageId());
+
+        Assert.assertEquals(1, storedMessages.size());
+        AuditLogMessage storedMessage = storedMessages.get(0);
+        Assert.assertEquals(inputMessage.serialize(),
+                storedMessage.serialize());
+    }
+
+    @Test
+    public void testGetAuditLogMessages() throws Exception {
+        String messageId = UUID.randomUUID().toString();
+        List<AuditLogMessage> inputMessages = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+
+            AuditLogMessage inputMessage = AuditLogMessageTestModel.generate();
+            inputMessage.setMessageId(messageId);
+
+            metaDataIndexService.store(INDEX_PREFIX, inputMessage);
+
+            indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + inputMessage.getPartition());
+
+            inputMessages.add(inputMessage);
+        }
+
+        List<AuditLogMessage> storedMessages = metaDataIndexService
+                .getAuditLogMessages(INDEX_PREFIX, messageId);
 
 
         Assert.assertEquals(10, storedMessages.size());

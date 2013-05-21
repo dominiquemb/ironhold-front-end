@@ -24,6 +24,7 @@ import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -133,6 +134,16 @@ public class IndexClient {
         return request.execute().get();
     }
 
+    public SearchResponse getByFieldSorted(String indexName, IndexedObjectType type, String field, String value, String sortField, SortOrder order) throws ExecutionException, InterruptedException {
+        SearchRequestBuilder request = esClient.prepareSearch(indexName)
+                .setTypes(type.getValue())
+                .addField("_source")
+                .setFilter(FilterBuilders.termFilter(field, value))
+                .addSort(sortField, order);
+
+        logger.debug(request.toString());
+        return request.execute().get();
+    }
 
     public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) throws ExecutionException, InterruptedException {
         SearchRequestBuilder request = esClient.prepareSearch(indexName)

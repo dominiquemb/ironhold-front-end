@@ -58,6 +58,11 @@ public abstract class AbstractIndexService {
                     client.addTypeMapping(indexName, type, mappings.get(type));
                 }
 
+            } else {
+                for (IndexedObjectType type : mappings.keySet()) {
+                    client.addTypeMapping(indexName, type, mappings.get(type));
+                }
+
             }
 
             this.indexes.add(partition);

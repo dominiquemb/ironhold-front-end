@@ -1,8 +1,8 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MetaDataIndexService;
-import com.reqo.ironhold.storage.model.log.LogLevel;
-import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.log.AuditActionEnum;
+import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.ui.TabSheet;
@@ -57,8 +57,8 @@ public class EmailPreviewPanel extends TabSheet {
         MetaDataIndexService metaDataIndexService = ((IronholdApplication) this.getUI()).getMetaDataIndexService();
         final String client = (String) getSession().getAttribute("client");
         final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
-        LogMessage logMessage = new LogMessage(LogLevel.Success, item.getId(), loginUser.getName() + " viewed this message");
-        metaDataIndexService.store(client, logMessage);
+        AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.VIEW, item.getId(), criteria);
+        metaDataIndexService.store(client, auditLogMessage);
         if (!tabsConfigured) {
             this.addTab(textView, "Text");
             this.addTab(htmlView, "HTML");

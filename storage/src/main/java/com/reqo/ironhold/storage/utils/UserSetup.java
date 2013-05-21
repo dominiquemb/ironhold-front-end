@@ -3,6 +3,7 @@ package com.reqo.ironhold.storage.utils;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.message.Recipient;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -37,6 +38,7 @@ public class UserSetup {
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             parser.printUsage(System.err);
+            System.err.println("Admin role: " + RoleEnum.SUPER_USER.getValue());
             return;
         }
 

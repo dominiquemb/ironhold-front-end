@@ -18,7 +18,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.elasticsearch.common.Base64;
 
 import javax.mail.*;
-import javax.mail.Message.RecipientType;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -320,9 +319,9 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             }
 
             try {
-                if (mimeMessage.getRecipients(RecipientType.TO) != null) {
+                if (mimeMessage.getRecipients(Message.RecipientType.TO) != null) {
                     for (Address address : mimeMessage
-                            .getRecipients(RecipientType.TO)) {
+                            .getRecipients(Message.RecipientType.TO)) {
                         internetAddress = (InternetAddress) address;
                         addTo(new Recipient(internetAddress.getPersonal(),
                                 internetAddress.getAddress()));
@@ -336,9 +335,9 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             }
             try {
 
-                if (mimeMessage.getRecipients(RecipientType.CC) != null) {
+                if (mimeMessage.getRecipients(Message.RecipientType.CC) != null) {
                     for (Address address : mimeMessage
-                            .getRecipients(RecipientType.CC)) {
+                            .getRecipients(Message.RecipientType.CC)) {
                         internetAddress = (InternetAddress) address;
                         addCc(new Recipient(internetAddress.getPersonal(),
                                 internetAddress.getAddress()));
@@ -351,9 +350,9 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
             }
             try {
-                if (mimeMessage.getRecipients(RecipientType.BCC) != null) {
+                if (mimeMessage.getRecipients(Message.RecipientType.BCC) != null) {
                     for (Address address : mimeMessage
-                            .getRecipients(RecipientType.BCC)) {
+                            .getRecipients(Message.RecipientType.BCC)) {
                         internetAddress = (InternetAddress) address;
                         addBcc(new Recipient(internetAddress.getPersonal(),
                                 internetAddress.getAddress()));

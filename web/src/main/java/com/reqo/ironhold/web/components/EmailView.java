@@ -5,8 +5,8 @@ import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.IndexUtils;
-import com.reqo.ironhold.storage.model.log.LogLevel;
-import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.log.AuditActionEnum;
+import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
@@ -118,9 +118,8 @@ public class EmailView extends AbstractEmailView {
                                 MetaDataIndexService metaDataIndexService = ((IronholdApplication) getUI()).getMetaDataIndexService();
                                 final String client = (String) getSession().getAttribute("client");
                                 final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
-                                LogMessage logMessage = null;
-                                logMessage = new LogMessage(LogLevel.Success, item.getId(), loginUser.getName() + " downloaded " + attachment.getFileName());
-                                metaDataIndexService.store(client, logMessage);
+                                AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.DOWNLOAD, item.getId(), attachment.getFileName());
+                                metaDataIndexService.store(client, auditLogMessage);
                             } catch (Exception e) {
                                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }

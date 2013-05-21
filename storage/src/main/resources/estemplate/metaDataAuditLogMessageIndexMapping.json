@@ -1,0 +1,68 @@
+{
+    "logMessage": {
+        "properties": {
+            "timestamp": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messageId": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "host": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "action": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "context": {
+                "type": "string",
+                "term_vector": "with_positions_offsets"
+            },
+            "loginUser": {
+                 "dynamic": "true",
+                 "properties": {
+                            "lastLogin": {
+                                "type": "date",
+                                "format": "dateOptionalTime"
+                            },
+                            "created": {
+                                "type": "date",
+                                "format": "dateOptionalTime"
+                            },
+                            "username": {
+                                "type": "string",
+                                "analyzer": "keyword"
+                            },
+                            "hashedPassword": {
+                                "type": "string",
+                                "analyzer": "keyword"
+                            },
+                            "name": {
+                                "type": "string",
+                                "analyzer": "keyword"
+                            },
+                            "recipients": {
+                                "dynamic": "true",
+                                "properties": {
+                                    "address": {
+                                        "type": "string",
+                                        "analyzer": "keyword"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "analyzer": "keyword"
+                                    },
+                                    "domain": {
+                                        "type": "string",
+                                        "analyzer": "keyword"
+                                    }
+                                }
+                            }
+                        }
+             }
+        }
+    }
+}

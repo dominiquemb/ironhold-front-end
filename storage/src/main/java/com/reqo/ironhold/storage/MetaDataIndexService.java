@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,13 +31,13 @@ public class MetaDataIndexService extends AbstractIndexService {
         mappings.put(IndexedObjectType.PST_MESSAGE_SOURCE, "metaDataPSTMessageSourceIndexMapping.json");
         mappings.put(IndexedObjectType.IMAP_MESSAGE_SOURCE, "metaDataIMAPMessageSourceIndexMapping.json");
         mappings.put(IndexedObjectType.LOG_MESSAGE, "metaDataLogMessageIndexMapping.json");
+        mappings.put(IndexedObjectType.AUDIT_LOG_MESSAGE, "metaDataAuditLogMessageIndexMapping.json");
         mappings.put(IndexedObjectType.INDEX_FAILURE, "metaDataIndexFailureIndexMapping.json");
     }
 
     public MetaDataIndexService(IndexClient client) {
         super(SUFFIX, client, "metaDataIndexSettings.json", mappings);
     }
-
 
 
     public void store(String indexPrefix, IndexFailure failure) throws Exception {
@@ -92,8 +94,6 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-
-
     public IndexResponse store(String indexPrefix, LogMessage logMessage) throws Exception {
 
         createIndexIfMissing(indexPrefix, logMessage.getPartition());
@@ -106,9 +106,36 @@ public class MetaDataIndexService extends AbstractIndexService {
 
     }
 
+
+    public IndexResponse store(String indexPrefix, AuditLogMessage auditLogMessage) throws Exception {
+
+        createIndexIfMissing(indexPrefix, auditLogMessage.getPartition());
+        String indexName = getIndexName(getIndexAlias(indexPrefix), auditLogMessage.getPartition());
+
+        return client.store(
+                indexName,
+                IndexedObjectType.AUDIT_LOG_MESSAGE,
+                auditLogMessage.serialize());
+
+    }
+
+
+    public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
+        String alias = getIndexAlias(indexPrefix);
+        SearchResponse response = client.getByFieldSorted(alias, IndexedObjectType.AUDIT_LOG_MESSAGE, "messageId", messageId, "timestamp", SortOrder.DESC);
+        List<AuditLogMessage> result = new ArrayList<>();
+        for (SearchHit hit : response.getHits()) {
+            AuditLogMessage auditLogMessage = new AuditLogMessage();
+
+            result.add(auditLogMessage.deserialize(hit.getSourceAsString()));
+        }
+
+        return result;
+    }
+
     public List<LogMessage> getLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByField(alias, IndexedObjectType.LOG_MESSAGE, "messageId", messageId);
+        SearchResponse response = client.getByFieldSorted(alias, IndexedObjectType.LOG_MESSAGE, "messageId", messageId, "timestamp", SortOrder.DESC);
         List<LogMessage> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             LogMessage logMessage = new LogMessage();

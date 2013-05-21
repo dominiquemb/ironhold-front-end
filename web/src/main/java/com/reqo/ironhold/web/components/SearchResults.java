@@ -1,8 +1,11 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
+import com.reqo.ironhold.storage.model.log.AuditActionEnum;
+import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
@@ -59,7 +62,11 @@ public class SearchResults extends HorizontalLayout {
     public void setCriteria(String criteria) throws Exception {
 
         MessageIndexService messageIndexService = ((IronholdApplication) this.getUI()).getMessageIndexService();
-        LoginUser authenticatedUser = (LoginUser) this.getUI().getSession().getAttribute("loginUser");
+        MetaDataIndexService metaDataIndexService = ((IronholdApplication) this.getUI()).getMetaDataIndexService();
+        final String client = (String) getSession().getAttribute("client");
+        final LoginUser authenticatedUser = (LoginUser) this.getUI().getSession().getAttribute("loginUser");
+        AuditLogMessage auditLogMessage = new AuditLogMessage(authenticatedUser, AuditActionEnum.SEARCH, null, criteria);
+        metaDataIndexService.store(client, auditLogMessage);
         this.builder = messageIndexService.getNewBuilder(indexPrefix, authenticatedUser);
 
         long started = System.currentTimeMillis();
@@ -598,7 +605,7 @@ public class SearchResults extends HorizontalLayout {
         leftPane.setExpandRatio(fileExtFacetPanel, 1);
 
         leftPane.setWidth("200px");
-        middlePane.setWidth("600px");
+        middlePane.setWidth("620px");
         middlePane.addComponent(resultLabel);
         middlePane.addComponent(messageList);
 
