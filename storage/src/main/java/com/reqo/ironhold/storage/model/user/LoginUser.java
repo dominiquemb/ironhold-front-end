@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User: ilya
@@ -36,9 +37,11 @@ public class LoginUser {
     private List<Recipient> recipients;
     private Date lastLogin;
     private Date created;
+    private String id;
 
     public LoginUser() {
         this.created = new Date();
+        this.id = UUID.randomUUID().toString();
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
     }
@@ -65,7 +68,7 @@ public class LoginUser {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.toLowerCase();
     }
 
     public String getHashedPassword() {
@@ -106,6 +109,14 @@ public class LoginUser {
 
     public void setMainRecipient(Recipient mainRecipient) {
         this.mainRecipient = mainRecipient;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String serialize() throws IOException {

@@ -5,12 +5,14 @@ import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -20,6 +22,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.node.Node;
@@ -30,6 +33,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -125,24 +129,28 @@ public class IndexClient {
         return esClient.prepareGet(indexName, type.getValue(), id).execute().get();
     }
 
-    public SearchResponse getByField(String indexName, IndexedObjectType type, String field, String value) throws ExecutionException, InterruptedException {
+    public SearchResponse getByField(String indexName, IndexedObjectType type, Set<Pair<String, String>> criteria, String sortField, SortOrder order) throws ExecutionException, InterruptedException {
         SearchRequestBuilder request = esClient.prepareSearch(indexName)
                 .setTypes(type.getValue())
-                .addField("_source")
-                .setFilter(FilterBuilders.termFilter(field, value));
+                .addField("_source");
+
+        if (sortField != null) {
+            request.addSort(sortField, order);
+        }
+
+        AndFilterBuilder fb = FilterBuilders.andFilter();
+        for (Pair<String, String> criterion : criteria) {
+            fb.add(FilterBuilders.termFilter(criterion.getKey(), criterion.getValue()));
+        }
+
+        request.setFilter(fb);
+
         logger.debug(request.toString());
         return request.execute().get();
     }
 
-    public SearchResponse getByFieldSorted(String indexName, IndexedObjectType type, String field, String value, String sortField, SortOrder order) throws ExecutionException, InterruptedException {
-        SearchRequestBuilder request = esClient.prepareSearch(indexName)
-                .setTypes(type.getValue())
-                .addField("_source")
-                .setFilter(FilterBuilders.termFilter(field, value))
-                .addSort(sortField, order);
-
-        logger.debug(request.toString());
-        return request.execute().get();
+    public SearchResponse getByField(String indexName, IndexedObjectType type, Set<Pair<String, String>> criteria) throws ExecutionException, InterruptedException {
+        return getByField(indexName, type, criteria, null, SortOrder.DESC);
     }
 
     public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) throws ExecutionException, InterruptedException {
@@ -298,5 +306,10 @@ public class IndexClient {
 
     public Client getClient() {
         return esClient;
+    }
+
+    public long getCount(String alias, IndexedObjectType objectType) throws ExecutionException, InterruptedException {
+        CountResponse response = esClient.prepareCount(alias).setTypes(objectType.getValue()).execute().get();
+        return response.getCount();
     }
 }

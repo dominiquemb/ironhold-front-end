@@ -1,5 +1,6 @@
 package com.reqo.ironhold.reader;
 
+import com.reqo.ironhold.reader.notification.EmailNotification;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
@@ -175,10 +176,15 @@ public class IMAPReader {
                     long finished = System.currentTimeMillis();
                     logger.info("Processed batch with " + (number - 1)
                             + " messages in " + (finished - started) + "ms");
+
                     if (number < bean.getBatchSize()) {
 
                         Thread.sleep(60000);
 
+                    } else {
+
+                        EmailNotification.sendSystemNotification("Reader status", "Processed batch with " + (number - 1)
+                                + " messages in " + (finished - started) + "ms");
                     }
 
                 }

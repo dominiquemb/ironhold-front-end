@@ -7,8 +7,9 @@ import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -118,7 +119,7 @@ public class MiscIndexService extends AbstractIndexService {
         client.store(
                 indexName,
                 IndexedObjectType.LOGIN_USER,
-                loginUser.getUsername(),
+                loginUser.getId(),
                 loginUser.serialize());
     }
 
@@ -137,15 +138,10 @@ public class MiscIndexService extends AbstractIndexService {
     }
 
     public LoginUser authenticate(String indexPrefix, String username, String password) throws Exception {
-        String alias = getIndexAlias(indexPrefix);
-        GetResponse response = client.getById(alias, IndexedObjectType.LOGIN_USER, username);
-
-        if (!response.exists()) {
+        LoginUser storedUser = usernameExists(indexPrefix, username);
+        if (storedUser == null) {
             return null;
         }
-
-        LoginUser storedUser = new LoginUser();
-        storedUser = storedUser.deserialize(response.getSourceAsString());
 
         if (storedUser.getHashedPassword().equals(CheckSumHelper.getCheckSum(password.getBytes())) &&
                 storedUser.hasRole(RoleEnum.CAN_LOGIN)) {
@@ -159,4 +155,22 @@ public class MiscIndexService extends AbstractIndexService {
     }
 
 
+    public long getLoginUserCount(String indexPrefix) throws ExecutionException, InterruptedException {
+        String alias = getIndexAlias(indexPrefix);
+        return client.getCount(alias, IndexedObjectType.LOGIN_USER);
+    }
+
+    public LoginUser usernameExists(String indexPrefix, String username) throws ExecutionException, InterruptedException, IOException {
+        String alias = getIndexAlias(indexPrefix);
+        Set<Pair<String, String>> criteria = new HashSet<>();
+        Pair<String, String> pair = new ImmutablePair("username", username.toLowerCase());
+        criteria.add(pair);
+        SearchResponse response = client.getByField(alias, IndexedObjectType.LOGIN_USER, criteria);
+        if (response.hits().getTotalHits() != 1) {
+            return null;
+        } else {
+            LoginUser storedUser = new LoginUser();
+            return storedUser.deserialize(response.getHits().getAt(0).getSourceAsString());
+        }
+    }
 }

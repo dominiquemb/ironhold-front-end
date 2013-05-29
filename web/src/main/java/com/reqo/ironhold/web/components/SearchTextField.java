@@ -1,6 +1,9 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.storage.MetaDataIndexService;
+import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -8,10 +11,11 @@ import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import org.apache.log4j.Logger;
 
 @SuppressWarnings({"serial", "unchecked"})
 public class SearchTextField extends Panel {
-    // private final Action action_ok = new ShortcutAction("Default key", ShortcutAction.KeyCode.ENTER, null);
+    private static Logger logger = Logger.getLogger(SearchTextField.class);
 
     private final SearchResults searchResults;
 
@@ -27,6 +31,8 @@ public class SearchTextField extends Panel {
         this.textField.setTextChangeEventMode(AbstractTextField.TextChangeEventMode.LAZY);
         this.textField.setTextChangeTimeout(200);
         this.textField.setWidth("400px");
+
+
         this.textField.addShortcutListener(new ShortcutListener("Default key", ShortcutAction.KeyCode.ENTER, null) {
             @Override
             public void handleAction(Object sender, Object target) {
@@ -66,5 +72,25 @@ public class SearchTextField extends Panel {
 
     public void init() {
         this.textField.focus();
+
+        this.textField.addShortcutListener(new ShortcutListener("Arrow Down", ShortcutAction.KeyCode.ARROW_DOWN, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                SearchHistoryWindow window;
+                try {
+                    final String client = (String) getSession().getAttribute("client");
+                    final LoginUser loginUser = (LoginUser) getUI().getSession().getAttribute("loginUser");
+                    MetaDataIndexService metaDataIndexService = ((IronholdApplication) getUI()).getMetaDataIndexService();
+
+
+                    window = new SearchHistoryWindow(textField, searchResults, metaDataIndexService.getAuditLogMessages(client, loginUser, AuditActionEnum.SEARCH));
+                    window.setModal(true);
+                    getUI().addWindow(window);
+
+                } catch (Exception e) {
+                    logger.warn(e);
+                }
+            }
+        });
     }
 }

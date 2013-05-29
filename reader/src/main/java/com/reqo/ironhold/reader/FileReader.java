@@ -1,8 +1,14 @@
 package com.reqo.ironhold.reader;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
+import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.search.IndexFailure;
+import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -23,6 +29,16 @@ public class FileReader {
 
     @Autowired
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
+
+    @Autowired
+    private MetaDataIndexService metaDataIndexService;
+
+    @Autowired
+    private MiscIndexService miscIndexService;
+
+    @Autowired
+    private MessageIndexService messageIndexService;
+
 
     private String emlFile;
     private final String client;
@@ -48,8 +64,23 @@ public class FileReader {
             if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
                 logger.warn("Found duplicate " + messageId);
             } else {
-
                 mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+
+                logger.info("Stored journaled message "
+                        + mailMessage.getMessageId()
+                        + " "
+                        + FileUtils
+                        .byteCountToDisplaySize(mailMessage
+                                .getSize()));
+
+
+                try {
+                    messageIndexService.store(client, new IndexedMailMessage(mailMessage));
+                } catch (Exception e) {
+                    logger.error("Failed to index message " + mailMessage.getMessageId(), e);
+                    metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+                }
+
             }
 
         } catch (Exception e) {

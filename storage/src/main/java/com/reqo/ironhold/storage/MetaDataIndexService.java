@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
@@ -8,6 +9,9 @@ import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.user.LoginUser;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -15,10 +19,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class MetaDataIndexService extends AbstractIndexService {
@@ -75,7 +76,9 @@ public class MetaDataIndexService extends AbstractIndexService {
 
     public List<MessageSource> getSources(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByField(alias, IndexedObjectType.PST_MESSAGE_SOURCE, "messageId", messageId);
+        Set<Pair<String, String>> criteria = new HashSet<>();
+        criteria.add(new ImmutablePair("messageId", messageId));
+        SearchResponse response = client.getByField(alias, IndexedObjectType.PST_MESSAGE_SOURCE, criteria);
         List<MessageSource> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             PSTMessageSource source = new PSTMessageSource();
@@ -83,7 +86,7 @@ public class MetaDataIndexService extends AbstractIndexService {
             result.add(source.deserialize(hit.getSourceAsString()));
         }
 
-        SearchResponse response2 = client.getByField(alias, IndexedObjectType.IMAP_MESSAGE_SOURCE, "messageId", messageId);
+        SearchResponse response2 = client.getByField(alias, IndexedObjectType.IMAP_MESSAGE_SOURCE, criteria);
         for (SearchHit hit : response2.getHits()) {
             IMAPMessageSource source = new IMAPMessageSource();
 
@@ -122,7 +125,10 @@ public class MetaDataIndexService extends AbstractIndexService {
 
     public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByFieldSorted(alias, IndexedObjectType.AUDIT_LOG_MESSAGE, "messageId", messageId, "timestamp", SortOrder.DESC);
+        Set<Pair<String, String>> criteria = new HashSet<>();
+        criteria.add(new ImmutablePair("messageId", messageId));
+
+        SearchResponse response = client.getByField(alias, IndexedObjectType.AUDIT_LOG_MESSAGE, criteria, "timestamp", SortOrder.DESC);
         List<AuditLogMessage> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             AuditLogMessage auditLogMessage = new AuditLogMessage();
@@ -133,9 +139,31 @@ public class MetaDataIndexService extends AbstractIndexService {
         return result;
     }
 
+
+    public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, LoginUser loginUser, AuditActionEnum action) throws ExecutionException, InterruptedException, IOException {
+        String alias = getIndexAlias(indexPrefix);
+        Set<Pair<String, String>> criteria = new HashSet<>();
+        criteria.add(new ImmutablePair("username", loginUser.getUsername()));
+        criteria.add(new ImmutablePair("action", action.toString()));
+        SearchResponse response = client.getByField(alias, IndexedObjectType.AUDIT_LOG_MESSAGE, criteria, "timestamp", SortOrder.DESC);
+        List<AuditLogMessage> result = new ArrayList<>();
+        for (SearchHit hit : response.getHits()) {
+            AuditLogMessage auditLogMessage = new AuditLogMessage();
+            auditLogMessage = auditLogMessage.deserialize(hit.getSourceAsString());
+            if (auditLogMessage.getAction() == action) {
+                result.add(auditLogMessage);
+            }
+        }
+
+        return result;
+    }
+
     public List<LogMessage> getLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByFieldSorted(alias, IndexedObjectType.LOG_MESSAGE, "messageId", messageId, "timestamp", SortOrder.DESC);
+        Set<Pair<String, String>> criteria = new HashSet<>();
+        criteria.add(new ImmutablePair("messageId", messageId));
+
+        SearchResponse response = client.getByField(alias, IndexedObjectType.LOG_MESSAGE, criteria, "timestamp", SortOrder.DESC);
         List<LogMessage> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             LogMessage logMessage = new LogMessage();

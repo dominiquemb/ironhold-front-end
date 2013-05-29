@@ -1,5 +1,8 @@
 package com.reqo.ironhold.web.components;
 
+import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
+import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
@@ -13,10 +16,12 @@ public class Header extends HorizontalLayout {
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G");
     private static Logger logger = Logger.getLogger(Header.class);
 
-    public Header(final String username) {
+    public Header() {
         this.setWidth("100%");
         setSizeFull();
+    }
 
+    public void init(final LoginUser loginUser, final String client, final IronholdApplication application) {
         // Button logo = new Button();
         // logo.setStyleName(BaseTheme.BUTTON_LINK);
         // logo.setIcon(new ClassResource("images/logo.png", application));
@@ -62,17 +67,11 @@ public class Header extends HorizontalLayout {
 			}
 		});
 */
-        Button logout = new Button("Logout");
-        logout.addClickListener(new ClickListener() {
 
-            public void buttonClick(ClickEvent event) {
-                UI.getCurrent().getSession().close();
-                Page.getCurrent().setLocation(Page.getCurrent().getLocation());
-            }
-        });
+
         vl.setSizeFull();
         vl.setWidth("300");
-        Label label = new Label("Welcome, " + username);
+        Label label = new Label("Welcome, " + loginUser.getUsername());
         label.setWidth(null);
 
         vl.addComponent(label);
@@ -81,6 +80,37 @@ public class Header extends HorizontalLayout {
         hl.setSpacing(true);
         //	hl.addComponent(pstStatistics);
         //hl.addComponent(imapStatistics);
+
+        if (loginUser.hasRole(RoleEnum.CAN_MANAGE_USERS)) {
+            Button userManagement = new Button("Users");
+            userManagement.addListener(new ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    UserManagementWindow window;
+                    try {
+                        window = new UserManagementWindow(loginUser, client, application.getMessageIndexService(), application.getMiscIndexService(), application.getMetaDataIndexService());
+                        window.setModal(true);
+                        getUI().addWindow(window);
+
+                    } catch (Exception e) {
+                        logger.warn(e);
+                    }
+
+                }
+            });
+
+            hl.addComponent(userManagement);
+        }
+
+        Button logout = new Button("Logout");
+        logout.addClickListener(new ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+                UI.getCurrent().getSession().close();
+                Page.getCurrent().setLocation(Page.getCurrent().getLocation());
+            }
+        });
         hl.addComponent(logout);
 
         vl.addComponent(hl);

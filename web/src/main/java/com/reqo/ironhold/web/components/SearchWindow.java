@@ -77,7 +77,8 @@ public class SearchWindow extends Panel {
             }
         });
 
-        Header header = new Header(authenticatedUser.getName());
+        Header header = new Header();
+        header.init(authenticatedUser, client, (IronholdApplication) this.getUI());
         vl.addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();
