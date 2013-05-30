@@ -54,6 +54,7 @@ public abstract class AbstractIndexService {
 
             if (!client.indexExists(indexName)) {
                 client.createIndex(indexName, indexAlias, indexSettingsFile);
+                Thread.sleep(1000);
                 for (IndexedObjectType type : mappings.keySet()) {
                     client.addTypeMapping(indexName, type, mappings.get(type));
                 }
