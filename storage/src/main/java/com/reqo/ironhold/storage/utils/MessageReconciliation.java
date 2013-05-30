@@ -19,6 +19,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Time: 3:04 PM
  */
 public class MessageReconciliation {
+    static {
+        System.setProperty("jobname", MessageReconciliation.class.getSimpleName());
+    }
+
     private static Logger logger = Logger.getLogger(MessageReconciliation.class);
 
     @Autowired
