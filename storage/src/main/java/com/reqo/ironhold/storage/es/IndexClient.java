@@ -92,24 +92,22 @@ public class IndexClient {
      * ITEM OPERATIONS *
      */
 
-    public IndexResponse store(String indexName, IndexedObjectType type, String id, String object) throws ExecutionException, InterruptedException {
+    public void store(String indexName, IndexedObjectType type, String id, String object) throws ExecutionException, InterruptedException {
         IndexResponse result =
                 esClient.prepareIndex(indexName, type.getValue(), id)
                         .setSource(object)
                         .execute()
                         .get();
 
-        return result;
     }
 
-    public IndexResponse store(String indexName, IndexedObjectType type, String object) throws ExecutionException, InterruptedException {
+    public void store(String indexName, IndexedObjectType type, String object) throws ExecutionException, InterruptedException {
         IndexResponse result =
                 esClient.prepareIndex(indexName, type.getValue())
                         .setSource(object)
                         .execute()
                         .get();
 
-        return result;
     }
 
     public DeleteResponse delete(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
@@ -245,8 +243,8 @@ public class IndexClient {
     }
 
     private void applyFilters(SearchRequestBuilder search, LoginUser loginUser) throws Exception {
-        if (loginUser.hasRole(RoleEnum.CAN_SEARCH)) {
-            if (!loginUser.hasRole(RoleEnum.SUPER_USER)) {
+        if (loginUser.hasRole(RoleEnum.CAN_SEARCH) || loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
+            if (!loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
                 OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
                 addLoginFilter(filterBuilders, loginUser.getMainRecipient().getAddress());
                 if (loginUser.getRecipients() != null) {

@@ -16,7 +16,7 @@ public class AuditLogMessageTestModel extends CommonTestModel {
         testMessage.setAction(AuditActionEnum.SEARCH);
         testMessage.setMessageId(UUID.randomUUID().toString());
         testMessage.setTimestamp(df.getDateBetween(getMinDate(), getMaxDate()));
-        testMessage.setLoginUser(LoginUserTestModel.generate(RoleEnum.SUPER_USER));
+        testMessage.setLoginUser(LoginUserTestModel.generate(RoleEnum.CAN_SEARCH));
         return testMessage;
     }
 

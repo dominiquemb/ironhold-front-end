@@ -183,7 +183,7 @@ public class LoginUserViewer extends Panel {
         }
 
         emailAddresses.setValue(sb.toString());
-        if (loginUser.hasRole(RoleEnum.CAN_SEARCH)) {
+        if (loginUser.hasRole(RoleEnum.CAN_SEARCH) || loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
             long messageCount = messageIndexService.getTotalMessageCount(client, loginUser);
             searchResults.setValue(messageCount + " messages");
         } else {

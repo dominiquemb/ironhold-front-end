@@ -7,7 +7,6 @@ import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -44,8 +43,7 @@ public class MessageIndexService extends AbstractIndexService {
         createIndexIfMissing(indexPrefix, message.getPartition());
 
         if (!checkIfExists || !client.itemExists(indexName, IndexedObjectType.MIME_MESSAGE, message.getMessageId())) {
-
-            IndexResponse response = client.store(
+            client.store(
                     indexName,
                     IndexedObjectType.MIME_MESSAGE,
                     message.getMessageId(),

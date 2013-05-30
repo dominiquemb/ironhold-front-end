@@ -315,8 +315,8 @@ public class MessageSearchBuilder {
     }
 
     private TermsFacetBuilder applyLoginFilters(TermsFacetBuilder termsFacetBuilder, LoginUser loginUser) throws Exception {
-        if (loginUser.hasRole(RoleEnum.CAN_SEARCH)) {
-            if (!loginUser.hasRole(RoleEnum.SUPER_USER)) {
+        if (loginUser.hasRole(RoleEnum.CAN_SEARCH) || loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
+            if (!loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
                 OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
                 IndexClient.addLoginFilter(filterBuilders, loginUser.getMainRecipient().getAddress());
                 if (loginUser.getRecipients() != null) {

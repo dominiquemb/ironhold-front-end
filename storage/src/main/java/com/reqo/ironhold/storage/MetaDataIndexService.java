@@ -10,10 +10,10 @@ import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -97,12 +97,12 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public IndexResponse store(String indexPrefix, LogMessage logMessage) throws Exception {
+    public void store(String indexPrefix, LogMessage logMessage) throws Exception {
 
         createIndexIfMissing(indexPrefix, logMessage.getPartition());
         String indexName = getIndexName(getIndexAlias(indexPrefix), logMessage.getPartition());
 
-        return client.store(
+        client.store(
                 indexName,
                 IndexedObjectType.LOG_MESSAGE,
                 logMessage.serialize());
@@ -110,15 +110,18 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public IndexResponse store(String indexPrefix, AuditLogMessage auditLogMessage) throws Exception {
+    public void store(String indexPrefix, AuditLogMessage auditLogMessage) throws Exception {
 
-        createIndexIfMissing(indexPrefix, auditLogMessage.getPartition());
-        String indexName = getIndexName(getIndexAlias(indexPrefix), auditLogMessage.getPartition());
+        if (!auditLogMessage.getLoginUser().hasRole(RoleEnum.SUPER_USER)) {
+            createIndexIfMissing(indexPrefix, auditLogMessage.getPartition());
+            String indexName = getIndexName(getIndexAlias(indexPrefix), auditLogMessage.getPartition());
 
-        return client.store(
-                indexName,
-                IndexedObjectType.AUDIT_LOG_MESSAGE,
-                auditLogMessage.serialize());
+            client.store(
+                    indexName,
+                    IndexedObjectType.AUDIT_LOG_MESSAGE,
+                    auditLogMessage.serialize());
+        }
+
 
     }
 

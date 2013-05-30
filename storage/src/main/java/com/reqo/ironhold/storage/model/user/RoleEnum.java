@@ -6,7 +6,7 @@ package com.reqo.ironhold.storage.model.user;
  * Time: 12:34 PM
  */
 public enum RoleEnum {
-    SUPER_USER(Integer.MAX_VALUE), CAN_LOGIN(1), NONE(0), CAN_SEARCH(2), CAN_MANAGE_USERS(4);
+    SUPER_USER(Integer.MAX_VALUE), CAN_LOGIN(1), NONE(0), CAN_SEARCH(2), CAN_MANAGE_USERS(4), CAN_SEARCH_ALL(8);
 
     private final int value;
 
