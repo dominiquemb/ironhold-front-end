@@ -140,7 +140,7 @@ public class LoginUserEditor extends Panel {
                             loginUser = new LoginUser();
                             loginUser.setMainRecipient(new Recipient(name.getValue(), email.getValue()));
                             loginUser.setName(name.getValue());
-                            loginUser.setUsername(name.getValue());
+                            loginUser.setUsername(username.getValue());
                             int role = 0;
                             if (enabled.getValue()) {
                                 if (superUser.getValue()) {
@@ -170,7 +170,7 @@ public class LoginUserEditor extends Panel {
                         } else {
                             loginUser.setMainRecipient(new Recipient(name.getValue(), email.getValue()));
                             loginUser.setName(name.getValue());
-                            loginUser.setUsername(name.getValue());
+                            loginUser.setUsername(username.getValue());
                             int role = 0;
                             if (enabled.getValue()) {
                                 if (superUser.getValue()) {
