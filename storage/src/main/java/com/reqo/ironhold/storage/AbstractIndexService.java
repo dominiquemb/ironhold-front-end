@@ -63,7 +63,7 @@ public abstract class AbstractIndexService {
                 for (IndexedObjectType type : mappings.keySet()) {
                     client.addTypeMapping(indexName, type, mappings.get(type));
                 }
-
+                Thread.sleep(1000);
             }
 
             this.indexes.add(partition == null || partition.isEmpty() ? "none" : partition);
