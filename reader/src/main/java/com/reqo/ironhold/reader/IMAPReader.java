@@ -1,6 +1,5 @@
 package com.reqo.ironhold.reader;
 
-import com.reqo.ironhold.reader.notification.EmailNotification;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
@@ -139,11 +138,6 @@ public class IMAPReader {
                 }
                 count++;
             }
-
-
-            if (expunge) {
-                imap.expunge();
-            }
             indexCommandListener.commit();
 
         } catch (Exception e) {
@@ -193,11 +187,6 @@ public class IMAPReader {
 
                         Thread.sleep(60000);
 
-                    }
-
-                    if (number > 100) {
-                        EmailNotification.sendSystemNotification("Reader status", "Processed batch with " + (number - 1)
-                                + " messages in " + (finished - started) + "ms");
                     }
 
                 }
