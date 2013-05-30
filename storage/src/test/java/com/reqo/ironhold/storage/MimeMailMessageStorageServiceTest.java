@@ -59,6 +59,67 @@ public class MimeMailMessageStorageServiceTest {
         Assert.assertTrue(storageService.exists(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
     }
 
+    @Test
+    public void testGetPartitions() throws Exception {
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        Assert.assertTrue(storageService.exists(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+        List<String> partitions = storageService.getPartitions(TEST_CLIENT);
+        Assert.assertEquals(1, partitions.size());
+        Assert.assertEquals(inputMessage.getPartition(), partitions.get(0));
+    }
+
+    @Test
+    public void testGetSubPartitions() throws Exception {
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        Assert.assertTrue(storageService.exists(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+        List<String> partitions = storageService.getPartitions(TEST_CLIENT);
+
+        Assert.assertEquals(1, partitions.size());
+        Assert.assertEquals(inputMessage.getPartition(), partitions.get(0));
+        List<String> subPartitions = storageService.getSubPartitions(TEST_CLIENT, partitions.get(0));
+        Assert.assertEquals(1, subPartitions.size());
+        Assert.assertEquals(inputMessage.getSubPartition(), subPartitions.get(0));
+
+    }
+
+    @Test
+    public void testGetList() throws Exception {
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        Assert.assertTrue(storageService.exists(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+        List<String> partitions = storageService.getPartitions(TEST_CLIENT);
+
+        Assert.assertEquals(1, partitions.size());
+        Assert.assertEquals(inputMessage.getPartition(), partitions.get(0));
+        List<String> subPartitions = storageService.getSubPartitions(TEST_CLIENT, partitions.get(0));
+        Assert.assertEquals(1, subPartitions.size());
+        Assert.assertEquals(inputMessage.getSubPartition(), subPartitions.get(0));
+
+        List<String> files = storageService.getList(TEST_CLIENT, partitions.get(0), subPartitions.get(0));
+        Assert.assertEquals(1, files.size());
+        Assert.assertEquals(inputMessage.getMessageId(), files.get(0));
+
+    }
 
     @Test
     public void testLargeMessage() throws Exception {

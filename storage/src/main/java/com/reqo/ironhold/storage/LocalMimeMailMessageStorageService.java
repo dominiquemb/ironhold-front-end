@@ -11,7 +11,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: ilya
@@ -59,6 +62,51 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     @Override
     public String get(String client, String partition, String subPartition, String messageId) throws Exception {
         return verifyFile(client, partition, subPartition, messageId);
+    }
+
+    @Override
+    public List<String> getPartitions(String clientName) {
+        File parentDir = new File(parent.getAbsoluteFile() + File.separator + clientName);
+
+        File[] result = parentDir.listFiles();
+        List<String> partitions = new ArrayList();
+        for (File f : result) {
+            if (f.isDirectory()) {
+                partitions.add(f.getName());
+            }
+        }
+        return partitions;
+    }
+
+    @Override
+    public List<String> getSubPartitions(String clientName, String partition) {
+        File parentDir = new File(parent.getAbsoluteFile() + File.separator + clientName + File.separator + partition);
+        File[] result = parentDir.listFiles();
+        List<String> subPartitions = new ArrayList();
+        for (File f : result) {
+            if (f.isDirectory()) {
+                subPartitions.add(f.getName());
+            }
+        }
+        return subPartitions;
+    }
+
+    @Override
+    public List<String> getList(String clientName, String partition, String subPartition) {
+        File parentDir = new File(parent.getAbsoluteFile() + File.separator + clientName + File.separator + partition + File.separator + subPartition);
+        File[] result = parentDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return (name.endsWith(".eml.gz"));
+            }
+        });
+        List<String> files = new ArrayList();
+        for (File f : result) {
+            if (!f.isDirectory()) {
+                files.add(f.getName().replace(".eml.gz", ""));
+            }
+        }
+        return files;
     }
 
     /**

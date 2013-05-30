@@ -34,18 +34,23 @@ public class MessageIndexService extends AbstractIndexService {
     }
 
     public void store(String indexPrefix, IndexedMailMessage message) throws Exception {
+        store(indexPrefix, message, true);
+    }
+
+    public void store(String indexPrefix, IndexedMailMessage message, boolean checkIfExists) throws Exception {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, message.getPartition());
 
         createIndexIfMissing(indexPrefix, message.getPartition());
 
-        IndexResponse response = client.store(
-                indexName,
-                IndexedObjectType.MIME_MESSAGE,
-                message.getMessageId(),
-                message.serialize());
+        if (!checkIfExists || !client.itemExists(indexName, IndexedObjectType.MIME_MESSAGE, message.getMessageId())) {
 
-
+            IndexResponse response = client.store(
+                    indexName,
+                    IndexedObjectType.MIME_MESSAGE,
+                    message.getMessageId(),
+                    message.serialize());
+        }
     }
 
 

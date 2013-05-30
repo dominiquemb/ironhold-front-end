@@ -7,6 +7,8 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
+import java.util.List;
+
 /**
  * User: ilya
  * Date: 4/2/13
@@ -41,5 +43,20 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     @Override
     public String get(String client, String partition, String subPartition, String messageId) throws Exception {
         return this.client.get(client, partition, subPartition, messageId);
+    }
+
+    @Override
+    public List<String> getPartitions(String clientName) throws Exception {
+        return this.client.getPartitions(clientName);
+    }
+
+    @Override
+    public List<String> getSubPartitions(String clientName, String partition) throws Exception {
+        return this.client.getSubPartitions(clientName, partition);
+    }
+
+    @Override
+    public List<String> getList(String clientName, String partition, String subPartition) throws Exception {
+        return this.client.getList(clientName, partition, subPartition);
     }
 }

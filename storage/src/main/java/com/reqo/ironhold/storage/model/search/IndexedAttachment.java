@@ -1,4 +1,5 @@
 package com.reqo.ironhold.storage.model.search;
+
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.utils.TikaInstance;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +37,7 @@ public class IndexedAttachment extends Attachment {
 
             return parsedContent;
         } catch (TikaException | IOException e) {
-            logger.warn("Failed to extract characters", e);
+            logger.warn("Failed to extract characters " + e.getMessage());
         }
 
         return StringUtils.EMPTY;

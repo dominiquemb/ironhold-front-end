@@ -11,7 +11,7 @@
 
     <!-- Storage beans -->
     <!-- Storage beans -->
-    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient"
+    <bean id="mimeMailMessageStorageService" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient"
           scope="singleton">
         <constructor-arg name="host" value="${data.host}"/>
         <constructor-arg name="port" value="${data.port}"/>
@@ -33,5 +33,7 @@
     <!-- Ima reader bean -->
     <bean id="imapReader" class="com.reqo.ironhold.reader.IMAPReader"/>
 
+    <!-- Ima reader bean -->
+    <bean id="fileReader" class="com.reqo.ironhold.reader.FileReader"/>
 
 </beans>

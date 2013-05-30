@@ -48,7 +48,7 @@ public abstract class AbstractIndexService {
 
 
     protected void createIndexIfMissing(String indexPrefix, String partition) throws Exception {
-        if (!indexes.contains(partition)) {
+        if (!indexes.contains(partition == null || partition.isEmpty() ? "none" : partition)) {
             String indexAlias = getIndexAlias(indexPrefix);
             String indexName = getIndexName(indexAlias, partition);
 
@@ -65,7 +65,7 @@ public abstract class AbstractIndexService {
 
             }
 
-            this.indexes.add(partition);
+            this.indexes.add(partition == null || partition.isEmpty() ? "none" : partition);
         }
 
     }

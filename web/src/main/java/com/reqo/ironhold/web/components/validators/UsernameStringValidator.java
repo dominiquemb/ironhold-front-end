@@ -9,6 +9,6 @@ import com.vaadin.data.validator.RegexpValidator;
  */
 public class UsernameStringValidator extends RegexpValidator {
     public UsernameStringValidator() {
-        super("^([a-zA-Z0-9_\\.\\-+])+$", "Field cannot contain spaces");
+        super("^([a-zA-Z0-9_\\.+])+$", true, "Field cannot contain spaces");
     }
 }

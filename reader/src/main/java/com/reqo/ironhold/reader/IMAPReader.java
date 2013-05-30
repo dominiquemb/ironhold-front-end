@@ -59,6 +59,8 @@ public class IMAPReader {
     private boolean expunge;
     private String client;
     private int timeout;
+    private IMAPClient imap;
+    private IndexCommandListener indexCommandListener;
 
     public IMAPReader() {
 
@@ -77,10 +79,8 @@ public class IMAPReader {
         this.client = client;
     }
 
-    public int processMail() throws InterruptedException {
-        int count = 1;
+    public void initiateConnection() {
 
-        IMAPClient imap;
 
         if (protocol.equals("imaps")) {
             imap = new IMAPSClient("ssl", true); // implicit
@@ -91,7 +91,7 @@ public class IMAPReader {
         imap.setDefaultTimeout(timeout);
 
         // suppress login details
-        IndexCommandListener indexCommandListener = new IndexCommandListener();
+        indexCommandListener = new IndexCommandListener();
         imap.addProtocolCommandListener(indexCommandListener);
 
         try {
@@ -112,8 +112,19 @@ public class IMAPReader {
             logger.info("Getting the Inbox folder.");
 
 
-            imap.select("inbox");
+        } catch (Exception e) {
+            logger.error("Not able to process the mail reading.", e);
+            System.exit(1);
+        }
+    }
 
+    public int processMail() throws InterruptedException {
+        int count = 1;
+
+
+        try {
+
+            imap.select("inbox");
 
             if (expunge) {
                 imap.expunge();
@@ -121,8 +132,10 @@ public class IMAPReader {
 
             while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
                 if (expunge) {
-                    if (indexCommandListener.lastSuccess())
+                    if (indexCommandListener.lastSuccess()) {
                         imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
+                    }
+
                 }
                 count++;
             }
@@ -133,8 +146,6 @@ public class IMAPReader {
             }
             indexCommandListener.commit();
 
-            imap.logout();
-            imap.disconnect();
         } catch (Exception e) {
             logger.error("Not able to process the mail reading.", e);
             System.exit(1);
@@ -168,6 +179,7 @@ public class IMAPReader {
             readMail.setExpunge(bean.getExpunge());
             readMail.setTimeout(bean.getTimeout());
             // Calling processMail Function to read from IMAP Account
+            readMail.initiateConnection();
             try {
                 while (true) {
 
@@ -181,8 +193,9 @@ public class IMAPReader {
 
                         Thread.sleep(60000);
 
-                    } else {
+                    }
 
+                    if (number > 100) {
                         EmailNotification.sendSystemNotification("Reader status", "Processed batch with " + (number - 1)
                                 + " messages in " + (finished - started) + "ms");
                     }

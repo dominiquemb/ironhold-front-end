@@ -41,7 +41,7 @@ public class FileReader {
 
 
     private String emlFile;
-    private final String client;
+    private String client;
 
     public FileReader(String client, String emlFile) throws IOException {
         this.client = client;
@@ -61,8 +61,10 @@ public class FileReader {
 
             String messageId = mailMessage.getMessageId();
 
+            boolean existsInStore = false;
             if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
                 logger.warn("Found duplicate " + messageId);
+                existsInStore = true;
             } else {
                 mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
 
@@ -72,15 +74,12 @@ public class FileReader {
                         + FileUtils
                         .byteCountToDisplaySize(mailMessage
                                 .getSize()));
-
-
-                try {
-                    messageIndexService.store(client, new IndexedMailMessage(mailMessage));
-                } catch (Exception e) {
-                    logger.error("Failed to index message " + mailMessage.getMessageId(), e);
-                    metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
-                }
-
+            }
+            try {
+                messageIndexService.store(client, new IndexedMailMessage(mailMessage), existsInStore);
+            } catch (Exception e) {
+                logger.error("Failed to index message " + mailMessage.getMessageId(), e);
+                metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
             }
 
         } catch (Exception e) {
@@ -90,6 +89,22 @@ public class FileReader {
             logger.error("Failed to process message", e);
         }
 
+    }
+
+    public String getEmlFile() {
+        return emlFile;
+    }
+
+    public void setEmlFile(String emlFile) {
+        this.emlFile = emlFile;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
     }
 
     // Main Function for The readEmail Class
@@ -105,9 +120,10 @@ public class FileReader {
         }
         try {
             ApplicationContext context = new ClassPathXmlApplicationContext("readerContext.xml");
+            FileReader readMail = context.getBean(FileReader.class);
 
-
-            FileReader readMail = new FileReader(bean.getClient(), bean.getEmlFile());
+            readMail.setClient(bean.getClient());
+            readMail.setEmlFile(bean.getEmlFile());
 
             try {
                 long started = System.currentTimeMillis();
@@ -122,6 +138,11 @@ public class FileReader {
             logger.error("Critical error detected, exiting", e);
             System.exit(1);
         }
+
+
+    }
+
+    public FileReader() {
 
     }
 }
