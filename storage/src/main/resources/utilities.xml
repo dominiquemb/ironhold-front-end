@@ -12,12 +12,27 @@
 
 
     <bean id="setupClient" class="com.reqo.ironhold.storage.utils.UserSetup" scope="singleton"/>
+    <bean id="reconciliation" class="com.reqo.ironhold.storage.utils.MessageReconciliation" scope="singleton"/>
+
     <!-- ES beans -->
     <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient" scope="singleton">
-        <constructor-arg type="java.lang.String" value="UserSetup"/>
+        <constructor-arg type="java.lang.String" value="Utilities"/>
     </bean>
     <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
+    </bean>
+    <bean id="messageIndexService" class="com.reqo.ironhold.storage.MessageIndexService" scope="singleton">
+        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
+    </bean>
+    <bean id="metaDataIndexService" class="com.reqo.ironhold.storage.MetaDataIndexService" scope="singleton">
+        <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
+    </bean>
+
+    <!-- Storage beans -->
+    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient"
+          scope="singleton">
+        <constructor-arg name="host" value="${data.host}"/>
+        <constructor-arg name="port" value="${data.port}"/>
     </bean>
 
 

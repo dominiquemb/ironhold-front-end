@@ -42,7 +42,7 @@ public class UserSetup {
             return;
         }
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("userSetup.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("utilities.xml");
         UserSetup client = context.getBean(UserSetup.class);
         client.generate(bean.getClient(), bean.getUsername(), bean.getPassword(), bean.getEmail(), bean.getRole());
         System.exit(1);

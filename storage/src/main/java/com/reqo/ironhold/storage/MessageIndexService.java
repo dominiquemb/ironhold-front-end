@@ -51,6 +51,14 @@ public class MessageIndexService extends AbstractIndexService {
         }
     }
 
+    public boolean exists(String indexPrefix, String partition, String messageId) throws Exception {
+        String alias = getIndexAlias(indexPrefix);
+        String indexName = getIndexName(alias, partition);
+
+        createIndexIfMissing(indexPrefix, partition);
+
+        return client.itemExists(indexName, IndexedObjectType.MIME_MESSAGE, messageId);
+    }
 
     public MessageSearchBuilder getNewBuilder(String alias, LoginUser loginUser) throws Exception {
         if (alias == null || StringUtils.isEmpty(alias)) {
