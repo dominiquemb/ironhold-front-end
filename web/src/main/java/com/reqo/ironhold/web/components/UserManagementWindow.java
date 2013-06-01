@@ -13,7 +13,6 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -88,11 +87,7 @@ public class UserManagementWindow extends Window {
             public void buttonClick(Button.ClickEvent event) {
                 try {
                     setEditMode(null);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (ExecutionException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
@@ -116,7 +111,7 @@ public class UserManagementWindow extends Window {
 
     }
 
-    public void setEditMode(LoginUser loginUser) throws InterruptedException, ExecutionException, IOException {
+    public void setEditMode(LoginUser loginUser) throws Exception {
         viewer.setVisible(false);
         editor.setLoginUser(loginUser);
         editor.setVisible(true);

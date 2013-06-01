@@ -3,6 +3,7 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
@@ -16,6 +17,7 @@ import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -47,6 +49,7 @@ public class LoginUserEditor extends Panel {
     private final MetaDataIndexService metaDataIndexService;
     private final PasswordField password;
     private final PasswordField confirmPassword;
+    private final TwinColSelect pstSources;
     private LoginUser loginUser;
     private final Map<RoleEnum, CheckBox> roleToggles;
     private final TextArea emailAddresses;
@@ -129,6 +132,15 @@ public class LoginUserEditor extends Panel {
         emailAddresses.addValidator(new EmailListValidator("Contains invalid email address"));
         addLabelComponentPair("Other Email Addresses:", emailAddresses);
 
+        pstSources = new TwinColSelect();
+        pstSources.setRows(6);
+        pstSources.setNullSelectionAllowed(true);
+        pstSources.setMultiSelect(true);
+        pstSources.setImmediate(true);
+        pstSources.setLeftColumnCaption("Available PSTs");
+        pstSources.setRightColumnCaption("Assigned PSTSs");
+        addLabelComponentPair("View messages from PSTs", pstSources);
+
         HorizontalLayout buttonLayout = new HorizontalLayout();
         save = new Button("Save");
         save.addClickListener(new Button.ClickListener() {
@@ -163,6 +175,10 @@ public class LoginUserEditor extends Panel {
                                 }
                             }
                             loginUser.setRecipients(recipientList);
+
+                            Collection<String> values = (Collection<String>) pstSources.getValue();
+                            loginUser.setSources(values.toArray(new String[]{}));
+
                             loginUser.setId(UUID.randomUUID().toString());
 
                             miscIndexService.store(client, loginUser);
@@ -195,6 +211,8 @@ public class LoginUserEditor extends Panel {
                             }
                             loginUser.setRecipients(recipientList);
 
+                            Collection<String> values = (Collection<String>) pstSources.getValue();
+                            loginUser.setSources(values.toArray(new String[]{}));
                             miscIndexService.store(client, loginUser);
                             window.setViewMode(null, loginUser);
                         }
@@ -231,6 +249,8 @@ public class LoginUserEditor extends Panel {
         for (CheckBox roleCheckbox : roleToggles.values()) {
             roleCheckbox.setVisible(enabled.getValue() && !superUser.getValue());
         }
+        pstSources.getParent().setVisible(!superUser.getValue());
+
     }
 
     private void addLabelComponentPair(String labelText, Component component) {
@@ -244,18 +264,40 @@ public class LoginUserEditor extends Panel {
         layout.addComponent(hl);
     }
 
-    public void setLoginUser(LoginUser loginUser) throws InterruptedException, ExecutionException, IOException {
+    public void setLoginUser(LoginUser loginUser) throws Exception {
         this.loginUser = loginUser;
         password.setValue("");
         confirmPassword.setValue("");
         this.uniqueUsernameValidator.setLoginUser(loginUser);
+
         if (loginUser == null) {
             newUserMode();
         } else {
             editUserMode();
         }
-
+        loadPsts();
         layout.setVisible(true);
+    }
+
+    private void loadPsts() throws Exception {
+        pstSources.removeAllItems();
+
+        int start = 0;
+        int limit = 100;
+        List<PSTFileMeta> sources;
+        do {
+            sources = miscIndexService.getPSTFileMetas(client, start, limit);
+            start += sources.size();
+            for (PSTFileMeta source : sources) {
+                pstSources.addItem(source.getId());
+
+                pstSources.setItemCaption(source.getId(), FilenameUtils.getBaseName(source.getPstFileName()));
+
+                if (loginUser != null && loginUser.hasSource(source.getId())) {
+                    pstSources.select(source.getId());
+                }
+            }
+        } while (sources.size() == limit - 1);
     }
 
     private void newUserMode() {

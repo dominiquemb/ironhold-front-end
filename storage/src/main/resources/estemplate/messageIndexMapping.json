@@ -130,7 +130,7 @@
             },
              "sources": {
                 "type": "string",
-                "format": "keyword"
+                "analyzer": "keyword"
             }
         }
     }

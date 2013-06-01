@@ -10,9 +10,9 @@ import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.SearchHit;
 
@@ -48,6 +48,7 @@ public class MiscIndexService extends AbstractIndexService {
         client.store(
                 indexName,
                 IndexedObjectType.PST_FILE_META,
+                meta.getId(),
                 meta.serialize());
 
     }
@@ -65,25 +66,44 @@ public class MiscIndexService extends AbstractIndexService {
 
     }
 
-    public boolean exists(String indexPrefix, PSTFileMeta meta) throws Exception {
+    public PSTFileMeta findExisting(String indexPrefix, PSTFileMeta meta) throws Exception {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
         SearchRequestBuilder searchRequestBuilder = client.getSearchRequestBuilder(alias);
         SearchResponse response = searchRequestBuilder
                 .setTypes(IndexedObjectType.PST_FILE_META.getValue())
-                .setSearchType(SearchType.COUNT)
                 .setFilter(FilterBuilders
                         .andFilter(
                                 FilterBuilders.termFilter("md5", meta.getMd5()),
                                 FilterBuilders.termFilter("size", meta.getSize())
                         )).execute().actionGet();
 
-        return response.getHits().getTotalHits() > 0;
+        if (response.getHits().getHits().length > 0) {
+            PSTFileMeta pstFileMeta = new PSTFileMeta();
 
+            return pstFileMeta.deserialize(response.getHits().getAt(0).getSourceAsString());
+        }
+        return null;
     }
 
-    public List<PSTFileMeta> getPSTFileMeta(String indexPrefix, int from, int limit) throws IOException, ExecutionException, InterruptedException {
+    public PSTFileMeta getPSTFileMeta(String indexPrefix, String id) throws Exception {
+        createIndexIfMissing(indexPrefix, PARTITION);
+
+        String alias = getIndexAlias(indexPrefix);
+        GetResponse response = client.getById(alias, IndexedObjectType.PST_FILE_META, id);
+        if (response.exists()) {
+            PSTFileMeta pstFileMeta = new PSTFileMeta();
+
+            return pstFileMeta.deserialize(response.getSourceAsString());
+        }
+
+        return null;
+    }
+
+    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit) throws Exception {
+        createIndexIfMissing(indexPrefix, PARTITION);
+
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByType(alias, IndexedObjectType.PST_FILE_META, from, limit);
         List<PSTFileMeta> result = new ArrayList<>();

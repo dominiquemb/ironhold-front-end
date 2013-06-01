@@ -238,6 +238,7 @@ public class IndexClient {
     public long getTotalMessageCount(String alias, LoginUser loginUser) throws Exception {
         SearchRequestBuilder search = esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).setNoFields();
         applyFilters(search, loginUser);
+        logger.info(search.toString());
         return search.execute().get().getHits().getTotalHits();
 
     }
@@ -252,12 +253,21 @@ public class IndexClient {
                         addLoginFilter(filterBuilders, recipient.getAddress());
                     }
                 }
+                if (loginUser.getSources() != null) {
+                    for (String source : loginUser.getSources()) {
+                        addSourceFilter(filterBuilders, source);
+                    }
+                }
                 search.setFilter(filterBuilders);
             }
         } else {
             throw new Exception("This user does not have search role");
         }
 
+    }
+
+    public static void addSourceFilter(OrFilterBuilder filterBuilders, String source) {
+        filterBuilders.add(FilterBuilders.orFilter(FilterBuilders.inFilter("sources", source)));
     }
 
     public static void addLoginFilter(OrFilterBuilder filterBuilders, String address) {

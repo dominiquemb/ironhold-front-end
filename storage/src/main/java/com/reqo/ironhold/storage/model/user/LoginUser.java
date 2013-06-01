@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.SerializationConfig;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +39,7 @@ public class LoginUser {
     private Date lastLogin;
     private Date created;
     private String id;
+    private String[] sources;
 
     public LoginUser() {
         this.created = new Date();
@@ -46,6 +48,24 @@ public class LoginUser {
                 false);
     }
 
+    public void addSource(String sourceId) {
+        if (sources == null) {
+            sources = new String[]{sourceId};
+        } else {
+            String[] copy = Arrays.copyOf(sources, sources.length + 1);
+            copy[sources.length] = sourceId;
+            sources = copy;
+        }
+
+    }
+
+    public String[] getSources() {
+        return sources;
+    }
+
+    public void setSources(String[] sources) {
+        this.sources = sources;
+    }
 
     public Date getCreated() {
         return created;
@@ -147,5 +167,15 @@ public class LoginUser {
     public boolean hasRole(RoleEnum roleEnum) {
         int andResult = rolesBitMask & roleEnum.getValue();
         return andResult == roleEnum.getValue();
+    }
+
+    public boolean hasSource(String id) {
+        if (sources == null) return false;
+        for (String source : sources) {
+            if (id.equals(source)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

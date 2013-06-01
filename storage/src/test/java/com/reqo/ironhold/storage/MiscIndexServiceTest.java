@@ -57,18 +57,18 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFileMetaList = miscIndexService.getPSTFileMeta(INDEX_PREFIX, 0, 10);
+        List<PSTFileMeta> pstFileMetaList = miscIndexService.getPSTFileMetas(INDEX_PREFIX, 0, 10);
 
         Assert.assertEquals(1, pstFileMetaList.size());
         for (PSTFileMeta pstFileMeta : pstFileMetaList) {
             Assert.assertEquals(metaData.serialize(), pstFileMeta.serialize());
         }
 
-        Assert.assertTrue(miscIndexService.exists(INDEX_PREFIX, metaData));
+        Assert.assertNotNull(miscIndexService.findExisting(INDEX_PREFIX, metaData));
 
         PSTFileMeta metaData2 = PSTFileMetaTestModel.generate();
 
-        Assert.assertFalse(miscIndexService.exists(INDEX_PREFIX, metaData2));
+        Assert.assertNull(miscIndexService.findExisting(INDEX_PREFIX, metaData2));
 
     }
 

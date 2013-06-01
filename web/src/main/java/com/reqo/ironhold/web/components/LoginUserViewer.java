@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.web.components.validators.UniqueUsernameValidator;
@@ -14,12 +15,10 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * User: ilya
@@ -29,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class LoginUserViewer extends Panel {
     private static final String TIMESTAMP = "Date";
     private static final String CRITERIA = "Criteria";
+    private static final String PSTNAME = "PST File";
 
     private final VerticalLayout layout;
     private final SimpleDateFormat sdf = new SimpleDateFormat("MM dd, YYYY HH:mm");
@@ -45,6 +45,7 @@ public class LoginUserViewer extends Panel {
     private final MetaDataIndexService metaDataIndexService;
     private final Label searchResults;
     private final MessageIndexService messageIndexService;
+    private final Table pstsTable;
     private LoginUser loginUser;
     private final Map<RoleEnum, Label> roleToggles;
     private final Table searchHistoryTable;
@@ -98,13 +99,20 @@ public class LoginUserViewer extends Panel {
         searchResults = new Label();
         addLabelComponentPair("Maximum Search Results:", searchResults);
 
+        pstsTable = new Table();
+        pstsTable.setWidth("300px");
+        pstsTable.setColumnWidth(PSTNAME, 60);
+        pstsTable.setColumnWidth(TIMESTAMP, 150);
+        pstsTable.setColumnExpandRatio(PSTNAME, 1);
+        pstsTable.setHeight("100px");
+        addLabelComponentPair("Assigned PSTs", pstsTable);
+
 
         searchHistoryTable = new Table();
         searchHistoryTable.setWidth("300px");
         searchHistoryTable.setColumnWidth(CRITERIA, 60);
         searchHistoryTable.setColumnWidth(TIMESTAMP, 150);
         searchHistoryTable.setColumnExpandRatio(CRITERIA, 1);
-
 
         searchHistoryTable.setHeight("100px");
         addLabelComponentPair("Search History", searchHistoryTable);
@@ -116,11 +124,7 @@ public class LoginUserViewer extends Panel {
             public void buttonClick(Button.ClickEvent event) {
                 try {
                     window.setEditMode(loginUser);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (ExecutionException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
             }
@@ -159,6 +163,24 @@ public class LoginUserViewer extends Panel {
             roleToggles.get(role).setValue(role.toString() + ": " + Boolean.toString(loginUser.hasRole(role)));
         }
 
+        int pstCount = 0;
+        IndexedContainer psts = new IndexedContainer();
+        psts.addContainerProperty(TIMESTAMP, Date.class, "");
+        psts.addContainerProperty(PSTNAME, String.class, "");
+
+
+        if (loginUser.getSources() != null) {
+            for (String source : loginUser.getSources()) {
+                PSTFileMeta fileMeta = miscIndexService.getPSTFileMeta(client, source);
+                if (fileMeta != null) {
+                    Item sourceItem = psts.addItem(pstCount + ":" + fileMeta.getPstFileName());
+                    pstCount++;
+                    sourceItem.getItemProperty(PSTNAME).setValue(fileMeta.getPstFileName());
+                    sourceItem.getItemProperty(TIMESTAMP).setValue(fileMeta.getStarted());
+                }
+            }
+        }
+        pstsTable.setContainerDataSource(psts);
 
         int sourceCount = 0;
         IndexedContainer searchHistory = new IndexedContainer();

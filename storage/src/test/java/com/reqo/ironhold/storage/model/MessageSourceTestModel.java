@@ -9,7 +9,7 @@ public class MessageSourceTestModel extends CommonTestModel {
 
     public static PSTMessageSource generatePSTMessageSource() {
         return new PSTMessageSource(UUID.randomUUID().toString(), df.getName() + ".pst", df.getName(), (long) 10000 * (long) Math.random(),
-                df.getBirthDate());
+                df.getBirthDate(), UUID.randomUUID().toString());
     }
 
     public static IMAPMessageSource generateIMAPMessageSource() {

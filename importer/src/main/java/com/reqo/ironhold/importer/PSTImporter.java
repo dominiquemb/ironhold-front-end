@@ -17,6 +17,7 @@ import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,16 +67,19 @@ public class PSTImporter {
     }
 
     private boolean wasFileProcessedPreviously() throws Exception {
-        return miscIndexService.exists(client, this.metaData);
+        PSTFileMeta existingMeta = miscIndexService.findExisting(client, this.metaData);
+        return existingMeta != null && existingMeta.isCompleted();
     }
 
     public String processMessages() throws Exception {
-        this.metaData = new PSTFileMeta(file.getName(), mailBoxName,
+        this.metaData = new PSTFileMeta(FilenameUtils.getBaseName(file.getName()), mailBoxName,
                 originalFilePath, commentary, md5, hostname, file.length(), new Date());
 
         if (wasFileProcessedPreviously()) {
             throw new Exception("This file has been processed already");
         }
+
+        miscIndexService.store(client, metaData);
 
         PSTFile pstFile = new PSTFile(file);
         try {
@@ -113,6 +117,7 @@ public class PSTImporter {
 
 
             metaDataIndexService.store(client, finishedMessage);
+            metaData.setCompleted(true);
             miscIndexService.store(client, metaData);
 
 
@@ -179,8 +184,8 @@ public class PSTImporter {
                     }
 
                     PSTMessageSource source = new PSTMessageSource(messageId,
-                            file.toString(), folderPath, file.length(),
-                            new Date(file.lastModified()));
+                            FilenameUtils.getBaseName(file.toString()), folderPath, file.length(),
+                            new Date(file.lastModified()), metaData.getId());
 
                     source.setPartition(mimeMailMessage.getPartition());
                     metaDataIndexService.store(client, source);
@@ -199,7 +204,7 @@ public class PSTImporter {
                         if (indexedMessage == null) {
                             indexedMessage = new IndexedMailMessage(mimeMailMessage);
                         }
-                        indexedMessage.addSource(source);
+                        indexedMessage.addSource(metaData.getId());
                         messageIndexService.store(client, indexedMessage, false);
                     } catch (Exception e) {
                         logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);

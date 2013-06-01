@@ -18,18 +18,20 @@ public class PSTMessageSource extends MessageSource {
     @JsonDeserialize(contentAs = Long.class)
     private Long size;
     private Date fileTimestamp;
+    private String pstFileMetaId;
 
     public PSTMessageSource() {
         super();
     }
 
     public PSTMessageSource(String messageId, String pstFileName, String folder, long size,
-                            Date fileTimestamp) {
+                            Date fileTimestamp, String pstFileMetaId) {
         super(messageId);
         this.pstFileName = pstFileName;
         this.folder = folder;
         this.size = size;
         this.fileTimestamp = fileTimestamp;
+        this.pstFileMetaId = pstFileMetaId;
     }
 
     public String serialize() throws IOException {
@@ -41,6 +43,14 @@ public class PSTMessageSource extends MessageSource {
 
     public PSTMessageSource deserialize(String source) throws IOException {
         return mapper.readValue(source, PSTMessageSource.class);
+    }
+
+    public String getPstFileMetaId() {
+        return pstFileMetaId;
+    }
+
+    public void setPstFileMetaId(String pstFileMetaId) {
+        this.pstFileMetaId = pstFileMetaId;
     }
 
     public String getPstFileName() {

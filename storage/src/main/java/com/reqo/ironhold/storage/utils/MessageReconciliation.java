@@ -5,6 +5,7 @@ import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
+import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.apache.log4j.Logger;
@@ -79,7 +80,9 @@ public class MessageReconciliation {
                             IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mimeMailMessage);
 
                             for (MessageSource existingSource : metaDataIndexService.getSources(client, messageId)) {
-                                indexedMailMessage.addSource(existingSource);
+                                if (existingSource instanceof PSTMessageSource) {
+                                    indexedMailMessage.addSource(((PSTMessageSource) existingSource).getPstFileMetaId());
+                                }
                             }
                             messageIndexService.store(client, indexedMailMessage, false);
                         }

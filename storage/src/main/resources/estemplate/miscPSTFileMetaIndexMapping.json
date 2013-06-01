@@ -5,6 +5,9 @@
                 "type": "string",
                 "analyzer": "keyword"
             },
+            "completed": {
+                "type": "boolean"
+            },
             "mailBoxName": {
                 "type": "string",
                 "analyzer": "standard"

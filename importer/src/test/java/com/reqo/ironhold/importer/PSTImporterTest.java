@@ -116,7 +116,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMeta(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());
@@ -202,7 +202,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMeta(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());
@@ -214,7 +214,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles2 = miscIndexService.getPSTFileMeta(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles2 = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
 
         Assert.assertEquals(2, pstFiles2.size());
 
@@ -261,7 +261,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMeta(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());

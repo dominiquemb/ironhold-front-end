@@ -324,6 +324,11 @@ public class MessageSearchBuilder {
                         IndexClient.addLoginFilter(filterBuilders, recipient.getAddress());
                     }
                 }
+                if (loginUser.getSources() != null) {
+                    for (String source : loginUser.getSources()) {
+                        IndexClient.addSourceFilter(filterBuilders, source);
+                    }
+                }
                 termsFacetBuilder.facetFilter(filterBuilders);
             }
         } else {

@@ -4,7 +4,6 @@ import com.reqo.ironhold.storage.model.IPartitioned;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.Recipient;
-import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -113,12 +112,12 @@ public class IndexedMailMessage implements IPartitioned {
         }
     }
 
-    public void addSource(MessageSource source) {
+    public void addSource(String sourceId) {
         if (sources == null) {
-            sources = new String[]{source.getId()};
+            sources = new String[]{sourceId};
         } else {
             String[] copy = Arrays.copyOf(sources, sources.length + 1);
-            copy[sources.length] = source.getId();
+            copy[sources.length] = sourceId;
             sources = copy;
         }
 

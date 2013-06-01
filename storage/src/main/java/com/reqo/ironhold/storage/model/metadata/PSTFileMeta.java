@@ -11,14 +11,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class PSTFileMeta {
     public static final String DOT_REPLACEMENT = Character.toString((char) 182);
 
+    private String id;
     private String pstFileName = StringUtils.EMPTY;
     private String mailBoxName = StringUtils.EMPTY;
     private String originalFilePath = StringUtils.EMPTY;
@@ -53,6 +51,7 @@ public class PSTFileMeta {
     private double averageSize;
     private double medianSize;
     private double medianCompressedSize;
+    private boolean completed;
 
     @JsonIgnore
     private boolean isDirty = false;
@@ -95,6 +94,7 @@ public class PSTFileMeta {
                        String originalFilePath, String commentary, String md5, String hostname, long size,
                        Date started) {
         super();
+        this.id = UUID.randomUUID().toString();
         this.pstFileName = pstFileName;
         this.mailBoxName = mailBoxName;
         this.originalFilePath = originalFilePath;
@@ -163,6 +163,14 @@ public class PSTFileMeta {
         if (compressedSize > compressedMaxSize) {
             compressedMaxSize = compressedSize;
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public double getCompressedAverageSize() {
@@ -259,6 +267,15 @@ public class PSTFileMeta {
 
     public Map<String, Long> getFolderMap() {
         return folderMap;
+    }
+
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public boolean sameAs(PSTFileMeta metaData) {

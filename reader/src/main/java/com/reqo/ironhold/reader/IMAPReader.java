@@ -358,8 +358,7 @@ public class IMAPReader {
                         if (indexedMessage == null) {
                             indexedMessage = new IndexedMailMessage(mailMessage);
                         }
-                        indexedMessage.addSource(source);
-                        messageIndexService.store(client, new IndexedMailMessage(mailMessage), false);
+                        messageIndexService.store(client, indexedMessage, false);
                     } catch (Exception e) {
                         logger.error("Failed to index message " + mailMessage.getMessageId(), e);
                         metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));

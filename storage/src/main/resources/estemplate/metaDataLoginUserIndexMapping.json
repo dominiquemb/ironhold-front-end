@@ -37,6 +37,10 @@
                         "analyzer": "keyword"
                     }
                 }
+            },
+             "sources": {
+                "type": "string",
+                "analyzer": "keyword"
             }
         }
     }
