@@ -195,7 +195,12 @@ public class PSTImporter {
                     metaDataIndexService.store(client, processedMessage);
 
                     try {
-                        messageIndexService.store(client, new IndexedMailMessage(mimeMailMessage));
+                        IndexedMailMessage indexedMessage = messageIndexService.getById(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId());
+                        if (indexedMessage == null) {
+                            indexedMessage = new IndexedMailMessage(mimeMailMessage);
+                        }
+                        indexedMessage.addSource(source);
+                        messageIndexService.store(client, indexedMessage, false);
                     } catch (Exception e) {
                         logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
                         metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));

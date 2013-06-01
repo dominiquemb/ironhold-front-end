@@ -2,12 +2,14 @@ package com.reqo.ironhold.importer;
 
 import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
+import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
 import fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean;
@@ -48,6 +50,9 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private MiscIndexService miscIndexService;
+
+    @Autowired
+    private MessageIndexService messageIndexService;
 
     @Autowired
     private PSTImporter pstImporter;
@@ -101,7 +106,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
         this.metaDataIndexService.clearCache();
         this.miscIndexService.clearCache();
-
+        this.messageIndexService.clearCache();
     }
 
 
@@ -166,12 +171,18 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         Assert.assertNotNull(testMailMessage);
 
         indexClient.refresh(TEST_CLIENT + "." + MetaDataIndexService.SUFFIX);
-        List<MessageSource> sources = metaDataIndexService.getSources(TEST_CLIENT, "<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+        List<MessageSource> sources = metaDataIndexService.getSources(TEST_CLIENT, testMailMessage.getMessageId());
 
         for (MessageSource source : sources) {
             System.out.println(source.toString());
         }
         Assert.assertEquals(2, sources.size());
+
+        Assert.assertTrue(messageIndexService.exists(TEST_CLIENT, testMailMessage.getPartition(), testMailMessage.getMessageId()));
+
+        IndexedMailMessage indexedMailMessage = messageIndexService.getById(TEST_CLIENT, testMailMessage.getPartition(), testMailMessage.getMessageId());
+        Assert.assertNotNull(indexedMailMessage);
+        Assert.assertEquals(2, indexedMailMessage.getSources().length);
 
         List<MessageSource> sources2 = metaDataIndexService.getSources(TEST_CLIENT, "<fb57d8a0811071645n76f4c2e6o10d5aa19c78b49bf@mail.gmail.com>");
 
@@ -179,6 +190,8 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
             System.out.println(source.toString());
         }
         Assert.assertEquals(1, sources2.size());
+
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
 
 
     }
@@ -223,12 +236,22 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         Assert.assertNotNull(testMailMessage);
 
         indexClient.refresh(TEST_CLIENT + "." + MetaDataIndexService.SUFFIX);
-        List<MessageSource> sources = metaDataIndexService.getSources(TEST_CLIENT, "<984867.51882.qm@web30305.mail.mud.yahoo.com>");
+
+
+        Assert.assertTrue(messageIndexService.exists(TEST_CLIENT, testMailMessage.getPartition(), testMailMessage.getMessageId()));
+
+        IndexedMailMessage indexedMailMessage = messageIndexService.getById(TEST_CLIENT, testMailMessage.getPartition(), testMailMessage.getMessageId());
+        Assert.assertNotNull(indexedMailMessage);
+        Assert.assertEquals(4, indexedMailMessage.getSources().length);
+
+        List<MessageSource> sources = metaDataIndexService.getSources(TEST_CLIENT, testMailMessage.getMessageId());
 
         for (MessageSource source : sources) {
             System.out.println(source.toString());
         }
         Assert.assertEquals(4, sources.size());
+
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
 
     }
 
@@ -251,5 +274,8 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
             Assert.assertEquals("This file has been processed already",
                     e.getMessage());
         }
+
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
+
     }
 }

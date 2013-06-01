@@ -127,6 +127,10 @@
                         "analyzer": "keyword"
                     }
                 }
+            },
+             "sources": {
+                "type": "string",
+                "format": "keyword"
             }
         }
     }

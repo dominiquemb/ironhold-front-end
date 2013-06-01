@@ -13,10 +13,13 @@ import org.codehaus.jackson.map.SerializationConfig;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.UUID;
 
 public abstract class MessageSource implements IHasMessageId, IPartitioned {
+    @JsonIgnore
     protected ObjectMapper mapper = new ObjectMapper();
 
+    private String id;
     private String messageId;
     private String partition;
     private Date loadTimestamp;
@@ -39,11 +42,20 @@ public abstract class MessageSource implements IHasMessageId, IPartitioned {
         }
         this.loadTimestamp = new Date();
 
+        this.id = UUID.randomUUID().toString();
     }
 
     public MessageSource(String messageId) {
         this();
         this.messageId = messageId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Date getLoadTimestamp() {

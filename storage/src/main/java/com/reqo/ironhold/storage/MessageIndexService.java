@@ -7,6 +7,7 @@ import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -49,6 +50,23 @@ public class MessageIndexService extends AbstractIndexService {
                     message.getMessageId(),
                     message.serialize());
         }
+    }
+
+    public IndexedMailMessage getById(String indexPrefix, String partition, String messageId) throws Exception {
+        String alias = getIndexAlias(indexPrefix);
+        String indexName = getIndexName(alias, partition);
+
+        createIndexIfMissing(indexPrefix, partition);
+
+
+        GetResponse response = client.getById(indexName, IndexedObjectType.MIME_MESSAGE, messageId);
+        if (response.exists()) {
+            IndexedMailMessage indexedMailMessage = new IndexedMailMessage();
+            indexedMailMessage = indexedMailMessage.deserialize(response.getSourceAsString());
+
+            return indexedMailMessage;
+        }
+        return null;
     }
 
     public boolean exists(String indexPrefix, String partition, String messageId) throws Exception {

@@ -351,15 +351,20 @@ public class IMAPReader {
 
                         metaData.updateSizeStatistics(mailMessage
                                 .getRawContents().length(), storedSize);
-
-                        try {
-                            messageIndexService.store(client, new IndexedMailMessage(mailMessage));
-                        } catch (Exception e) {
-                            logger.error("Failed to index message " + mailMessage.getMessageId(), e);
-                            metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
-                        }
-
                     }
+
+                    try {
+                        IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());
+                        if (indexedMessage == null) {
+                            indexedMessage = new IndexedMailMessage(mailMessage);
+                        }
+                        indexedMessage.addSource(source);
+                        messageIndexService.store(client, new IndexedMailMessage(mailMessage), false);
+                    } catch (Exception e) {
+                        logger.error("Failed to index message " + mailMessage.getMessageId(), e);
+                        metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+                    }
+
 
                     metaData.incrementAttachmentStatistics(mailMessage
                             .isHasAttachments());

@@ -4,6 +4,7 @@ import com.reqo.ironhold.storage.model.IPartitioned;
 import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class IndexedMailMessage implements IPartitioned {
@@ -44,6 +46,7 @@ public class IndexedMailMessage implements IPartitioned {
     private String body;
     private String importance;
     private IndexedAttachment[] attachments;
+    private String[] sources;
 
 
     @JsonIgnore
@@ -110,6 +113,24 @@ public class IndexedMailMessage implements IPartitioned {
         }
     }
 
+    public void addSource(MessageSource source) {
+        if (sources == null) {
+            sources = new String[]{source.getId()};
+        } else {
+            String[] copy = Arrays.copyOf(sources, sources.length + 1);
+            copy[sources.length] = source.getId();
+            sources = copy;
+        }
+
+    }
+
+    public String[] getSources() {
+        return sources;
+    }
+
+    public void setSources(String[] sources) {
+        this.sources = sources;
+    }
 
     public String serialize() throws IOException {
         return mapper.writeValueAsString(this);

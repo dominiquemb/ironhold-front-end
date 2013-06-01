@@ -2,7 +2,9 @@ package com.reqo.ironhold.storage.utils;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
+import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.apache.log4j.Logger;
@@ -30,6 +32,9 @@ public class MessageReconciliation {
 
     @Autowired
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
+
+    @Autowired
+    private MetaDataIndexService metaDataIndexService;
 
     public MessageReconciliation() {
 
@@ -67,13 +72,16 @@ public class MessageReconciliation {
                         logger.info("Message " + messageId + " is missing from the index");
                         if (autofix) {
 
-                            String source = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
+                            String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
                             MimeMailMessage mimeMailMessage = new MimeMailMessage();
-                            mimeMailMessage.loadMimeMessageFromSource(source);
+                            mimeMailMessage.loadMimeMessageFromSource(messageSource);
 
                             IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mimeMailMessage);
 
-                            messageIndexService.store(client, indexedMailMessage, true);
+                            for (MessageSource existingSource : metaDataIndexService.getSources(client, messageId)) {
+                                indexedMailMessage.addSource(existingSource);
+                            }
+                            messageIndexService.store(client, indexedMailMessage, false);
                         }
                     }
                 }

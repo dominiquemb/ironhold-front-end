@@ -64,11 +64,13 @@ public class MetaDataIndexService extends AbstractIndexService {
             client.store(
                     indexName,
                     IndexedObjectType.IMAP_MESSAGE_SOURCE,
+                    source.getId(),
                     ((IMAPMessageSource) source).serialize());
         } else {
             client.store(
                     indexName,
                     IndexedObjectType.PST_MESSAGE_SOURCE,
+                    source.getId(),
                     ((PSTMessageSource) source).serialize());
         }
 

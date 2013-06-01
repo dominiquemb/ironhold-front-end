@@ -65,7 +65,9 @@ public class RandomEmailReader {
                             + source.getImapPort());
             metaDataIndexService.store(client, logMessage);
 
-            messageIndexService.store(client, new IndexedMailMessage(mailMessage));
+            IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mailMessage);
+            indexedMailMessage.addSource(source);
+            messageIndexService.store(client, indexedMailMessage);
         }
 
 
