@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.nio.file.*;
 
 public abstract class FileWatcher {
+    static {
+        System.setProperty("jobname", FileWatcher.class.getSimpleName());
+    }
+
     private static Logger logger = Logger.getLogger(FileWatcher.class);
 
     private String inputDirName;
