@@ -100,7 +100,7 @@ public class LoginUserViewer extends Panel {
         addLabelComponentPair("Maximum Search Results:", searchResults);
 
         pstsTable = new Table();
-        pstsTable.setWidth("300px");
+        pstsTable.setWidth("500px");
         pstsTable.setColumnWidth(PSTNAME, 60);
         pstsTable.setColumnWidth(TIMESTAMP, 150);
         pstsTable.setColumnExpandRatio(PSTNAME, 1);
@@ -109,7 +109,7 @@ public class LoginUserViewer extends Panel {
 
 
         searchHistoryTable = new Table();
-        searchHistoryTable.setWidth("300px");
+        searchHistoryTable.setWidth("500px");
         searchHistoryTable.setColumnWidth(CRITERIA, 60);
         searchHistoryTable.setColumnWidth(TIMESTAMP, 150);
         searchHistoryTable.setColumnExpandRatio(CRITERIA, 1);
@@ -142,7 +142,7 @@ public class LoginUserViewer extends Panel {
         HorizontalLayout hl = new HorizontalLayout();
         Label label = new Label(labelText);
         label.setWidth("200px");
-        component.setWidth("300px");
+        component.setWidth("500px");
         hl.addComponent(label);
         hl.addComponent(component);
         hl.setSpacing(true);

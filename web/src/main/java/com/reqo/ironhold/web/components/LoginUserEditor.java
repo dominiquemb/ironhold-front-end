@@ -257,7 +257,7 @@ public class LoginUserEditor extends Panel {
         HorizontalLayout hl = new HorizontalLayout();
         Label label = new Label(labelText);
         label.setWidth("200px");
-        component.setWidth("300px");
+        component.setWidth("500px");
         hl.addComponent(label);
         hl.addComponent(component);
         hl.setSpacing(true);

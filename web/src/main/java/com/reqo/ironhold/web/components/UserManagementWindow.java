@@ -78,7 +78,7 @@ public class UserManagementWindow extends Window {
 
         left.addComponent(pager);
 
-        userList.setWidth("600px");
+        userList.setWidth("400px");
         left.addComponent(userList);
 
         Button addNew = new Button("Add New User");

@@ -23,7 +23,7 @@ public class LoginUserPanel extends Panel {
     private final LoginUserPanel me;
 
     public LoginUserPanel(final UserManagementWindow window, final LoginUser loginUser, final MiscIndexService miscIndexService) {
-        setWidth("590px");
+        setWidth("390px");
         this.me = this;
         layout = new VerticalLayout();
         layout.setMargin(true);
@@ -56,7 +56,7 @@ public class LoginUserPanel extends Panel {
         hl.addComponent(captionLabel);
         final Label valueLabel = new Label(value);
         valueLabel.setContentMode(ContentMode.TEXT);
-        valueLabel.setWidth("540px");
+        valueLabel.setWidth("340px");
         hl.addComponent(valueLabel);
         hl.setExpandRatio(valueLabel, 1.0f);
         return hl;
