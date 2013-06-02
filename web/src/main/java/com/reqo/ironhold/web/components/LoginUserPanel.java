@@ -56,7 +56,7 @@ public class LoginUserPanel extends Panel {
         hl.addComponent(captionLabel);
         final Label valueLabel = new Label(value);
         valueLabel.setContentMode(ContentMode.TEXT);
-        valueLabel.setWidth("340px");
+        valueLabel.setWidth("270px");
         hl.addComponent(valueLabel);
         hl.setExpandRatio(valueLabel, 1.0f);
         return hl;

@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * User: ilya
  * Date: 4/12/13
@@ -59,17 +62,18 @@ public class MessageReconciliation {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("utilities.xml");
         MessageReconciliation reconciliation = context.getBean(MessageReconciliation.class);
-        reconciliation.run(bean.getClient(), bean.isAutofix());
+        reconciliation.run(bean.getClient(), bean.isAutofix(), bean.isForce(), bean.getPartition(), bean.getSubPartition());
         System.exit(1);
     }
 
-    private void run(String client, boolean autofix) throws Exception {
-        for (String partition : mimeMailMessageStorageService.getPartitions(client)) {
+    private void run(String client, boolean autofix, boolean force, String partitionFocus, String subPartitionFocus) throws Exception {
+        for (String partition : getPartitions(client, partitionFocus)) {
             logger.info("Checking " + partition);
-            for (String subPartition : mimeMailMessageStorageService.getSubPartitions(client, partition)) {
+            for (String subPartition : getSubPartitions(client, partition, subPartitionFocus)) {
                 logger.info("Checking " + partition + "/" + subPartition);
                 for (String messageId : mimeMailMessageStorageService.getList(client, partition, subPartition)) {
-                    if (!messageIndexService.exists(client, partition, messageId)) {
+
+                    if (force || !messageIndexService.exists(client, partition, messageId)) {
                         logger.info("Message " + messageId + " is missing from the index");
                         if (autofix) {
 
@@ -93,6 +97,22 @@ public class MessageReconciliation {
 
     }
 
+    private List<String> getPartitions(String client, String partitionFocus) throws Exception {
+        if (partitionFocus == null || partitionFocus.isEmpty()) {
+            return mimeMailMessageStorageService.getPartitions(client);
+        } else {
+            return Arrays.asList(new String[]{partitionFocus});
+        }
+    }
+
+    private List<String> getSubPartitions(String client, String partition, String subPartitionFocus) throws Exception {
+        if (subPartitionFocus == null || subPartitionFocus.isEmpty()) {
+            return mimeMailMessageStorageService.getSubPartitions(client, partition);
+        } else {
+            return Arrays.asList(new String[]{subPartitionFocus});
+        }
+    }
+
     static class Options {
         @Option(name = "-client", usage = "client name", required = true)
         private String client;
@@ -100,12 +120,33 @@ public class MessageReconciliation {
         @Option(name = "-autofix", usage = "auto fix any reconciliation issues", required = false)
         private boolean autofix;
 
+        @Option(name = "-partition", usage = "partition to reconcile", required = false)
+        private String partition;
+
+        @Option(name = "-subPartition", usage = "subPartition to reconcile", required = false)
+        private String subPartition;
+
+        @Option(name = "-force", usage = "force reindex all messages", required = false)
+        private boolean force;
+
         boolean isAutofix() {
             return autofix;
         }
 
         public String getClient() {
             return client;
+        }
+
+        String getPartition() {
+            return partition;
+        }
+
+        String getSubPartition() {
+            return subPartition;
+        }
+
+        boolean isForce() {
+            return force;
         }
     }
 

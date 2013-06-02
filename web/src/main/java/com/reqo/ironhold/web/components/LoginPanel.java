@@ -85,13 +85,25 @@ public class LoginPanel extends Panel {
         username.addShortcutListener(new DefaultShortcutListener(ironholdApplication));
         password.addShortcutListener(new DefaultShortcutListener(ironholdApplication));
 
-        client.setValue(getCookie("client"));
+        client.setValue(getDefaultClient());
         username.setValue(getCookie("username"));
         if (username.getValue().equals(StringUtils.EMPTY)) {
             username.focus();
         } else {
             password.focus();
         }
+    }
+
+    private String getDefaultClient() {
+        String url = this.getUI().getPage().getLocation().toString();
+        if (url.contains("//")) {
+            url = url.split("//")[1];
+        }
+        if (url.contains(".ironhold.net")) {
+            url = url.split(".ironhold.net")[0];
+            return url;
+        }
+        return getCookie("client");
     }
 
     private String getCookie(String name) {

@@ -33,7 +33,6 @@ public class SearchHitPanel extends Panel {
         AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.PREVIEW, item.getId(), criteria);
         metaDataIndexService.store(client, auditLogMessage);
 
-        setWidth("590px");
         layout = new VerticalLayout();
         layout.setMargin(true);
         this.setContent(layout);

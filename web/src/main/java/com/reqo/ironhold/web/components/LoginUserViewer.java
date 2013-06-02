@@ -71,7 +71,7 @@ public class LoginUserViewer extends Panel {
         addLabelComponentPair("Name:", name);
 
         email = new Label();
-        addLabelComponentPair("Email:", email);
+        addLabelComponentPair("Primary Email:", email);
 
         username = new Label();
         addLabelComponentPair("Username:", username);

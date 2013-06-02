@@ -34,6 +34,7 @@ public class EmailForwardWindow extends Window {
             prop.load(EmailForwardWindow.class.getResourceAsStream("email.properties"));
 
             mailServer = prop.getProperty("mailserver");
+            logger.info("Setting mailserver to " + mailServer);
         } catch (IOException e) {
             logger.warn("Failed to set email server", e);
             mailServer = "127.0.0.1";

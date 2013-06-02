@@ -77,7 +77,7 @@ public class LoginUserEditor extends Panel {
         email = new TextField();
         email.addValidator(new EmailValidator("Must be valid email address"));
         email.addValidator(new StringLengthValidator("Required field", 3, 150, false));
-        addLabelComponentPair("Email:", email);
+        addLabelComponentPair("Primary Email:", email);
 
         username = new TextField();
         uniqueUsernameValidator = new UniqueUsernameValidator(loginUser, client, miscIndexService);
