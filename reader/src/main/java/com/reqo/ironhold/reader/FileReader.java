@@ -76,7 +76,11 @@ public class FileReader {
                                 .getSize()));
             }
             try {
-                messageIndexService.store(client, new IndexedMailMessage(mailMessage), existsInStore);
+                IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());
+                if (indexedMessage == null) {
+                    indexedMessage = new IndexedMailMessage(mailMessage);
+                }
+                messageIndexService.store(client, indexedMessage, false);
             } catch (Exception e) {
                 logger.error("Failed to index message " + mailMessage.getMessageId(), e);
                 metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
