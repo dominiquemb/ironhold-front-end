@@ -389,7 +389,10 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     } else {
                         throw e;
                     }
-
+                } else if (e.getMessage().endsWith("UFT-8")) {
+                    String fixedRawContents = this.getRawContents().replaceAll("charset=\"UFT-8\"", "charset=\"UTF-8\"");
+                    reset();
+                    loadMimeMessageFromSource(fixedRawContents);
                 } else {
                     throw e;
                 }
