@@ -259,6 +259,7 @@
                 <data.host>localhost</data.host>
                 <data.port>9090</data.port>
                 <data.root>/tmp/dataroot</data.root>
+                <archive.root>/tmp/archiveroot</archive.root>
                 <keystore.root>/tmp/keystore</keystore.root>
                 <elasticsearch.hosts>172.16.144.128:9300</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
@@ -277,6 +278,7 @@
                 <data.host>ih650db001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
+                <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
                 <elasticsearch.hosts>ih650es001,ih650es002, ih650es003</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
@@ -292,6 +294,7 @@
                 <data.host>ih108db002</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
+                <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
                 <elasticsearch.hosts>ih108es003:9300,ih108es004:9300</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
@@ -307,6 +310,7 @@
                 <data.host>ihtrcdb001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
+                <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
                 <elasticsearch.hosts>ihtrces001</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>

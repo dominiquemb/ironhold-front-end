@@ -20,6 +20,7 @@
     <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService"
           scope="singleton">
         <constructor-arg type="java.io.File" value="${data.root}"/>
+        <constructor-arg type="java.io.File" value="${archive.root}"/>
         <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
     </bean>
 

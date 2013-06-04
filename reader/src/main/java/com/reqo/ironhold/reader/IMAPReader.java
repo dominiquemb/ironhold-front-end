@@ -333,25 +333,25 @@ public class IMAPReader {
                         logger.warn("Found duplicate " + messageId);
                         metaData.incrementDuplicates();
                         metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
-
-                    } else {
-                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
-                        metaDataIndexService.store(client, source);
-
-                        metaData.incrementBatchSize(storedSize);
-
-                        metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
-
-                        logger.info("Stored journaled message "
-                                + mailMessage.getMessageId()
-                                + " "
-                                + FileUtils
-                                .byteCountToDisplaySize(mailMessage
-                                        .getSize()));
-
-                        metaData.updateSizeStatistics(mailMessage
-                                .getRawContents().length(), storedSize);
+                        mimeMailMessageStorageService.archive(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId());
                     }
+
+                    long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+                    metaDataIndexService.store(client, source);
+
+                    metaData.incrementBatchSize(storedSize);
+
+                    metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
+
+                    logger.info("Stored journaled message "
+                            + mailMessage.getMessageId()
+                            + " "
+                            + FileUtils
+                            .byteCountToDisplaySize(mailMessage
+                                    .getSize()));
+
+                    metaData.updateSizeStatistics(mailMessage
+                            .getRawContents().length(), storedSize);
 
                     try {
                         IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());

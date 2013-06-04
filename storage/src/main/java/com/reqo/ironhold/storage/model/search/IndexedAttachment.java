@@ -37,7 +37,7 @@ public class IndexedAttachment extends Attachment {
 
             return parsedContent;
         } catch (TikaException | IOException e) {
-            logger.warn("Failed to extract characters " + e.getMessage());
+            logger.warn("Failed to extract characters " + e.getMessage(), e);
         }
 
         return StringUtils.EMPTY;

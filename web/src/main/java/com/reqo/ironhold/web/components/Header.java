@@ -22,55 +22,17 @@ public class Header extends HorizontalLayout {
     }
 
     public void init(final LoginUser loginUser, final String client, final IronholdApplication application) {
-        // Button logo = new Button();
-        // logo.setStyleName(BaseTheme.BUTTON_LINK);
-        // logo.setIcon(new ClassResource("images/logo.png", application));
-        //
-        // this.addComponent(logo);
-        //
-        // this.setComponentAlignment(logo, Alignment.TOP_LEFT);
-
+       /* Button logo = new Button();
+        logo.setStyleName(BaseTheme.BUTTON_LINK);
+        logo.setIcon(new ClassResource("images/logo.png"));
+        this.addComponent(logo);
+        this.setComponentAlignment(logo, Alignment.TOP_LEFT);
+         */
         VerticalLayout vl = new VerticalLayout();
-/*		Button pstStatistics = new Button("PST Stats");
-        pstStatistics.addListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				PSTStatisticsWindow window;
-				try {
-					window = new PSTStatisticsWindow(storageService);
-					window.setModal(true);
-					getWindow().addWindow(window);
-
-				} catch (Exception e) {
-					logger.warn(e);
-				}
-
-			}
-		});
-
-		Button imapStatistics = new Button("IMAP Stats");
-		imapStatistics.addListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				IMAPStatisticsWindow window;
-				try {
-					window = new IMAPStatisticsWindow(storageService);
-					window.setModal(true);
-					getWindow().addWindow(window);
-
-				} catch (Exception e) {
-					logger.warn(e);
-				}
-
-			}
-		});
-*/
 
 
         vl.setSizeFull();
-        vl.setWidth("300");
+        vl.setWidth(null);
         Label label = new Label("Welcome, " + loginUser.getUsername());
         label.setWidth(null);
 
@@ -78,8 +40,6 @@ public class Header extends HorizontalLayout {
 
         HorizontalLayout hl = new HorizontalLayout();
         hl.setSpacing(true);
-        //	hl.addComponent(pstStatistics);
-        //hl.addComponent(imapStatistics);
 
         if (loginUser.hasRole(RoleEnum.CAN_MANAGE_USERS)) {
             Button userManagement = new Button("Users");
@@ -115,7 +75,14 @@ public class Header extends HorizontalLayout {
 
         vl.addComponent(hl);
 
+        VerticalLayout left = new VerticalLayout();
+        left.setWidth(null);
+        HorizontalLayout spacer = new HorizontalLayout();
+        spacer.setHeight("25px");
+        vl.addComponent(spacer);
+        this.addComponent(left);
         this.addComponent(vl);
         this.setComponentAlignment(vl, Alignment.TOP_RIGHT);
+        this.setExpandRatio(left, 1.0f);
     }
 }
