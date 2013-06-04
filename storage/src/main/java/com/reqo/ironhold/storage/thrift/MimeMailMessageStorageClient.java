@@ -59,4 +59,9 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     public List<String> getList(String clientName, String partition, String subPartition) throws Exception {
         return this.client.getList(clientName, partition, subPartition);
     }
+
+    @Override
+    public boolean archive(String clientName, String partition, String subPartition, String messageId) throws Exception {
+        return this.client.archive(clientName, partition, subPartition, messageId);
+    }
 }

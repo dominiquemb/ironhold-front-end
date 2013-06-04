@@ -73,9 +73,9 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     public void setUp() throws Exception {
 
 
-        deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent().getParentFile());
+        deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
         deleteIfExists(new File("/tmp/es/data"));
-        FileUtils.forceMkdir(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent());
+        FileUtils.forceMkdir(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore());
 
         pstfile = FileUtils.toFile(PSTImporterTest.class
                 .getResource(PST_TEST_FILE));
@@ -102,7 +102,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     @After
     public void tearDown() throws Exception {
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
-        deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getParent().getParentFile());
+        deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
         esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
         this.metaDataIndexService.clearCache();
         this.miscIndexService.clearCache();

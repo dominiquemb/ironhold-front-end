@@ -15,6 +15,7 @@ import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
+import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import junit.framework.Assert;
 import org.elasticsearch.client.Client;
@@ -79,6 +80,33 @@ public class MetaDataIndexServiceTest {
         PSTMessageSource storedSource = (PSTMessageSource) sources.get(0);
         Assert.assertEquals(pstSource.serialize(),
                 storedSource.serialize());
+
+    }
+
+    @Test
+    public void testAddAndDeletePSTSource() throws Exception {
+
+        PSTMessageSource pstSource = MessageSourceTestModel
+                .generatePSTMessageSource();
+
+        metaDataIndexService.store(INDEX_PREFIX, pstSource);
+
+
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX);
+
+        List<MessageSource> sources = metaDataIndexService
+                .getSources(INDEX_PREFIX, pstSource.getMessageId());
+
+        Assert.assertEquals(1, sources.size());
+        PSTMessageSource storedSource = (PSTMessageSource) sources.get(0);
+        Assert.assertEquals(pstSource.serialize(),
+                storedSource.serialize());
+
+        metaDataIndexService.deleteByField(INDEX_PREFIX, pstSource.getPartition(), IndexedObjectType.PST_MESSAGE_SOURCE, "messageId", pstSource.getMessageId());
+
+        indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX);
+
+        Assert.assertEquals(0, metaDataIndexService.getSources(INDEX_PREFIX, pstSource.getMessageId()).size());
 
     }
 

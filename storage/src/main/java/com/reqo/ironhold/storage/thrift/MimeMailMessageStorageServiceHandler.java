@@ -78,4 +78,14 @@ public class MimeMailMessageStorageServiceHandler implements MimeMailMessageStor
             throw new TException(e);
         }
     }
+
+    @Override
+    public boolean archive(String clientName, String partition, String subPartition, String messageId) throws TException {
+        try {
+            logger.info("Archiving " + messageId + " for " + clientName + "/" + partition + "/" + subPartition);
+            return mimeMailMessageStorageService.archive(clientName, partition, subPartition, messageId);
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+    }
 }

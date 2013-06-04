@@ -11,6 +11,7 @@ import com.reqo.ironhold.storage.model.LoginUserTestModel;
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import junit.framework.Assert;
@@ -259,4 +260,36 @@ public class MessageIndexServiceTest {
         Assert.assertEquals(messages.size(),
                 messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser));
     }
+
+    @Test
+    public void testStoreAndDelete() throws Exception {
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                inputMessage);
+
+        messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
+        indexClient.refresh(INDEX_PREFIX);
+
+        String indexName = INDEX_PREFIX + "." + indexedMailMessage.getYear();
+        IndicesExistsResponse exists = client.admin().indices()
+                .prepareExists(indexName).execute().actionGet();
+
+        Assert.assertTrue(exists.exists());
+
+        GetResponse response = client
+                .prepareGet(indexName, IndexedObjectType.MIME_MESSAGE.getValue(),
+                        indexedMailMessage.getMessageId()).execute()
+                .actionGet();
+        Assert.assertTrue(response.exists());
+
+        Assert.assertEquals(indexedMailMessage.serialize(), response.getSourceAsString());
+        indexClient.refresh(indexName);
+
+        messageIndexService.deleteByField(INDEX_PREFIX, indexedMailMessage.getPartition(), IndexedObjectType.MIME_MESSAGE, "messageId", indexedMailMessage.getMessageId());
+
+        Assert.assertFalse(messageIndexService.exists(INDEX_PREFIX, indexedMailMessage.getPartition(), indexedMailMessage.getMessageId()));
+
+    }
+
 }

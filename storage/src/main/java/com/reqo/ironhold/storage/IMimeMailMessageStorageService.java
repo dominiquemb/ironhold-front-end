@@ -16,4 +16,6 @@ public interface IMimeMailMessageStorageService {
     List<String> getSubPartitions(String clientName, String partition) throws Exception;
 
     List<String> getList(String clientName, String partition, String subPartition) throws Exception;
+
+    boolean archive(String clientName, String partition, String subPartition, String messageId) throws Exception;
 }

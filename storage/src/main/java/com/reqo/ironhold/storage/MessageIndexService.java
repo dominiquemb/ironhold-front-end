@@ -136,4 +136,6 @@ public class MessageIndexService extends AbstractIndexService {
     public long getTotalMessageCount(String indexPrefix, LoginUser loginUser) throws Exception {
         return client.getTotalMessageCount(indexPrefix, loginUser);
     }
+
+
 }

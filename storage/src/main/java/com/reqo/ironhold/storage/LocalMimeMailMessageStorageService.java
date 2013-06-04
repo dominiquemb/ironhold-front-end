@@ -25,15 +25,22 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     private static Logger logger = Logger.getLogger(LocalMimeMailMessageStorageService.class);
 
 
-    private final File parent;
+    private final File dataStore;
+    private final File archiveStore;
     private final IKeyStoreService keyStoreService;
 
-    public LocalMimeMailMessageStorageService(File parent, IKeyStoreService keyStoreService) throws IOException {
-        this.parent = parent;
+    public LocalMimeMailMessageStorageService(File dataStore, File archiveStore, IKeyStoreService keyStoreService) throws IOException {
+        this.dataStore = dataStore;
+        this.archiveStore = archiveStore;
         this.keyStoreService = keyStoreService;
 
-        if (!parent.exists()) {
-            FileUtils.forceMkdir(parent);
+        if (!dataStore.exists()) {
+            FileUtils.forceMkdir(dataStore);
+        }
+
+
+        if (!archiveStore.exists()) {
+            FileUtils.forceMkdir(archiveStore);
         }
     }
 
@@ -66,7 +73,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public List<String> getPartitions(String clientName) {
-        File parentDir = new File(parent.getAbsoluteFile() + File.separator + clientName);
+        File parentDir = new File(dataStore.getAbsoluteFile() + File.separator + clientName);
 
         File[] result = parentDir.listFiles();
         List<String> partitions = new ArrayList();
@@ -80,7 +87,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public List<String> getSubPartitions(String clientName, String partition) {
-        File parentDir = new File(parent.getAbsoluteFile() + File.separator + clientName + File.separator + partition);
+        File parentDir = new File(dataStore.getAbsoluteFile() + File.separator + clientName + File.separator + partition);
         File[] result = parentDir.listFiles();
         List<String> subPartitions = new ArrayList();
         for (File f : result) {
@@ -93,7 +100,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public List<String> getList(String clientName, String partition, String subPartition) {
-        File parentDir = new File(parent.getAbsoluteFile() + File.separator + clientName + File.separator + partition + File.separator + subPartition);
+        File parentDir = new File(dataStore.getAbsoluteFile() + File.separator + clientName + File.separator + partition + File.separator + subPartition);
         File[] result = parentDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -107,6 +114,33 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
             }
         }
         return files;
+    }
+
+    @Override
+    public boolean archive(String clientName, String partition, String subPartition, String messageId) throws Exception {
+        verifyFile(clientName, partition, subPartition, messageId);
+
+        File file = getFile(clientName, partition, subPartition, messageId);
+        File checkSumFile = getCheckSumFile(clientName, partition, subPartition, messageId);
+
+        if (!file.exists()) {
+            return false;
+        }
+
+        if (!checkSumFile.exists()) {
+            return false;
+        }
+
+        FileUtils.copyFile(file, getArchiveFile(clientName, partition, subPartition, messageId));
+
+        FileUtils.copyFile(checkSumFile, getArchiveCheckSumFile(clientName, partition, subPartition, messageId));
+
+        verifyArchiveFile(clientName, partition, subPartition, messageId);
+
+        FileUtils.forceDelete(file);
+        FileUtils.forceDelete(checkSumFile);
+
+        return true;
     }
 
     /**
@@ -129,16 +163,47 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         return decrypted;
     }
 
+    private String verifyArchiveFile(String client, String partition, String subPartition, String messageId) throws Exception {
+        File file = getArchiveFile(client, partition, subPartition, messageId);
+        File checkSumFile = getArchiveCheckSumFile(client, partition, subPartition, messageId);
+
+        String decrypted = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
+        byte[] decryptedBytes = decrypted.getBytes();
+
+        String actualChecksum = CheckSumHelper.getCheckSum(decryptedBytes);
+        String expectedChecksum = FileUtils.readFileToString(checkSumFile);
+        if (!actualChecksum.equals(expectedChecksum)) {
+            throw new CheckSumFailedException(file);
+        }
+
+        return decrypted;
+    }
+
     private File getCheckSumFile(String client, String partition, String subPartition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
+        return new File(dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
     }
 
     private File getFile(String client, String partition, String subPartition, String messageId) {
-        return new File(parent.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
+        return new File(dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
     }
 
+    private File getArchiveCheckSumFile(String client, String partition, String subPartition, String messageId) {
+        return new File(archiveStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
+    }
 
-    public File getParent() {
-        return parent;
+    private File getArchiveFile(String client, String partition, String subPartition, String messageId) {
+        return new File(archiveStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
+    }
+
+    public File getDataStore() {
+        return dataStore;
+    }
+
+    public File getArchiveStore() {
+        return archiveStore;
+    }
+
+    public IKeyStoreService getKeyStoreService() {
+        return keyStoreService;
     }
 }

@@ -2,11 +2,15 @@ package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import org.apache.log4j.Logger;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * User: ilya
@@ -14,6 +18,8 @@ import java.util.Set;
  * Time: 8:00 AM
  */
 public abstract class AbstractIndexService {
+    private static Logger logger = Logger.getLogger(AbstractIndexService.class);
+
     private final String suffix;
     private Set<String> indexes;
 
@@ -75,4 +81,11 @@ public abstract class AbstractIndexService {
         indexes.clear();
     }
 
+    public void deleteByField(String indexPrefix, String partition, IndexedObjectType type, String field, String value) throws ExecutionException, InterruptedException {
+        String indexAlias = getIndexAlias(indexPrefix);
+        String indexName = getIndexName(indexAlias, partition);
+
+        QueryBuilder qb = QueryBuilders.fieldQuery(field, value);
+        client.getClient().prepareDeleteByQuery(indexName).setTypes(type.getValue()).setQuery(qb).execute().get();
+    }
 }
