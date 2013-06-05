@@ -406,6 +406,11 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                             .replaceAll("Content-Transfer-Encoding: 8-bit", "Content-Transfer-Encoding: 8bit");
                     reset();
                     loadMimeMessageFromSource(fixedRawContents);
+                } else if (e.getMessage().equals("Unknown encoding: 8bi")) {
+                    String fixedRawContents = this.getRawContents()
+                            .replaceAll("Content-Transfer-Encoding: 8bi", "Content-Transfer-Encoding: 8bit");
+                    reset();
+                    loadMimeMessageFromSource(fixedRawContents);
                 } else {
                     throw e;
                 }
