@@ -105,7 +105,7 @@ public class Archiver {
 
             }
 
-        } while (scrollResp.hits().hits().length > 0);
+        } while (scrollResp.getHits().hits().length > 0);
 
 
         if (!execute) {

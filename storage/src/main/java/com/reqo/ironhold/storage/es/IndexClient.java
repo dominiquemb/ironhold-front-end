@@ -180,7 +180,7 @@ public class IndexClient {
         CreateIndexResponse response1 = esClient.admin().indices()
                 .prepareCreate(indexName).setSettings(indexSettingsFileContents).execute()
                 .get();
-        if (!response1.acknowledged()) {
+        if (!response1.isAcknowledged()) {
             throw new Exception("ES Request did not get acknowledged: "
                     + response1.toString());
         }
@@ -189,7 +189,7 @@ public class IndexClient {
             IndicesAliasesResponse response3 = esClient.admin().indices()
                     .prepareAliases().addAlias(indexName, alias).execute()
                     .get();
-            if (!response3.acknowledged()) {
+            if (!response3.isAcknowledged()) {
                 throw new Exception("ES Request did not get acknowledged: "
                         + response3.toString());
             }
@@ -197,14 +197,14 @@ public class IndexClient {
 
     }
 
-    public void addTypeMapping(String indexName, IndexedObjectType type, String mappingsFile) throws Exception {
+    public synchronized void addTypeMapping(String indexName, IndexedObjectType type, String mappingsFile) throws Exception {
         String mappingFileContents = readJsonDefinition(mappingsFile);
         logger.info("Applying mapping for " + indexName + " of type " + type.getValue());
         PutMappingResponse response2 = esClient.admin().indices()
                 .preparePutMapping(indexName)
                 .setType(type.getValue())
                 .setSource(mappingFileContents).execute().get();
-        if (!response2.acknowledged()) {
+        if (!response2.isAcknowledged()) {
             throw new Exception("ES Request did not get acknowledged: "
                     + response2.toString());
         }

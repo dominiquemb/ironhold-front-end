@@ -76,13 +76,13 @@ public class MessageIndexServiceTest {
         IndicesExistsResponse exists = client.admin().indices()
                 .prepareExists(indexName).execute().actionGet();
 
-        Assert.assertTrue(exists.exists());
+        Assert.assertTrue(exists.isExists());
 
         GetResponse response = client
                 .prepareGet(indexName, "mimeMessage",
                         indexedMailMessage.getMessageId()).execute()
                 .actionGet();
-        Assert.assertTrue(response.exists());
+        Assert.assertTrue(response.isExists());
 
         Assert.assertEquals(indexedMailMessage.serialize(), response.getSourceAsString());
     }
@@ -192,7 +192,7 @@ public class MessageIndexServiceTest {
                 .getEntries();
         Assert.assertEquals(1, years.size());
         Assert.assertEquals(indexedMailMessage.getYear(), years.get(0)
-                .getTerm());
+                .getTerm().toString());
         Assert.assertEquals(1, years.get(0).getCount());
 
         TermsFacet toFacet = response.getFacets().facet(
@@ -201,7 +201,7 @@ public class MessageIndexServiceTest {
                 .getEntries();
         Assert.assertEquals(1, toNames.size());
         Assert.assertEquals(indexedMailMessage.getTo()[0].getName(), toNames
-                .get(0).getTerm());
+                .get(0).getTerm().toString());
         Assert.assertEquals(1, toNames.get(0).getCount());
 
         TermsFacet fromFacet = response.getFacets().facet(
@@ -210,7 +210,7 @@ public class MessageIndexServiceTest {
                 .getEntries();
         Assert.assertEquals(1, fromNames.size());
         Assert.assertEquals(indexedMailMessage.getSender().getName(), fromNames
-                .get(0).getTerm());
+                .get(0).getTerm().toString());
         Assert.assertEquals(1, fromNames.get(0).getCount());
 
         TermsFacet toDomainFacet = response.getFacets().facet(
@@ -219,7 +219,7 @@ public class MessageIndexServiceTest {
                 .getEntries();
         Assert.assertEquals(1, toDomains.size());
         Assert.assertEquals(indexedMailMessage.getTo()[0].getDomain(),
-                toDomains.get(0).getTerm());
+                toDomains.get(0).getTerm().toString());
         Assert.assertEquals(1, toDomains.get(0).getCount());
 
         TermsFacet fromDomainFacet = response.getFacets().facet(
@@ -228,7 +228,7 @@ public class MessageIndexServiceTest {
                 .getEntries();
         Assert.assertEquals(1, fromDomains.size());
         Assert.assertEquals(indexedMailMessage.getSender().getDomain(),
-                fromDomains.get(0).getTerm());
+                fromDomains.get(0).getTerm().toString());
         Assert.assertEquals(1, fromDomains.get(0).getCount());
 
         TermsFacet fileExtFacet = response.getFacets().facet(
@@ -238,7 +238,7 @@ public class MessageIndexServiceTest {
         Assert.assertEquals(1, fileExts.size());
         Assert.assertEquals(
                 indexedMailMessage.getAttachments()[0].getFileExt(), fileExts
-                .get(0).getTerm());
+                .get(0).getTerm().toString());
         Assert.assertEquals(1, fileExts.get(0).getCount());
     }
 
@@ -275,13 +275,13 @@ public class MessageIndexServiceTest {
         IndicesExistsResponse exists = client.admin().indices()
                 .prepareExists(indexName).execute().actionGet();
 
-        Assert.assertTrue(exists.exists());
+        Assert.assertTrue(exists.isExists());
 
         GetResponse response = client
                 .prepareGet(indexName, IndexedObjectType.MIME_MESSAGE.getValue(),
                         indexedMailMessage.getMessageId()).execute()
                 .actionGet();
-        Assert.assertTrue(response.exists());
+        Assert.assertTrue(response.isExists());
 
         Assert.assertEquals(indexedMailMessage.serialize(), response.getSourceAsString());
         indexClient.refresh(indexName);

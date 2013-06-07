@@ -53,7 +53,7 @@ public abstract class AbstractIndexService {
     }
 
 
-    protected void createIndexIfMissing(String indexPrefix, String partition) throws Exception {
+    protected synchronized void createIndexIfMissing(String indexPrefix, String partition) throws Exception {
         if (!indexes.contains(partition == null || partition.isEmpty() ? "none" : partition)) {
             String indexAlias = getIndexAlias(indexPrefix);
             String indexName = getIndexName(indexAlias, partition);
@@ -64,6 +64,7 @@ public abstract class AbstractIndexService {
                 for (IndexedObjectType type : mappings.keySet()) {
                     client.addTypeMapping(indexName, type, mappings.get(type));
                 }
+                Thread.sleep(1000);
 
             } else {
                 for (IndexedObjectType type : mappings.keySet()) {

@@ -145,7 +145,14 @@ public class QueueWatcherTest extends AbstractJUnit4SpringContextTests {
 
         FileUtils.copyFileToDirectory(md5File, queueFolder.getRoot());
 
-        Thread.sleep(20000);
+        int count = 0;
+        while (true) {
+            if (queueFolder.getRoot().listFiles().length == 0 || count > 100) {
+                break;
+            }
+            Thread.sleep(1000);
+            count++;
+        }
 
         Assert.assertEquals(0, queueFolder.getRoot().
 

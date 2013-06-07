@@ -60,7 +60,7 @@ public class MessageIndexService extends AbstractIndexService {
 
 
         GetResponse response = client.getById(indexName, IndexedObjectType.MIME_MESSAGE, messageId);
-        if (response.exists()) {
+        if (response.isExists()) {
             IndexedMailMessage indexedMailMessage = new IndexedMailMessage();
             indexedMailMessage = indexedMailMessage.deserialize(response.getSourceAsString());
 

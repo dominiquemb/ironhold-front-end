@@ -192,7 +192,7 @@ public class SearchResults extends HorizontalLayout {
                     final HorizontalLayout hl = new HorizontalLayout();
                     hl.setWidth("100%");
 
-                    CheckBox checkBox = new CheckBox(entry.getTerm());
+                    CheckBox checkBox = new CheckBox(entry.getTerm().toString());
                     checkBox.setImmediate(true);
                     checkBox.addValueChangeListener(new ValueChangeListener() {
                         @Override
@@ -202,9 +202,9 @@ public class SearchResults extends HorizontalLayout {
                                 builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                 if (enabled) {
-                                    builder.withYearFacetValue(entry.getTerm());
+                                    builder.withYearFacetValue(entry.getTerm().toString());
                                 } else {
-                                    builder.withoutYearFacetValue(entry.getTerm());
+                                    builder.withoutYearFacetValue(entry.getTerm().toString());
                                 }
                                 performSearch(messageIndexService, authenticatedUser);
                             } catch (Exception e) {
@@ -239,12 +239,12 @@ public class SearchResults extends HorizontalLayout {
                 fileExtFacetPanel.removeAllComponents();
                 int visibleFacets = 0;
                 for (final TermsFacet.Entry entry : fileExtFacet.getEntries()) {
-                    if (entry.getTerm().trim().length() != 0) {
+                    if (entry.getTerm().toString().trim().length() != 0) {
                         final HorizontalLayout hl = new HorizontalLayout();
                         hl.setWidth("100%");
 
                         CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-                                entry.getTerm(),
+                                entry.getTerm().toString(),
                                 20 - Integer.toString(entry.getCount()).length()));
                         checkBox.setImmediate(true);
                         checkBox.addValueChangeListener(new ValueChangeListener() {
@@ -255,10 +255,10 @@ public class SearchResults extends HorizontalLayout {
                                     builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                     if (enabled) {
-                                        builder.withFileExtFacetValue(entry.getTerm());
+                                        builder.withFileExtFacetValue(entry.getTerm().toString());
                                     } else {
                                         builder.withoutFileExtFacetValue(entry
-                                                .getTerm());
+                                                .getTerm().toString());
                                     }
                                     performSearch(messageIndexService, authenticatedUser);
                                 } catch (Exception e) {
@@ -301,7 +301,7 @@ public class SearchResults extends HorizontalLayout {
                     hl.setWidth("100%");
 
                     CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-                            entry.getTerm(),
+                            entry.getTerm().toString(),
                             20 - Integer.toString(entry.getCount()).length()));
                     checkBox.setImmediate(true);
                     checkBox.addValueChangeListener(new ValueChangeListener() {
@@ -312,9 +312,9 @@ public class SearchResults extends HorizontalLayout {
                                 builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                 if (enabled) {
-                                    builder.withFromFacetValue(entry.getTerm());
+                                    builder.withFromFacetValue(entry.getTerm().toString());
                                 } else {
-                                    builder.withoutFromFacetValue(entry.getTerm());
+                                    builder.withoutFromFacetValue(entry.getTerm().toString());
                                 }
                                 performSearch(messageIndexService, authenticatedUser);
                             } catch (Exception e) {
@@ -348,12 +348,12 @@ public class SearchResults extends HorizontalLayout {
                 fromDomainFacetPanel.removeAllComponents();
                 for (final TermsFacet.Entry entry : fromDomainFacet
                         .getEntries()) {
-                    if (entry.getTerm().contains(".")) {
+                    if (entry.getTerm().toString().contains(".")) {
                         final HorizontalLayout hl = new HorizontalLayout();
                         hl.setWidth("100%");
 
                         CheckBox checkBox = new CheckBox(
-                                StringUtils.abbreviate(entry.getTerm(),
+                                StringUtils.abbreviate(entry.getTerm().toString(),
                                         20 - Integer.toString(entry.getCount())
                                                 .length()));
                         checkBox.setImmediate(true);
@@ -366,10 +366,10 @@ public class SearchResults extends HorizontalLayout {
 
                                     if (enabled) {
                                         builder.withFromDomainFacetValue(entry
-                                                .getTerm());
+                                                .getTerm().toString());
                                     } else {
                                         builder.withoutFromDomainFacetValue(entry
-                                                .getTerm());
+                                                .getTerm().toString());
                                     }
                                     performSearch(messageIndexService, authenticatedUser);
                                 } catch (Exception e) {
@@ -407,7 +407,7 @@ public class SearchResults extends HorizontalLayout {
                     hl.setWidth("100%");
 
                     CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-                            entry.getTerm(),
+                            entry.getTerm().toString(),
                             20 - Integer.toString(entry.getCount()).length()));
                     checkBox.setImmediate(true);
                     checkBox.addValueChangeListener(new ValueChangeListener() {
@@ -418,9 +418,9 @@ public class SearchResults extends HorizontalLayout {
                                 builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                 if (enabled) {
-                                    builder.withToFacetValue(entry.getTerm());
+                                    builder.withToFacetValue(entry.getTerm().toString());
                                 } else {
-                                    builder.withoutToFacetValue(entry.getTerm());
+                                    builder.withoutToFacetValue(entry.getTerm().toString());
                                 }
                                 performSearch(messageIndexService, authenticatedUser);
                             } catch (Exception e) {
@@ -452,12 +452,12 @@ public class SearchResults extends HorizontalLayout {
                         MessageSearchBuilder.FACET_TO_DOMAIN);
                 toDomainFacetPanel.removeAllComponents();
                 for (final TermsFacet.Entry entry : toDomainFacet.getEntries()) {
-                    if (entry.getTerm().contains(".")) {
+                    if (entry.getTerm().toString().contains(".")) {
                         final HorizontalLayout hl = new HorizontalLayout();
                         hl.setWidth("100%");
 
                         CheckBox checkBox = new CheckBox(
-                                StringUtils.abbreviate(entry.getTerm(),
+                                StringUtils.abbreviate(entry.getTerm().toString(),
                                         20 - Integer.toString(entry.getCount())
                                                 .length()));
                         checkBox.setImmediate(true);
@@ -470,10 +470,10 @@ public class SearchResults extends HorizontalLayout {
 
                                     if (enabled) {
                                         builder.withToDomainFacetValue(entry
-                                                .getTerm());
+                                                .getTerm().toString());
                                     } else {
                                         builder.withoutToDomainFacetValue(entry
-                                                .getTerm());
+                                                .getTerm().toString());
                                     }
                                     performSearch(messageIndexService, authenticatedUser);
                                 } catch (Exception e) {

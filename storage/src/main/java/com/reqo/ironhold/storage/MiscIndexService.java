@@ -92,7 +92,7 @@ public class MiscIndexService extends AbstractIndexService {
 
         String alias = getIndexAlias(indexPrefix);
         GetResponse response = client.getById(alias, IndexedObjectType.PST_FILE_META, id);
-        if (response.exists()) {
+        if (response.isExists()) {
             PSTFileMeta pstFileMeta = new PSTFileMeta();
 
             return pstFileMeta.deserialize(response.getSourceAsString());
@@ -186,7 +186,7 @@ public class MiscIndexService extends AbstractIndexService {
         Pair<String, String> pair = new ImmutablePair("username", username.toLowerCase());
         criteria.add(pair);
         SearchResponse response = client.getByField(alias, IndexedObjectType.LOGIN_USER, criteria);
-        if (response.hits().getTotalHits() != 1) {
+        if (response.getHits().getTotalHits() != 1) {
             return null;
         } else {
             LoginUser storedUser = new LoginUser();
