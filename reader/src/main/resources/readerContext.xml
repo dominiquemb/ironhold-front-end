@@ -31,9 +31,9 @@
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
     <!-- Ima reader bean -->
-    <bean id="imapReader" class="com.reqo.ironhold.reader.IMAPReader"/>
+    <bean id="imapReader" class="com.reqo.ironhold.reader.eml.IMAPReader"/>
 
     <!-- Ima reader bean -->
-    <bean id="fileReader" class="com.reqo.ironhold.reader.FileReader"/>
+    <bean id="fileReader" class="com.reqo.ironhold.reader.eml.FileReader"/>
 
 </beans>

@@ -1,4 +1,4 @@
-package com.reqo.ironhold.reader;
+package com.reqo.ironhold.reader.eml;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;

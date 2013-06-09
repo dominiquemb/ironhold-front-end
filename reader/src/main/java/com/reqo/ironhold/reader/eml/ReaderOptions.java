@@ -1,4 +1,4 @@
-package com.reqo.ironhold.reader;
+package com.reqo.ironhold.reader.eml;
 
 import org.kohsuke.args4j.Option;
 

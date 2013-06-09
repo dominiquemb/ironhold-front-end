@@ -1,4 +1,4 @@
-package com.reqo.ironhold.reader;
+package com.reqo.ironhold.reader.eml;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
@@ -125,20 +125,22 @@ public class IMAPReader {
 
             imap.select("inbox");
 
-            if (expunge) {
-                imap.expunge();
-            }
-
-            while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
+            if (indexCommandListener.lastSuccess()) {
                 if (expunge) {
-                    if (indexCommandListener.lastSuccess()) {
-                        imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
-                    }
-
+                    imap.expunge();
                 }
-                count++;
+
+                while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
+                    if (expunge) {
+                        if (indexCommandListener.lastSuccess()) {
+                            imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
+                        }
+
+                    }
+                    count++;
+                }
+                indexCommandListener.commit();
             }
-            indexCommandListener.commit();
 
         } catch (Exception e) {
             logger.error("Not able to process the mail reading.", e);
@@ -184,7 +186,7 @@ public class IMAPReader {
                             + " messages in " + (finished - started) + "ms");
 
                     if (number < bean.getBatchSize()) {
-
+                        logger.info("Nothing more to process, going to sleep");
                         Thread.sleep(60000);
 
                     }
@@ -392,6 +394,8 @@ public class IMAPReader {
                         System.exit(1);
                     }
                 }
+            } else if (currentResponse.contains("EXISTS") && !currentResponse.startsWith("* 0 EXISTS")) {
+                lastSuccess = true;
             }
         }
 
