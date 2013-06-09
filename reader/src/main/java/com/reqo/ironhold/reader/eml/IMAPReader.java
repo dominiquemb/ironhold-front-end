@@ -144,7 +144,7 @@ public class IMAPReader {
 
         } catch (Exception e) {
             logger.error("Not able to process the mail reading.", e);
-            System.exit(1);
+            return count;
         }
 
         return count;
