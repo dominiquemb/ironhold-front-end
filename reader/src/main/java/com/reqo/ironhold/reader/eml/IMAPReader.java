@@ -130,7 +130,12 @@ public class IMAPReader {
                     imap.expunge();
                 }
 
-                while (imap.fetch(Integer.toString(count), "(RFC822)") && count < batchSize && !indexCommandListener.nothingFetched()) {
+                int toBeProcessed = batchSize;
+                if (indexCommandListener.getToBeProcessed() > 0 && indexCommandListener.getToBeProcessed() < batchSize) {
+                    toBeProcessed = indexCommandListener.getToBeProcessed();
+                }
+                logger.info("Can import " + toBeProcessed + " messages");
+                while (imap.fetch(Integer.toString(count), "(RFC822)") && count < toBeProcessed && !indexCommandListener.nothingFetched()) {
                     if (expunge) {
                         if (indexCommandListener.lastSuccess()) {
                             imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
@@ -144,7 +149,7 @@ public class IMAPReader {
 
         } catch (Exception e) {
             logger.error("Not able to process the mail reading.", e);
-            return count;
+            return -1;
         }
 
         return count;
@@ -184,8 +189,11 @@ public class IMAPReader {
                     long finished = System.currentTimeMillis();
                     logger.info("Processed batch with " + (number - 1)
                             + " messages in " + (finished - started) + "ms");
-
-                    if (number < bean.getBatchSize()) {
+                    if (number == -1) {
+                        logger.warn("Lost connection, going to sleep");
+                        Thread.sleep(60000);
+                        readMail.initiateConnection();
+                    } else if (number < bean.getBatchSize()) {
                         logger.info("Nothing more to process, going to sleep");
                         Thread.sleep(60000);
 
@@ -281,6 +289,7 @@ public class IMAPReader {
         private long started;
         private long finished;
         private boolean lastSuccess;
+        private int toBeProcessed;
 
         public IndexCommandListener() {
             source = new IMAPMessageSource();
@@ -311,6 +320,7 @@ public class IMAPReader {
             currentCommand = event.getCommand();
             started = System.currentTimeMillis();
             lastSuccess = false;
+            toBeProcessed = 0;
         }
 
         @Override
@@ -394,13 +404,25 @@ public class IMAPReader {
                         System.exit(1);
                     }
                 }
-            } else if (currentResponse.contains("EXISTS") && !currentResponse.startsWith("* 0 EXISTS")) {
-                lastSuccess = true;
+            } else if (currentCommand.equals("SELECT") && currentResponse.contains("EXISTS")) {
+                if (!currentResponse.startsWith("* 0 EXISTS")) {
+                    lastSuccess = true;
+                } else {
+                    try {
+                        this.toBeProcessed = Integer.parseInt(currentResponse.split(" ")[1]);
+                    } catch (Exception e) {
+                        logger.warn("Failed to get number of messages to process", e);
+                    }
+                }
             }
         }
 
         public boolean lastSuccess() {
             return lastSuccess;
+        }
+
+        private int getToBeProcessed() {
+            return toBeProcessed;
         }
     }
 }
