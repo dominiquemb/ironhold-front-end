@@ -404,7 +404,7 @@ public class IMAPReader {
                         System.exit(1);
                     }
                 }
-            } else if (currentCommand.equals("SELECT") && currentResponse.contains("EXISTS")) {
+            } else if (currentCommand != null && currentCommand.equals("SELECT") && currentResponse.contains("EXISTS")) {
                 if (!currentResponse.startsWith("* 0 EXISTS")) {
                     lastSuccess = true;
                 } else {
