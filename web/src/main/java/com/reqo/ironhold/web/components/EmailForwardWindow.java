@@ -94,6 +94,8 @@ public class EmailForwardWindow extends Window {
                         m.loadMimeMessageFromSource(message);
 
                         HtmlEmail email = new HtmlEmail();
+                        email.setDebug(true);
+                        email.getMailSession().getProperties().put("mail.debug", "true");
                         email.setHostName(mailServer);
                         email.addTo(address.getValue());
                         email.setFrom(loginUser.getMainRecipient().getAddress(), loginUser.getMainRecipient().getName());
@@ -107,8 +109,8 @@ public class EmailForwardWindow extends Window {
                         email.setTextMsg(loginUser.getMainRecipient().getName() + " forwarded you attached message");
 
                         email.attach(new ByteArrayDataSource(message.getBytes(), "message/rfc822"), m.getSubject() + ".eml", m.getSubject());
-
                         email.send();
+
 
                     } catch (Exception e) {
                         logger.warn(e);
