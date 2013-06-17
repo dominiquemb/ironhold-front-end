@@ -260,5 +260,7 @@ public class PSTImporter {
 
     public void initialize() throws Exception {
         messageIndexService.forceRefreshMappings(client);
+        metaDataIndexService.forceRefreshMappings(client);
+        miscIndexService.forceRefreshMappings(client);
     }
 }
