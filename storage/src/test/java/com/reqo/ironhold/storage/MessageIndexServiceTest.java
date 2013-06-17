@@ -356,6 +356,6 @@ public class MessageIndexServiceTest {
             Assert.assertTrue(aliases.containsKey(INDEX_PREFIX + "." + i));
         }
 
-        messageIndexService.forceRefreshMappings(INDEX_PREFIX);
+        messageIndexService.forceRefreshMappings(INDEX_PREFIX, true);
     }
 }

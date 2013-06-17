@@ -9,7 +9,6 @@ import com.reqo.ironhold.storage.model.message.Recipient;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
-import com.reqo.ironhold.web.components.validators.UniqueUsernameValidator;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
@@ -50,7 +49,6 @@ public class LoginUserViewer extends Panel {
     private final Map<RoleEnum, Label> roleToggles;
     private final Table searchHistoryTable;
     private final Label emailAddresses;
-    private UniqueUsernameValidator uniqueUsernameValidator;
 
     public LoginUserViewer(final UserManagementWindow window, final String client, final MessageIndexService messageIndexService, final MiscIndexService miscIndexService, MetaDataIndexService metaDataIndexService) {
         this.client = client;

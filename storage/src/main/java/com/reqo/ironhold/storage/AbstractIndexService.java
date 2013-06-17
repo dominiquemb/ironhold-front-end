@@ -90,14 +90,21 @@ public abstract class AbstractIndexService {
     }
 
 
-    public void forceRefreshMappings(String indexPrefix) throws Exception {
-        IndicesGetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
-        Map<String, List<AliasMetaData>> aliases = response.getAliases();
-        for (String indexName : aliases.keySet()) {
-            for (IndexedObjectType type : mappings.keySet()) {
-                client.addTypeMapping(indexName, type, mappings.get(type));
+    public void forceRefreshMappings(String indexPrefix, boolean followAliases) throws Exception {
+        if (followAliases) {
+            IndicesGetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
+            Map<String, List<AliasMetaData>> aliases = response.getAliases();
+            for (String indexName : aliases.keySet()) {
+                for (IndexedObjectType type : mappings.keySet()) {
+                    client.addTypeMapping(indexName, type, mappings.get(type));
+                }
             }
+            Thread.sleep(1000);
+        } else {
+            for (IndexedObjectType type : mappings.keySet()) {
+                client.addTypeMapping(indexPrefix, type, mappings.get(type));
+            }
+
         }
-        Thread.sleep(1000);
     }
 }

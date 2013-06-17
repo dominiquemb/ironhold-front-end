@@ -143,7 +143,7 @@ public class IndexClient {
 
         request.setFilter(fb);
 
-        logger.debug(request.toString());
+        logger.info(request.toString());
         return request.execute().get();
     }
 

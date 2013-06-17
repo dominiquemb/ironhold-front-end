@@ -12,6 +12,8 @@
 
 
     <bean id="setupClient" class="com.reqo.ironhold.storage.utils.UserSetup" scope="singleton"/>
+    <bean id="refreshMappings" class="com.reqo.ironhold.storage.utils.RefreshMappings" scope="singleton"/>
+
     <bean id="reconciliation" class="com.reqo.ironhold.storage.utils.MessageReconciliation" scope="singleton"/>
     <bean id="archiver" class="com.reqo.ironhold.storage.utils.Archiver" scope="singleton"/>
 
@@ -19,6 +21,7 @@
     <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient" scope="singleton">
         <constructor-arg type="java.lang.String" value="Utilities"/>
     </bean>
+
     <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
