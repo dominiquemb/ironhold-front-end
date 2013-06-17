@@ -62,7 +62,6 @@ public class PSTImporter {
 
     public PSTImporter() throws Exception {
         this.hostname = InetAddress.getLocalHost().getHostName();
-        messageIndexService.forceRefreshMappings(client);
     }
 
     private boolean wasFileProcessedPreviously() throws Exception {
@@ -257,5 +256,9 @@ public class PSTImporter {
 
     public void setClient(String client) {
         this.client = client;
+    }
+
+    public void initialize() throws Exception {
+        messageIndexService.forceRefreshMappings(client);
     }
 }

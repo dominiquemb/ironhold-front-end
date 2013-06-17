@@ -43,6 +43,10 @@ public class QueueWatcher extends FileWatcher {
 
     }
 
+    public void initialize() throws Exception {
+        importer.initialize();
+    }
+
     public static void main(String[] args) {
         WatcherOptions bean = new WatcherOptions();
         CmdLineParser parser = new CmdLineParser(bean);
@@ -62,6 +66,7 @@ public class QueueWatcher extends FileWatcher {
             qw.setQuarantineDirName(bean.getQuarantine());
             qw.setClient(bean.getClient());
 
+            qw.initialize();
             qw.start();
 
         } catch (Exception e) {

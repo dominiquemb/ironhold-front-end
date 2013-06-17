@@ -98,5 +98,6 @@ public abstract class AbstractIndexService {
                 client.addTypeMapping(indexName, type, mappings.get(type));
             }
         }
+        Thread.sleep(1000);
     }
 }
