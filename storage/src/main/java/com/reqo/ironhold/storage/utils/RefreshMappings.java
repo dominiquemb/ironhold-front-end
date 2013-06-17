@@ -3,6 +3,7 @@ package com.reqo.ironhold.storage.utils;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
+import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -16,6 +17,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * Time: 12:11 AM
  */
 public class RefreshMappings {
+    static {
+        System.setProperty("jobname", RefreshMappings.class.getSimpleName());
+    }
+
+    private static Logger logger = Logger.getLogger(RefreshMappings.class);
 
     @Autowired
     private MiscIndexService miscIndexService;
