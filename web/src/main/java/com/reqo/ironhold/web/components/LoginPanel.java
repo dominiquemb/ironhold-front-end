@@ -101,7 +101,7 @@ public class LoginPanel extends Panel {
         }
         if (url.contains(".ironhold.net")) {
             url = url.split(".ironhold.net")[0];
-            return url;
+            return url.toLowerCase();
         }
         return getCookie("client");
     }
@@ -109,7 +109,7 @@ public class LoginPanel extends Panel {
     private String getCookie(String name) {
         for (Cookie cookie : VaadinService.getCurrentRequest().getCookies()) {
             if (cookie.getName().equals(name)) {
-                return cookie.getValue();
+                return cookie.getValue().toLowerCase();
             }
         }
 
@@ -127,14 +127,14 @@ public class LoginPanel extends Panel {
             password.validate();
             client.validate();
 
-            LoginUser authenticatedUser = miscIndexService.authenticate(client.getValue(), username.getValue(), password.getValue());
+            LoginUser authenticatedUser = miscIndexService.authenticate(client.getValue().toLowerCase(), username.getValue(), password.getValue());
             if (authenticatedUser == null) {
                 Notification.show("Invalid credentials", Notification.Type.ERROR_MESSAGE);
             } else {
                 getSession().setAttribute("loginUser", authenticatedUser);
-                getSession().setAttribute("client", client.getValue());
+                getSession().setAttribute("client", client.getValue().toLowerCase());
 
-                addCookie("client", rememberClient.getValue() ? client.getValue() : null);
+                addCookie("client", rememberClient.getValue() ? client.getValue().toLowerCase() : null);
                 addCookie("username", rememberUsername.getValue() ? username.getValue() : null);
 
                 ironholdApplication.getSearchWindow().login();

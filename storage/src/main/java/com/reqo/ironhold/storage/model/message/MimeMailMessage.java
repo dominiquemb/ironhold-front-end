@@ -307,16 +307,6 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                         mimeMessage.getHeader("From")[0]);
             }
 
-            try {
-                internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
-                if (internetAddress != null) {
-                    this.setFrom(new Recipient(internetAddress.getPersonal(),
-                            internetAddress.getAddress()));
-                }
-
-            } catch (AddressException e) {
-                // ignore
-            }
 
             try {
                 if (mimeMessage.getRecipients(Message.RecipientType.TO) != null) {

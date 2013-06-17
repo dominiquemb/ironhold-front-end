@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
@@ -61,9 +60,9 @@ public class PSTImporter {
     private String originalFilePath;
     private String commentary;
 
-    public PSTImporter() throws UnknownHostException {
+    public PSTImporter() throws Exception {
         this.hostname = InetAddress.getLocalHost().getHostName();
-
+        messageIndexService.forceRefreshMappings(client);
     }
 
     private boolean wasFileProcessedPreviously() throws Exception {

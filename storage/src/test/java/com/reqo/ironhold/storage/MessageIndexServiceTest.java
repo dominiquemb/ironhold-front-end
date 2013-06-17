@@ -15,10 +15,13 @@ import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import junit.framework.Assert;
+import org.elasticsearch.action.admin.indices.alias.get.IndicesGetAliasesResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.joda.time.DateTime;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
@@ -28,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RunWith(ElasticsearchRunner.class)
@@ -261,6 +265,7 @@ public class MessageIndexServiceTest {
                 messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser));
     }
 
+
     @Test
     public void testStoreAndDelete() throws Exception {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
@@ -292,4 +297,65 @@ public class MessageIndexServiceTest {
 
     }
 
+
+    @Test
+    public void testMultipleYears() throws Exception {
+
+        List<PSTMessage> messages = testModel.generateOriginalPSTMessages();
+        int counter = 0;
+        int year = 2000;
+        for (PSTMessage message : messages) {
+            MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(message);
+
+            inputMessage.setMessageDate(new DateTime(year + counter, 1, 1, 1, 1).toDate());
+            counter++;
+            IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                    inputMessage);
+            messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
+            indexClient.refresh(INDEX_PREFIX);
+
+        }
+
+        Assert.assertEquals(messages.size(),
+                messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser));
+
+        IndicesGetAliasesResponse response = client.admin().indices().prepareGetAliases(INDEX_PREFIX).execute().get();
+        Map<String, List<AliasMetaData>> aliases = response.getAliases();
+        Assert.assertEquals(counter, aliases.keySet().size());
+        for (int i = 2000; i < counter; i++) {
+            Assert.assertTrue(aliases.containsKey(INDEX_PREFIX + "." + i));
+        }
+    }
+
+
+    @Test
+    public void testRefreshMappings() throws Exception {
+
+        List<PSTMessage> messages = testModel.generateOriginalPSTMessages();
+        int counter = 0;
+        int year = 2000;
+        for (PSTMessage message : messages) {
+            MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(message);
+
+            inputMessage.setMessageDate(new DateTime(year + counter, 1, 1, 1, 1).toDate());
+            counter++;
+            IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                    inputMessage);
+            messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
+            indexClient.refresh(INDEX_PREFIX);
+
+        }
+
+        Assert.assertEquals(messages.size(),
+                messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser));
+
+        IndicesGetAliasesResponse response = client.admin().indices().prepareGetAliases(INDEX_PREFIX).execute().get();
+        Map<String, List<AliasMetaData>> aliases = response.getAliases();
+        Assert.assertEquals(counter, aliases.keySet().size());
+        for (int i = 2000; i < counter; i++) {
+            Assert.assertTrue(aliases.containsKey(INDEX_PREFIX + "." + i));
+        }
+
+        messageIndexService.forceRefreshMappings(INDEX_PREFIX);
+    }
 }

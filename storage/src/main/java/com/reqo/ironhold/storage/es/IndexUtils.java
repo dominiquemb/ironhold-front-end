@@ -82,7 +82,7 @@ public class IndexUtils {
 
                         if (p.getYears() > 0) {
                             dateString.append(p.toString(yearsAndMonthsFormatter));
-                        } else if (p.getDays() > PREVIEW_RECIPIENT_COUNT) {
+                        } else if (p.getDays() > 0) {
                             dateString.append(p.toString(daysFormatter));
                         } else if (p.getHours() > 48) {
                             dateString.append(p.toString(daysAndHoursFormatter));

@@ -41,6 +41,7 @@ public class RandomEmailReader {
 
     public void process(String client, int number) throws Exception {
 
+        messageIndexService.forceRefreshMappings(client);
 
         for (int i = 0; i < number; i++) {
             MimeMailMessage mailMessage = new MimeMailMessage();

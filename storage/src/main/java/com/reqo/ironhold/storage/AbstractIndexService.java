@@ -3,13 +3,12 @@ package com.reqo.ironhold.storage;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.admin.indices.alias.get.IndicesGetAliasesResponse;
+import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -88,5 +87,16 @@ public abstract class AbstractIndexService {
 
         QueryBuilder qb = QueryBuilders.fieldQuery(field, value);
         client.getClient().prepareDeleteByQuery(indexName).setTypes(type.getValue()).setQuery(qb).execute().get();
+    }
+
+
+    public void forceRefreshMappings(String indexPrefix) throws Exception {
+        IndicesGetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
+        Map<String, List<AliasMetaData>> aliases = response.getAliases();
+        for (String indexName : aliases.keySet()) {
+            for (IndexedObjectType type : mappings.keySet()) {
+                client.addTypeMapping(indexName, type, mappings.get(type));
+            }
+        }
     }
 }

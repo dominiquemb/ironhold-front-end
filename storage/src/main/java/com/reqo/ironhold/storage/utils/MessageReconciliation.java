@@ -74,7 +74,9 @@ public class MessageReconciliation {
                 for (String messageId : mimeMailMessageStorageService.getList(client, partition, subPartition)) {
 
                     if (force || !messageIndexService.exists(client, partition, messageId)) {
-                        logger.info("Message " + messageId + " is missing from the index");
+                        if (!force) {
+                            logger.info("Message " + messageId + " is missing from the index");
+                        }
                         if (autofix) {
 
                             String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
