@@ -26,6 +26,8 @@ public class SearchWindow extends Panel {
         this.searchResults = searchResults;
         this.searchBar = searchBar;
         this.setSizeFull();
+        this.setStyleName("borderless");
+
         layout = new VerticalLayout();
         this.setContent(layout);
         layout.setMargin(true);

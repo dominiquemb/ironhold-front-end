@@ -176,4 +176,27 @@ public class IndexedMailMessageTest {
         Assert.assertEquals(StringUtils.EMPTY, parsedContent);
 
     }
+
+    @Test
+    public void testProblematicAttachment() throws Exception {
+        File inputFile = FileUtils.toFile(IndexedMailMessageTest.class
+                .getResource("/testProblematicAttachment.eml"));
+
+        InputStream is = new FileInputStream(inputFile);
+        MimeMessage mimeMessage = new MimeMessage(null, is);
+
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessage(mimeMessage);
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                mailMessage);
+
+
+        Assert.assertEquals(1, indexedMailMessage.getAttachments().length);
+        Assert.assertEquals("1 DNC.pdf", indexedMailMessage.getAttachments()[0].getFileName());
+
+        String json = indexedMailMessage.serialize();
+
+        Assert.assertTrue(json.contains("1 DNC.pdf"));
+    }
 }

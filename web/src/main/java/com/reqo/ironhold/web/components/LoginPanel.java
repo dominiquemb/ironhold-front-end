@@ -8,6 +8,7 @@ import com.vaadin.data.validator.NullValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.server.ClassResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
@@ -39,16 +40,24 @@ public class LoginPanel extends Panel {
 
 
         layout.setSizeUndefined();
-
+        Image image = new Image("", new ClassResource("images/logo.gif"));
+        layout.addComponent(image);
         username = new TextField("Username:");
+        username.setWidth("177px");
+        username.setStyleName("big");
         password = new PasswordField("Password:");
+        password.setStyleName("big");
+        password.setWidth("177px");
         client = new TextField("Client Key:");
+        client.setStyleName("big");
+        client.setWidth("177px");
 
         setUpValidation(username);
         setUpValidation(password);
         setUpValidation(client);
 
-        login = new Button("Login");
+        login = new Button("Sign In");
+        login.setStyleName("default");
         rememberUsername = new CheckBox("Remember username");
         rememberClient = new CheckBox("Remember client key");
         rememberUsername.setValue(Boolean.TRUE);

@@ -31,6 +31,7 @@ public class SearchTextField extends Panel {
         this.textField.setTextChangeEventMode(AbstractTextField.TextChangeEventMode.LAZY);
         this.textField.setTextChangeTimeout(200);
         this.textField.setWidth("400px");
+        this.textField.setStyleName("search big");
 
 
         this.textField.addShortcutListener(new ShortcutListener("Default key", ShortcutAction.KeyCode.ENTER, null) {

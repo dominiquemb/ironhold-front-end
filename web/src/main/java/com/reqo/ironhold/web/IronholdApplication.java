@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
  * The Application's "main" class
  */
 @SuppressWarnings("serial")
-@Theme(value = "ironhold")
+@Theme(value = "reindeer")
 @Scope("prototype")
 @Component
 @PreserveOnRefresh
