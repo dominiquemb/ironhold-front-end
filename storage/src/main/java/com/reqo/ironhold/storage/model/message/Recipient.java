@@ -68,8 +68,12 @@ public class Recipient {
 
     public static Recipient normalize(Recipient recipient) {
         Recipient result = Recipient.updateNameAndAddress(recipient);
-        recipient.setAddress(recipient.getAddress().trim().toLowerCase());
-        recipient.setDomain(recipient.getDomain().trim().toLowerCase());
+        if (recipient.getAddress() != null) {
+            recipient.setAddress(recipient.getAddress().trim().toLowerCase());
+        }
+        if (recipient.getDomain() != null) {
+            recipient.setDomain(recipient.getDomain().trim().toLowerCase());
+        }
 
         return Recipient.formatName(result);
     }
