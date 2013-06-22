@@ -12,10 +12,7 @@ import org.codehaus.jackson.map.SerializationConfig;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * User: ilya
@@ -80,7 +77,12 @@ public class LoginUser {
     }
 
     public void setRecipients(List<Recipient> recipients) {
-        this.recipients = recipients;
+        this.recipients = new ArrayList<>();
+        if (recipients != null) {
+            for (Recipient recipient : recipients) {
+                recipients.add(Recipient.normalize(recipient));
+            }
+        }
     }
 
     public String getUsername() {
@@ -128,7 +130,7 @@ public class LoginUser {
     }
 
     public void setMainRecipient(Recipient mainRecipient) {
-        this.mainRecipient = mainRecipient;
+        this.mainRecipient = Recipient.normalize(mainRecipient);
     }
 
     public String getId() {
