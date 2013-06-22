@@ -80,7 +80,7 @@ public class LoginUser {
         this.recipients = new ArrayList<>();
         if (recipients != null) {
             for (Recipient recipient : recipients) {
-                recipients.add(Recipient.normalize(recipient));
+                this.recipients.add(Recipient.normalize(recipient));
             }
         }
     }
