@@ -34,8 +34,8 @@ public class SearchHitPanel extends Panel {
         metaDataIndexService.store(client, auditLogMessage);
 
         layout = new VerticalLayout();
-        layout.setMargin(true);
         this.setContent(layout);
+        layout.setMargin(true);
         me.setStyleName(Reindeer.PANEL_LIGHT);
         String subjectValue = IndexUtils.getFieldValue(item, IndexFieldEnum.SUBJECT);
         if (subjectValue.equals(StringUtils.EMPTY)) {
@@ -45,7 +45,7 @@ public class SearchHitPanel extends Panel {
 
         final HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setSpacing(true);
-        headerLayout.setWidth("570px");
+        headerLayout.setWidth("560px");
         if (subjectValue.length() > 100) {
             subjectValue = StringUtils.abbreviate(subjectValue, 100) + "...";
         }
@@ -122,7 +122,7 @@ public class SearchHitPanel extends Panel {
         hl.addComponent(captionLabel);
         final Label valueLabel = new Label(value);
         valueLabel.setContentMode(ContentMode.HTML);
-        valueLabel.setWidth("540px");
+        valueLabel.setWidth("530px");
         hl.addComponent(valueLabel);
         hl.setExpandRatio(valueLabel, 1.0f);
         return hl;

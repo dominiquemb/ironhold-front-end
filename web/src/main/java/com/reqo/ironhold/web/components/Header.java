@@ -16,19 +16,32 @@ import java.text.SimpleDateFormat;
 public class Header extends HorizontalLayout {
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd G");
     private static Logger logger = Logger.getLogger(Header.class);
+    private final HorizontalLayout searchLayout;
 
-    public Header() {
+    public Header(HorizontalLayout searchLayout) {
+        this.searchLayout = searchLayout;
         this.setWidth("100%");
+        this.setSpacing(true);
+        this.setMargin(true);
         setSizeFull();
     }
 
     public void init(final LoginUser loginUser, final String client, final IronholdApplication application) {
-       /* Button logo = new Button();
-        logo.setStyleName(BaseTheme.BUTTON_LINK);
-        logo.setIcon(new ClassResource("images/logo.png"));
-        this.addComponent(logo);
-        this.setComponentAlignment(logo, Alignment.TOP_LEFT);
-         */
+
+        Image image = new Image("", new ClassResource("images/logo.gif"));
+
+        VerticalLayout left = new VerticalLayout();
+        left.setWidth(Dimensions.LEFT);
+        left.addComponent(image);
+        left.setSpacing(true);
+        this.addComponent(left);
+
+        VerticalLayout middle = new VerticalLayout();
+        middle.addComponent(searchLayout);
+        middle.setWidth(Dimensions.MIDDLE);
+        middle.setSpacing(true);
+        middle.setMargin(true);
+        this.addComponent(middle);
         VerticalLayout vl = new VerticalLayout();
 
 
@@ -76,16 +89,11 @@ public class Header extends HorizontalLayout {
 
         vl.addComponent(hl);
 
-        VerticalLayout left = new VerticalLayout();
-        Image image = new Image("", new ClassResource("images/logo.gif"));
-        left.addComponent(image);
-        left.setWidth(null);
         HorizontalLayout spacer = new HorizontalLayout();
         spacer.setHeight("25px");
         vl.addComponent(spacer);
-        this.addComponent(left);
         this.addComponent(vl);
+        this.setExpandRatio(vl, 1.0F);
         this.setComponentAlignment(vl, Alignment.TOP_RIGHT);
-        this.setExpandRatio(left, 1.0f);
     }
 }

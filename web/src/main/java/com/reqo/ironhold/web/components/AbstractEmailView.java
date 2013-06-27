@@ -14,6 +14,8 @@ import org.elasticsearch.search.SearchHit;
  * Time: 8:56 AM
  */
 public abstract class AbstractEmailView extends Panel {
+    public AbstractEmailView() {
+    }
 
     protected void addEmailToolBar(VerticalLayout layout, String client, SearchHit item) throws Exception {
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();

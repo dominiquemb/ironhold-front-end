@@ -604,8 +604,9 @@ public class SearchResults extends HorizontalLayout {
         leftPane.setExpandRatio(yearFacetPanel, 1);
         leftPane.setExpandRatio(fileExtFacetPanel, 1);
 
-        leftPane.setWidth("200px");
-        middlePane.setWidth("620px");
+        leftPane.setWidth(Dimensions.LEFT);
+        middlePane.setWidth(Dimensions.MIDDLE);
+        middlePane.setMargin(true);
         middlePane.addComponent(resultLabel);
         middlePane.addComponent(messageList);
 

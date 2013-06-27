@@ -34,7 +34,7 @@ public class EmailToolBar extends Panel {
                 return new ByteArrayInputStream(mailMessage.getBytes());
             }
         }, id + ".eml"));
-        download.setIcon(new ClassResource("images/file.png"));
+        download.setIcon(new ClassResource("images/download.png"));
 
         final Button forward = new Button();
         forward.setCaption("Forward");

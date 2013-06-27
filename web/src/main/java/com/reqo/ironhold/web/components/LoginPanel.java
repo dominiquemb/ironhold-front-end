@@ -36,6 +36,7 @@ public class LoginPanel extends Panel {
         this.setSizeUndefined();
 
         this.layout = new VerticalLayout();
+        layout.setSpacing(true);
         this.setContent(layout);
 
 
@@ -43,14 +44,14 @@ public class LoginPanel extends Panel {
         Image image = new Image("", new ClassResource("images/logo.gif"));
         layout.addComponent(image);
         username = new TextField("Username:");
-        username.setWidth("177px");
+        username.setWidth("200px");
         username.setStyleName("big");
         password = new PasswordField("Password:");
         password.setStyleName("big");
-        password.setWidth("177px");
+        password.setWidth("200px");
         client = new TextField("Client Key:");
         client.setStyleName("big");
-        client.setWidth("177px");
+        client.setWidth("200px");
 
         setUpValidation(username);
         setUpValidation(password);
@@ -152,6 +153,7 @@ public class LoginPanel extends Panel {
             Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         } catch (Exception e) {
             Notification.show("Invalid credentials", Notification.Type.ERROR_MESSAGE);
+            e.printStackTrace();
         }
 
     }

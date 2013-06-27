@@ -30,7 +30,7 @@ public class SearchTextField extends Panel {
 
         this.textField.setTextChangeEventMode(AbstractTextField.TextChangeEventMode.LAZY);
         this.textField.setTextChangeTimeout(200);
-        this.textField.setWidth("400px");
+        this.textField.setWidth("500px");
         this.textField.setStyleName("search big");
 
 

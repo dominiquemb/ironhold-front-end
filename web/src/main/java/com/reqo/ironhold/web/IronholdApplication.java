@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
  * The Application's "main" class
  */
 @SuppressWarnings("serial")
-@Theme(value = "reindeer")
+@Theme(value = "ironhold")
 @Scope("prototype")
 @Component
 @PreserveOnRefresh
@@ -63,7 +63,6 @@ public class IronholdApplication extends UI {
         searchTextField = new SearchTextField(searchResults);
         searchBar = new SearchBar(searchTextField);
         searchWindow = new SearchWindow(searchResults, searchBar, loginPanel);
-
     }
 
     @Override

@@ -30,7 +30,6 @@ public class SearchWindow extends Panel {
 
         layout = new VerticalLayout();
         this.setContent(layout);
-        layout.setMargin(true);
         layout.setSizeFull();
         final Properties prop = new Properties();
         prop.load(SearchWindow.class.getResourceAsStream("auth.properties"));
@@ -79,19 +78,19 @@ public class SearchWindow extends Panel {
             }
         });
 
-        Header header = new Header();
-        header.init(authenticatedUser, client, (IronholdApplication) this.getUI());
-        vl.addComponent(header);
 
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setSpacing(true);
         topLayout.addComponent(searchBar);
         topLayout.addComponent(searchButton);
-        vl.addComponent(topLayout);
+
+        Header header = new Header(topLayout);
+        header.init(authenticatedUser, client, (IronholdApplication) this.getUI());
+        vl.addComponent(header);
+
 
         vl.addComponent(searchResults);
 
-        vl.setComponentAlignment(topLayout, Alignment.TOP_CENTER);
 
         layout.addComponent(vl);
     }

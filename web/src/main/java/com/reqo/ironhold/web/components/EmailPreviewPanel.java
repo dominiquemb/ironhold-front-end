@@ -74,6 +74,7 @@ public class EmailPreviewPanel extends TabSheet {
             currentHitPanel.setStyleName(Reindeer.PANEL_LIGHT);
         }
         newHitPanel.setStyleName(null);
+
         currentHitPanel = newHitPanel;
 
         this.setVisible(true);
