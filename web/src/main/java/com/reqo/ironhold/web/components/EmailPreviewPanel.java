@@ -4,6 +4,7 @@ import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
@@ -37,7 +38,6 @@ public class EmailPreviewPanel extends TabSheet {
         this.auditView = auditView;
         this.setVisible(false);
 
-
         this.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
             @Override
@@ -63,7 +63,9 @@ public class EmailPreviewPanel extends TabSheet {
             this.addTab(textView, "Text");
             this.addTab(htmlView, "HTML");
             this.addTab(sourceView, "Source");
-            this.addTab(auditView, "Audit");
+            if (loginUser.hasRole(RoleEnum.CAN_VIEW_AUDIT)) {
+                this.addTab(auditView, "Audit");
+            }
             tabsConfigured = true;
         }
         this.newHitPanel = newHitPanel;
