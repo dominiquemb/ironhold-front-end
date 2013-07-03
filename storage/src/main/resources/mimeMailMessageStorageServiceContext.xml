@@ -27,5 +27,16 @@
     <bean id="mimeMailMessageStorageServiceHandler"
           class="com.reqo.ironhold.storage.thrift.MimeMailMessageStorageServiceHandler" scope="singleton"/>
 
+    <bean id="createISOImage" class="com.reqo.ironhold.storage.utils.CreateISOImage">
+        <constructor-arg type="java.io.File" value="${data.root}"/>
+        <constructor-arg type="java.io.File" value="${archive.root}"/>
+        <constructor-arg type="java.io.File" value="${keystore.root}"/>
+        <constructor-arg type="java.io.File" value="${backup.root}"/>
+    </bean>
+
+
+    <bean id="verifyDataStore" class="com.reqo.ironhold.storage.utils.VerifyDataStore">
+    </bean>
+
 
 </beans>

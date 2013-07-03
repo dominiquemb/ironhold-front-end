@@ -143,6 +143,19 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         return true;
     }
 
+    public List<String> getClients() {
+        File parentDir = new File(dataStore.getAbsoluteFile() + File.separator);
+
+        File[] result = parentDir.listFiles();
+        List<String> clients = new ArrayList();
+        for (File f : result) {
+            if (f.isDirectory()) {
+                clients.add(f.getName());
+            }
+        }
+        return clients;
+    }
+
     /**
      * Utility Methods *
      */

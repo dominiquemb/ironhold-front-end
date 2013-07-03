@@ -224,6 +224,17 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.2.4-1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.stephenc.java-iso-tools</groupId>
+            <artifactId>jiic</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stephenc.java-iso-tools</groupId>
+            <artifactId>loopy-vfs</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -271,6 +282,7 @@
                 <data.root>/tmp/dataroot</data.root>
                 <archive.root>/tmp/archiveroot</archive.root>
                 <keystore.root>/tmp/keystore</keystore.root>
+                <backup.root>/tmp/backuproot</backup.root>
                 <elasticsearch.hosts>172.16.144.128:9300</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>0</elasticsearch.replicas>
@@ -290,6 +302,7 @@
                 <data.root>/data/dataroot</data.root>
                 <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
+                <backup.root>/data/backuproot</backup.root>
                 <elasticsearch.hosts>ih650es001,ih650es002,ih650es003</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>2</elasticsearch.replicas>
@@ -306,6 +319,7 @@
                 <data.root>/data/dataroot</data.root>
                 <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
+                <backup.root>/data/backuproot</backup.root>
                 <elasticsearch.hosts>ih108es001,ih108es002</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>1</elasticsearch.replicas>
@@ -322,6 +336,7 @@
                 <data.root>/data/dataroot</data.root>
                 <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
+                <backup.root>/data/backuproot</backup.root>
                 <elasticsearch.hosts>ihtrces001</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>1</elasticsearch.replicas>

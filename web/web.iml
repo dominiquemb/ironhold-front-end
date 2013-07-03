@@ -124,6 +124,13 @@
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.stream:stax-api:1.0-2" level="project" />
     <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.4-1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.stephenc.java-iso-tools:jiic:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.github.stephenc.java-iso-tools:sabre:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ant:ant:1.7.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.7.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.stephenc.java-iso-tools:loopy-vfs:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-vfs:commons-vfs:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.github.stephenc.java-iso-tools:loopy-core:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:vaadin-server:7.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:vaadin-shared:7.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:vaadin-shared-deps:1.0.2" level="project" />

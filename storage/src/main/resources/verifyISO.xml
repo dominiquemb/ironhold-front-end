@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+    <util:constant static-field="com.reqo.ironhold.storage.utils.VerifyDataStore.dataroot" id="dataroot"/>
+    <util:constant static-field="com.reqo.ironhold.storage.utils.VerifyDataStore.keystore" id="keystore"/>
+
+    <!-- Storage beans -->
+    <bean id="keyStoreService" class="com.reqo.ironhold.storage.security.LocalKeyStoreService" scope="singleton">
+        <constructor-arg type="java.io.File" ref="keystore"/>
+    </bean>
+    <bean id="mimeMailMessageStoreService" class="com.reqo.ironhold.storage.LocalMimeMailMessageStorageService"
+          scope="singleton">
+        <constructor-arg type="java.io.File" ref="dataroot"/>
+        <constructor-arg type="java.io.File" ref="dataroot"/>
+        <constructor-arg type="com.reqo.ironhold.storage.security.IKeyStoreService" ref="keyStoreService"/>
+    </bean>
+
+
+    <bean id="verifyDataStore" class="com.reqo.ironhold.storage.utils.VerifyDataStore">
+    </bean>
+
+
+</beans>
