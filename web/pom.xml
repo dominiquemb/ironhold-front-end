@@ -129,11 +129,6 @@
 
         <dependency>
             <groupId>com.reqo.ironhold</groupId>
-            <artifactId>search</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.reqo.ironhold</groupId>
             <artifactId>storage</artifactId>
             <version>${project.version}</version>
         </dependency>
