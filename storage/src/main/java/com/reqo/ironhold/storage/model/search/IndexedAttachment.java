@@ -14,7 +14,7 @@ import java.io.IOException;
 public class IndexedAttachment extends Attachment {
     private static Logger logger = Logger.getLogger(IndexedAttachment.class);
 
-    public IndexedAttachment(Attachment sourceAttachment) {
+    public IndexedAttachment(Attachment sourceAttachment, boolean extractTextFromAttachments) {
         this.setContentType(sourceAttachment.getContentType());
         this.setContentDisposition(sourceAttachment.getContentDisposition());
         this.setCreationTime(sourceAttachment.getCreationTime());
@@ -22,7 +22,11 @@ public class IndexedAttachment extends Attachment {
         this.setFileName(sourceAttachment.getFileName());
         this.setModificationTime(sourceAttachment.getModificationTime());
         this.setSize(sourceAttachment.getSize());
-        this.setBody(extractText(sourceAttachment.getBody()));
+        if (extractTextFromAttachments) {
+            this.setBody(extractText(sourceAttachment.getBody()));
+        } else {
+            this.setBody(StringUtils.EMPTY);
+        }
     }
 
     private static String extractText(String body) {
@@ -43,11 +47,11 @@ public class IndexedAttachment extends Attachment {
         return StringUtils.EMPTY;
     }
 
-    public static IndexedAttachment[] fromArray(Attachment[] sourceAttachments) {
+    public static IndexedAttachment[] fromArray(Attachment[] sourceAttachments, boolean extractTextFromAttachments) {
         IndexedAttachment[] result = new IndexedAttachment[sourceAttachments.length];
         int counter = 0;
         for (Attachment sourceAttachment : sourceAttachments) {
-            result[counter++] = new IndexedAttachment(sourceAttachment);
+            result[counter++] = new IndexedAttachment(sourceAttachment, extractTextFromAttachments);
         }
 
         return result;

@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PSTImporter {
 
@@ -59,9 +61,24 @@ public class PSTImporter {
     private String mailBoxName;
     private String originalFilePath;
     private String commentary;
+    private String ignoreAttachmentExtractList;
+
+    private Set<String> ignoreAttachmentExtractSet = new HashSet<>();
 
     public PSTImporter() throws Exception {
         this.hostname = InetAddress.getLocalHost().getHostName();
+        if (ignoreAttachmentExtractList != null) {
+            try {
+                String ignoreList = FileUtils.readFileToString(new File(ignoreAttachmentExtractList));
+                for (String ignoreId : ignoreList.split("\n")) {
+                    ignoreAttachmentExtractSet.add(ignoreId);
+                    logger.info("Ignoring " + ignoreId + " in attachment extraction");
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to fully process ignore Attachment Extraction file " + ignoreAttachmentExtractList, e);
+            }
+        }
+
     }
 
     private boolean wasFileProcessedPreviously() throws Exception {
@@ -200,10 +217,19 @@ public class PSTImporter {
                     try {
                         IndexedMailMessage indexedMessage = messageIndexService.getById(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId());
                         if (indexedMessage == null) {
-                            indexedMessage = new IndexedMailMessage(mimeMailMessage);
+
+                            indexedMessage = new IndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId));
                         }
                         indexedMessage.addSource(metaData.getId());
                         messageIndexService.store(client, indexedMessage, false);
+                        if (ignoreAttachmentExtractSet.contains(messageId)) {
+                            LogMessage warnMessage = new LogMessage(
+                                    LogLevel.Warning, messageId,
+                                    "Will not attempt to extract attachment text as this message id was blacklisted");
+
+                            metaDataIndexService.store(client, warnMessage);
+
+                        }
                     } catch (Exception e) {
                         logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
                         metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
@@ -259,5 +285,9 @@ public class PSTImporter {
     }
 
     public void initialize() throws Exception {
+    }
+
+    public void setIgnoreAttachmentExtractList(String ignoreAttachmentExtractList) {
+        this.ignoreAttachmentExtractList = ignoreAttachmentExtractList;
     }
 }

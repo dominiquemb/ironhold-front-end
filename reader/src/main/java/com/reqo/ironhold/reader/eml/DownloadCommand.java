@@ -155,7 +155,7 @@ public class DownloadCommand implements IMAPFolder.ProtocolCommand {
                             .getRawContents().length(), storedSize);
 
                     try {
-                        messageIndexService.store(client, new IndexedMailMessage(mailMessage));
+                        messageIndexService.store(client, new IndexedMailMessage(mailMessage, true));
                     } catch (Exception e) {
                         logger.error("Failed to index message " + mailMessage.getMessageId(), e);
                         metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));

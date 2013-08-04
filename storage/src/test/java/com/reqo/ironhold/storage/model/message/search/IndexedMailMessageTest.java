@@ -41,7 +41,7 @@ public class IndexedMailMessageTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage);
+                inputMessage, true);
 
         Assert.assertEquals(inputMessage
                 .getMessageId(), indexedMailMessage.getMessageId());
@@ -78,7 +78,7 @@ public class IndexedMailMessageTest {
         mailMessage.loadMimeMessage(mimeMessage);
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage);
+                mailMessage, true);
 
         String parsedContent = indexedMailMessage.getAttachments()[0].getBody()
                 .replaceAll("[ \\t\\n\\r]+", " ");
@@ -103,7 +103,7 @@ public class IndexedMailMessageTest {
         mailMessage.loadMimeMessage(mimeMessage);
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage);
+                mailMessage, true);
 
         String parsedContent1 = indexedMailMessage.getAttachments()[0]
                 .getBody().replaceAll("[ \\t\\n\\r]+", " ");
@@ -123,7 +123,7 @@ public class IndexedMailMessageTest {
         MimeMailMessage pstMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                pstMessage);
+                pstMessage, true);
 
         String parsedContent1 = indexedMailMessage.getAttachments()[0]
                 .getBody().replaceAll("[ \\t\\n\\r]+", " ");
@@ -149,7 +149,7 @@ public class IndexedMailMessageTest {
         mailMessage.loadMimeMessage(mimeMessage);
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage);
+                mailMessage, true);
         String json = indexedMailMessage.serialize().replace("\\n", "").replace(" ", "");
 
         String assertContent = FileUtils.readFileToString(assertFile)
@@ -169,7 +169,7 @@ public class IndexedMailMessageTest {
         mailMessage.loadMimeMessage(mimeMessage);
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage);
+                mailMessage, true);
 
         String parsedContent = indexedMailMessage.getAttachments()[0].getBody();
 
@@ -189,7 +189,7 @@ public class IndexedMailMessageTest {
         mailMessage.loadMimeMessage(mimeMessage);
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage);
+                mailMessage, true);
 
 
         Assert.assertEquals(1, indexedMailMessage.getAttachments().length);

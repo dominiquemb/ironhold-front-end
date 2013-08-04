@@ -71,7 +71,7 @@ public class MessageIndexServiceTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage);
+                inputMessage, true);
 
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
@@ -96,7 +96,7 @@ public class MessageIndexServiceTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage);
+                inputMessage, true);
 
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
@@ -119,7 +119,7 @@ public class MessageIndexServiceTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage);
+                inputMessage, true);
 
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
@@ -135,7 +135,7 @@ public class MessageIndexServiceTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage);
+                inputMessage, true);
 
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
@@ -170,13 +170,13 @@ public class MessageIndexServiceTest {
             MimeMailMessage message = MimeMailMessage.getMimeMailMessage(inputMessage);
 
             IndexedMailMessage toBeStored = new IndexedMailMessage(
-                    message);
+                    message, true);
 
             messageIndexService.store(INDEX_PREFIX, toBeStored);
         }
         indexClient.refresh(INDEX_PREFIX);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(MimeMailMessage.getMimeMailMessage(inputMessages.get(0)));
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(MimeMailMessage.getMimeMailMessage(inputMessages.get(0)), true);
 
         String searchWord = inputMessages.get(0).getSenderName().split(" ")[1];
         MessageSearchBuilder builder = messageIndexService.getNewBuilder(INDEX_PREFIX, superUser);
@@ -255,7 +255,7 @@ public class MessageIndexServiceTest {
             MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(message);
 
             IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                    inputMessage);
+                    inputMessage, true);
             messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
             indexClient.refresh(INDEX_PREFIX);
 
@@ -271,7 +271,7 @@ public class MessageIndexServiceTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
         IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage);
+                inputMessage, true);
 
         messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
         indexClient.refresh(INDEX_PREFIX);
@@ -310,7 +310,7 @@ public class MessageIndexServiceTest {
             inputMessage.setMessageDate(new DateTime(year + counter, 1, 1, 1, 1).toDate());
             counter++;
             IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                    inputMessage);
+                    inputMessage, true);
             messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
             indexClient.refresh(INDEX_PREFIX);
 
@@ -340,7 +340,7 @@ public class MessageIndexServiceTest {
             inputMessage.setMessageDate(new DateTime(year + counter, 1, 1, 1, 1).toDate());
             counter++;
             IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                    inputMessage);
+                    inputMessage, true);
             messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
             indexClient.refresh(INDEX_PREFIX);
 

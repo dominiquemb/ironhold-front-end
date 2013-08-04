@@ -59,15 +59,15 @@ public class IndexedMailMessage implements IPartitioned {
                 false);
     }
 
-
-    public IndexedMailMessage(MimeMailMessage mimeMessage) {
+    public IndexedMailMessage(MimeMailMessage mimeMessage, boolean extractTextFromAttachments) {
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
         messageId = mimeMessage.getMessageId();
         load(mimeMessage);
 
-        attachments = IndexedAttachment.fromArray(mimeMessage.getAttachments());
+        attachments = IndexedAttachment.fromArray(mimeMessage.getAttachments(), extractTextFromAttachments);
     }
+
 
     private void load(MimeMailMessage imapMailMessage) {
         logger.debug("Loading imap message");
@@ -217,7 +217,7 @@ public class IndexedMailMessage implements IPartitioned {
     }
 
     public void setAttachments(Attachment[] attachments) {
-        this.attachments = IndexedAttachment.fromArray(attachments);
+        this.attachments = IndexedAttachment.fromArray(attachments, true);
     }
 
     public String getYear() {

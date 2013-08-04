@@ -83,7 +83,7 @@ public class MessageReconciliation {
                             MimeMailMessage mimeMailMessage = new MimeMailMessage();
                             mimeMailMessage.loadMimeMessageFromSource(messageSource);
 
-                            IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mimeMailMessage);
+                            IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mimeMailMessage, true);
 
                             for (MessageSource existingSource : metaDataIndexService.getSources(client, messageId)) {
                                 if (existingSource instanceof PSTMessageSource) {

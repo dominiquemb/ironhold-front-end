@@ -22,6 +22,8 @@ public class QueueWatcher extends FileWatcher {
     @Autowired
     private PSTImporter importer;
 
+    private String ignoreAttachmentExtractList;
+
     public QueueWatcher() {
 
     }
@@ -37,6 +39,7 @@ public class QueueWatcher extends FileWatcher {
         importer.setOriginalFilePath(checksumFile.getOriginalFilePath());
         importer.setFile(dataFile);
         importer.setClient(getClient());
+        importer.setIgnoreAttachmentExtractList(ignoreAttachmentExtractList);
         String details = importer.processMessages();
 
         EmailNotification.sendSystemNotification("Finished processing pst file: " + checksumFile.getDataFileName(), details);
@@ -48,7 +51,7 @@ public class QueueWatcher extends FileWatcher {
     }
 
     public static void main(String[] args) {
-        WatcherOptions bean = new WatcherOptions();
+        QueueWatcherOptions bean = new QueueWatcherOptions();
         CmdLineParser parser = new CmdLineParser(bean);
         try {
             parser.parseArgument(args);
@@ -65,6 +68,7 @@ public class QueueWatcher extends FileWatcher {
             qw.setOutputDirName(bean.getOut());
             qw.setQuarantineDirName(bean.getQuarantine());
             qw.setClient(bean.getClient());
+            qw.setIgnoreAttachmentExtractList(bean.getIgnoreAttachmentExtractList());
 
             qw.initialize();
             qw.start();
@@ -76,5 +80,11 @@ public class QueueWatcher extends FileWatcher {
         }
     }
 
+    public String getIgnoreAttachmentExtractList() {
+        return ignoreAttachmentExtractList;
+    }
 
+    public void setIgnoreAttachmentExtractList(String ignoreAttachmentExtractList) {
+        this.ignoreAttachmentExtractList = ignoreAttachmentExtractList;
+    }
 }

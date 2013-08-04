@@ -402,7 +402,7 @@ public class IMAPReader {
                         try {
                             IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());
                             if (indexedMessage == null) {
-                                indexedMessage = new IndexedMailMessage(mailMessage);
+                                indexedMessage = new IndexedMailMessage(mailMessage, true);
                             }
                             messageIndexService.store(client, indexedMessage, false);
                         } catch (Exception e) {
