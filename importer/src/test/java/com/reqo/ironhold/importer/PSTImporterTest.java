@@ -18,7 +18,9 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -68,6 +70,9 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private ElasticsearchNodeFactoryBean esNode;
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
@@ -276,6 +281,20 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         }
 
         Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
+
+    }
+
+
+    @Test
+    public void testPSTImporterIgnoreExtractId() throws Exception {
+        String fileName = tempFolder.getRoot().getAbsoluteFile().toString() + File.separator + "ignore.list";
+        FileUtils.writeStringToFile(new File(fileName), "<fb57d8a0811071645n76f4c2e6o10d5aa19c78b49bf@mail.gmail.com>");
+
+        pstImporter.setIgnoreAttachmentExtractList(fileName);
+
+        Assert.assertEquals(1, pstImporter.getIgnoreAttachmentExtractSet().size());
+        Assert.assertEquals("<fb57d8a0811071645n76f4c2e6o10d5aa19c78b49bf@mail.gmail.com>", pstImporter.getIgnoreAttachmentExtractSet().toArray()[0]);
+
 
     }
 }

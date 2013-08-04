@@ -61,24 +61,11 @@ public class PSTImporter {
     private String mailBoxName;
     private String originalFilePath;
     private String commentary;
-    private String ignoreAttachmentExtractList;
 
     private Set<String> ignoreAttachmentExtractSet = new HashSet<>();
 
     public PSTImporter() throws Exception {
         this.hostname = InetAddress.getLocalHost().getHostName();
-        if (ignoreAttachmentExtractList != null) {
-            try {
-                String ignoreList = FileUtils.readFileToString(new File(ignoreAttachmentExtractList));
-                for (String ignoreId : ignoreList.split("\n")) {
-                    ignoreAttachmentExtractSet.add(ignoreId);
-                    logger.info("Ignoring " + ignoreId + " in attachment extraction");
-                }
-            } catch (Exception e) {
-                logger.warn("Failed to fully process ignore Attachment Extraction file " + ignoreAttachmentExtractList, e);
-            }
-        }
-
     }
 
     private boolean wasFileProcessedPreviously() throws Exception {
@@ -288,6 +275,20 @@ public class PSTImporter {
     }
 
     public void setIgnoreAttachmentExtractList(String ignoreAttachmentExtractList) {
-        this.ignoreAttachmentExtractList = ignoreAttachmentExtractList;
+        if (ignoreAttachmentExtractList != null) {
+            try {
+                String ignoreList = FileUtils.readFileToString(new File(ignoreAttachmentExtractList));
+                for (String ignoreId : ignoreList.split("\n")) {
+                    ignoreAttachmentExtractSet.add(ignoreId);
+                    logger.info("Ignoring " + ignoreId + " in attachment extraction");
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to fully process ignore Attachment Extraction file " + ignoreAttachmentExtractList, e);
+            }
+        }
+    }
+
+    public Set<String> getIgnoreAttachmentExtractSet() {
+        return ignoreAttachmentExtractSet;
     }
 }

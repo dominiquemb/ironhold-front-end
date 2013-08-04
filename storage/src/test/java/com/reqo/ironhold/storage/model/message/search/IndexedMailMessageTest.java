@@ -199,4 +199,30 @@ public class IndexedMailMessageTest {
 
         Assert.assertTrue(json.contains("1 DNC.pdf"));
     }
+
+    @Test
+    public void testDontExtractText() throws Exception {
+        File inputFile = FileUtils.toFile(IndexedMailMessageTest.class
+                .getResource("/testExtractWordsFromPDFAttachment.eml"));
+        File assertFile1 = FileUtils.toFile(IndexedMailMessageTest.class
+                .getResource("/testExtractWordsFromPDFAttachment.txt"));
+
+        InputStream is = new FileInputStream(inputFile);
+        MimeMessage mimeMessage = new MimeMessage(null, is);
+
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessage(mimeMessage);
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                mailMessage, false);
+
+        String parsedContent1 = indexedMailMessage.getAttachments()[0]
+                .getBody().replaceAll("[ \\t\\n\\r]+", " ");
+
+        String assertContent1 = FileUtils.readFileToString(assertFile1)
+                .replaceAll("[ \\t\\n\\r]+", " ");
+
+        Assert.assertFalse(assertContent1.equals(parsedContent1));
+
+    }
 }
