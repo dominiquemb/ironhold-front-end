@@ -23,8 +23,10 @@ public class IndexedAttachment extends Attachment {
         this.setModificationTime(sourceAttachment.getModificationTime());
         this.setSize(sourceAttachment.getSize());
         if (extractTextFromAttachments) {
+            logger.info("Attempting to extract text from " + getFileName());
             this.setBody(extractText(sourceAttachment.getBody()));
         } else {
+            logger.info("Skipping extraction of text from " + getFileName());
             this.setBody(StringUtils.EMPTY);
         }
     }
