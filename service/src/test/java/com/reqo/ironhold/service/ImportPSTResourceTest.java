@@ -36,7 +36,7 @@ public class ImportPSTResourceTest {
     @Before
     public void setUp() throws Exception {
         // start the server
-        server = Main.startServer();
+//        server = Main.startServer();
     }
 
     @After
@@ -45,6 +45,7 @@ public class ImportPSTResourceTest {
     }
 
     @Test
+    @Ignore
     public void testUsingApacheClient() throws IOException {
         if (new File("/tmp/test.pst").exists()) {
             FileUtils.forceDelete(new File("/tmp/test.pst"));
@@ -56,7 +57,7 @@ public class ImportPSTResourceTest {
         String fileName = folder.getRoot().getAbsolutePath() + File.separator + "/test.pst";
 
         RandomAccessFile f = new RandomAccessFile(fileName, "rw");
-        f.setLength(1024 * 1024 * 1024 * 21L);
+        f.setLength(1024 * 1024 * 1024);
 
         long started = System.currentTimeMillis();
 
@@ -76,12 +77,13 @@ public class ImportPSTResourceTest {
 
         Assert.assertTrue(new File("/tmp/test.pst").exists());
 
-        //String actual = FileUtils.readFileToString(new File("/tmp/test.pst"));
+        String actual = FileUtils.readFileToString(new File("/tmp/test.pst"));
 
-        //Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
+    @Ignore
     public void testUsingJerseyClient() throws IOException {
         if (new File("/tmp/test.pst").exists()) {
             FileUtils.forceDelete(new File("/tmp/test.pst"));
