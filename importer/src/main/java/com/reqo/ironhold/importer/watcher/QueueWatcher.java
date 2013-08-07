@@ -42,7 +42,11 @@ public class QueueWatcher extends FileWatcher {
         importer.setIgnoreAttachmentExtractList(ignoreAttachmentExtractList);
         String details = importer.processMessages();
 
-        EmailNotification.sendSystemNotification("Finished processing pst file: " + checksumFile.getDataFileName(), details);
+        try {
+            EmailNotification.sendSystemNotification("Finished processing pst file: " + checksumFile.getDataFileName(), details);
+        } catch (Exception e) {
+            logger.warn("Failed to send notification", e);
+        }
 
     }
 
