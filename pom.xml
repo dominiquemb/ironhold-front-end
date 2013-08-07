@@ -16,6 +16,9 @@
         <module>web</module>
         <module>dist</module>
         <module>libpst</module>
+        <module>service</module>
+        <module>uploadgui</module>
+        <module>utils</module>
     </modules>
     <scm>
         <connection>scm:git:https://igaysinskiy@bitbucket.org/reqo/ironhold.git</connection>

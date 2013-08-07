@@ -109,6 +109,7 @@
     <orderEntry type="library" name="Maven: com.github.stephenc.java-iso-tools:loopy-vfs:1.2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-vfs:commons-vfs:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.stephenc.java-iso-tools:loopy-core:1.2.2" level="project" />
+    <orderEntry type="module" module-name="utils" />
     <orderEntry type="library" scope="TEST" name="Maven: fr.pilato.spring:spring-elasticsearch:0.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:3.2.3.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.github.tlrx:elasticsearch-test:0.0.8" level="project" />

@@ -10,9 +10,11 @@ import org.elasticsearch.common.Base64;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.concurrent.*;
 
 public class IndexedAttachment extends Attachment {
     private static Logger logger = Logger.getLogger(IndexedAttachment.class);
+    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public IndexedAttachment(Attachment sourceAttachment, boolean extractTextFromAttachments) {
         this.setContentType(sourceAttachment.getContentType());
@@ -31,19 +33,50 @@ public class IndexedAttachment extends Attachment {
         }
     }
 
-    private static String extractText(String body) {
+    private static String extractText(final String body) {
+
+        CompletionService<String> taskCompletionService = new ExecutorCompletionService<String>(
+                executorService);
+
         try {
-            byte[] bytes = Base64.decode(body);
-            String parsedContent;
 
-            // Set the maximum length of strings returned by the parseToString
-            // method, -1 sets no limit
-            parsedContent = TikaInstance.tika().parseToString(
-                    new ByteArrayInputStream(bytes), new Metadata(), -1);
+            Callable<String> task = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    try {
+                        byte[] bytes = Base64.decode(body);
+                        String parsedContent;
 
-            return parsedContent;
-        } catch (TikaException | IOException e) {
-            logger.warn("Failed to extract characters " + e.getMessage());
+                        // Set the maximum length of strings returned by the parseToString
+                        // method, -1 sets no limit
+                        parsedContent = TikaInstance.tika().parseToString(
+                                new ByteArrayInputStream(bytes), new Metadata(), -1);
+
+                        return parsedContent;
+                    } catch (TikaException | IOException e) {
+                        logger.warn("Failed to extract characters " + e.getMessage());
+                    }
+
+                    return StringUtils.EMPTY;
+                }
+            };
+            Future<String> future = taskCompletionService.submit(task);
+
+            Future<String> result = taskCompletionService.poll(2, TimeUnit.MINUTES);
+            if (result == null) {
+                if (future.isDone()) {
+                    return future.get();
+                } else {
+                    logger.warn("Extraction task did not return in time, canceling");
+                    future.cancel(true);
+                    return StringUtils.EMPTY;
+                }
+            }
+
+
+            return result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.warn(e);
         }
 
         return StringUtils.EMPTY;

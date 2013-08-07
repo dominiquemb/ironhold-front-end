@@ -2,7 +2,7 @@ package com.reqo.ironhold.importer.watcher;
 
 import com.reqo.ironhold.importer.PSTImporter;
 import com.reqo.ironhold.importer.notification.EmailNotification;
-import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import com.reqo.ironhold.utils.MD5CheckSum;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

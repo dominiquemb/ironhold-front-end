@@ -1,6 +1,5 @@
-package com.reqo.ironhold.importer.watcher.checksum;
+package com.reqo.ironhold.utils;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -10,9 +9,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * User: ilya
+ * Date: 8/7/13
+ * Time: 1:59 PM
+ */
 public class MD5CheckSum {
     private static final int BUFFER_SIZE = 1024;
 
@@ -29,7 +34,7 @@ public class MD5CheckSum {
     public static File createMD5CheckSum(File dataFile, Map<String, String> metaData) throws NoSuchAlgorithmException, IOException {
         String md5 = MD5CheckSum.getMD5Checksum(dataFile);
         logger.info("Generated md5: " + md5 + " for " + dataFile.toString());
-        File checkSumFile = new File(dataFile.getParent() + File.separator + FilenameUtils.getBaseName(dataFile.toString()) + ".md5");
+        File checkSumFile = new File(dataFile.getParent() + File.separator + dataFile.getName() + ".md5");
         FileWriter fw = new FileWriter(checkSumFile.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(md5 + " " + dataFile.getName() + "\n");
@@ -48,6 +53,11 @@ public class MD5CheckSum {
 
         return checkSumFile;
     }
+
+    public static File createMD5CheckSum(File dataFile) throws NoSuchAlgorithmException, IOException {
+        return createMD5CheckSum(dataFile, new HashMap<String, String>());
+    }
+
 
     public MD5CheckSum(File checkSumFile) throws Exception {
         this.checkSumFile = checkSumFile;

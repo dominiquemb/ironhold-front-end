@@ -2,7 +2,6 @@ package com.reqo.ironhold.importer.watcher;
 
 import com.reqo.ironhold.importer.PSTImporter;
 import com.reqo.ironhold.importer.notification.EmailNotification;
-import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
@@ -10,6 +9,7 @@ import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
+import com.reqo.ironhold.utils.MD5CheckSum;
 import fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean;
 import fr.pilato.spring.elasticsearch.ElasticsearchNodeFactoryBean;
 import org.apache.commons.io.FileUtils;

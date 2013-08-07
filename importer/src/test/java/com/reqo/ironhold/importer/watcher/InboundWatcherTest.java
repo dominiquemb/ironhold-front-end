@@ -1,7 +1,7 @@
 package com.reqo.ironhold.importer.watcher;
 
 import com.reqo.ironhold.importer.notification.EmailNotification;
-import com.reqo.ironhold.importer.watcher.checksum.MD5CheckSum;
+import com.reqo.ironhold.utils.MD5CheckSum;
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
