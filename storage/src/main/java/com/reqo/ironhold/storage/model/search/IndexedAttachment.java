@@ -14,7 +14,6 @@ import java.util.concurrent.*;
 
 public class IndexedAttachment extends Attachment {
     private static Logger logger = Logger.getLogger(IndexedAttachment.class);
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public IndexedAttachment(Attachment sourceAttachment, boolean extractTextFromAttachments) {
         this.setContentType(sourceAttachment.getContentType());
@@ -34,6 +33,7 @@ public class IndexedAttachment extends Attachment {
     }
 
     private static String extractText(final String body) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
 
         CompletionService<String> taskCompletionService = new ExecutorCompletionService<String>(
                 executorService);
@@ -68,7 +68,6 @@ public class IndexedAttachment extends Attachment {
                     return future.get();
                 } else {
                     logger.warn("Extraction task did not return in time, canceling");
-                    future.cancel(true);
                     return StringUtils.EMPTY;
                 }
             }
@@ -77,6 +76,8 @@ public class IndexedAttachment extends Attachment {
             return result.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.warn(e);
+        } finally {
+            executorService.shutdownNow();
         }
 
         return StringUtils.EMPTY;

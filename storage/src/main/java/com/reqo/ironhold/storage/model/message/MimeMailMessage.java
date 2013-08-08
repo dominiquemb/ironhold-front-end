@@ -109,7 +109,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         String messageId = originalPSTMessage.getInternetMessageId();
         if (messageId.length() < 10) {
             logger.warn("Found messageId that is too short, replacing with surrogate id: " + messageId);
-            messageId = UUID.randomUUID().toString() + "-generated";
+            messageId = messageId + "-" + UUID.randomUUID().toString() + "-generated";
 
         }
         rawContents = rawContents.replaceFirst(mimeMessage.getMessageID(), Matcher.quoteReplacement(messageId));
