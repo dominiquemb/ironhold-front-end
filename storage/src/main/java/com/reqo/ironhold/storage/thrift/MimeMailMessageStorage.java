@@ -21,7 +21,7 @@ public class MimeMailMessageStorage {
 
     public interface Iface {
 
-        public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum) throws org.apache.thrift.TException;
+        public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt) throws org.apache.thrift.TException;
 
         public boolean exists(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException;
 
@@ -39,7 +39,7 @@ public class MimeMailMessageStorage {
 
     public interface AsyncIface {
 
-        public void store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.store_call> resultHandler) throws org.apache.thrift.TException;
+        public void store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.store_call> resultHandler) throws org.apache.thrift.TException;
 
         public void exists(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.exists_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -77,12 +77,12 @@ public class MimeMailMessageStorage {
             super(iprot, oprot);
         }
 
-        public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum) throws org.apache.thrift.TException {
-            send_store(clientName, partition, subPartition, messageId, message, checkSum);
+        public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt) throws org.apache.thrift.TException {
+            send_store(clientName, partition, subPartition, messageId, message, checkSum, encrypt);
             return recv_store();
         }
 
-        public void send_store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum) throws org.apache.thrift.TException {
+        public void send_store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt) throws org.apache.thrift.TException {
             store_args args = new store_args();
             args.setClientName(clientName);
             args.setPartition(partition);
@@ -90,6 +90,7 @@ public class MimeMailMessageStorage {
             args.setMessageId(messageId);
             args.setMessage(message);
             args.setCheckSum(checkSum);
+            args.setEncrypt(encrypt);
             sendBase("store", args);
         }
 
@@ -255,9 +256,9 @@ public class MimeMailMessageStorage {
             super(protocolFactory, clientManager, transport);
         }
 
-        public void store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, org.apache.thrift.async.AsyncMethodCallback<store_call> resultHandler) throws org.apache.thrift.TException {
+        public void store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt, org.apache.thrift.async.AsyncMethodCallback<store_call> resultHandler) throws org.apache.thrift.TException {
             checkReady();
-            store_call method_call = new store_call(clientName, partition, subPartition, messageId, message, checkSum, resultHandler, this, ___protocolFactory, ___transport);
+            store_call method_call = new store_call(clientName, partition, subPartition, messageId, message, checkSum, encrypt, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
             ___manager.call(method_call);
         }
@@ -269,8 +270,9 @@ public class MimeMailMessageStorage {
             private String messageId;
             private String message;
             private String checkSum;
+            private boolean encrypt;
 
-            public store_call(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, org.apache.thrift.async.AsyncMethodCallback<store_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            public store_call(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt, org.apache.thrift.async.AsyncMethodCallback<store_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.clientName = clientName;
                 this.partition = partition;
@@ -278,6 +280,7 @@ public class MimeMailMessageStorage {
                 this.messageId = messageId;
                 this.message = message;
                 this.checkSum = checkSum;
+                this.encrypt = encrypt;
             }
 
             public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -289,6 +292,7 @@ public class MimeMailMessageStorage {
                 args.setMessageId(messageId);
                 args.setMessage(message);
                 args.setCheckSum(checkSum);
+                args.setEncrypt(encrypt);
                 args.write(prot);
                 prot.writeMessageEnd();
             }
@@ -576,7 +580,7 @@ public class MimeMailMessageStorage {
 
             public store_result getResult(I iface, store_args args) throws org.apache.thrift.TException {
                 store_result result = new store_result();
-                result.success = iface.store(args.clientName, args.partition, args.subPartition, args.messageId, args.message, args.checkSum);
+                result.success = iface.store(args.clientName, args.partition, args.subPartition, args.messageId, args.message, args.checkSum, args.encrypt);
                 result.setSuccessIsSet(true);
                 return result;
             }
@@ -715,6 +719,7 @@ public class MimeMailMessageStorage {
         private static final org.apache.thrift.protocol.TField MESSAGE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("messageId", org.apache.thrift.protocol.TType.STRING, (short) 4);
         private static final org.apache.thrift.protocol.TField MESSAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("message", org.apache.thrift.protocol.TType.STRING, (short) 5);
         private static final org.apache.thrift.protocol.TField CHECK_SUM_FIELD_DESC = new org.apache.thrift.protocol.TField("checkSum", org.apache.thrift.protocol.TType.STRING, (short) 6);
+        private static final org.apache.thrift.protocol.TField ENCRYPT_FIELD_DESC = new org.apache.thrift.protocol.TField("encrypt", org.apache.thrift.protocol.TType.BOOL, (short) 7);
 
         private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
 
@@ -729,6 +734,7 @@ public class MimeMailMessageStorage {
         public String messageId; // required
         public String message; // required
         public String checkSum; // required
+        public boolean encrypt; // required
 
         /**
          * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
@@ -739,7 +745,8 @@ public class MimeMailMessageStorage {
             SUB_PARTITION((short) 3, "subPartition"),
             MESSAGE_ID((short) 4, "messageId"),
             MESSAGE((short) 5, "message"),
-            CHECK_SUM((short) 6, "checkSum");
+            CHECK_SUM((short) 6, "checkSum"),
+            ENCRYPT((short) 7, "encrypt");
 
             private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -766,6 +773,8 @@ public class MimeMailMessageStorage {
                         return MESSAGE;
                     case 6: // CHECK_SUM
                         return CHECK_SUM;
+                    case 7: // ENCRYPT
+                        return ENCRYPT;
                     default:
                         return null;
                 }
@@ -806,6 +815,8 @@ public class MimeMailMessageStorage {
         }
 
         // isset id assignments
+        private static final int __ENCRYPT_ISSET_ID = 0;
+        private byte __isset_bitfield = 0;
         public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
 
         static {
@@ -822,6 +833,8 @@ public class MimeMailMessageStorage {
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
             tmpMap.put(_Fields.CHECK_SUM, new org.apache.thrift.meta_data.FieldMetaData("checkSum", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+            tmpMap.put(_Fields.ENCRYPT, new org.apache.thrift.meta_data.FieldMetaData("encrypt", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
             metaDataMap = Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(store_args.class, metaDataMap);
         }
@@ -835,7 +848,8 @@ public class MimeMailMessageStorage {
                 String subPartition,
                 String messageId,
                 String message,
-                String checkSum) {
+                String checkSum,
+                boolean encrypt) {
             this();
             this.clientName = clientName;
             this.partition = partition;
@@ -843,12 +857,15 @@ public class MimeMailMessageStorage {
             this.messageId = messageId;
             this.message = message;
             this.checkSum = checkSum;
+            this.encrypt = encrypt;
+            setEncryptIsSet(true);
         }
 
         /**
          * Performs a deep copy on <i>other</i>.
          */
         public store_args(store_args other) {
+            __isset_bitfield = other.__isset_bitfield;
             if (other.isSetClientName()) {
                 this.clientName = other.clientName;
             }
@@ -867,6 +884,7 @@ public class MimeMailMessageStorage {
             if (other.isSetCheckSum()) {
                 this.checkSum = other.checkSum;
             }
+            this.encrypt = other.encrypt;
         }
 
         public store_args deepCopy() {
@@ -881,6 +899,8 @@ public class MimeMailMessageStorage {
             this.messageId = null;
             this.message = null;
             this.checkSum = null;
+            setEncryptIsSet(false);
+            this.encrypt = false;
         }
 
         public String getClientName() {
@@ -1039,6 +1059,31 @@ public class MimeMailMessageStorage {
             }
         }
 
+        public boolean isEncrypt() {
+            return this.encrypt;
+        }
+
+        public store_args setEncrypt(boolean encrypt) {
+            this.encrypt = encrypt;
+            setEncryptIsSet(true);
+            return this;
+        }
+
+        public void unsetEncrypt() {
+            __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ENCRYPT_ISSET_ID);
+        }
+
+        /**
+         * Returns true if field encrypt is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSetEncrypt() {
+            return EncodingUtils.testBit(__isset_bitfield, __ENCRYPT_ISSET_ID);
+        }
+
+        public void setEncryptIsSet(boolean value) {
+            __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ENCRYPT_ISSET_ID, value);
+        }
+
         public void setFieldValue(_Fields field, Object value) {
             switch (field) {
                 case CLIENT_NAME:
@@ -1089,6 +1134,14 @@ public class MimeMailMessageStorage {
                     }
                     break;
 
+                case ENCRYPT:
+                    if (value == null) {
+                        unsetEncrypt();
+                    } else {
+                        setEncrypt((Boolean) value);
+                    }
+                    break;
+
             }
         }
 
@@ -1111,6 +1164,9 @@ public class MimeMailMessageStorage {
 
                 case CHECK_SUM:
                     return getCheckSum();
+
+                case ENCRYPT:
+                    return Boolean.valueOf(isEncrypt());
 
             }
             throw new IllegalStateException();
@@ -1137,6 +1193,8 @@ public class MimeMailMessageStorage {
                     return isSetMessage();
                 case CHECK_SUM:
                     return isSetCheckSum();
+                case ENCRYPT:
+                    return isSetEncrypt();
             }
             throw new IllegalStateException();
         }
@@ -1205,6 +1263,15 @@ public class MimeMailMessageStorage {
                 if (!(this_present_checkSum && that_present_checkSum))
                     return false;
                 if (!this.checkSum.equals(that.checkSum))
+                    return false;
+            }
+
+            boolean this_present_encrypt = true;
+            boolean that_present_encrypt = true;
+            if (this_present_encrypt || that_present_encrypt) {
+                if (!(this_present_encrypt && that_present_encrypt))
+                    return false;
+                if (this.encrypt != that.encrypt)
                     return false;
             }
 
@@ -1284,6 +1351,16 @@ public class MimeMailMessageStorage {
                     return lastComparison;
                 }
             }
+            lastComparison = Boolean.valueOf(isSetEncrypt()).compareTo(typedOther.isSetEncrypt());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetEncrypt()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.encrypt, typedOther.encrypt);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
             return 0;
         }
 
@@ -1351,6 +1428,10 @@ public class MimeMailMessageStorage {
                 sb.append(this.checkSum);
             }
             first = false;
+            if (!first) sb.append(", ");
+            sb.append("encrypt:");
+            sb.append(this.encrypt);
+            first = false;
             sb.append(")");
             return sb.toString();
         }
@@ -1370,6 +1451,8 @@ public class MimeMailMessageStorage {
 
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             try {
+                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+                __isset_bitfield = 0;
                 read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
             } catch (org.apache.thrift.TException te) {
                 throw new java.io.IOException(te);
@@ -1441,6 +1524,14 @@ public class MimeMailMessageStorage {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
                             break;
+                        case 7: // ENCRYPT
+                            if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+                                struct.encrypt = iprot.readBool();
+                                struct.setEncryptIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
                         default:
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                     }
@@ -1486,6 +1577,9 @@ public class MimeMailMessageStorage {
                     oprot.writeString(struct.checkSum);
                     oprot.writeFieldEnd();
                 }
+                oprot.writeFieldBegin(ENCRYPT_FIELD_DESC);
+                oprot.writeBool(struct.encrypt);
+                oprot.writeFieldEnd();
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
             }
@@ -1522,7 +1616,10 @@ public class MimeMailMessageStorage {
                 if (struct.isSetCheckSum()) {
                     optionals.set(5);
                 }
-                oprot.writeBitSet(optionals, 6);
+                if (struct.isSetEncrypt()) {
+                    optionals.set(6);
+                }
+                oprot.writeBitSet(optionals, 7);
                 if (struct.isSetClientName()) {
                     oprot.writeString(struct.clientName);
                 }
@@ -1541,12 +1638,15 @@ public class MimeMailMessageStorage {
                 if (struct.isSetCheckSum()) {
                     oprot.writeString(struct.checkSum);
                 }
+                if (struct.isSetEncrypt()) {
+                    oprot.writeBool(struct.encrypt);
+                }
             }
 
             @Override
             public void read(org.apache.thrift.protocol.TProtocol prot, store_args struct) throws org.apache.thrift.TException {
                 TTupleProtocol iprot = (TTupleProtocol) prot;
-                BitSet incoming = iprot.readBitSet(6);
+                BitSet incoming = iprot.readBitSet(7);
                 if (incoming.get(0)) {
                     struct.clientName = iprot.readString();
                     struct.setClientNameIsSet(true);
@@ -1570,6 +1670,10 @@ public class MimeMailMessageStorage {
                 if (incoming.get(5)) {
                     struct.checkSum = iprot.readString();
                     struct.setCheckSumIsSet(true);
+                }
+                if (incoming.get(6)) {
+                    struct.encrypt = iprot.readBool();
+                    struct.setEncryptIsSet(true);
                 }
             }
         }

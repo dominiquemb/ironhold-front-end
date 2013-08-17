@@ -56,6 +56,7 @@ public class IMAPReader {
     private String protocol;
     private int batchSize;
     private boolean expunge;
+    private boolean encrypt;
     private String client;
     private int timeout;
     private IMAPClient imap;
@@ -66,7 +67,7 @@ public class IMAPReader {
 
     public IMAPReader(String hostname, int port, String username,
                       String password, String protocol, String client, int batchSize,
-                      boolean expunge) throws IOException {
+                      boolean expunge, boolean encrypt) throws IOException {
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -75,6 +76,7 @@ public class IMAPReader {
         this.batchSize = batchSize;
         this.expunge = expunge;
         this.client = client;
+        this.encrypt = encrypt;
     }
 
     public void initiateConnection() throws Exception {
@@ -181,8 +183,9 @@ public class IMAPReader {
             readMail.setProtocol(bean.getProtocol());
             readMail.setClient(bean.getClient());
             readMail.setBatchSize(bean.getBatchSize());
-            readMail.setExpunge(bean.getExpunge());
+            readMail.setExpunge(bean.isExpunge());
             readMail.setTimeout(bean.getTimeout());
+            readMail.setEncrypt(bean.isEncrypt());
             // Calling processMail Function to read from IMAP Account
             readMail.initiateConnection();
             try {
@@ -284,6 +287,13 @@ public class IMAPReader {
         this.timeout = timeout;
     }
 
+    public boolean isEncrypt() {
+        return encrypt;
+    }
+
+    public void setEncrypt(boolean encrypt) {
+        this.encrypt = encrypt;
+    }
 
     private class IndexCommandListener implements ProtocolCommandListener {
         private final IMAPMessageSource source;
@@ -382,7 +392,7 @@ public class IMAPReader {
                             mimeMailMessageStorageService.archive(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId());
                         }
 
-                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), true);
                         metaDataIndexService.store(client, source);
 
                         metaData.incrementBatchSize(storedSize);

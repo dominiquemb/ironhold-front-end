@@ -1,7 +1,7 @@
 package com.reqo.ironhold.storage.security;
 
-import junit.framework.Assert;
 import org.fluttercode.datafactory.impl.DataFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.crypto.Cipher;

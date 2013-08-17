@@ -1,7 +1,7 @@
 package com.reqo.ironhold.storage.utils;
 
-import junit.framework.Assert;
 import org.fluttercode.datafactory.impl.DataFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

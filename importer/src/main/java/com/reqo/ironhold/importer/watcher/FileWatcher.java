@@ -19,6 +19,7 @@ public abstract class FileWatcher {
     private String outputDirName;
     private String quarantineDirName;
     private String client;
+    private boolean encrypt;
 
     private WatchService watchService;
 
@@ -192,5 +193,11 @@ public abstract class FileWatcher {
         return client;
     }
 
+    public boolean isEncrypt() {
+        return encrypt;
+    }
 
+    public void setEncrypt(boolean encrypt) {
+        this.encrypt = encrypt;
+    }
 }

@@ -11,6 +11,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,15 +48,19 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public boolean exists(String client, String partition, String subPartition, String messageId) throws Exception {
-        return getFile(client, partition, subPartition, messageId).exists();
+        return getExistingFile(client, partition, subPartition, messageId).exists();
     }
 
     @Override
-    public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum) throws Exception {
-        File file = getFile(client, partition, subPartition, messageId);
+    public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum, boolean encrypt) throws Exception {
+        File file = getNewFile(client, partition, subPartition, messageId, encrypt);
         File checkSumFile = getCheckSumFile(client, partition, subPartition, messageId);
         if (!exists(client, partition, subPartition, messageId)) {
-            FileUtils.writeStringToFile(file, AESHelper.encrypt(Compression.compress(serializedMailMessage), keyStoreService.getKey(client, partition)));
+            if (encrypt) {
+                FileUtils.writeStringToFile(file, AESHelper.encrypt(Compression.compress(serializedMailMessage), keyStoreService.getKey(client, partition)));
+            } else {
+                FileUtils.writeStringToFile(file, Compression.compress(serializedMailMessage));
+            }
             FileUtils.writeStringToFile(checkSumFile, checkSum);
             verifyFile(client, partition, subPartition, messageId);
         } else {
@@ -104,13 +109,19 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         File[] result = parentDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return (name.endsWith(".eml.gz"));
+                return (name.endsWith(".eml.gz") || name.endsWith("eml.aes.gz"));
             }
         });
         List<String> files = new ArrayList();
         for (File f : result) {
             if (!f.isDirectory()) {
-                files.add(f.getName().replace(".eml.gz", ""));
+                if (f.getName().endsWith(".eml.gz")) {
+                    files.add(f.getName().replace(".eml.gz", ""));
+                }
+                if (f.getName().endsWith(".eml.aes.gz")) {
+                    files.add(f.getName().replace(".eml.aes.gz", ""));
+                }
+
             }
         }
         return files;
@@ -120,7 +131,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     public boolean archive(String clientName, String partition, String subPartition, String messageId) throws Exception {
         verifyFile(clientName, partition, subPartition, messageId);
 
-        File file = getFile(clientName, partition, subPartition, messageId);
+        File file = getExistingFile(clientName, partition, subPartition, messageId);
         File checkSumFile = getCheckSumFile(clientName, partition, subPartition, messageId);
 
         if (!file.exists()) {
@@ -161,43 +172,75 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
      */
 
     private String verifyFile(String client, String partition, String subPartition, String messageId) throws Exception {
-        File file = getFile(client, partition, subPartition, messageId);
+        File file = getExistingFile(client, partition, subPartition, messageId);
         File checkSumFile = getCheckSumFile(client, partition, subPartition, messageId);
 
-        String decrypted = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
-        byte[] decryptedBytes = decrypted.getBytes();
+        String data = null;
+        if (isEncrypted(file)) {
+            data = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
+        } else {
+            data = Compression.decompress(FileUtils.readFileToString(file));
+        }
 
-        String actualChecksum = CheckSumHelper.getCheckSum(decryptedBytes);
+        byte[] bytes = data.getBytes();
+
+        String actualChecksum = CheckSumHelper.getCheckSum(bytes);
         String expectedChecksum = FileUtils.readFileToString(checkSumFile);
         if (!actualChecksum.equals(expectedChecksum)) {
             throw new CheckSumFailedException(file);
         }
 
-        return decrypted;
+        return data;
+    }
+
+    private boolean isEncrypted(File file) {
+        return file.getName().endsWith(".aes.gz");
     }
 
     private String verifyArchiveFile(String client, String partition, String subPartition, String messageId) throws Exception {
         File file = getArchiveFile(client, partition, subPartition, messageId);
         File checkSumFile = getArchiveCheckSumFile(client, partition, subPartition, messageId);
 
-        String decrypted = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
-        byte[] decryptedBytes = decrypted.getBytes();
+        String data = null;
+        if (isEncrypted(file)) {
+            data = Compression.decompress(AESHelper.decrypt(FileUtils.readFileToString(file), keyStoreService.getKey(client, partition)));
+        } else {
+            data = Compression.decompress(FileUtils.readFileToString(file));
+        }
 
-        String actualChecksum = CheckSumHelper.getCheckSum(decryptedBytes);
+        byte[] bytes = data.getBytes();
+
+        String actualChecksum = CheckSumHelper.getCheckSum(bytes);
         String expectedChecksum = FileUtils.readFileToString(checkSumFile);
         if (!actualChecksum.equals(expectedChecksum)) {
             throw new CheckSumFailedException(file);
         }
 
-        return decrypted;
+        return data;
     }
 
     private File getCheckSumFile(String client, String partition, String subPartition, String messageId) {
         return new File(dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".checksum");
     }
 
-    private File getFile(String client, String partition, String subPartition, String messageId) {
-        return new File(dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
+    private File getExistingFile(String client, String partition, String subPartition, String messageId) {
+        String prefix = dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId);
+        File f = new File(prefix + ".eml.gz");
+        if (f.exists()) {
+            return f;
+        }
+        f = new File(prefix + ".eml.aes.gz");
+        return f;
+
+    }
+
+    private File getNewFile(String client, String partition, String subPartition, String messageId, boolean encrypt) throws FileNotFoundException {
+        String prefix = dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId);
+        if (!encrypt) {
+            return new File(prefix + ".eml.gz");
+        } else {
+            return new File(prefix + ".eml.aes.gz");
+        }
     }
 
     private File getArchiveCheckSumFile(String client, String partition, String subPartition, String messageId) {
@@ -205,7 +248,13 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     private File getArchiveFile(String client, String partition, String subPartition, String messageId) {
-        return new File(archiveStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId) + ".eml.gz");
+        String prefix = archiveStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId);
+        File f = new File(prefix + ".eml.gz");
+        if (f.exists()) {
+            return f;
+        }
+        f = new File(prefix + ".eml.aes.gz");
+        return f;
     }
 
     public File getDataStore() {

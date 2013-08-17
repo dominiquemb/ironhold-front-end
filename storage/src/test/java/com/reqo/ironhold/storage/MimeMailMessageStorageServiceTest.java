@@ -7,7 +7,6 @@ import com.reqo.ironhold.storage.model.exceptions.MessageExistsException;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
-import junit.framework.Assert;
 import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.commons.mail.HtmlEmail;
 import org.junit.*;
@@ -59,7 +58,7 @@ public class MimeMailMessageStorageServiceTest {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -71,7 +70,7 @@ public class MimeMailMessageStorageServiceTest {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -87,7 +86,7 @@ public class MimeMailMessageStorageServiceTest {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -108,7 +107,7 @@ public class MimeMailMessageStorageServiceTest {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -159,7 +158,7 @@ public class MimeMailMessageStorageServiceTest {
         MimeMailMessage mimeMailMessage = new MimeMailMessage();
         mimeMailMessage.loadMimeMessageFromSource(baos.toString());
 
-        storageService.store(TEST_CLIENT, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), mimeMailMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), mimeMailMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, mimeMailMessage);
 
@@ -174,7 +173,7 @@ public class MimeMailMessageStorageServiceTest {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
@@ -187,7 +186,7 @@ public class MimeMailMessageStorageServiceTest {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
     }
@@ -211,7 +210,7 @@ public class MimeMailMessageStorageServiceTest {
             inputMessage.loadMimeMessageFromSource(rawContents);
 
 
-            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
             MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
         }
@@ -223,12 +222,12 @@ public class MimeMailMessageStorageServiceTest {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 
         try {
-            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), "test", inputMessage.getCheckSum());
+            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), "test", inputMessage.getCheckSum(), true);
 
             Assert.assertTrue(false);
         } catch (MessageExistsException e) {
@@ -239,11 +238,75 @@ public class MimeMailMessageStorageServiceTest {
     }
 
     @Test
+    public void testStoreNotEncryptedIfExists() throws Exception {
+
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), false);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        try {
+            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), "test", inputMessage.getCheckSum(), true);
+
+            Assert.assertTrue(false);
+        } catch (MessageExistsException e) {
+
+            Assert.assertTrue(e.getMessage().equals("Failed to store message [" + inputMessage.getMessageId() + "] for client [" + TEST_CLIENT + "] as it already exists"));
+        }
+
+    }
+
+    @Test
+    public void testStoreNotEncryptedIfExists2() throws Exception {
+
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        try {
+            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), "test", inputMessage.getCheckSum(), false);
+
+            Assert.assertTrue(false);
+        } catch (MessageExistsException e) {
+
+            Assert.assertTrue(e.getMessage().equals("Failed to store message [" + inputMessage.getMessageId() + "] for client [" + TEST_CLIENT + "] as it already exists"));
+        }
+
+    }
+
+    @Test
+    public void testStoreNotEncryptedIfExists3() throws Exception {
+
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), false);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        try {
+            storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), "test", inputMessage.getCheckSum(), false);
+
+            Assert.assertTrue(false);
+        } catch (MessageExistsException e) {
+
+            Assert.assertTrue(e.getMessage().equals("Failed to store message [" + inputMessage.getMessageId() + "] for client [" + TEST_CLIENT + "] as it already exists"));
+        }
+
+    }
+
+
+    @Test
     public void testArchive() throws Exception {
 
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum());
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
 
         MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
 

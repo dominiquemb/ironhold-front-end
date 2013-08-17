@@ -236,11 +236,15 @@ public class IndexClient {
 
 
     public long getTotalMessageCount(String alias, LoginUser loginUser) throws Exception {
-        SearchRequestBuilder search = esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).setNoFields();
-        applyFilters(search, loginUser);
-        logger.info(search.toString());
-        return search.execute().get().getHits().getTotalHits();
-
+        try {
+            SearchRequestBuilder search = esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).setNoFields();
+            applyFilters(search, loginUser);
+            logger.info(search.toString());
+            return search.execute().get().getHits().getTotalHits();
+        } catch (ExecutionException e) {
+            logger.warn(e);
+            return 0;
+        }
     }
 
     private void applyFilters(SearchRequestBuilder search, LoginUser loginUser) throws Exception {

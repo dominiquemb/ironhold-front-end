@@ -1,8 +1,8 @@
 package com.reqo.ironhold.storage.security;
 
-import junit.framework.Assert;
 import org.apache.shiro.crypto.AesCipherService;
 import org.fluttercode.datafactory.impl.DataFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.security.Key;
@@ -18,7 +18,7 @@ public class AESHelperTest {
     @Test
     public void testAESEncryptionDecryption() throws Exception {
         DataFactory df = new DataFactory();
-        String testString = df.getRandomText(400000);
+        String testString = df.getRandomText(4000000);
 
         AesCipherService cipher = new AesCipherService();
 
@@ -27,8 +27,9 @@ public class AESHelperTest {
 
 
         String encrypted = AESHelper.encrypt(testString, key);
-
+        System.out.println(encrypted.length());
         String decrypted = AESHelper.decrypt(encrypted, key);
+        System.out.println(decrypted.length());
 
         Assert.assertEquals(testString, decrypted);
     }

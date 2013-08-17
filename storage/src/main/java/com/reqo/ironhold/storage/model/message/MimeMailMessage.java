@@ -387,6 +387,14 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     String fixedRawContents = this.getRawContents().replaceAll("charset=\"\"", "charset=\"UTF-8\"");
                     reset();
                     loadMimeMessageFromSource(fixedRawContents);
+                } else if (e.getMessage().trim().startsWith("_") && e.getMessage().trim().endsWith("$ESC")) {
+                    // _iso-2022-jp$ESC
+                    String encoding = e.getMessage().trim();
+                    encoding = encoding.replace("_", "");
+                    encoding = encoding.replace("$ESC", "");
+                    String fixedRawContents = this.getRawContents().replaceAll("charset=\"\"", "charset=\"" + encoding + "\"");
+                    reset();
+                    loadMimeMessageFromSource(fixedRawContents);
                 } else {
                     throw e;
                 }

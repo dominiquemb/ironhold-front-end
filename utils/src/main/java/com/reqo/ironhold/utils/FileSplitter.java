@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,7 @@ public class FileSplitter {
         this.destinationDirectory = destinationDirectory;
     }
 
-    public List<File> split() throws IOException, NoSuchAlgorithmException {
+    public List<FileWithChecksum> split() throws Exception {
         Objects.requireNonNull(sourceFile, "Source file is required");
         Objects.requireNonNull(destinationDirectory, "Destination directory is required");
 
@@ -35,7 +34,11 @@ public class FileSplitter {
         if (!sourceFile.canRead()) throw new IllegalArgumentException("Cannot read source File");
         if (!sourceFile.isFile()) throw new IllegalArgumentException("Source file is not a file");
 
-        if (!destinationDirectory.exists()) throw new IllegalArgumentException("Destination directory does not exist");
+        if (destinationDirectory.exists()) throw new IllegalArgumentException("Destination directory already exists");
+        FileUtils.forceMkdir(destinationDirectory);
+        if (!destinationDirectory.exists())
+            throw new IllegalArgumentException("Failed to create destination directory");
+
         if (!destinationDirectory.canWrite())
             throw new IllegalArgumentException("Cannot write into destination directory");
         if (!destinationDirectory.isDirectory())
@@ -49,11 +52,12 @@ public class FileSplitter {
         int totalBytesRead = 0;
         int chunkSize = DEFAULT_CHUNK_SIZE;
 
-        List<File> fileList = new ArrayList<File>();
+        List<FileWithChecksum> fileList = new ArrayList();
 
         try {
             inStream = new BufferedInputStream(new FileInputStream(sourceFile));
 
+            StringBuilder sb = new StringBuilder();
             long fileSize = sourceFile.length();
             while (totalBytesRead < fileSize) {
                 String partName = sourceFile.getName() + ".part" + chunk;
@@ -75,14 +79,20 @@ public class FileSplitter {
 
                 FileUtils.writeByteArrayToFile(partFile, temporary);
 
-                fileList.add(partFile);
 
                 logger.info("Calculating checksum for part " + chunk);
-                MD5CheckSum.createMD5CheckSum(partFile);
 
+                File checksumFile = MD5CheckSum.createMD5CheckSum(partFile);
+
+                fileList.add(new FileWithChecksum(partFile, new MD5CheckSum(checksumFile)));
+                sb.append(partFile.getName());
+                sb.append("\t");
+                sb.append(partFile.length());
+                sb.append("\n");
                 logger.info("Wrote part file " + chunk + ", " + bytesRemaining + " bytes remaining");
             }
 
+            FileUtils.writeStringToFile(new File(destinationDirectory.getAbsolutePath() + File.separator + "manifest"), sb.toString());
         } finally {
             inStream.close();
         }
@@ -91,7 +101,7 @@ public class FileSplitter {
 
     }
 
-    public File join(List<File> parts, File destinationDirectory) throws IOException {
+    public File join(List<FileWithChecksum> parts, File destinationDirectory) throws IOException {
         Objects.requireNonNull(parts, "List of file parts is required");
         Objects.requireNonNull(destinationDirectory, "Destination directory is required");
 
@@ -102,13 +112,13 @@ public class FileSplitter {
         if (!destinationDirectory.isDirectory())
             throw new IllegalArgumentException("Destination directory is not a directory");
 
-        for (File part : parts) {
-            if (!part.exists()) {
-                throw new IllegalArgumentException("Part " + part.getAbsolutePath() + " is missing");
+        for (FileWithChecksum part : parts) {
+            if (!part.getFile().exists()) {
+                throw new IllegalArgumentException("Part " + part.getFile().getAbsolutePath() + " is missing");
             }
         }
 
-        String destinationName = parts.get(0).getName();
+        String destinationName = parts.get(0).getFile().getName();
         destinationName = destinationName.substring(0, destinationName.lastIndexOf("."));
 
 
@@ -116,9 +126,9 @@ public class FileSplitter {
         if (destinationFile.exists())
             throw new IllegalArgumentException("Destination file " + destinationFile.getAbsolutePath() + " already exists");
 
-        for (File part : parts) {
-            logger.info("Appending " + part.getAbsolutePath());
-            byte[] chunk = FileUtils.readFileToByteArray(part);
+        for (FileWithChecksum part : parts) {
+            logger.info("Appending " + part.getFile().getAbsolutePath());
+            byte[] chunk = FileUtils.readFileToByteArray(part.getFile());
             FileOutputStream fos = new FileOutputStream(destinationFile.getAbsolutePath(), true);
             fos.write(chunk);
             fos.close();

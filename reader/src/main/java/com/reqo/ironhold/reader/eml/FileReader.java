@@ -42,10 +42,12 @@ public class FileReader {
 
     private String emlFile;
     private String client;
+    private boolean encrypt;
 
-    public FileReader(String client, String emlFile) throws IOException {
+    public FileReader(String client, String emlFile, boolean encrypt) throws IOException {
         this.client = client;
         this.emlFile = emlFile;
+        this.encrypt = encrypt;
     }
 
     public void processMail() throws InterruptedException, MessagingException, FileNotFoundException {
@@ -66,7 +68,7 @@ public class FileReader {
                 logger.warn("Found duplicate " + messageId);
                 existsInStore = true;
             } else {
-                mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()));
+                mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), encrypt);
 
                 logger.info("Stored journaled message "
                         + mailMessage.getMessageId()
@@ -109,6 +111,14 @@ public class FileReader {
 
     public void setClient(String client) {
         this.client = client;
+    }
+
+    public boolean isEncrypt() {
+        return encrypt;
+    }
+
+    public void setEncrypt(boolean encrypt) {
+        this.encrypt = encrypt;
     }
 
     // Main Function for The readEmail Class

@@ -1,7 +1,7 @@
 package com.reqo.ironhold.storage.security;
 
-import junit.framework.Assert;
 import org.elasticsearch.common.Base64;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

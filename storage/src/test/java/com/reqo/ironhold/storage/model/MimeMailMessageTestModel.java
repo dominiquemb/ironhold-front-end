@@ -3,7 +3,7 @@ package com.reqo.ironhold.storage.model;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class MimeMailMessageTestModel extends CommonTestModel {
 

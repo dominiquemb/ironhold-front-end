@@ -40,6 +40,7 @@ public class QueueWatcher extends FileWatcher {
         importer.setFile(dataFile);
         importer.setClient(getClient());
         importer.setIgnoreAttachmentExtractList(ignoreAttachmentExtractList);
+        importer.setEncrypt(isEncrypt());
         String details = importer.processMessages();
 
         try {
@@ -73,6 +74,7 @@ public class QueueWatcher extends FileWatcher {
             qw.setQuarantineDirName(bean.getQuarantine());
             qw.setClient(bean.getClient());
             qw.setIgnoreAttachmentExtractList(bean.getIgnoreAttachmentExtractList());
+            qw.setEncrypt(bean.isEncrypt());
 
             qw.initialize();
             qw.start();

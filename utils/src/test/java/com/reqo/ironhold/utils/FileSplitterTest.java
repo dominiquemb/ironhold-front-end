@@ -1,5 +1,6 @@
 package com.reqo.ironhold.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -9,6 +10,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * User: ilya
@@ -30,7 +32,7 @@ public class FileSplitterTest {
 
         logger.info("Writing large file " + fileName);
         RandomAccessFile f = new RandomAccessFile(fileName, "rw");
-        int testLength = 1024 * 1024 * 1024;
+        int testLength = 1024 * 1024 * 200;
         f.setLength(testLength); // 1GB
 
         logger.info("Finished writing large file " + fileName);
@@ -56,25 +58,24 @@ public class FileSplitterTest {
 
     private void splitAndJoinWithAssertions(File file) throws Exception {
 
+        String workingDirectory = in.getRoot().getAbsolutePath() + File.separator + UUID.randomUUID().toString();
 
-        FileSplitter FileSplitter = new FileSplitter(file, in.getRoot());
+        FileSplitter fileSplitter = new FileSplitter(file, new File(workingDirectory));
 
-        List<File> parts = FileSplitter.split();
+        List<FileWithChecksum> parts = fileSplitter.split();
 
-        Assert.assertEquals(1 + file.length() / FileSplitter.DEFAULT_CHUNK_SIZE, parts.size());
-        for (File part : parts) {
-            Assert.assertTrue(part.exists());
+        for (FileWithChecksum part : parts) {
+            Assert.assertTrue(part.getFile().exists());
 
-            File checkSumFile = new File(part.getAbsolutePath() + ".md5");
-            Assert.assertTrue(checkSumFile.exists());
+            Assert.assertTrue(part.getCheckSum().getCheckSumFile().exists());
 
-            MD5CheckSum checkSum = new MD5CheckSum(checkSumFile);
+            MD5CheckSum checkSum = new MD5CheckSum(part.getCheckSum().getCheckSumFile());
             Assert.assertTrue(checkSum.verifyChecksum());
 
         }
 
 
-        File destinationFile = FileSplitter.join(parts, out.getRoot());
+        File destinationFile = fileSplitter.join(parts, out.getRoot());
 
         Assert.assertEquals(file.getName(), destinationFile.getName());
         Assert.assertTrue(destinationFile.exists());
@@ -86,5 +87,19 @@ public class FileSplitterTest {
         logger.info("Finished calculating checksums");
 
         Assert.assertEquals(expectedChecksum, actualChecksum);
+
+        File manifestFile = new File(workingDirectory + File.separator + "manifest");
+        Assert.assertTrue(manifestFile.exists());
+
+        String manifest = FileUtils.readFileToString(manifestFile);
+        String[] lines = manifest.split("\n");
+        Assert.assertEquals(parts.size(), lines.length);
+
+        for (String line : lines) {
+            String[] chunks = line.split("\t");
+            Assert.assertTrue(new File(workingDirectory + File.separator + chunks[0]).exists());
+            Assert.assertEquals(Integer.parseInt(chunks[1]), new File(workingDirectory + File.separator + chunks[0]).length());
+
+        }
     }
 }

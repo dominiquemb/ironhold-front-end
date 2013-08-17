@@ -38,7 +38,17 @@
 
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>com.reqo.ironhold</groupId>
+            <artifactId>utils</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.reqo.ironhold</groupId>
+            <artifactId>uploadclient</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>

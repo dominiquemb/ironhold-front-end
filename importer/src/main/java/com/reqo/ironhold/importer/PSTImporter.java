@@ -61,6 +61,7 @@ public class PSTImporter {
     private String mailBoxName;
     private String originalFilePath;
     private String commentary;
+    private boolean encrypt;
 
     private Set<String> ignoreAttachmentExtractSet = new HashSet<>();
 
@@ -181,7 +182,7 @@ public class PSTImporter {
                                     + metaData.getDuplicates() + " Failures:"
                                     + metaData.getFailures());
                         }
-                        long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()));
+                        long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()), encrypt);
                         metaData.updateSizeStatistics(mimeMailMessage.getRawContents().length(), storedSize);
                     }
 
@@ -269,6 +270,10 @@ public class PSTImporter {
 
     public void setClient(String client) {
         this.client = client;
+    }
+
+    public void setEncrypt(boolean encrypt) {
+        this.encrypt = encrypt;
     }
 
     public void initialize() throws Exception {

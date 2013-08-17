@@ -10,6 +10,9 @@ public class FileReaderOptions {
     @Option(name = "-emlFile", usage = "eml file", required = true)
     private String emlFile;
 
+    @Option(name = "-encrypt", usage = "encrypt date", required = false)
+    private boolean encrypt;
+
     public String getClient() {
         return client;
     }
@@ -18,4 +21,7 @@ public class FileReaderOptions {
         return emlFile;
     }
 
+    public boolean isEncrypt() {
+        return encrypt;
+    }
 }

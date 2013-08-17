@@ -31,6 +31,16 @@ public class ReaderOptions {
     @Option(name = "-timeout", usage = "IMAP command timeout", required = false)
     private int timeout = 60000;
 
+    @Option(name = "-encrypt", usage = "encrypt data", required = false)
+    private boolean encrypt;
+
+    public boolean isEncrypt() {
+        return encrypt;
+    }
+
+    public boolean isExpunge() {
+        return expunge;
+    }
 
     public String getClient() {
         return client;
@@ -58,10 +68,6 @@ public class ReaderOptions {
 
     public int getBatchSize() {
         return batchSize;
-    }
-
-    public boolean getExpunge() {
-        return expunge;
     }
 
     public int getTimeout() {

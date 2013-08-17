@@ -14,9 +14,16 @@ public class WatcherOptions {
 
     @Option(name = "-out", usage = "location of processed directory", required = true)
     private String out;
-    
+
     @Option(name = "-q", usage = "location of quarantine directory", required = true)
     private String quarantine;
+
+    @Option(name = "-encrypt", usage = "encrypt data", required = false)
+    private boolean encrypt;
+
+    public boolean isEncrypt() {
+        return encrypt;
+    }
 
     public String getClient() {
         return client;
@@ -34,7 +41,7 @@ public class WatcherOptions {
         return queue;
     }
 
-	public String getQuarantine() {
-		return quarantine;
-	}
+    public String getQuarantine() {
+        return quarantine;
+    }
 }

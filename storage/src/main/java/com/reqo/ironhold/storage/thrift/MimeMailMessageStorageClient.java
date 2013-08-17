@@ -31,8 +31,8 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     }
 
     @Override
-    public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum) throws Exception {
-        return this.client.store(client, partition, subPartition, messageId, serializedMailMessage, checkSum);
+    public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum, boolean encrypt) throws Exception {
+        return this.client.store(client, partition, subPartition, messageId, serializedMailMessage, checkSum, encrypt);
     }
 
     @Override

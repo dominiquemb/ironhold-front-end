@@ -1,44 +1,31 @@
 package com.reqo.ironhold.service;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.reqo.ironhold.uploadclient.ImportFileClient;
+import com.reqo.ironhold.utils.MD5CheckSum;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Date;
 
 public class ImportPSTResourceTest {
 
     private HttpServer server;
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public TemporaryFolder clientFolder = new TemporaryFolder();
+
+    @Rule
+    public TemporaryFolder serviceFolder = new TemporaryFolder();
+
     private String baseUrl;
 
     @Before
     public void setUp() throws Exception {
         // start the server
         baseUrl = "http://localhost:1111/myapp/";
-        server = Main.startServer(baseUrl);
+        server = Main.startServer(baseUrl, serviceFolder.getRoot());
     }
 
     @After
@@ -47,73 +34,23 @@ public class ImportPSTResourceTest {
     }
 
     @Test
-    public void testUsingApacheClient() throws IOException {
-        if (new File("/tmp/test.pst").exists()) {
-            FileUtils.forceDelete(new File("/tmp/test.pst"));
-        }
-        Assert.assertFalse(new File("/tmp/test.pst").exists());
+    public void testUsingJerseyClient() throws Exception {
+        long fileSize = 1024 * 1024 * 200;
+        File completeFile = new File(clientFolder.getRoot().getAbsolutePath() + File.separator + "/test.pst");
+        RandomAccessFile f = new RandomAccessFile(completeFile.getAbsolutePath(), "rw");
+        f.setLength(fileSize);
 
-        String expected = Long.toString(new Date().getTime());
+        Assert.assertTrue(completeFile.exists());
+        Assert.assertEquals(fileSize, completeFile.length());
 
-        String fileName = folder.getRoot().getAbsolutePath() + File.separator + "/test.pst";
+        ImportFileClient client = new ImportFileClient(baseUrl, "importpst", clientFolder.getRoot(), completeFile);
+        client.upload();
 
-        RandomAccessFile f = new RandomAccessFile(fileName, "rw");
-        f.setLength(1024 * 1024 * 1024);
+        File targetFile = new File(serviceFolder.getRoot().getAbsolutePath() + File.separator + client.getSessionId() + File.separator + completeFile.getName());
+        Assert.assertTrue(targetFile.exists());
+        Assert.assertEquals(fileSize, targetFile.length());
 
-        long started = System.currentTimeMillis();
-
-
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(baseUrl + "importpst/upload/test.pst");
-        FileBody fileContent = new FileBody(new File(fileName));
-        StringBody comment = new StringBody("Filename: " + fileName);
-        MultipartEntity reqEntity = new MultipartEntity();
-        reqEntity.addPart("file", fileContent);
-        httppost.setEntity(reqEntity);
-        HttpResponse response = httpclient.execute(httppost);
-        HttpEntity resEntity = response.getEntity();
-
-        long finished = System.currentTimeMillis();
-        System.out.println("testUsingApacheClient took " + (finished - started) + "ms");
-
-        Assert.assertTrue(new File("/tmp/test.pst").exists());
-
+        Assert.assertEquals(MD5CheckSum.getMD5Checksum(completeFile), MD5CheckSum.getMD5Checksum(targetFile));
     }
 
-    @Test
-    public void testUsingJerseyClient() throws IOException {
-        if (new File("/tmp/test.pst").exists()) {
-            FileUtils.forceDelete(new File("/tmp/test.pst"));
-        }
-        Assert.assertFalse(new File("/tmp/test.pst").exists());
-        String expected = Long.toString(new Date().getTime());
-
-        String fileName = folder.getRoot().getAbsolutePath() + File.separator + "/test.pst";
-
-
-        RandomAccessFile f = new RandomAccessFile(fileName, "rw");
-        f.setLength(1024);
-
-        long started = System.currentTimeMillis();
-        Client client = ClientBuilder.newBuilder()
-                .register(MultiPartFeature.class)
-                .build();
-
-        WebTarget webResource = client
-                .target(baseUrl + "importpst/upload/test.pst");
-
-
-        FileDataBodyPart fdp = new FileDataBodyPart("file", new File(fileName));
-
-        FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
-
-        formDataMultiPart.bodyPart(fdp);
-
-        webResource.request().post(Entity.entity(formDataMultiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
-
-        long finished = System.currentTimeMillis();
-        System.out.println("testUsingJerseyClient took " + (finished - started) + "ms");
-
-        Assert.assertTrue(new File("/tmp/test.pst").exists());
-    }
 }

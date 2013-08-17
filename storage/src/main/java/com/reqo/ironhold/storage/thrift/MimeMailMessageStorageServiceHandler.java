@@ -20,10 +20,10 @@ public class MimeMailMessageStorageServiceHandler implements MimeMailMessageStor
     private LocalMimeMailMessageStorageService mimeMailMessageStorageService;
 
     @Override
-    public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum) throws TException {
+    public long store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt) throws TException {
         try {
             logger.info("Storing " + messageId + " for " + clientName + "/" + partition + "/" + subPartition);
-            return mimeMailMessageStorageService.store(clientName, partition, subPartition, messageId, message, checkSum);
+            return mimeMailMessageStorageService.store(clientName, partition, subPartition, messageId, message, checkSum, encrypt);
         } catch (Exception e) {
             throw new TException(e);
         }
