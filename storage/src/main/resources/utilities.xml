@@ -16,6 +16,7 @@
 
     <bean id="reconciliation" class="com.reqo.ironhold.storage.utils.MessageReconciliation" scope="singleton"/>
     <bean id="archiver" class="com.reqo.ironhold.storage.utils.Archiver" scope="singleton"/>
+    <bean id="decrypt" class="com.reqo.ironhold.storage.utils.DecryptMessages" scope="singleton"/>
 
     <!-- ES beans -->
     <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient" scope="singleton">
