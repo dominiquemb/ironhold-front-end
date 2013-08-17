@@ -85,6 +85,14 @@ public class DecryptMessagesTest extends AbstractJUnit4SpringContextTests {
             Assert.assertTrue(storageService.exists(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
 
             Assert.assertFalse(storageService.isEncrypted(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+            String message = storageService.get(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId());
+
+
+            MimeMailMessage storedMessage = new MimeMailMessage();
+            storedMessage.loadMimeMessageFromSource(message);
+
+            Assert.assertEquals(inputMessage.getSubject(), storedMessage.getSubject());
         }
 
     }
