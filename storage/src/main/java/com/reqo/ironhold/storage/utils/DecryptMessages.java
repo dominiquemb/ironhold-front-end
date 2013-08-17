@@ -54,7 +54,7 @@ public class DecryptMessages {
         System.exit(1);
     }
 
-    private void run(String client, String partitionFocus, String subPartitionFocus) throws Exception {
+    public void run(String client, String partitionFocus, String subPartitionFocus) throws Exception {
         int counter = 0;
         for (String partition : getPartitions(client, partitionFocus)) {
             logger.info("Checking " + partition);
