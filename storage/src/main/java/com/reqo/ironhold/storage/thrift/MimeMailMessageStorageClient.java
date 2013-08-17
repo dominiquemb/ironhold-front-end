@@ -41,6 +41,12 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     }
 
     @Override
+    public boolean isEncrypted(String client, String partition, String subPartition, String messageId) throws Exception {
+        return this.client.isEncrypted(client, partition, subPartition, messageId);
+    }
+
+
+    @Override
     public String get(String client, String partition, String subPartition, String messageId) throws Exception {
         return this.client.get(client, partition, subPartition, messageId);
     }

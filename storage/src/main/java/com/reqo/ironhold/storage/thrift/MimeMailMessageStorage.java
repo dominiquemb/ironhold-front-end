@@ -25,6 +25,8 @@ public class MimeMailMessageStorage {
 
         public boolean exists(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException;
 
+        public boolean isEncrypted(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException;
+
         public String get(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException;
 
         public List<String> getPartitions(String clientName) throws org.apache.thrift.TException;
@@ -42,6 +44,8 @@ public class MimeMailMessageStorage {
         public void store(String clientName, String partition, String subPartition, String messageId, String message, String checkSum, boolean encrypt, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.store_call> resultHandler) throws org.apache.thrift.TException;
 
         public void exists(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.exists_call> resultHandler) throws org.apache.thrift.TException;
+
+        public void isEncrypted(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.isEncrypted_call> resultHandler) throws org.apache.thrift.TException;
 
         public void get(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.get_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -124,6 +128,29 @@ public class MimeMailMessageStorage {
                 return result.success;
             }
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "exists failed: unknown result");
+        }
+
+        public boolean isEncrypted(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException {
+            send_isEncrypted(clientName, partition, subPartition, messageId);
+            return recv_isEncrypted();
+        }
+
+        public void send_isEncrypted(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException {
+            isEncrypted_args args = new isEncrypted_args();
+            args.setClientName(clientName);
+            args.setPartition(partition);
+            args.setSubPartition(subPartition);
+            args.setMessageId(messageId);
+            sendBase("isEncrypted", args);
+        }
+
+        public boolean recv_isEncrypted() throws org.apache.thrift.TException {
+            isEncrypted_result result = new isEncrypted_result();
+            receiveBase(result, "isEncrypted");
+            if (result.isSetSuccess()) {
+                return result.success;
+            }
+            throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "isEncrypted failed: unknown result");
         }
 
         public String get(String clientName, String partition, String subPartition, String messageId) throws org.apache.thrift.TException {
@@ -349,6 +376,48 @@ public class MimeMailMessageStorage {
             }
         }
 
+        public void isEncrypted(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<isEncrypted_call> resultHandler) throws org.apache.thrift.TException {
+            checkReady();
+            isEncrypted_call method_call = new isEncrypted_call(clientName, partition, subPartition, messageId, resultHandler, this, ___protocolFactory, ___transport);
+            this.___currentMethod = method_call;
+            ___manager.call(method_call);
+        }
+
+        public static class isEncrypted_call extends org.apache.thrift.async.TAsyncMethodCall {
+            private String clientName;
+            private String partition;
+            private String subPartition;
+            private String messageId;
+
+            public isEncrypted_call(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<isEncrypted_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+                super(client, protocolFactory, transport, resultHandler, false);
+                this.clientName = clientName;
+                this.partition = partition;
+                this.subPartition = subPartition;
+                this.messageId = messageId;
+            }
+
+            public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+                prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("isEncrypted", org.apache.thrift.protocol.TMessageType.CALL, 0));
+                isEncrypted_args args = new isEncrypted_args();
+                args.setClientName(clientName);
+                args.setPartition(partition);
+                args.setSubPartition(subPartition);
+                args.setMessageId(messageId);
+                args.write(prot);
+                prot.writeMessageEnd();
+            }
+
+            public boolean getResult() throws org.apache.thrift.TException {
+                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                    throw new IllegalStateException("Method call not finished!");
+                }
+                org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+                org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+                return (new Client(prot)).recv_isEncrypted();
+            }
+        }
+
         public void get(String clientName, String partition, String subPartition, String messageId, org.apache.thrift.async.AsyncMethodCallback<get_call> resultHandler) throws org.apache.thrift.TException {
             checkReady();
             get_call method_call = new get_call(clientName, partition, subPartition, messageId, resultHandler, this, ___protocolFactory, ___transport);
@@ -557,6 +626,7 @@ public class MimeMailMessageStorage {
         private static <I extends Iface> Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
             processMap.put("store", new store());
             processMap.put("exists", new exists());
+            processMap.put("isEncrypted", new isEncrypted());
             processMap.put("get", new get());
             processMap.put("getPartitions", new getPartitions());
             processMap.put("getSubPartitions", new getSubPartitions());
@@ -602,6 +672,27 @@ public class MimeMailMessageStorage {
             public exists_result getResult(I iface, exists_args args) throws org.apache.thrift.TException {
                 exists_result result = new exists_result();
                 result.success = iface.exists(args.clientName, args.partition, args.subPartition, args.messageId);
+                result.setSuccessIsSet(true);
+                return result;
+            }
+        }
+
+        public static class isEncrypted<I extends Iface> extends org.apache.thrift.ProcessFunction<I, isEncrypted_args> {
+            public isEncrypted() {
+                super("isEncrypted");
+            }
+
+            public isEncrypted_args getEmptyArgsInstance() {
+                return new isEncrypted_args();
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public isEncrypted_result getResult(I iface, isEncrypted_args args) throws org.apache.thrift.TException {
+                isEncrypted_result result = new isEncrypted_result();
+                result.success = iface.isEncrypted(args.clientName, args.partition, args.subPartition, args.messageId);
                 result.setSuccessIsSet(true);
                 return result;
             }
@@ -3055,6 +3146,1032 @@ public class MimeMailMessageStorage {
 
             @Override
             public void read(org.apache.thrift.protocol.TProtocol prot, exists_result struct) throws org.apache.thrift.TException {
+                TTupleProtocol iprot = (TTupleProtocol) prot;
+                BitSet incoming = iprot.readBitSet(1);
+                if (incoming.get(0)) {
+                    struct.success = iprot.readBool();
+                    struct.setSuccessIsSet(true);
+                }
+            }
+        }
+
+    }
+
+    public static class isEncrypted_args implements org.apache.thrift.TBase<isEncrypted_args, isEncrypted_args._Fields>, java.io.Serializable, Cloneable {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("isEncrypted_args");
+
+        private static final org.apache.thrift.protocol.TField CLIENT_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("clientName", org.apache.thrift.protocol.TType.STRING, (short) 1);
+        private static final org.apache.thrift.protocol.TField PARTITION_FIELD_DESC = new org.apache.thrift.protocol.TField("partition", org.apache.thrift.protocol.TType.STRING, (short) 2);
+        private static final org.apache.thrift.protocol.TField SUB_PARTITION_FIELD_DESC = new org.apache.thrift.protocol.TField("subPartition", org.apache.thrift.protocol.TType.STRING, (short) 3);
+        private static final org.apache.thrift.protocol.TField MESSAGE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("messageId", org.apache.thrift.protocol.TType.STRING, (short) 4);
+
+        private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+
+        static {
+            schemes.put(StandardScheme.class, new isEncrypted_argsStandardSchemeFactory());
+            schemes.put(TupleScheme.class, new isEncrypted_argsTupleSchemeFactory());
+        }
+
+        public String clientName; // required
+        public String partition; // required
+        public String subPartition; // required
+        public String messageId; // required
+
+        /**
+         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            CLIENT_NAME((short) 1, "clientName"),
+            PARTITION((short) 2, "partition"),
+            SUB_PARTITION((short) 3, "subPartition"),
+            MESSAGE_ID((short) 4, "messageId");
+
+            private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+            static {
+                for (_Fields field : EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch (fieldId) {
+                    case 1: // CLIENT_NAME
+                        return CLIENT_NAME;
+                    case 2: // PARTITION
+                        return PARTITION;
+                    case 3: // SUB_PARTITION
+                        return SUB_PARTITION;
+                    case 4: // MESSAGE_ID
+                        return MESSAGE_ID;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final String _fieldName;
+
+            _Fields(short thriftId, String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+
+        static {
+            Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.CLIENT_NAME, new org.apache.thrift.meta_data.FieldMetaData("clientName", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+            tmpMap.put(_Fields.PARTITION, new org.apache.thrift.meta_data.FieldMetaData("partition", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+            tmpMap.put(_Fields.SUB_PARTITION, new org.apache.thrift.meta_data.FieldMetaData("subPartition", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+            tmpMap.put(_Fields.MESSAGE_ID, new org.apache.thrift.meta_data.FieldMetaData("messageId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+            metaDataMap = Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(isEncrypted_args.class, metaDataMap);
+        }
+
+        public isEncrypted_args() {
+        }
+
+        public isEncrypted_args(
+                String clientName,
+                String partition,
+                String subPartition,
+                String messageId) {
+            this();
+            this.clientName = clientName;
+            this.partition = partition;
+            this.subPartition = subPartition;
+            this.messageId = messageId;
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public isEncrypted_args(isEncrypted_args other) {
+            if (other.isSetClientName()) {
+                this.clientName = other.clientName;
+            }
+            if (other.isSetPartition()) {
+                this.partition = other.partition;
+            }
+            if (other.isSetSubPartition()) {
+                this.subPartition = other.subPartition;
+            }
+            if (other.isSetMessageId()) {
+                this.messageId = other.messageId;
+            }
+        }
+
+        public isEncrypted_args deepCopy() {
+            return new isEncrypted_args(this);
+        }
+
+        @Override
+        public void clear() {
+            this.clientName = null;
+            this.partition = null;
+            this.subPartition = null;
+            this.messageId = null;
+        }
+
+        public String getClientName() {
+            return this.clientName;
+        }
+
+        public isEncrypted_args setClientName(String clientName) {
+            this.clientName = clientName;
+            return this;
+        }
+
+        public void unsetClientName() {
+            this.clientName = null;
+        }
+
+        /**
+         * Returns true if field clientName is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSetClientName() {
+            return this.clientName != null;
+        }
+
+        public void setClientNameIsSet(boolean value) {
+            if (!value) {
+                this.clientName = null;
+            }
+        }
+
+        public String getPartition() {
+            return this.partition;
+        }
+
+        public isEncrypted_args setPartition(String partition) {
+            this.partition = partition;
+            return this;
+        }
+
+        public void unsetPartition() {
+            this.partition = null;
+        }
+
+        /**
+         * Returns true if field partition is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSetPartition() {
+            return this.partition != null;
+        }
+
+        public void setPartitionIsSet(boolean value) {
+            if (!value) {
+                this.partition = null;
+            }
+        }
+
+        public String getSubPartition() {
+            return this.subPartition;
+        }
+
+        public isEncrypted_args setSubPartition(String subPartition) {
+            this.subPartition = subPartition;
+            return this;
+        }
+
+        public void unsetSubPartition() {
+            this.subPartition = null;
+        }
+
+        /**
+         * Returns true if field subPartition is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSetSubPartition() {
+            return this.subPartition != null;
+        }
+
+        public void setSubPartitionIsSet(boolean value) {
+            if (!value) {
+                this.subPartition = null;
+            }
+        }
+
+        public String getMessageId() {
+            return this.messageId;
+        }
+
+        public isEncrypted_args setMessageId(String messageId) {
+            this.messageId = messageId;
+            return this;
+        }
+
+        public void unsetMessageId() {
+            this.messageId = null;
+        }
+
+        /**
+         * Returns true if field messageId is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSetMessageId() {
+            return this.messageId != null;
+        }
+
+        public void setMessageIdIsSet(boolean value) {
+            if (!value) {
+                this.messageId = null;
+            }
+        }
+
+        public void setFieldValue(_Fields field, Object value) {
+            switch (field) {
+                case CLIENT_NAME:
+                    if (value == null) {
+                        unsetClientName();
+                    } else {
+                        setClientName((String) value);
+                    }
+                    break;
+
+                case PARTITION:
+                    if (value == null) {
+                        unsetPartition();
+                    } else {
+                        setPartition((String) value);
+                    }
+                    break;
+
+                case SUB_PARTITION:
+                    if (value == null) {
+                        unsetSubPartition();
+                    } else {
+                        setSubPartition((String) value);
+                    }
+                    break;
+
+                case MESSAGE_ID:
+                    if (value == null) {
+                        unsetMessageId();
+                    } else {
+                        setMessageId((String) value);
+                    }
+                    break;
+
+            }
+        }
+
+        public Object getFieldValue(_Fields field) {
+            switch (field) {
+                case CLIENT_NAME:
+                    return getClientName();
+
+                case PARTITION:
+                    return getPartition();
+
+                case SUB_PARTITION:
+                    return getSubPartition();
+
+                case MESSAGE_ID:
+                    return getMessageId();
+
+            }
+            throw new IllegalStateException();
+        }
+
+        /**
+         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new IllegalArgumentException();
+            }
+
+            switch (field) {
+                case CLIENT_NAME:
+                    return isSetClientName();
+                case PARTITION:
+                    return isSetPartition();
+                case SUB_PARTITION:
+                    return isSetSubPartition();
+                case MESSAGE_ID:
+                    return isSetMessageId();
+            }
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof isEncrypted_args)
+                return this.equals((isEncrypted_args) that);
+            return false;
+        }
+
+        public boolean equals(isEncrypted_args that) {
+            if (that == null)
+                return false;
+
+            boolean this_present_clientName = true && this.isSetClientName();
+            boolean that_present_clientName = true && that.isSetClientName();
+            if (this_present_clientName || that_present_clientName) {
+                if (!(this_present_clientName && that_present_clientName))
+                    return false;
+                if (!this.clientName.equals(that.clientName))
+                    return false;
+            }
+
+            boolean this_present_partition = true && this.isSetPartition();
+            boolean that_present_partition = true && that.isSetPartition();
+            if (this_present_partition || that_present_partition) {
+                if (!(this_present_partition && that_present_partition))
+                    return false;
+                if (!this.partition.equals(that.partition))
+                    return false;
+            }
+
+            boolean this_present_subPartition = true && this.isSetSubPartition();
+            boolean that_present_subPartition = true && that.isSetSubPartition();
+            if (this_present_subPartition || that_present_subPartition) {
+                if (!(this_present_subPartition && that_present_subPartition))
+                    return false;
+                if (!this.subPartition.equals(that.subPartition))
+                    return false;
+            }
+
+            boolean this_present_messageId = true && this.isSetMessageId();
+            boolean that_present_messageId = true && that.isSetMessageId();
+            if (this_present_messageId || that_present_messageId) {
+                if (!(this_present_messageId && that_present_messageId))
+                    return false;
+                if (!this.messageId.equals(that.messageId))
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        public int compareTo(isEncrypted_args other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+            isEncrypted_args typedOther = (isEncrypted_args) other;
+
+            lastComparison = Boolean.valueOf(isSetClientName()).compareTo(typedOther.isSetClientName());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetClientName()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.clientName, typedOther.clientName);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = Boolean.valueOf(isSetPartition()).compareTo(typedOther.isSetPartition());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetPartition()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.partition, typedOther.partition);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = Boolean.valueOf(isSetSubPartition()).compareTo(typedOther.isSetSubPartition());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetSubPartition()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.subPartition, typedOther.subPartition);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = Boolean.valueOf(isSetMessageId()).compareTo(typedOther.isSetMessageId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetMessageId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.messageId, typedOther.messageId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("isEncrypted_args(");
+            boolean first = true;
+
+            sb.append("clientName:");
+            if (this.clientName == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.clientName);
+            }
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("partition:");
+            if (this.partition == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.partition);
+            }
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("subPartition:");
+            if (this.subPartition == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.subPartition);
+            }
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("messageId:");
+            if (this.messageId == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.messageId);
+            }
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class isEncrypted_argsStandardSchemeFactory implements SchemeFactory {
+            public isEncrypted_argsStandardScheme getScheme() {
+                return new isEncrypted_argsStandardScheme();
+            }
+        }
+
+        private static class isEncrypted_argsStandardScheme extends StandardScheme<isEncrypted_args> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, isEncrypted_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true) {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 1: // CLIENT_NAME
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                                struct.clientName = iprot.readString();
+                                struct.setClientNameIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 2: // PARTITION
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                                struct.partition = iprot.readString();
+                                struct.setPartitionIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 3: // SUB_PARTITION
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                                struct.subPartition = iprot.readString();
+                                struct.setSubPartitionIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 4: // MESSAGE_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                                struct.messageId = iprot.readString();
+                                struct.setMessageIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, isEncrypted_args struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.clientName != null) {
+                    oprot.writeFieldBegin(CLIENT_NAME_FIELD_DESC);
+                    oprot.writeString(struct.clientName);
+                    oprot.writeFieldEnd();
+                }
+                if (struct.partition != null) {
+                    oprot.writeFieldBegin(PARTITION_FIELD_DESC);
+                    oprot.writeString(struct.partition);
+                    oprot.writeFieldEnd();
+                }
+                if (struct.subPartition != null) {
+                    oprot.writeFieldBegin(SUB_PARTITION_FIELD_DESC);
+                    oprot.writeString(struct.subPartition);
+                    oprot.writeFieldEnd();
+                }
+                if (struct.messageId != null) {
+                    oprot.writeFieldBegin(MESSAGE_ID_FIELD_DESC);
+                    oprot.writeString(struct.messageId);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class isEncrypted_argsTupleSchemeFactory implements SchemeFactory {
+            public isEncrypted_argsTupleScheme getScheme() {
+                return new isEncrypted_argsTupleScheme();
+            }
+        }
+
+        private static class isEncrypted_argsTupleScheme extends TupleScheme<isEncrypted_args> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, isEncrypted_args struct) throws org.apache.thrift.TException {
+                TTupleProtocol oprot = (TTupleProtocol) prot;
+                BitSet optionals = new BitSet();
+                if (struct.isSetClientName()) {
+                    optionals.set(0);
+                }
+                if (struct.isSetPartition()) {
+                    optionals.set(1);
+                }
+                if (struct.isSetSubPartition()) {
+                    optionals.set(2);
+                }
+                if (struct.isSetMessageId()) {
+                    optionals.set(3);
+                }
+                oprot.writeBitSet(optionals, 4);
+                if (struct.isSetClientName()) {
+                    oprot.writeString(struct.clientName);
+                }
+                if (struct.isSetPartition()) {
+                    oprot.writeString(struct.partition);
+                }
+                if (struct.isSetSubPartition()) {
+                    oprot.writeString(struct.subPartition);
+                }
+                if (struct.isSetMessageId()) {
+                    oprot.writeString(struct.messageId);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, isEncrypted_args struct) throws org.apache.thrift.TException {
+                TTupleProtocol iprot = (TTupleProtocol) prot;
+                BitSet incoming = iprot.readBitSet(4);
+                if (incoming.get(0)) {
+                    struct.clientName = iprot.readString();
+                    struct.setClientNameIsSet(true);
+                }
+                if (incoming.get(1)) {
+                    struct.partition = iprot.readString();
+                    struct.setPartitionIsSet(true);
+                }
+                if (incoming.get(2)) {
+                    struct.subPartition = iprot.readString();
+                    struct.setSubPartitionIsSet(true);
+                }
+                if (incoming.get(3)) {
+                    struct.messageId = iprot.readString();
+                    struct.setMessageIdIsSet(true);
+                }
+            }
+        }
+
+    }
+
+    public static class isEncrypted_result implements org.apache.thrift.TBase<isEncrypted_result, isEncrypted_result._Fields>, java.io.Serializable, Cloneable {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("isEncrypted_result");
+
+        private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short) 0);
+
+        private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+
+        static {
+            schemes.put(StandardScheme.class, new isEncrypted_resultStandardSchemeFactory());
+            schemes.put(TupleScheme.class, new isEncrypted_resultTupleSchemeFactory());
+        }
+
+        public boolean success; // required
+
+        /**
+         * The set of fields this struct contains, along with convenience methods for finding and manipulating them.
+         */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            SUCCESS((short) 0, "success");
+
+            private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+            static {
+                for (_Fields field : EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch (fieldId) {
+                    case 0: // SUCCESS
+                        return SUCCESS;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final String _fieldName;
+
+            _Fields(short thriftId, String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        private static final int __SUCCESS_ISSET_ID = 0;
+        private byte __isset_bitfield = 0;
+        public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+
+        static {
+            Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+            metaDataMap = Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(isEncrypted_result.class, metaDataMap);
+        }
+
+        public isEncrypted_result() {
+        }
+
+        public isEncrypted_result(
+                boolean success) {
+            this();
+            this.success = success;
+            setSuccessIsSet(true);
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public isEncrypted_result(isEncrypted_result other) {
+            __isset_bitfield = other.__isset_bitfield;
+            this.success = other.success;
+        }
+
+        public isEncrypted_result deepCopy() {
+            return new isEncrypted_result(this);
+        }
+
+        @Override
+        public void clear() {
+            setSuccessIsSet(false);
+            this.success = false;
+        }
+
+        public boolean isSuccess() {
+            return this.success;
+        }
+
+        public isEncrypted_result setSuccess(boolean success) {
+            this.success = success;
+            setSuccessIsSet(true);
+            return this;
+        }
+
+        public void unsetSuccess() {
+            __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SUCCESS_ISSET_ID);
+        }
+
+        /**
+         * Returns true if field success is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSetSuccess() {
+            return EncodingUtils.testBit(__isset_bitfield, __SUCCESS_ISSET_ID);
+        }
+
+        public void setSuccessIsSet(boolean value) {
+            __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
+        }
+
+        public void setFieldValue(_Fields field, Object value) {
+            switch (field) {
+                case SUCCESS:
+                    if (value == null) {
+                        unsetSuccess();
+                    } else {
+                        setSuccess((Boolean) value);
+                    }
+                    break;
+
+            }
+        }
+
+        public Object getFieldValue(_Fields field) {
+            switch (field) {
+                case SUCCESS:
+                    return Boolean.valueOf(isSuccess());
+
+            }
+            throw new IllegalStateException();
+        }
+
+        /**
+         * Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise
+         */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new IllegalArgumentException();
+            }
+
+            switch (field) {
+                case SUCCESS:
+                    return isSetSuccess();
+            }
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof isEncrypted_result)
+                return this.equals((isEncrypted_result) that);
+            return false;
+        }
+
+        public boolean equals(isEncrypted_result that) {
+            if (that == null)
+                return false;
+
+            boolean this_present_success = true;
+            boolean that_present_success = true;
+            if (this_present_success || that_present_success) {
+                if (!(this_present_success && that_present_success))
+                    return false;
+                if (this.success != that.success)
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        public int compareTo(isEncrypted_result other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+            isEncrypted_result typedOther = (isEncrypted_result) other;
+
+            lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetSuccess()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, typedOther.success);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("isEncrypted_result(");
+            boolean first = true;
+
+            sb.append("success:");
+            sb.append(this.success);
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+            try {
+                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+                __isset_bitfield = 0;
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class isEncrypted_resultStandardSchemeFactory implements SchemeFactory {
+            public isEncrypted_resultStandardScheme getScheme() {
+                return new isEncrypted_resultStandardScheme();
+            }
+        }
+
+        private static class isEncrypted_resultStandardScheme extends StandardScheme<isEncrypted_result> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, isEncrypted_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true) {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 0: // SUCCESS
+                            if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+                                struct.success = iprot.readBool();
+                                struct.setSuccessIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, isEncrypted_result struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.isSetSuccess()) {
+                    oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+                    oprot.writeBool(struct.success);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class isEncrypted_resultTupleSchemeFactory implements SchemeFactory {
+            public isEncrypted_resultTupleScheme getScheme() {
+                return new isEncrypted_resultTupleScheme();
+            }
+        }
+
+        private static class isEncrypted_resultTupleScheme extends TupleScheme<isEncrypted_result> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, isEncrypted_result struct) throws org.apache.thrift.TException {
+                TTupleProtocol oprot = (TTupleProtocol) prot;
+                BitSet optionals = new BitSet();
+                if (struct.isSetSuccess()) {
+                    optionals.set(0);
+                }
+                oprot.writeBitSet(optionals, 1);
+                if (struct.isSetSuccess()) {
+                    oprot.writeBool(struct.success);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, isEncrypted_result struct) throws org.apache.thrift.TException {
                 TTupleProtocol iprot = (TTupleProtocol) prot;
                 BitSet incoming = iprot.readBitSet(1);
                 if (incoming.get(0)) {

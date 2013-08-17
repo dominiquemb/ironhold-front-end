@@ -1,10 +1,7 @@
 package com.reqo.ironhold.storage.utils;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.MessageIndexService;
-import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
@@ -13,6 +10,9 @@ import org.kohsuke.args4j.Option;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: ilya
@@ -27,13 +27,7 @@ public class DecryptMessages {
     private static Logger logger = Logger.getLogger(DecryptMessages.class);
 
     @Autowired
-    private MessageIndexService messageIndexService;
-
-    @Autowired
     private IMimeMailMessageStorageService mimeMailMessageStorageService;
-
-    @Autowired
-    private MetaDataIndexService metaDataIndexService;
 
     public DecryptMessages() {
 
@@ -51,52 +45,79 @@ public class DecryptMessages {
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             parser.printUsage(System.err);
-            System.err.println("Admin role: " + RoleEnum.SUPER_USER.getValue());
             return;
         }
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("utilities.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("decrypt.xml");
         DecryptMessages reconciliation = context.getBean(DecryptMessages.class);
-        reconciliation.run(bean.getClient());
+        reconciliation.run(bean.getClient(), bean.getPartition(), bean.getSubPartition());
         System.exit(1);
     }
 
-    private void run(String client) throws Exception {
+    private void run(String client, String partitionFocus, String subPartitionFocus) throws Exception {
         int counter = 0;
-        for (String partition : mimeMailMessageStorageService.getPartitions(client)) {
+        for (String partition : getPartitions(client, partitionFocus)) {
             logger.info("Checking " + partition);
-            for (String subPartition : mimeMailMessageStorageService.getSubPartitions(client, partition)) {
+            for (String subPartition : getSubPartitions(client, partition, subPartitionFocus)) {
                 logger.info("Checking " + partition + "/" + subPartition);
                 for (String messageId : mimeMailMessageStorageService.getList(client, partition, subPartition)) {
-
-                    String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
-                    MimeMailMessage mimeMailMessage = new MimeMailMessage();
-                    mimeMailMessage.loadMimeMessageFromSource(messageSource);
-                    boolean archived = mimeMailMessageStorageService.archive(client, partition, subPartition, messageId);
-                    if (archived) {
-                        mimeMailMessageStorageService.store(client, partition, subPartition, messageId, messageSource, CheckSumHelper.getCheckSum(messageSource.getBytes()), false);
-                        counter++;
-                        if (counter % 100 == 0) {
-                            logger.info("Decrypted " + counter + " messages");
+                    if (mimeMailMessageStorageService.isEncrypted(client, partition, subPartition, messageId)) {
+                        String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
+                        MimeMailMessage mimeMailMessage = new MimeMailMessage();
+                        mimeMailMessage.loadMimeMessageFromSource(messageSource);
+                        boolean archived = mimeMailMessageStorageService.archive(client, partition, subPartition, messageId);
+                        if (archived) {
+                            mimeMailMessageStorageService.store(client, partition, subPartition, messageId, messageSource, CheckSumHelper.getCheckSum(messageSource.getBytes()), false);
+                            counter++;
+                            if (counter % 100 == 0) {
+                                logger.info("Decrypted " + counter + " messages");
+                            }
+                        } else {
+                            logger.warn("Failed to archive and decrypt message: " + messageId);
                         }
-                    } else {
-                        logger.warn("Failed to archive and decrypt message: " + messageId);
                     }
                 }
             }
         }
     }
 
+    private List<String> getPartitions(String client, String partitionFocus) throws Exception {
+        if (partitionFocus == null || partitionFocus.isEmpty()) {
+            return mimeMailMessageStorageService.getPartitions(client);
+        } else {
+            return Arrays.asList(new String[]{partitionFocus});
+        }
+    }
+
+    private List<String> getSubPartitions(String client, String partition, String subPartitionFocus) throws Exception {
+        if (subPartitionFocus == null || subPartitionFocus.isEmpty()) {
+            return mimeMailMessageStorageService.getSubPartitions(client, partition);
+        } else {
+            return Arrays.asList(new String[]{subPartitionFocus});
+        }
+    }
 
     static class Options {
         @Option(name = "-client", usage = "client name", required = true)
         private String client;
 
+        @Option(name = "-partition", usage = "partition to reconcile", required = false)
+        private String partition;
+
+        @Option(name = "-subPartition", usage = "subPartition to reconcile", required = false)
+        private String subPartition;
 
         public String getClient() {
             return client;
         }
 
+        public String getPartition() {
+            return partition;
+        }
+
+        public String getSubPartition() {
+            return subPartition;
+        }
     }
 
 }

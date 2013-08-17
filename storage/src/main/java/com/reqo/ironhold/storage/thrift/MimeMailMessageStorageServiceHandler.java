@@ -40,6 +40,16 @@ public class MimeMailMessageStorageServiceHandler implements MimeMailMessageStor
     }
 
     @Override
+    public boolean isEncrypted(String clientName, String partition, String subPartition, String messageId) throws TException {
+        try {
+            logger.info("Is encrypted " + messageId + " for " + clientName + "/" + partition + "/" + subPartition);
+            return mimeMailMessageStorageService.isEncrypted(clientName, partition, subPartition, messageId);
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+    }
+
+    @Override
     public String get(String clientName, String partition, String subPartition, String messageId) throws TException {
         try {
             logger.info("Getting " + messageId + " for " + clientName + "/" + partition + "/" + subPartition);

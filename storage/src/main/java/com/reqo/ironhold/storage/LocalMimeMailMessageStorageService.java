@@ -52,6 +52,12 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     @Override
+    public boolean isEncrypted(String client, String partition, String subPartition, String messageId) throws Exception {
+        File file = getExistingFile(client, partition, subPartition, messageId);
+        return isEncrypted(file);
+    }
+
+    @Override
     public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum, boolean encrypt) throws Exception {
         File file = getNewFile(client, partition, subPartition, messageId, encrypt);
         File checkSumFile = getCheckSumFile(client, partition, subPartition, messageId);

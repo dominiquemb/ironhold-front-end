@@ -9,6 +9,8 @@ public interface IMimeMailMessageStorageService {
 
     boolean exists(String client, String partition, String subPartition, String messageId) throws Exception;
 
+    boolean isEncrypted(String client, String partition, String subPartition, String messageId) throws Exception;
+
     String get(String client, String partition, String subPartition, String messageId) throws Exception;
 
     List<String> getPartitions(String clientName) throws TException, Exception;

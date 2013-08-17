@@ -317,4 +317,33 @@ public class MimeMailMessageStorageServiceTest {
         Assert.assertFalse(storageService.exists(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
     }
 
+    @Test
+    public void testIsEncryptedTrue() throws Exception {
+
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        Assert.assertTrue(storageService.isEncrypted(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+    }
+
+    @Test
+    public void testIsEncryptedFalse() throws Exception {
+
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), false);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        Assert.assertFalse(storageService.isEncrypted(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+    }
+
+
 }
