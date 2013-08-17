@@ -109,7 +109,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         File[] result = parentDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return (name.endsWith(".eml.gz") || name.endsWith("eml.aes.gz"));
+                return (name.endsWith(".eml.gz") || name.endsWith("eml.gz.aes"));
             }
         });
         List<String> files = new ArrayList();
@@ -118,8 +118,8 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
                 if (f.getName().endsWith(".eml.gz")) {
                     files.add(f.getName().replace(".eml.gz", ""));
                 }
-                if (f.getName().endsWith(".eml.aes.gz")) {
-                    files.add(f.getName().replace(".eml.aes.gz", ""));
+                if (f.getName().endsWith(".eml.gz.aes")) {
+                    files.add(f.getName().replace(".eml.gz.aes", ""));
                 }
 
             }
@@ -194,7 +194,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     private boolean isEncrypted(File file) {
-        return file.getName().endsWith(".aes.gz");
+        return file.getName().endsWith(".gz.aes");
     }
 
     private String verifyArchiveFile(String client, String partition, String subPartition, String messageId) throws Exception {
@@ -229,7 +229,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         if (f.exists()) {
             return f;
         }
-        f = new File(prefix + ".eml.aes.gz");
+        f = new File(prefix + ".eml.gz.aes");
         return f;
 
     }
@@ -239,7 +239,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         if (!encrypt) {
             return new File(prefix + ".eml.gz");
         } else {
-            return new File(prefix + ".eml.aes.gz");
+            return new File(prefix + ".eml.gz.aes");
         }
     }
 
@@ -253,7 +253,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
         if (f.exists()) {
             return f;
         }
-        f = new File(prefix + ".eml.aes.gz");
+        f = new File(prefix + ".eml.gz.aes");
         return f;
     }
 
