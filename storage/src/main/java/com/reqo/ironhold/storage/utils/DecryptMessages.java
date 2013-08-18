@@ -62,18 +62,22 @@ public class DecryptMessages {
                 logger.info("Checking " + partition + "/" + subPartition);
                 for (String messageId : mimeMailMessageStorageService.getList(client, partition, subPartition)) {
                     if (mimeMailMessageStorageService.isEncrypted(client, partition, subPartition, messageId)) {
-                        String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
-                        MimeMailMessage mimeMailMessage = new MimeMailMessage();
-                        mimeMailMessage.loadMimeMessageFromSource(messageSource);
-                        boolean archived = mimeMailMessageStorageService.archive(client, partition, subPartition, messageId);
-                        if (archived) {
-                            mimeMailMessageStorageService.store(client, partition, subPartition, messageId, messageSource, CheckSumHelper.getCheckSum(messageSource.getBytes()), false);
-                            counter++;
-                            if (counter % 100 == 0) {
-                                logger.info("Decrypted " + counter + " messages");
+                        try {
+                            String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
+                            MimeMailMessage mimeMailMessage = new MimeMailMessage();
+                            mimeMailMessage.loadMimeMessageFromSource(messageSource);
+                            boolean archived = mimeMailMessageStorageService.archive(client, partition, subPartition, messageId);
+                            if (archived) {
+                                mimeMailMessageStorageService.store(client, partition, subPartition, messageId, messageSource, CheckSumHelper.getCheckSum(messageSource.getBytes()), false);
+                                counter++;
+                                if (counter % 100 == 0) {
+                                    logger.info("Decrypted " + counter + " messages");
+                                }
+                            } else {
+                                logger.warn("Failed to archive and decrypt message: " + messageId);
                             }
-                        } else {
-                            logger.warn("Failed to archive and decrypt message: " + messageId);
+                        } catch (Exception e) {
+                            logger.warn("Failed to archive and decrypt message: " + messageId, e);
                         }
                     }
                 }
