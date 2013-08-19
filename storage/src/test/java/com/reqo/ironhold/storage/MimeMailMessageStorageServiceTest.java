@@ -345,5 +345,24 @@ public class MimeMailMessageStorageServiceTest {
 
     }
 
+    @Test
+    public void testListItems() throws Exception {
+
+        MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
+        inputMessage.setMessageId("<!&!AAAAAAAAAAAYAAAAAAAAAB+oliEIEGlGkbY6RaPCH6/CgAAAEAAAAML1aQiLFvRMhxpcSxIzc28BAAAAAA==@whitestonelaw.com>");
+        storageService.store(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId(), inputMessage.getRawContents(), inputMessage.getCheckSum(), true);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, inputMessage);
+
+        Assert.assertTrue(storageService.isEncrypted(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition(), inputMessage.getMessageId()));
+
+
+        List<String> list = storageService.getList(TEST_CLIENT, inputMessage.getPartition(), inputMessage.getSubPartition());
+        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(storageService.normalizeMessageId(inputMessage.getMessageId()), list.get(0));
+
+
+    }
+
 
 }

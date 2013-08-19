@@ -48,29 +48,29 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public boolean exists(String client, String partition, String subPartition, String messageId) throws Exception {
-        return getExistingFile(client, partition, subPartition, messageId).exists();
+        return getExistingFile(client, partition, subPartition, normalizeMessageId(messageId)).exists();
     }
 
     @Override
     public boolean isEncrypted(String client, String partition, String subPartition, String messageId) throws Exception {
-        File file = getExistingFile(client, partition, subPartition, messageId);
+        File file = getExistingFile(client, partition, subPartition, normalizeMessageId(messageId));
         return isEncrypted(file);
     }
 
     @Override
     public long store(String client, String partition, String subPartition, String messageId, String serializedMailMessage, String checkSum, boolean encrypt) throws Exception {
-        File file = getNewFile(client, partition, subPartition, messageId, encrypt);
-        File checkSumFile = getCheckSumFile(client, partition, subPartition, messageId);
-        if (!exists(client, partition, subPartition, messageId)) {
+        File file = getNewFile(client, partition, subPartition, normalizeMessageId(messageId), encrypt);
+        File checkSumFile = getCheckSumFile(client, partition, subPartition, normalizeMessageId(messageId));
+        if (!exists(client, partition, subPartition, normalizeMessageId(messageId))) {
             if (encrypt) {
                 FileUtils.writeStringToFile(file, AESHelper.encrypt(Compression.compress(serializedMailMessage), keyStoreService.getKey(client, partition)));
             } else {
                 FileUtils.writeStringToFile(file, Compression.compress(serializedMailMessage));
             }
             FileUtils.writeStringToFile(checkSumFile, checkSum);
-            verifyFile(client, partition, subPartition, messageId);
+            verifyFile(client, partition, subPartition, normalizeMessageId(messageId));
         } else {
-            throw new MessageExistsException(client, messageId);
+            throw new MessageExistsException(client, normalizeMessageId(messageId));
         }
 
         return file.length();
@@ -79,7 +79,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public String get(String client, String partition, String subPartition, String messageId) throws Exception {
-        return verifyFile(client, partition, subPartition, messageId);
+        return verifyFile(client, partition, subPartition, normalizeMessageId(messageId));
     }
 
     @Override
@@ -135,10 +135,10 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public boolean archive(String clientName, String partition, String subPartition, String messageId) throws Exception {
-        verifyFile(clientName, partition, subPartition, messageId);
+        verifyFile(clientName, partition, subPartition, normalizeMessageId(messageId));
 
-        File file = getExistingFile(clientName, partition, subPartition, messageId);
-        File checkSumFile = getCheckSumFile(clientName, partition, subPartition, messageId);
+        File file = getExistingFile(clientName, partition, subPartition, normalizeMessageId(messageId));
+        File checkSumFile = getCheckSumFile(clientName, partition, subPartition, normalizeMessageId(messageId));
 
         if (!file.exists()) {
             return false;
@@ -148,11 +148,11 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
             return false;
         }
 
-        FileUtils.copyFile(file, getArchiveFile(clientName, partition, subPartition, messageId));
+        FileUtils.copyFile(file, getArchiveFile(clientName, partition, subPartition, normalizeMessageId(messageId)));
 
-        FileUtils.copyFile(checkSumFile, getArchiveCheckSumFile(clientName, partition, subPartition, messageId));
+        FileUtils.copyFile(checkSumFile, getArchiveCheckSumFile(clientName, partition, subPartition, normalizeMessageId(messageId)));
 
-        verifyArchiveFile(clientName, partition, subPartition, messageId);
+        verifyArchiveFile(clientName, partition, subPartition, normalizeMessageId(messageId));
 
         FileUtils.forceDelete(file);
         FileUtils.forceDelete(checkSumFile);
@@ -241,7 +241,8 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     private File getNewFile(String client, String partition, String subPartition, String messageId, boolean encrypt) throws FileNotFoundException {
-        String prefix = dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId);
+
+        String prefix = dataStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.separatorsToUnix(FilenameUtils.normalize(messageId));
         if (!encrypt) {
             return new File(prefix + ".eml.gz");
         } else {
@@ -273,5 +274,9 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     public IKeyStoreService getKeyStoreService() {
         return keyStoreService;
+    }
+
+    public static String normalizeMessageId(String messageId) {
+        return messageId.replaceAll(File.separator, "");
     }
 }
