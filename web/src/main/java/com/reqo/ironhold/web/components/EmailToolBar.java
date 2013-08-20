@@ -3,7 +3,6 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.StreamResource;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Panel;
@@ -36,7 +35,7 @@ public class EmailToolBar extends Panel {
         }, id + ".eml"));
         download.setIcon(new ClassResource("images/download.png"));
 
-        final Button forward = new Button();
+    /*    final Button forward = new Button();
         forward.setCaption("Forward");
         forward.setIcon(new ClassResource("images/email.png"));
         forward.setStyleName(Reindeer.BUTTON_LINK);
@@ -56,10 +55,10 @@ public class EmailToolBar extends Panel {
                 }
             }
         });
-
+      */
 
         layout.addComponent(download);
-        layout.addComponent(forward);
+        // layout.addComponent(forward);
         this.setHeight("30px");
     }
 }

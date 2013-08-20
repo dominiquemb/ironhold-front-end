@@ -1,7 +1,6 @@
 package com.reqo.ironhold.storage.utils;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
@@ -64,8 +63,6 @@ public class DecryptMessages {
                     if (mimeMailMessageStorageService.isEncrypted(client, partition, subPartition, messageId)) {
                         try {
                             String messageSource = mimeMailMessageStorageService.get(client, partition, subPartition, messageId);
-                            MimeMailMessage mimeMailMessage = new MimeMailMessage();
-                            mimeMailMessage.loadMimeMessageFromSource(messageSource);
                             boolean archived = mimeMailMessageStorageService.archive(client, partition, subPartition, messageId);
                             if (archived) {
                                 mimeMailMessageStorageService.store(client, partition, subPartition, messageId, messageSource, CheckSumHelper.getCheckSum(messageSource.getBytes()), false);
