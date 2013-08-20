@@ -31,10 +31,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <sonar.language>java</sonar.language>
-        <sonar.login>sdlc</sonar.login>
-        <sonar.password>j0hns0n</sonar.password>
-
         <!-- dependency versions -->
         <spring.version>3.2.3.RELEASE</spring.version>
         <thrift.version>0.9.0</thrift.version>
@@ -115,7 +111,7 @@
             <plugin>
                 <groupId>org.codehaus.sonar</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.5</version>
+                <version>3.7</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
