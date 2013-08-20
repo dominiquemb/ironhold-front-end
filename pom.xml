@@ -55,6 +55,8 @@
         <slf4j.version>1.7.5</slf4j.version>
         <junit.version>4.11</junit.version>
         <jiic.version>1.2.2</jiic.version>
+        <sonar.login>sdlc</sonar.login>
+        <sonar.password>s0nar</sonar.password>
     </properties>
 
     <dependencies>
