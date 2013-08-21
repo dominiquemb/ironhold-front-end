@@ -90,7 +90,7 @@ public class IMAPReader {
         try {
             imap.setDefaultTimeout(timeout);
             // suppress login details
-            indexCommandListener = new IndexCommandListener();
+            indexCommandListener = new IndexCommandListener(this.encrypt);
             imap.addProtocolCommandListener(indexCommandListener);
 
             imap.connect(hostname, port);
@@ -298,6 +298,7 @@ public class IMAPReader {
     private class IndexCommandListener implements ProtocolCommandListener {
         private final IMAPMessageSource source;
         private final IMAPBatchMeta metaData;
+        private final boolean encrypt;
         private String currentCommand;
         private String currentResponse;
         private long started;
@@ -305,13 +306,14 @@ public class IMAPReader {
         private boolean lastSuccess;
         private int toBeProcessed;
 
-        public IndexCommandListener() {
+        public IndexCommandListener(boolean encrypt) {
             source = new IMAPMessageSource();
             source.setImapPort(port);
             source.setUsername(username);
             source.setImapSource(hostname);
             source.setImapPort(port);
             source.setProtocol(protocol);
+            this.encrypt = encrypt;
 
 
             metaData = new IMAPBatchMeta(source, new Date());
@@ -392,7 +394,7 @@ public class IMAPReader {
                             mimeMailMessageStorageService.archive(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId());
                         }
 
-                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), true);
+                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), this.encrypt);
                         metaDataIndexService.store(client, source);
 
                         metaData.incrementBatchSize(storedSize);
