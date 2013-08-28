@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage.thrift;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import org.apache.log4j.Logger;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
@@ -15,6 +16,7 @@ import java.util.List;
  * Time: 9:18 PM
  */
 public class MimeMailMessageStorageClient implements IMimeMailMessageStorageService {
+    private static Logger logger = Logger.getLogger(MimeMailMessageStorageClient.class);
 
     private MimeMailMessageStorage.Client client;
     private String host;
@@ -32,6 +34,7 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
 
     public void reconnect() throws TTransportException {
         if (transport != null) {
+            logger.info("Attempting to reconnect to storage service");
             try {
                 transport.close();
             } catch (Exception e) {
