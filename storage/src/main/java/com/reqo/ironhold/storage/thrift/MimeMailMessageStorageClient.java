@@ -19,6 +19,7 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     private MimeMailMessageStorage.Client client;
     private String host;
     private int port;
+    private TTransport transport;
 
     public MimeMailMessageStorageClient(String host, int port) throws TTransportException {
         this.host = host;
@@ -30,8 +31,13 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
     }
 
     public void reconnect() throws TTransportException {
-        TTransport transport;
-
+        if (transport != null) {
+            try {
+                transport.close();
+            } catch (Exception e) {
+                //ignore
+            }
+        }
         transport = new TSocket(host, port, 3000000);
         transport.open();
 
