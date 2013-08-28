@@ -473,8 +473,10 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             while ((read = rawStream.read(bytes)) != -1) {
                 os.write(bytes, 0, read);
                 bufferCount++;
-                logger.debug("populateRawContents - recieved buffer "
-                        + bufferCount);
+                if (bufferCount % 100 == 0) {
+                    logger.info("populateRawContents - recieved buffer "
+                            + bufferCount);
+                }
             }
             os.flush();
             os.close();
