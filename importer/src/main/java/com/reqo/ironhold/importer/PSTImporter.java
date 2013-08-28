@@ -16,10 +16,12 @@ import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
+import org.apache.thrift.transport.TTransportException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -223,6 +225,9 @@ public class PSTImporter {
                         metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
                     }
                 } catch (Exception e) {
+                    if (e instanceof TTransportException) {
+                        ((MimeMailMessageStorageClient) mimeMailMessageStorageService).reconnect();
+                    }
                     logger.warn("Failed tp process message", e);
                     LogMessage processedMessage = new LogMessage(
                             LogLevel.Failure, messageId,

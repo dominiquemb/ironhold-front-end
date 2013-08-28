@@ -16,9 +16,20 @@ import java.util.List;
  */
 public class MimeMailMessageStorageClient implements IMimeMailMessageStorageService {
 
-    private final MimeMailMessageStorage.Client client;
+    private MimeMailMessageStorage.Client client;
+    private String host;
+    private int port;
 
     public MimeMailMessageStorageClient(String host, int port) throws TTransportException {
+        this.host = host;
+        this.port = port;
+
+        reconnect();
+
+
+    }
+
+    public void reconnect() throws TTransportException {
         TTransport transport;
 
         transport = new TSocket(host, port, 3000000);
@@ -26,7 +37,6 @@ public class MimeMailMessageStorageClient implements IMimeMailMessageStorageServ
 
         TProtocol protocol = new TBinaryProtocol(transport);
         client = new MimeMailMessageStorage.Client(protocol);
-
 
     }
 
