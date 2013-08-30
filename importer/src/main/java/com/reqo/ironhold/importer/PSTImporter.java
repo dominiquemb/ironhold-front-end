@@ -66,6 +66,7 @@ public class PSTImporter {
     private boolean encrypt;
 
     private Set<String> ignoreAttachmentExtractSet = new HashSet<>();
+    private Set<String> ignoreSet = new HashSet<>();
 
     public PSTImporter() throws Exception {
         this.hostname = InetAddress.getLocalHost().getHostName();
@@ -162,7 +163,7 @@ public class PSTImporter {
                 try {
 
                     messageId = message.getInternetMessageId();
-                    if (!this.getIgnoreAttachmentExtractSet().contains(messageId.trim())) {
+                    if (!this.getIgnoreSet().contains(messageId.trim())) {
                         MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
                         if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId())) {
@@ -301,7 +302,27 @@ public class PSTImporter {
         }
     }
 
+
     public Set<String> getIgnoreAttachmentExtractSet() {
         return ignoreAttachmentExtractSet;
+    }
+
+
+    public void setIgnoreList(String ignoreListFile) {
+        if (ignoreListFile != null) {
+            try {
+                String ignoreList = FileUtils.readFileToString(new File(ignoreListFile));
+                for (String ignoreId : ignoreList.split("\n")) {
+                    ignoreSet.add(ignoreId.trim());
+                    logger.info("Ignoring " + ignoreId + "");
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to fully process ignore file " + ignoreListFile, e);
+            }
+        }
+    }
+
+    public Set<String> getIgnoreSet() {
+        return ignoreSet;
     }
 }

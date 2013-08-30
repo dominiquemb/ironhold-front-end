@@ -23,6 +23,7 @@ public class QueueWatcher extends FileWatcher {
     private PSTImporter importer;
 
     private String ignoreAttachmentExtractList;
+    private String ignoreList;
 
     public QueueWatcher() {
 
@@ -40,6 +41,7 @@ public class QueueWatcher extends FileWatcher {
         importer.setFile(dataFile);
         importer.setClient(getClient());
         importer.setIgnoreAttachmentExtractList(ignoreAttachmentExtractList);
+        importer.setIgnoreList(ignoreList);
         importer.setEncrypt(isEncrypt());
         String details = importer.processMessages();
 
@@ -74,6 +76,7 @@ public class QueueWatcher extends FileWatcher {
             qw.setQuarantineDirName(bean.getQuarantine());
             qw.setClient(bean.getClient());
             qw.setIgnoreAttachmentExtractList(bean.getIgnoreAttachmentExtractList());
+            qw.setIgnoreList(bean.getIgnoreList());
             qw.setEncrypt(bean.isEncrypt());
 
             qw.initialize();
@@ -92,5 +95,13 @@ public class QueueWatcher extends FileWatcher {
 
     public void setIgnoreAttachmentExtractList(String ignoreAttachmentExtractList) {
         this.ignoreAttachmentExtractList = ignoreAttachmentExtractList;
+    }
+
+    public String getIgnoreList() {
+        return ignoreList;
+    }
+
+    public void setIgnoreList(String ignoreList) {
+        this.ignoreList = ignoreList;
     }
 }

@@ -11,7 +11,14 @@ public class QueueWatcherOptions extends WatcherOptions {
     @Option(name = "-ignoreAttList", usage = "ignore message ids for extraction of text from attachments", required = false)
     private String ignoreAttachmentExtractList;
 
+    @Option(name = "-ignoreList", usage = "ignore message ids from processing", required = false)
+    private String ignoreList;
+
     public String getIgnoreAttachmentExtractList() {
         return ignoreAttachmentExtractList;
+    }
+
+    public String getIgnoreList() {
+        return ignoreList;
     }
 }
