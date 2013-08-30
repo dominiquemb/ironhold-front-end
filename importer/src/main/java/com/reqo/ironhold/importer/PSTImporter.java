@@ -208,7 +208,7 @@ public class PSTImporter {
                         IndexedMailMessage indexedMessage = messageIndexService.getById(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId());
                         if (indexedMessage == null) {
 
-                            indexedMessage = new IndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId));
+                            indexedMessage = new IndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId.trim()));
                         }
                         indexedMessage.addSource(metaData.getId());
                         messageIndexService.store(client, indexedMessage, false);
@@ -289,7 +289,7 @@ public class PSTImporter {
             try {
                 String ignoreList = FileUtils.readFileToString(new File(ignoreAttachmentExtractList));
                 for (String ignoreId : ignoreList.split("\n")) {
-                    ignoreAttachmentExtractSet.add(ignoreId);
+                    ignoreAttachmentExtractSet.add(ignoreId.trim());
                     logger.info("Ignoring " + ignoreId + " in attachment extraction");
                 }
             } catch (Exception e) {
