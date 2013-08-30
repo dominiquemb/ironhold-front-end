@@ -4,12 +4,10 @@ import com.reqo.ironhold.storage.model.message.Attachment;
 import com.reqo.ironhold.storage.utils.TikaInstance;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.elasticsearch.common.Base64;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.concurrent.*;
 
 public class IndexedAttachment extends Attachment {
@@ -53,7 +51,7 @@ public class IndexedAttachment extends Attachment {
                                 new ByteArrayInputStream(bytes), new Metadata(), -1);
 
                         return parsedContent;
-                    } catch (TikaException | IOException e) {
+                    } catch (Exception e) {
                         logger.warn("Failed to extract characters " + e.getMessage());
                     }
 
@@ -74,7 +72,7 @@ public class IndexedAttachment extends Attachment {
 
 
             return result.get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (Exception e) {
             logger.warn(e);
         } finally {
             executorService.shutdownNow();
