@@ -163,6 +163,7 @@ public class PSTImporter {
                 try {
 
                     messageId = message.getInternetMessageId();
+                    logger.info("Starting to work on " + messageId);
                     if (!this.getIgnoreSet().contains(messageId.trim())) {
                         MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
