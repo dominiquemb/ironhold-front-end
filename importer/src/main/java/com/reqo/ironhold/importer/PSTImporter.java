@@ -162,67 +162,70 @@ public class PSTImporter {
                 try {
 
                     messageId = message.getInternetMessageId();
+                    if (!this.getIgnoreAttachmentExtractSet().contains(messageId.trim())) {
+                        MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
-                    MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
-
-                    if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId())) {
-                        logger.warn("Found duplicate " + messageId);
-                        metaData.incrementDuplicates();
+                        if (mimeMailMessageStorageService.exists(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId())) {
+                            logger.warn("Found duplicate " + messageId);
+                            metaData.incrementDuplicates();
 
 
-                        if (metaData.getDuplicates() % INFO_BATCH_SIZE == 0) {
-                            logger.info("New Messages: "
-                                    + metaData.getMessages() + " Duplicates: "
-                                    + metaData.getDuplicates() + " Failures:"
-                                    + metaData.getFailures());
+                            if (metaData.getDuplicates() % INFO_BATCH_SIZE == 0) {
+                                logger.info("New Messages: "
+                                        + metaData.getMessages() + " Duplicates: "
+                                        + metaData.getDuplicates() + " Failures:"
+                                        + metaData.getFailures());
+                            }
+                        } else {
+                            logger.info("New message " + folderPath + "\\" + messageId);
+                            if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
+                                logger.info("New Messages: "
+                                        + metaData.getMessages() + " Duplicates: "
+                                        + metaData.getDuplicates() + " Failures:"
+                                        + metaData.getFailures());
+                            }
+                            long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()), encrypt);
+                            metaData.updateSizeStatistics(mimeMailMessage.getRawContents().length(), storedSize);
+                        }
+
+                        PSTMessageSource source = new PSTMessageSource(messageId,
+                                FilenameUtils.getBaseName(file.toString()), folderPath, file.length(),
+                                new Date(file.lastModified()), metaData.getId());
+
+                        source.setPartition(mimeMailMessage.getPartition());
+                        metaDataIndexService.store(client, source);
+                        metaData.incrementObjectType(message.getClass().getSimpleName());
+
+                        metaData.incrementAttachmentStatistics(mimeMailMessage.isHasAttachments());
+
+                        metaData.incrementMessages();
+                        LogMessage processedMessage = new LogMessage(
+                                LogLevel.Success, messageId,
+                                "Processed pst message");
+                        metaDataIndexService.store(client, processedMessage);
+
+                        try {
+                            IndexedMailMessage indexedMessage = messageIndexService.getById(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId());
+                            if (indexedMessage == null) {
+
+                                indexedMessage = new IndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId.trim()));
+                            }
+                            indexedMessage.addSource(metaData.getId());
+                            messageIndexService.store(client, indexedMessage, false);
+                            if (ignoreAttachmentExtractSet.contains(messageId)) {
+                                LogMessage warnMessage = new LogMessage(
+                                        LogLevel.Warning, messageId,
+                                        "Will not attempt to extract attachment text as this message id was blacklisted");
+
+                                metaDataIndexService.store(client, warnMessage);
+
+                            }
+                        } catch (Exception e) {
+                            logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
+                            metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
                         }
                     } else {
-                        logger.info("New message " + folderPath + "\\" + messageId);
-                        if (metaData.getMessages() % INFO_BATCH_SIZE == 0) {
-                            logger.info("New Messages: "
-                                    + metaData.getMessages() + " Duplicates: "
-                                    + metaData.getDuplicates() + " Failures:"
-                                    + metaData.getFailures());
-                        }
-                        long storedSize = mimeMailMessageStorageService.store(client, mimeMailMessage.getPartition(), mimeMailMessage.getSubPartition(), mimeMailMessage.getMessageId(), mimeMailMessage.getRawContents(), CheckSumHelper.getCheckSum(mimeMailMessage.getRawContents().getBytes()), encrypt);
-                        metaData.updateSizeStatistics(mimeMailMessage.getRawContents().length(), storedSize);
-                    }
-
-                    PSTMessageSource source = new PSTMessageSource(messageId,
-                            FilenameUtils.getBaseName(file.toString()), folderPath, file.length(),
-                            new Date(file.lastModified()), metaData.getId());
-
-                    source.setPartition(mimeMailMessage.getPartition());
-                    metaDataIndexService.store(client, source);
-                    metaData.incrementObjectType(message.getClass().getSimpleName());
-
-                    metaData.incrementAttachmentStatistics(mimeMailMessage.isHasAttachments());
-
-                    metaData.incrementMessages();
-                    LogMessage processedMessage = new LogMessage(
-                            LogLevel.Success, messageId,
-                            "Processed pst message");
-                    metaDataIndexService.store(client, processedMessage);
-
-                    try {
-                        IndexedMailMessage indexedMessage = messageIndexService.getById(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId());
-                        if (indexedMessage == null) {
-
-                            indexedMessage = new IndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId.trim()));
-                        }
-                        indexedMessage.addSource(metaData.getId());
-                        messageIndexService.store(client, indexedMessage, false);
-                        if (ignoreAttachmentExtractSet.contains(messageId)) {
-                            LogMessage warnMessage = new LogMessage(
-                                    LogLevel.Warning, messageId,
-                                    "Will not attempt to extract attachment text as this message id was blacklisted");
-
-                            metaDataIndexService.store(client, warnMessage);
-
-                        }
-                    } catch (Exception e) {
-                        logger.error("Failed to index message " + mimeMailMessage.getMessageId(), e);
-                        metaDataIndexService.store(client, new IndexFailure(mimeMailMessage.getMessageId(), mimeMailMessage.getPartition(), e));
+                        logger.warn("Skipping processing of message " + messageId);
                     }
                 } catch (Exception e) {
                     if (e instanceof TTransportException) {
