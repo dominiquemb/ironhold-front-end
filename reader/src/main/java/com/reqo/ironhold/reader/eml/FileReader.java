@@ -19,6 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
+import java.util.Collection;
 
 public class FileReader {
     static {
@@ -137,16 +138,21 @@ public class FileReader {
             FileReader readMail = context.getBean(FileReader.class);
 
             readMail.setClient(bean.getClient());
-            readMail.setEmlFile(bean.getEmlFile());
 
-            try {
-                long started = System.currentTimeMillis();
-                readMail.processMail();
-                long finished = System.currentTimeMillis();
-                logger.info("Processed message in " + (finished - started) + "ms");
 
-            } catch (InterruptedException e) {
-                logger.warn("Got interrupted", e);
+            Collection<File> emlFiles = FileUtils.listFiles(new File(bean.getDir()), new String[]{"eml"}, false);
+            for (File emlFile : emlFiles) {
+                readMail.setEmlFile(emlFile.getAbsolutePath());
+
+                try {
+                    long started = System.currentTimeMillis();
+                    readMail.processMail();
+                    long finished = System.currentTimeMillis();
+                    logger.info("Processed message in " + (finished - started) + "ms");
+
+                } catch (InterruptedException e) {
+                    logger.warn("Got interrupted", e);
+                }
             }
         } catch (Exception e) {
             logger.error("Critical error detected, exiting", e);

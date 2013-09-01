@@ -7,8 +7,8 @@ public class FileReaderOptions {
     @Option(name = "-client", usage = "client name", required = true)
     private String client;
 
-    @Option(name = "-emlFile", usage = "eml file", required = true)
-    private String emlFile;
+    @Option(name = "-dir", usage = "path to directory with eml files", required = true)
+    private String dir;
 
     @Option(name = "-encrypt", usage = "encrypt date", required = false)
     private boolean encrypt;
@@ -17,8 +17,8 @@ public class FileReaderOptions {
         return client;
     }
 
-    public String getEmlFile() {
-        return emlFile;
+    public String getDir() {
+        return dir;
     }
 
     public boolean isEncrypt() {
