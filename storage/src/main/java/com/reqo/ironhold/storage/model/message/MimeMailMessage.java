@@ -84,7 +84,15 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             throws MessagingException, IOException {
 
         InputStream is = new ByteArrayInputStream(source.getBytes());
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.mime.base64.ignoreerrors", "true");
+        props.setProperty("mail.imap.partialfetch", "false");
+        props.setProperty("mail.imaps.partialfetch", "false");
+        Session session = Session.getInstance(props, null);
+
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         loadMimeMessage(mimeMessage);
 

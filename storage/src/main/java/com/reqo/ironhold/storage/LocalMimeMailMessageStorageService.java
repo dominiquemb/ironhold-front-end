@@ -48,7 +48,7 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
 
     @Override
     public boolean exists(String client, String partition, String subPartition, String messageId) throws Exception {
-        return getExistingFile(client, partition, subPartition, normalizeMessageId(messageId)).exists();
+        return getExistingFile(client, partition, subPartition, normalizeMessageId(messageId)) != null;
     }
 
     @Override
@@ -236,7 +236,10 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
             return f;
         }
         f = new File(prefix + ".eml.gz.aes");
-        return f;
+        if (f.exists()) {
+            return f;
+        }
+        return null;
 
     }
 
@@ -255,13 +258,13 @@ public class LocalMimeMailMessageStorageService implements IMimeMailMessageStora
     }
 
     private File getArchiveFile(String client, String partition, String subPartition, String messageId) {
+        File existingFile = getExistingFile(client, partition, subPartition, messageId);
         String prefix = archiveStore.getAbsolutePath() + File.separator + client + File.separator + partition + File.separator + subPartition + File.separator + FilenameUtils.normalize(messageId);
-        File f = new File(prefix + ".eml.gz");
-        if (f.exists()) {
-            return f;
+        if (existingFile.getName().endsWith(".eml.gz")) {
+            return new File(prefix + ".eml.gz");
+        } else {
+            return new File(prefix + ".eml.gz.aes");
         }
-        f = new File(prefix + ".eml.gz.aes");
-        return f;
     }
 
     public File getDataStore() {

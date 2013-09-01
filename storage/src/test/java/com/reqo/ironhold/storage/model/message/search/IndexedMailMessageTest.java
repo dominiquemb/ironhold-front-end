@@ -8,11 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Properties;
 
 public class IndexedMailMessageTest {
     @Rule
@@ -22,10 +24,17 @@ public class IndexedMailMessageTest {
     private static final String TEST_CLIENT = "test";
     private SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     private SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMdd");
+    private Session session;
 
     @Before
     public void setUp() throws Exception {
         testModel = new PSTMessageTestModel("/attachments.pst");
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.mime.base64.ignoreerrors", "true");
+        props.setProperty("mail.imap.partialfetch", "false");
+        props.setProperty("mail.imaps.partialfetch", "false");
+        session = Session.getInstance(props, null);
     }
 
     @After
@@ -68,7 +77,7 @@ public class IndexedMailMessageTest {
                 .getResource("/testExtractWordsFromWordAttachment.txt"));
 
         InputStream is = new FileInputStream(inputFile);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -93,7 +102,7 @@ public class IndexedMailMessageTest {
                 .getResource("/testExtractWordsFromPDFAttachment.txt"));
 
         InputStream is = new FileInputStream(inputFile);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -139,7 +148,7 @@ public class IndexedMailMessageTest {
                 .getResource("/testJSON.txt"));
 
         InputStream is = new FileInputStream(inputFile);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -159,7 +168,7 @@ public class IndexedMailMessageTest {
                 .getResource("/testInvalidAttachment.eml"));
 
         InputStream is = new FileInputStream(inputFile);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -179,7 +188,7 @@ public class IndexedMailMessageTest {
                 .getResource("/testProblematicAttachment.eml"));
 
         InputStream is = new FileInputStream(inputFile);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -204,7 +213,7 @@ public class IndexedMailMessageTest {
                 .getResource("/testExtractWordsFromPDFAttachment.txt"));
 
         InputStream is = new FileInputStream(inputFile);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);

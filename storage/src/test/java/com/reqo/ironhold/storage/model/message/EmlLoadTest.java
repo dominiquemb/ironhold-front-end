@@ -6,15 +6,13 @@ import com.reqo.ironhold.storage.utils.ChecksumUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -24,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 @SuppressWarnings("unchecked")
 public class EmlLoadTest {
@@ -33,6 +32,18 @@ public class EmlLoadTest {
 
     private IMAPMessageSource source = MessageSourceTestModel
             .generateIMAPMessageSource();
+    private Session session;
+
+
+    @Before
+    public void setUp() {
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.mime.base64.ignoreerrors", "true");
+        props.setProperty("mail.imap.partialfetch", "false");
+        props.setProperty("mail.imaps.partialfetch", "false");
+        session = Session.getInstance(props, null);
+    }
 
     @Test
     @Ignore
@@ -40,7 +51,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMissingAttachment.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -56,7 +67,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithHTML.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
         File messageFile = new File(tempFolder.getRoot() + File.separator
                 + "testGetRawMessage1.eml");
         OutputStream fos = new FileOutputStream(messageFile);
@@ -88,7 +99,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithHTMLandAttachment.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
         File messageFile = new File(tempFolder.getRoot() + File.separator
                 + "testGetRawMessage2.eml");
         OutputStream fos = new FileOutputStream(messageFile);
@@ -120,7 +131,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithImage.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
         File messageFile = new File(tempFolder.getRoot() + File.separator
                 + "testGetRawMessage3.eml");
         OutputStream fos = new FileOutputStream(messageFile);
@@ -152,7 +163,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithHTML.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -335,7 +346,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithHTMLandAttachment.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -461,7 +472,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithImage.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -586,7 +597,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testJournalMimeMessage.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -658,7 +669,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testInvalidAddress.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -729,7 +740,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testMimeMessageWithOnBehalf.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -846,7 +857,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testProblematicAttachment.eml"));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
@@ -865,7 +876,7 @@ public class EmlLoadTest {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource(fileName));
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);

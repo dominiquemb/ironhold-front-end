@@ -17,9 +17,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.util.Collection;
+import java.util.Properties;
 
 public class FileReader {
     static {
@@ -54,7 +56,13 @@ public class FileReader {
     public void processMail() throws InterruptedException, MessagingException, FileNotFoundException {
         File file = new File(emlFile);
         InputStream is = new FileInputStream(file);
-        MimeMessage mimeMessage = new MimeMessage(null, is);
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.mime.base64.ignoreerrors", "true");
+        props.setProperty("mail.imap.partialfetch", "false");
+        props.setProperty("mail.imaps.partialfetch", "false");
+        Session session = Session.getInstance(props, null);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
 
         MimeMailMessage mailMessage = null;
         try {
