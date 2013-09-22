@@ -123,6 +123,10 @@ public class IMAPReader {
         int totalCount = 0;
 
         try {
+            if (!testMode && expunge) { // expunge for first folder only
+                imap.expunge();
+            }
+
             imap.list("\"\"", "*");
 
             if (!indexCommandListener.lastSuccess()) {
@@ -141,9 +145,6 @@ public class IMAPReader {
 
                 if (indexCommandListener.lastSuccess()) {
                     indexCommandListener.setCurrentFolder(folder);
-                    if (!testMode && expunge) { // expunge for first folder only
-                        imap.expunge();
-                    }
                     //imap.status(folder, new String[]{"MESSAGES"});
 
 
