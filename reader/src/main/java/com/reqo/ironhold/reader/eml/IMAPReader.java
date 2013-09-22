@@ -123,9 +123,6 @@ public class IMAPReader {
         int totalCount = 0;
 
         try {
-            if (!testMode && expunge) { // expunge for first folder only
-                imap.expunge();
-            }
 
             imap.list("\"INBOX\"", "*");
 
@@ -137,6 +134,9 @@ public class IMAPReader {
                 int count = 1;
                 logger.info("Processing " + folder);
                 imap.select(folder);
+                if (!testMode && expunge) {
+                    imap.expunge();
+                }
 
                 if (!indexCommandListener.lastSuccess()) {
                     logger.error("Failed to select folder " + folder);
@@ -171,9 +171,7 @@ public class IMAPReader {
 
                 }
             }
-            if (!testMode && expunge) {
-                imap.expunge();
-            }
+
 
         } catch (Exception e) {
             logger.error("Not able to process the mail reading.", e);
