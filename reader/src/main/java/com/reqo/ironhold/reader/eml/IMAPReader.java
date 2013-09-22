@@ -127,7 +127,7 @@ public class IMAPReader {
                 imap.expunge();
             }
 
-            imap.list("\"\"", "*");
+            imap.list("\"INBOX\"", "*");
 
             if (!indexCommandListener.lastSuccess()) {
                 logger.error("Failed to get folders");
@@ -229,7 +229,6 @@ public class IMAPReader {
                         Thread.sleep(60000);
 
                     }
-
                 }
             } catch (InterruptedException e) {
                 logger.warn("Got interrupted", e);
@@ -502,7 +501,7 @@ public class IMAPReader {
                     String folder = line.replaceAll("\\* LIST \\(.*\\) \"/\" ", "");
                     folder = folder.replaceAll("(\\r|\\n)", "");
 
-                    if (!folders.contains(folder)) {
+                    if (!folders.contains(folder)) {// && !folder.toLowerCase().contains("outboox")) {
                         logger.info("Adding folder " + folder + " for processing");
                         folders.add(folder);
                     }
