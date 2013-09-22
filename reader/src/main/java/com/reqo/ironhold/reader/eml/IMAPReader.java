@@ -133,11 +133,17 @@ public class IMAPReader {
             for (String folder : indexCommandListener.getFolders()) {
                 int count = 1;
                 logger.info("Processing " + folder);
-                imap.select(folder);
                 if (!testMode && expunge) {
+                    imap.select(folder);
+
+                    if (!indexCommandListener.lastSuccess()) {
+                        logger.error("Failed to select folder " + folder);
+                        return -1;
+                    }
                     imap.expunge();
                 }
 
+                imap.select(folder);
                 if (!indexCommandListener.lastSuccess()) {
                     logger.error("Failed to select folder " + folder);
                     return -1;
