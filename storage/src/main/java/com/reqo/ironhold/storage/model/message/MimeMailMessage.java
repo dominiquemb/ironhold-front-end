@@ -103,6 +103,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         loadMimeMessage(mimeMessage, true);
     }
 
+
     public static MimeMailMessage getMimeMailMessage(PSTMessage originalPSTMessage) throws IOException, MessagingException, PSTException, EmailException {
         MimeMessage mimeMessage;
         if (isJournaledMessage(originalPSTMessage)) {
@@ -305,14 +306,18 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             }
 
             InternetAddress internetAddress;
-            try {
-                internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
-                this.from = new Recipient(internetAddress.getPersonal(),
-                        internetAddress.getAddress());
+            if (mimeMessage.getFrom() != null) {
+                try {
+                    internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
+                    this.from = new Recipient(internetAddress.getPersonal(),
+                            internetAddress.getAddress());
 
-            } catch (AddressException e) {
-                this.from = new Recipient(mimeMessage.getHeader("From")[0],
-                        mimeMessage.getHeader("From")[0]);
+                } catch (AddressException e) {
+                    this.from = new Recipient(mimeMessage.getHeader("From")[0],
+                            mimeMessage.getHeader("From")[0]);
+                }
+            } else {
+                this.from = new Recipient("unknown", "unknown");
             }
 
 

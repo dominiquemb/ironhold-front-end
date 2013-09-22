@@ -29,6 +29,8 @@ import javax.mail.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class IMAPReader {
     static {
@@ -61,13 +63,14 @@ public class IMAPReader {
     private int timeout;
     private IMAPClient imap;
     private IndexCommandListener indexCommandListener;
+    private boolean testMode;
 
     public IMAPReader() {
     }
 
     public IMAPReader(String hostname, int port, String username,
                       String password, String protocol, String client, int batchSize,
-                      boolean expunge, boolean encrypt) throws IOException {
+                      boolean expunge, boolean encrypt, boolean testMode) throws IOException {
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -77,6 +80,7 @@ public class IMAPReader {
         this.expunge = expunge;
         this.client = client;
         this.encrypt = encrypt;
+        this.testMode = testMode;
     }
 
     public void initiateConnection() throws Exception {
@@ -102,13 +106,11 @@ public class IMAPReader {
                 System.exit(3);
             }
 
-            logger.info("Journal IMAP Reader started");
+            logger.info("IMAP Reader started");
 
             imap.capability();
 
             imap.setSoTimeout(timeout);
-
-            logger.info("Getting the Inbox folder.");
 
 
         } catch (Exception e) {
@@ -118,39 +120,58 @@ public class IMAPReader {
     }
 
     public int processMail() throws InterruptedException {
-        int count = 1;
-
+        int totalCount = 0;
 
         try {
+            imap.list("\"\"", "*");
 
-            imap.select("inbox");
+            if (!indexCommandListener.lastSuccess()) {
+                logger.error("Failed to get folders");
+                return -1;
+            }
+            for (String folder : indexCommandListener.getFolders()) {
+                int count = 1;
+                logger.info("Processing " + folder);
+                imap.select(folder);
 
-            if (indexCommandListener.lastSuccess()) {
-                if (expunge) {
-                    imap.expunge();
+                if (!indexCommandListener.lastSuccess()) {
+                    logger.error("Failed to select folder " + folder);
+                    return -1;
                 }
-                imap.status("inbox", new String[]{"MESSAGES"});
 
-
-                int toBeProcessed = batchSize;
-                if (indexCommandListener.getToBeProcessed() > 0 && indexCommandListener.getToBeProcessed() < batchSize) {
-                    toBeProcessed = indexCommandListener.getToBeProcessed();
-                }
-                logger.info("Can import " + toBeProcessed + " messages");
-                while (imap.fetch(Integer.toString(count), "(RFC822)") && count < toBeProcessed && !indexCommandListener.nothingFetched()) {
-                    if (expunge) {
-                        if (indexCommandListener.lastSuccess()) {
-                            imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
-                        }
-
+                if (indexCommandListener.lastSuccess()) {
+                    indexCommandListener.setCurrentFolder(folder);
+                    if (!testMode && expunge) { // expunge for first folder only
+                        imap.expunge();
                     }
-                    count++;
-                }
-                indexCommandListener.commit();
-                if (expunge) {
-                    imap.expunge();
-                }
+                    //imap.status(folder, new String[]{"MESSAGES"});
 
+
+                    int toBeProcessed = batchSize;
+                    if (indexCommandListener.getToBeProcessed() < batchSize) {
+                        toBeProcessed = indexCommandListener.getToBeProcessed();
+                    }
+                    logger.info("Can import " + toBeProcessed + " messages");
+                    if (toBeProcessed > 0) {
+                        while (imap.fetch(Integer.toString(count), "(RFC822)") && count < toBeProcessed && !indexCommandListener.nothingFetched()) {
+                            if (!testMode && expunge) {
+                                if (indexCommandListener.lastSuccess()) {
+                                    imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
+                                }
+
+                            }
+                            count++;
+                            totalCount++;
+                        }
+                        indexCommandListener.commit();
+                    } else {
+                        logger.info("Folder " + folder + " is empty");
+                    }
+
+                }
+            }
+            if (!testMode && expunge) {
+                imap.expunge();
             }
 
         } catch (Exception e) {
@@ -158,7 +179,7 @@ public class IMAPReader {
             return -1;
         }
 
-        return count;
+        return totalCount;
     }
 
     // Main Function for The readEmail Class
@@ -173,6 +194,7 @@ public class IMAPReader {
             return;
         }
         try {
+            logger.info("IMAPReader will run in " + (bean.isTestMode() ? "TEST MODE" : "regular mode"));
             ApplicationContext context = new ClassPathXmlApplicationContext("readerContext.xml");
             IMAPReader readMail = context.getBean(IMAPReader.class);
 
@@ -186,6 +208,7 @@ public class IMAPReader {
             readMail.setExpunge(bean.isExpunge());
             readMail.setTimeout(bean.getTimeout());
             readMail.setEncrypt(bean.isEncrypt());
+            readMail.setTestMode(bean.isTestMode());
             // Calling processMail Function to read from IMAP Account
             readMail.initiateConnection();
             try {
@@ -216,7 +239,6 @@ public class IMAPReader {
         }
 
     }
-
 
     public String getHostname() {
         return hostname;
@@ -295,6 +317,14 @@ public class IMAPReader {
         this.encrypt = encrypt;
     }
 
+    public boolean isTestMode() {
+        return testMode;
+    }
+
+    public void setTestMode(boolean testMode) {
+        this.testMode = testMode;
+    }
+
     private class IndexCommandListener implements ProtocolCommandListener {
         private final IMAPMessageSource source;
         private final IMAPBatchMeta metaData;
@@ -305,6 +335,8 @@ public class IMAPReader {
         private long finished;
         private boolean lastSuccess;
         private int toBeProcessed;
+        private Set<String> folders;
+        private String currentFolder;
 
         public IndexCommandListener(boolean encrypt) {
             source = new IMAPMessageSource();
@@ -314,7 +346,7 @@ public class IMAPReader {
             source.setImapPort(port);
             source.setProtocol(protocol);
             this.encrypt = encrypt;
-
+            this.folders = new HashSet<>();
 
             metaData = new IMAPBatchMeta(source, new Date());
 
@@ -323,7 +355,9 @@ public class IMAPReader {
 
         public void commit() throws Exception {
             metaData.setFinished(new Date());
-            miscIndexService.store(client, metaData);
+            if (!testMode) {
+                miscIndexService.store(client, metaData);
+            }
         }
 
         public boolean nothingFetched() {
@@ -382,51 +416,61 @@ public class IMAPReader {
                         }
                         mailMessage.loadMimeMessageFromSource(rawMessage);
 
-                        source.setLoadTimestamp(new Date());
-                        source.setPartition(mailMessage.getPartition());
+                        if (!testMode) {
 
-                        messageId = mailMessage.getMessageId();
+                            source.setLoadTimestamp(new Date());
+                            source.setPartition(mailMessage.getPartition());
+                            source.setFolder(indexCommandListener.getCurrentFolder());
 
-                        if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
-                            logger.warn("Found duplicate " + messageId);
-                            metaData.incrementDuplicates();
-                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
-                            mimeMailMessageStorageService.archive(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId());
-                        }
+                            messageId = mailMessage.getMessageId();
 
-                        long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), this.encrypt);
-                        metaDataIndexService.store(client, source);
-
-                        metaData.incrementBatchSize(storedSize);
-
-                        metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored journaled message from " + source.getDescription()));
-
-                        logger.info("Stored journaled message "
-                                + mailMessage.getMessageId()
-                                + " "
-                                + FileUtils
-                                .byteCountToDisplaySize(mailMessage
-                                        .getSize()));
-
-                        metaData.updateSizeStatistics(mailMessage
-                                .getRawContents().length(), storedSize);
-
-                        try {
-                            IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());
-                            if (indexedMessage == null) {
-                                indexedMessage = new IndexedMailMessage(mailMessage, true);
+                            if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
+                                logger.warn("Found duplicate " + messageId);
+                                metaData.incrementDuplicates();
+                                metaDataIndexService.store(client, new LogMessage(LogLevel.Success, messageId, "Found duplicate message in " + source.getDescription()));
+                                mimeMailMessageStorageService.archive(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId());
                             }
-                            messageIndexService.store(client, indexedMessage, false);
-                        } catch (Exception e) {
-                            logger.error("Failed to index message " + mailMessage.getMessageId(), e);
-                            metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+
+                            long storedSize = mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId, mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), this.encrypt);
+                            metaDataIndexService.store(client, source);
+
+                            metaData.incrementBatchSize(storedSize);
+
+                            metaDataIndexService.store(client, new LogMessage(LogLevel.Success, mailMessage.getMessageId(), "Stored message from " + source.getDescription()));
+
+                            logger.info("Stored message "
+                                    + mailMessage.getMessageId()
+                                    + " "
+                                    + FileUtils
+                                    .byteCountToDisplaySize(mailMessage
+                                            .getSize()));
+
+                            metaData.updateSizeStatistics(mailMessage
+                                    .getRawContents().length(), storedSize);
+
+                            try {
+                                IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());
+                                if (indexedMessage == null) {
+                                    indexedMessage = new IndexedMailMessage(mailMessage, true);
+                                }
+                                messageIndexService.store(client, indexedMessage, false);
+                            } catch (Exception e) {
+                                logger.error("Failed to index message " + mailMessage.getMessageId(), e);
+                                metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));
+                            }
+
+
+                            metaData.incrementAttachmentStatistics(mailMessage
+                                    .isHasAttachments());
+                            metaData.incrementMessages();
+
+                        } else {
+                            logger.info("TEST MODE skipped message" + mailMessage.getMessageId()
+                                    + " "
+                                    + FileUtils
+                                    .byteCountToDisplaySize(mailMessage
+                                            .getSize()));
                         }
-
-
-                        metaData.incrementAttachmentStatistics(mailMessage
-                                .isHasAttachments());
-                        metaData.incrementMessages();
-
                         lastSuccess = true;
                         break;
                     } catch (AuthenticationFailedException | FolderClosedException | FolderNotFoundException | ReadOnlyFolderException | StoreClosedException e) {
@@ -451,10 +495,19 @@ public class IMAPReader {
                             System.exit(1);
                         }
                     }
-                } else if (currentCommand != null && currentCommand.equals("STATUS") && currentResponse.contains("STATUS INBOX")) {
-                    this.toBeProcessed = Integer.parseInt(currentResponse.split(" ")[4].split("\\)")[0]);
+                } else if (currentCommand != null && currentCommand.equals("SELECT") && currentResponse.contains("EXISTS")) {
+                    this.toBeProcessed = Integer.parseInt(currentResponse.split(" ")[1]);
+                } else if (currentCommand != null && currentCommand.equals("LIST") && currentResponse.contains("* LIST")) {
+                    String folder = line.replaceAll("\\* LIST \\(.*\\) \"/\" ", "");
+                    folder = folder.replaceAll("(\\r|\\n)", "");
+
+                    if (!folders.contains(folder)) {
+                        logger.info("Adding folder " + folder + " for processing");
+                        folders.add(folder);
+                    }
                 }
             }
+
             lastSuccess = true;
         }
 
@@ -464,6 +517,18 @@ public class IMAPReader {
 
         private int getToBeProcessed() {
             return toBeProcessed;
+        }
+
+        public Set<String> getFolders() {
+            return folders;
+        }
+
+        private String getCurrentFolder() {
+            return currentFolder;
+        }
+
+        private void setCurrentFolder(String currentFolder) {
+            this.currentFolder = currentFolder;
         }
     }
 }

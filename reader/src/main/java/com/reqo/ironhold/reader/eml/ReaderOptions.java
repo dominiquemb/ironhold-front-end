@@ -34,6 +34,9 @@ public class ReaderOptions {
     @Option(name = "-encrypt", usage = "encrypt data", required = false)
     private boolean encrypt;
 
+    @Option(name = "-testMode", usage = "whether to process anything", required = false)
+    private boolean testMode;
+
     public boolean isEncrypt() {
         return encrypt;
     }
@@ -74,4 +77,7 @@ public class ReaderOptions {
         return timeout;
     }
 
+    public boolean isTestMode() {
+        return testMode;
+    }
 }

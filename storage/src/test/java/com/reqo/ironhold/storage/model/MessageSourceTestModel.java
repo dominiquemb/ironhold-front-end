@@ -13,6 +13,6 @@ public class MessageSourceTestModel extends CommonTestModel {
     }
 
     public static IMAPMessageSource generateIMAPMessageSource() {
-        return new IMAPMessageSource(UUID.randomUUID().toString(), df.getRandomText(100), df.getName(), df.getNumberBetween(1, 32000), df.getName());
+        return new IMAPMessageSource(UUID.randomUUID().toString(), df.getRandomText(100), df.getName(), df.getNumberBetween(1, 32000), df.getName(), df.getRandomText(20));
     }
 }

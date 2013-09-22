@@ -15,18 +15,20 @@ public class IMAPMessageSource extends MessageSource {
     private String username;
     private int imapPort;
     private String protocol;
+    private String folder;
 
 
     public IMAPMessageSource() {
         super();
     }
 
-    public IMAPMessageSource(String messageId, String imapSource, String username, int imapPort, String protocol) {
+    public IMAPMessageSource(String messageId, String imapSource, String username, int imapPort, String protocol, String folder) {
         super(messageId);
         this.imapSource = imapSource;
         this.username = username;
         this.imapPort = imapPort;
         this.protocol = protocol;
+        this.folder = folder;
     }
 
     public String serialize() throws IOException {
@@ -46,6 +48,8 @@ public class IMAPMessageSource extends MessageSource {
         sb.append(imapSource);
         sb.append(":");
         sb.append(imapPort);
+        sb.append("/");
+        sb.append(folder);
         return sb.toString();
     }
 
@@ -81,6 +85,14 @@ public class IMAPMessageSource extends MessageSource {
         this.protocol = protocol;
     }
 
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -106,7 +118,9 @@ public class IMAPMessageSource extends MessageSource {
                 && existingSource.getLoadTimestamp().equals(
                 existingSource.getLoadTimestamp())
                 && existingSource.getProtocol().equals(source.getProtocol())
-                && existingSource.getUsername().equals(source.getUsername())) {
+                && existingSource.getUsername().equals(source.getUsername())
+                && existingSource.getFolder().equals(source.getFolder())
+                ) {
 
             return true;
         }
