@@ -124,7 +124,7 @@ public class IMAPReader {
 
         try {
 
-            imap.list("\"INBOX\"", "*");
+            imap.list("\"\"", "*");
 
             if (!indexCommandListener.lastSuccess()) {
                 logger.error("Failed to get folders");
@@ -133,49 +133,54 @@ public class IMAPReader {
             for (String folder : indexCommandListener.getFolders()) {
                 int count = 1;
                 logger.info("Processing " + folder);
-                if (!testMode && expunge) {
+                imap.select(folder);
+
+                if (!indexCommandListener.lastSuccess()) {
+                    logger.error("Failed to select folder " + folder);
+                    return -1;
+                }
+
+                indexCommandListener.setCurrentFolder(folder);
+
+                if (!testMode && expunge && indexCommandListener.getToBeProcessed() > 0) {
+                    imap.expunge();
+                    if (!indexCommandListener.lastSuccess()) {
+                        logger.error("Failed to expunge folder " + folder);
+                        return -1;
+                    }
+
                     imap.select(folder);
 
                     if (!indexCommandListener.lastSuccess()) {
                         logger.error("Failed to select folder " + folder);
                         return -1;
                     }
-                    imap.expunge();
                 }
 
-                imap.select(folder);
-                if (!indexCommandListener.lastSuccess()) {
-                    logger.error("Failed to select folder " + folder);
-                    return -1;
+                //imap.status(folder, new String[]{"MESSAGES"});
+
+
+                int toBeProcessed = batchSize;
+                if (indexCommandListener.getToBeProcessed() < batchSize) {
+                    toBeProcessed = indexCommandListener.getToBeProcessed();
                 }
-
-                if (indexCommandListener.lastSuccess()) {
-                    indexCommandListener.setCurrentFolder(folder);
-                    //imap.status(folder, new String[]{"MESSAGES"});
-
-
-                    int toBeProcessed = batchSize;
-                    if (indexCommandListener.getToBeProcessed() < batchSize) {
-                        toBeProcessed = indexCommandListener.getToBeProcessed();
-                    }
-                    logger.info("Can import " + toBeProcessed + " messages");
-                    if (toBeProcessed > 0) {
-                        while (imap.fetch(Integer.toString(count), "(RFC822)") && count < toBeProcessed && !indexCommandListener.nothingFetched()) {
-                            if (!testMode && expunge) {
-                                if (indexCommandListener.lastSuccess()) {
-                                    imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
-                                }
-
+                logger.info("Can import " + toBeProcessed + " messages");
+                if (toBeProcessed > 0) {
+                    while (imap.fetch(Integer.toString(count), "(RFC822)") && count < toBeProcessed && !indexCommandListener.nothingFetched()) {
+                        if (!testMode && expunge) {
+                            if (indexCommandListener.lastSuccess()) {
+                                imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
                             }
-                            count++;
-                            totalCount++;
-                        }
-                        indexCommandListener.commit();
-                    } else {
-                        logger.info("Folder " + folder + " is empty");
-                    }
 
+                        }
+                        count++;
+                        totalCount++;
+                    }
+                    indexCommandListener.commit();
+                } else {
+                    logger.info("Folder " + folder + " is empty");
                 }
+
             }
 
 
