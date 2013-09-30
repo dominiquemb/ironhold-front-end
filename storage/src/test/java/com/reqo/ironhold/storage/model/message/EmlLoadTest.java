@@ -853,6 +853,19 @@ public class EmlLoadTest {
 
 
     @Test
+    public void testFromBadAddress() throws Exception {
+        File file = FileUtils.toFile(EmlLoadTest.class
+                .getResource("/testFromBadAddress.eml"));
+        InputStream is = new FileInputStream(file);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
+
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessage(mimeMessage);
+
+        Assert.assertEquals("Paul Caruso", mailMessage.getFrom().getName());
+    }
+
+    @Test
     public void testProblematicAttachment() throws Exception {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testProblematicAttachment.eml"));

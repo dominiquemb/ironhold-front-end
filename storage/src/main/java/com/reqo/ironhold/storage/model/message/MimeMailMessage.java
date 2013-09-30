@@ -306,18 +306,22 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             }
 
             InternetAddress internetAddress;
-            if (mimeMessage.getFrom() != null) {
-                try {
-                    internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
-                    this.from = new Recipient(internetAddress.getPersonal(),
-                            internetAddress.getAddress());
+            try {
+                if (mimeMessage.getFrom() != null) {
+                    try {
+                        internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
+                        this.from = new Recipient(internetAddress.getPersonal(),
+                                internetAddress.getAddress());
 
-                } catch (AddressException e) {
-                    this.from = new Recipient(mimeMessage.getHeader("From")[0],
-                            mimeMessage.getHeader("From")[0]);
+                    } catch (AddressException e) {
+                        this.from = new Recipient(mimeMessage.getHeader("From")[0],
+                                mimeMessage.getHeader("From")[0]);
+                    }
+                } else {
+                    this.from = new Recipient("unknown", "unknown");
                 }
-            } else {
-                this.from = new Recipient("unknown", "unknown");
+            } catch (AddressException e) {
+                this.from = new Recipient(mimeMessage.getHeader("From")[0], "unknown");
             }
 
 
