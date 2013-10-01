@@ -42,6 +42,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     protected SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     protected SimpleDateFormat dayMonthFormat = new SimpleDateFormat("MMdd");
 
+    private int embeddedMessageCount = 0;
 
     // Derived fields
 
@@ -511,6 +512,10 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
     private void handleMessage(Message message, boolean processAttachments)
             throws IOException, MessagingException {
+        embeddedMessageCount++;
+        if (embeddedMessageCount > 20) {
+            throw new MessagingException("Exceeded embeddedMessageCount, aborting due to potential infinite loop");
+        }
         long started = System.currentTimeMillis();
         try {
             Object content = message.getContent();
