@@ -166,7 +166,7 @@ public class IMAPReader {
                 }
                 logger.info("Can import " + toBeProcessed + " messages");
                 if (toBeProcessed > 0) {
-                    while (count < toBeProcessed && imap.fetch(Integer.toString(count), "(RFC822)") && !indexCommandListener.nothingFetched()) {
+                    while (count <= toBeProcessed && imap.fetch(Integer.toString(count), "(RFC822)") && !indexCommandListener.nothingFetched()) {
                         if (!testMode && expunge) {
                             if (indexCommandListener.lastSuccess()) {
                                 imap.store(Integer.toString(count), "+FLAGS.SILENT", "(\\Deleted)");
