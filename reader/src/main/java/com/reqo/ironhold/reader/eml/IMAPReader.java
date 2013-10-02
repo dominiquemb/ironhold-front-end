@@ -64,13 +64,15 @@ public class IMAPReader {
     private IMAPClient imap;
     private IndexCommandListener indexCommandListener;
     private boolean testMode;
+    private String folderMatch;
+    private String folderNotMatch;
 
     public IMAPReader() {
     }
 
     public IMAPReader(String hostname, int port, String username,
                       String password, String protocol, String client, int batchSize,
-                      boolean expunge, boolean encrypt, boolean testMode) throws IOException {
+                      boolean expunge, boolean encrypt, boolean testMode, String folderMatch, String folderNotMatch) throws IOException {
         this.hostname = hostname;
         this.port = port;
         this.username = username;
@@ -81,6 +83,8 @@ public class IMAPReader {
         this.client = client;
         this.encrypt = encrypt;
         this.testMode = testMode;
+        this.folderMatch = folderMatch;
+        this.folderNotMatch = folderNotMatch;
     }
 
     public void initiateConnection() throws Exception {
@@ -131,6 +135,14 @@ public class IMAPReader {
                 return -1;
             }
             for (String folder : indexCommandListener.getFolders()) {
+                if (folderMatch != null && !folder.equalsIgnoreCase(folderMatch)) {
+                    logger.info("Skipping " + folder + " because it does not match " + folderMatch);
+                    continue;
+                }
+                if (folderNotMatch != null && folder.equalsIgnoreCase(folderNotMatch)) {
+                    logger.info("Skipping " + folder + " because it matches " + folderNotMatch);
+                    continue;
+                }
                 int count = 1;
                 logger.info("Processing " + folder);
                 imap.select(folder);

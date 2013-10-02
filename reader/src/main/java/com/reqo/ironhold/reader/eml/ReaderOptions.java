@@ -37,6 +37,13 @@ public class ReaderOptions {
     @Option(name = "-testMode", usage = "whether to process anything", required = false)
     private boolean testMode;
 
+    @Option(name = "-folderMatch", usage = "string that folder must match", required = false)
+    private String folderMatch;
+
+    @Option(name = "-folderNotMatch", usage = "string that folder must not match", required = false)
+    private String folderNotMatch;
+
+
     public boolean isEncrypt() {
         return encrypt;
     }
@@ -79,5 +86,13 @@ public class ReaderOptions {
 
     public boolean isTestMode() {
         return testMode;
+    }
+
+    public String getFolderMatch() {
+        return folderMatch;
+    }
+
+    public String getFolderNotMatch() {
+        return folderNotMatch;
     }
 }
