@@ -231,6 +231,9 @@ public class IMAPReader {
             readMail.setTimeout(bean.getTimeout());
             readMail.setEncrypt(bean.isEncrypt());
             readMail.setTestMode(bean.isTestMode());
+            readMail.setFolderMatch(bean.getFolderMatch());
+            readMail.setFolderNotMatch(bean.getFolderNotMatch());
+
             // Calling processMail Function to read from IMAP Account
             readMail.initiateConnection();
             try {
@@ -344,6 +347,14 @@ public class IMAPReader {
 
     public void setTestMode(boolean testMode) {
         this.testMode = testMode;
+    }
+
+    public void setFolderMatch(String folderMatch) {
+        this.folderMatch = folderMatch;
+    }
+
+    public void setFolderNotMatch(String folderNotMatch) {
+        this.folderNotMatch = folderNotMatch;
     }
 
     private class IndexCommandListener implements ProtocolCommandListener {
