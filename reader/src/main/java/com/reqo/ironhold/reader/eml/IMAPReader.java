@@ -191,6 +191,9 @@ public class IMAPReader {
                     indexCommandListener.commit();
                 } else {
                     logger.info("Folder " + folder + " is empty");
+                    if (folder.startsWith("INBOX/")) {
+                        imap.delete(folder);
+                    }
                 }
 
             }
