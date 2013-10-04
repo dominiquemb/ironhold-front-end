@@ -192,12 +192,12 @@ public class IMAPReader {
                 } else {
                     logger.info("Folder " + folder + " is empty");
                     if (!folder.equalsIgnoreCase("INBOX")) {
-                        imap.delete(folder);
+                        /*imap.delete(folder);
                         if (!indexCommandListener.lastSuccess()) {
                             logger.warn("Failed to delete folder " + folder);
                         } else {
                             logger.info("Deleted folder " + folder);
-                        }
+                        } */
                     }
                 }
 
