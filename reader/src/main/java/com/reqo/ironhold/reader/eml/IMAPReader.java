@@ -126,6 +126,7 @@ public class IMAPReader {
 
         try {
 
+            indexCommandListener.getFolders().clear();
             imap.list("\"\"", "*");
 
             if (!indexCommandListener.lastSuccess()) {
