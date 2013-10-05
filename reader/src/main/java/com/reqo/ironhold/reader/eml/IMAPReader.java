@@ -202,7 +202,7 @@ public class IMAPReader {
                             return -1;
                         }
 
-                        if (!folder.equalsIgnoreCase("INBOX")) {
+                        if (!folder.equalsIgnoreCase("INBOX") && indexCommandListener.getToBeDeleted().contains(folder)) {
                             imap.select(folder);
 
                             if (!indexCommandListener.lastSuccess()) {
@@ -222,7 +222,7 @@ public class IMAPReader {
                     }
                 } else {
                     logger.info("Folder " + folder + " is empty");
-                    if (!folder.equalsIgnoreCase("INBOX")) {
+                    if (!testMode && !folder.equalsIgnoreCase("INBOX") && indexCommandListener.getToBeDeleted().contains(folder)) {
                         imap.delete(folder);
                         if (!indexCommandListener.lastSuccess()) {
                             logger.warn("Failed to delete folder " + folder);
@@ -408,6 +408,7 @@ public class IMAPReader {
         private int toBeProcessed;
         private Set<String> folders;
         private String currentFolder;
+        private Set<String> toBeDeleted;
 
         public IndexCommandListener(boolean encrypt) {
             source = new IMAPMessageSource();
@@ -420,8 +421,6 @@ public class IMAPReader {
             this.folders = new HashSet<>();
 
             metaData = new IMAPBatchMeta(source, new Date());
-
-
         }
 
         public void commit() throws Exception {
@@ -575,6 +574,10 @@ public class IMAPReader {
                     if (!folders.contains(folder)) {// && !folder.toLowerCase().contains("outboox")) {
                         logger.info("Adding folder " + folder + " for processing");
                         folders.add(folder);
+
+                        if (line.contains("HasNoChildren")) {
+                            toBeDeleted.add(folder);
+                        }
                     }
                 }
             }
@@ -592,6 +595,10 @@ public class IMAPReader {
 
         public Set<String> getFolders() {
             return folders;
+        }
+
+        private Set<String> getToBeDeleted() {
+            return toBeDeleted;
         }
 
         private String getCurrentFolder() {
