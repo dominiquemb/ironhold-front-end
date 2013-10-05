@@ -194,6 +194,32 @@ public class IMAPReader {
                         totalCount++;
                     }
                     indexCommandListener.commit();
+
+                    if (count < batchSize && !testMode && expunge) {
+                        imap.expunge();
+                        if (!indexCommandListener.lastSuccess()) {
+                            logger.error("Failed to expunge folder " + folder);
+                            return -1;
+                        }
+
+                        if (!folder.equalsIgnoreCase("INBOX")) {
+                            imap.select(folder);
+
+                            if (!indexCommandListener.lastSuccess()) {
+                                logger.error("Failed to select folder " + folder);
+                                return -1;
+                            }
+
+                            if (indexCommandListener.getToBeProcessed() == 0) {
+                                imap.delete(folder);
+                                if (!indexCommandListener.lastSuccess()) {
+                                    logger.warn("Failed to delete folder " + folder);
+                                } else {
+                                    logger.info("Deleted folder " + folder);
+                                }
+                            }
+                        }
+                    }
                 } else {
                     logger.info("Folder " + folder + " is empty");
                     if (!folder.equalsIgnoreCase("INBOX")) {
