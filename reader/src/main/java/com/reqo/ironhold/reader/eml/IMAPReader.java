@@ -212,12 +212,7 @@ public class IMAPReader {
 
                             if (indexCommandListener.getToBeProcessed() == 0) {
                                 imap.delete(folder);
-                                if (!indexCommandListener.lastSuccess()) {
-                                    logger.warn("Failed to delete folder " + folder);
-                                    indexCommandListener.getToBeDeleted().remove(folder);
-                                } else {
-                                    logger.info("Deleted folder " + folder);
-                                }
+                                indexCommandListener.getToBeDeleted().remove(folder);
                             }
                         }
                     }
@@ -225,12 +220,7 @@ public class IMAPReader {
                     logger.info("Folder " + folder + " is empty");
                     if (!testMode && !folder.equalsIgnoreCase("INBOX") && indexCommandListener.getToBeDeleted().contains(folder)) {
                         imap.delete(folder);
-                        if (!indexCommandListener.lastSuccess()) {
-                            logger.warn("Failed to delete folder " + folder);
-                            indexCommandListener.getToBeDeleted().remove(folder);
-                        } else {
-                            logger.info("Deleted folder " + folder);
-                        }
+                        indexCommandListener.getToBeDeleted().remove(folder);
                     }
                 }
 
