@@ -214,6 +214,7 @@ public class IMAPReader {
                                 imap.delete(folder);
                                 if (!indexCommandListener.lastSuccess()) {
                                     logger.warn("Failed to delete folder " + folder);
+                                    indexCommandListener.getToBeDeleted().remove(folder);
                                 } else {
                                     logger.info("Deleted folder " + folder);
                                 }
@@ -226,6 +227,7 @@ public class IMAPReader {
                         imap.delete(folder);
                         if (!indexCommandListener.lastSuccess()) {
                             logger.warn("Failed to delete folder " + folder);
+                            indexCommandListener.getToBeDeleted().remove(folder);
                         } else {
                             logger.info("Deleted folder " + folder);
                         }
@@ -419,6 +421,7 @@ public class IMAPReader {
             source.setProtocol(protocol);
             this.encrypt = encrypt;
             this.folders = new HashSet<>();
+            this.toBeDeleted = new HashSet<>();
 
             metaData = new IMAPBatchMeta(source, new Date());
         }
