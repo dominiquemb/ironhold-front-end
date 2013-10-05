@@ -203,7 +203,7 @@ public class IMAPReader {
                             return -1;
                         }
 
-                        if (!folder.equalsIgnoreCase("INBOX") && indexCommandListener.getToBeDeleted().contains(folder)) {
+                        if (indexCommandListener.getToBeDeleted().contains(folder)) {
                             imap.select(folder);
 
                             if (!indexCommandListener.lastSuccess()) {
@@ -219,7 +219,7 @@ public class IMAPReader {
                     }
                 } else {
                     logger.info("Folder " + folder + " is empty");
-                    if (!testMode && !folder.equalsIgnoreCase("INBOX") && indexCommandListener.getToBeDeleted().contains(folder)) {
+                    if (!testMode && indexCommandListener.getToBeDeleted().contains(folder)) {
                         imap.delete(folder);
                         indexCommandListener.getToBeDeleted().remove(folder);
                     }
@@ -569,7 +569,15 @@ public class IMAPReader {
                         logger.info("Adding folder " + folder + " for processing");
                         folders.add(folder);
 
-                        if (line.contains("HasNoChildren")) {
+                        if (line.contains("HasNoChildren") &&
+                                !"Contacts".equalsIgnoreCase(folder) &&
+                                !"\"Deleted Items\"".equalsIgnoreCase(folder) &&
+                                !"INBOX".equalsIgnoreCase(folder) &&
+                                !"Journal".equalsIgnoreCase(folder) &&
+                                !"Notes".equalsIgnoreCase(folder) &&
+                                !"Outbox".equalsIgnoreCase(folder) &&
+                                !"\"RSS Subscriptions\"".equalsIgnoreCase(folder) &&
+                                !"\"Sent Items\"".equalsIgnoreCase(folder)) {
                             toBeDeleted.add(folder);
                         }
                     }
