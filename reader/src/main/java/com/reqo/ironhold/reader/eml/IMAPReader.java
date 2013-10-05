@@ -28,9 +28,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import javax.mail.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class IMAPReader {
     static {
@@ -134,7 +132,14 @@ public class IMAPReader {
                 logger.error("Failed to get folders");
                 return -1;
             }
-            for (String folder : indexCommandListener.getFolders()) {
+            List<String> sortedList = new ArrayList<String>(indexCommandListener.getFolders());
+            Collections.sort(sortedList, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o2.compareTo(o1);
+                }
+            });
+            for (String folder : sortedList) {
                 if (folderMatch != null && !folder.equalsIgnoreCase(folderMatch)) {
                     logger.info("Skipping " + folder + " because it does not match " + folderMatch);
                     continue;
@@ -192,12 +197,12 @@ public class IMAPReader {
                 } else {
                     logger.info("Folder " + folder + " is empty");
                     if (!folder.equalsIgnoreCase("INBOX")) {
-                        /*imap.delete(folder);
+                        imap.delete(folder);
                         if (!indexCommandListener.lastSuccess()) {
                             logger.warn("Failed to delete folder " + folder);
                         } else {
                             logger.info("Deleted folder " + folder);
-                        } */
+                        }
                     }
                 }
 
