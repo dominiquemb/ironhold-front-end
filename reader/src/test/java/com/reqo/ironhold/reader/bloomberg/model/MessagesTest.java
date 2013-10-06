@@ -57,7 +57,7 @@ public class MessagesTest {
             File emlFile = new File(emlFilePath);
             FileUtils.writeStringToFile(emlFile, mimeMessage.getRawContents());
 
-            System.out.println(mimeMessage.getRawContents());
+           // System.out.println(mimeMessage.getRawContents());
             Assert.assertTrue(emlFile.exists());
             Assert.assertTrue(emlFile.length() > 0);
 

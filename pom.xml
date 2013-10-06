@@ -42,6 +42,7 @@
         <apache.commons.net.version>3.3</apache.commons.net.version>
         <apache.commons.compress.version>1.5</apache.commons.compress.version>
         <apache.commons.codec.version>1.8</apache.commons.codec.version>
+        <apache.commons.vfs.version>1.0</apache.commons.vfs.version>
         <apache.shiro.version>1.2.2</apache.shiro.version>
         <apache.tika.version>1.4</apache.tika.version>
         <args4j.version>2.0.16</args4j.version>

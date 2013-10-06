@@ -70,6 +70,7 @@ public class MessageConverter {
 
         email.setSubject(getSubject(message));
         if (email instanceof HtmlEmail) {
+
             ((HtmlEmail) email).setTextMsg(getBody(message, disclaimer));
             String html = getHTMLBody(message, attachmentsZip);
             if (!html.equalsIgnoreCase(StringUtils.EMPTY)) {
@@ -110,88 +111,6 @@ public class MessageConverter {
 
         addHeaders(email, "X-Sender", message.getSender().getUserInfo());
 
-        /*
-
-
-        if (originalPSTMessage.getBody().trim().length() > 0) {
-            email.setMsg(originalPSTMessage.getBody());
-        } else {
-            email.setMsg(" ");
-        }
-        if (originalPSTMessage.getBodyHTML().trim().length() > 0) {
-            email.setHtmlMsg(originalPSTMessage.getBodyHTML());
-        } else if (originalPSTMessage.getRTFBody().trim().length() > 0) {
-            JEditorPane p = new JEditorPane();
-            p.setContentType("text/rtf");
-            EditorKit kitRtf = p.getEditorKitForContentType("text/rtf");
-            try {
-                kitRtf.read(new ByteArrayInputStream(originalPSTMessage.getRTFBody().trim().getBytes()), p.getDocument(), 0);
-                kitRtf = null;
-                EditorKit kitHtml = p.getEditorKitForContentType("text/html");
-                Writer writer = new StringWriter();
-                kitHtml.write(writer, p.getDocument(), 0, p.getDocument().getLength());
-                email.setHtmlMsg(writer.toString());
-            } catch (Exception e) {
-                logger.warn(e);
-                email.setHtmlMsg(originalPSTMessage.getRTFBody().trim());
-            }
-        }
-
-
-        try {
-            email.setFrom(originalPSTMessage.getSenderEmailAddress(), originalPSTMessage.getSenderName());
-        } catch (EmailException e) {
-            try {
-                email.setFrom(originalPSTMessage.getSentRepresentingEmailAddress(), originalPSTMessage.getSentRepresentingName());
-            } catch (EmailException e2) {
-                email.setFrom("unknown@unknown", originalPSTMessage.getSenderName());
-            }
-        }
-        email.setSentDate(originalPSTMessage.getMessageDeliveryTime());
-        email.setSubject(originalPSTMessage.getSubject());
-
-        try {
-            for (int i = 0; i < originalPSTMessage.getNumberOfAttachments(); i++) {
-                try {
-                    PSTAttachment attachment = originalPSTMessage
-                            .getAttachment(i);
-
-                    if (attachment.getEmbeddedPSTMessage() != null) {
-                        MimeMessage embeddedMessage = MimeMailMessage.getMimeMessage(attachment.getEmbeddedPSTMessage());
-                        byte[] rawContents = getRawContents(embeddedMessage, attachment.getEmbeddedPSTMessage().getInternetMessageId());
-
-                        email.attach(new ByteArrayDataSource(rawContents, "message/rfc822"), embeddedMessage.getSubject() + ".eml", embeddedMessage.getSubject());
-                        if (email.getToAddresses().size() == 0 && email.getCcAddresses().size() == 0 && email.getBccAddresses().size() == 0) {
-                            logger.warn("Found 0 recipients and embedded email message, extracting recipients from embedded message");
-                            extractRecipients(email, attachment.getEmbeddedPSTMessage());
-
-                        }
-                    } else {
-                        String fileName = attachment.getLongFilename();
-                        if (fileName.isEmpty()) {
-                            fileName = attachment.getFilename();
-                        }
-
-                        if (attachment.getAttachmentContentDisposition() != null && attachment.getAttachmentContentDisposition().trim().length() > 0) {
-                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), StringUtils.isEmpty(attachment.getMimeTag()) ? "application/octet-stream" : attachment.getMimeTag()), fileName, attachment.getDisplayName(), attachment.getAttachmentContentDisposition());
-                        } else {
-                            email.attach(new ByteArrayDataSource(attachment.getFileInputStream(), StringUtils.isEmpty(attachment.getMimeTag()) ? "application/octet-stream" : attachment.getMimeTag()), fileName, attachment.getDisplayName());
-                        }
-                    }
-
-                } catch (Exception e1) {
-                    logger.warn(e1);
-                }
-
-            }
-        } catch (Exception e2) {
-            logger.warn(e2);
-        }
-
-        if (email.getToAddresses().size() == 0 && email.getCcAddresses().size() == 0 && email.getBccAddresses().size() == 0) {
-            email.addTo("undisclosed-recipients:;", "undisclosed-recipients:;");
-
-        }                 */
         String hostname = java.net.InetAddress.getLocalHost().getHostName();
         email.setHostName(hostname);
         email.buildMimeMessage();
@@ -217,7 +136,7 @@ public class MessageConverter {
                 String fileName = attachment.getFileName().getContent().get(0);
 
                 InputStream contents = getAttachmentAsStream(attachmentsZip, attachment.getFileID().getContent().get(0));
-                ((HtmlEmail) email).attach(new ByteArrayDataSource(contents, "application/octet-stream"), fileName, fileName);
+                ((HtmlEmail) email).attach(new ByteArrayDataSource(contents, "application/octet-stream"), fileName, fileName, EmailAttachment.ATTACHMENT);
             }
         }
     }
