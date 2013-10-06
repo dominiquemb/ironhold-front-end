@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="FileDump" type="FileDumpType">
+        <xs:annotation>
+            <xs:documentation>Data provided by Bloomberg LP.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="DisclaimerType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="DisclaimerReference"/>
+            <xs:element type="xs:string" name="DisclaimerText"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="FileDumpType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="Version"/>
+            <xs:element type="DisclaimerType" name="Disclaimer" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

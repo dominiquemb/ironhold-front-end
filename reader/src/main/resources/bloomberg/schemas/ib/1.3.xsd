@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="FileDump" type="FileDumpType">
+        <xs:annotation>
+            <xs:documentation>Data provided by Bloomberg LP.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="UserType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="LoginName"/>
+            <xs:element type="xs:string" name="FirstName"/>
+            <xs:element type="xs:string" name="LastName"/>
+            <xs:element type="xs:string" name="UUID" minOccurs="0"/>
+            <xs:element type="xs:string" name="FirmNumber" minOccurs="0"/>
+            <xs:element type="xs:string" name="AccountNumber" minOccurs="0"/>
+            <xs:element type="xs:string" name="CompanyName"/>
+            <xs:element type="xs:string" name="EmailAddress"/>
+            <xs:element type="xs:string" name="CorporateEmailAddress"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ConversationType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="xs:string" name="RoomID"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="ParticipantEnteredType" name="ParticipantEntered"/>
+            <xs:element type="ParticipantLeftType" name="ParticipantLeft"/>
+            <xs:element type="HistoryType" name="History"/>
+            <xs:element type="MessageType" name="Message"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="InviteType" name="Invite"/>
+            <xs:element type="AttachmentType" name="Attachment"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="Perspective" use="optional"/>
+        <xs:attribute type="xs:string" name="RoomType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="InviterType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="LoginName"/>
+            <xs:element type="xs:string" name="FirstName"/>
+            <xs:element type="xs:string" name="LastName"/>
+            <xs:element type="xs:string" name="UUID" minOccurs="0"/>
+            <xs:element type="xs:string" name="FirmNumber" minOccurs="0"/>
+            <xs:element type="xs:string" name="AccountNumber" minOccurs="0"/>
+            <xs:element type="xs:string" name="CompanyName"/>
+            <xs:element type="xs:string" name="EmailAddress"/>
+            <xs:element type="xs:string" name="CorporateEmailAddress"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HistoryType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="UserType" name="User" minOccurs="0"/>
+            <xs:element type="xs:string" name="DateTime" minOccurs="0"/>
+            <xs:element type="xs:string" name="DateTimeUTC" minOccurs="0"/>
+            <xs:element type="xs:string" name="Content"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="xs:string" name="ConversationID" minOccurs="0"/>
+            <xs:element type="xs:string" name="FileName"/>
+            <xs:element type="xs:string" name="FileID"/>
+            <xs:element type="xs:string" name="FileSize"/>
+            <xs:element type="InviterType" name="Inviter"/>
+            <xs:element type="InviteeType" name="Invitee"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="InteractionType" use="optional"/>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="InviteType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="InviterType" name="Inviter"/>
+            <xs:element type="InviteeType" name="Invitee"/>
+            <xs:element type="xs:string" name="Content"/>
+            <xs:element type="xs:string" name="DateTime"/>
+            <xs:element type="xs:string" name="DateTimeUTC"/>
+            <xs:element type="xs:string" name="ConversationID"/>
+            <xs:element type="UserType" name="User"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="xs:string" name="FileName"/>
+            <xs:element type="xs:string" name="FileID"/>
+            <xs:element type="xs:string" name="FileSize"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="InteractionType" use="optional"/>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="FileDumpType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="Version"/>
+            <xs:element type="ConversationType" name="Conversation" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ParticipantLeftType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="UserType" name="User"/>
+            <xs:element type="xs:string" name="DateTime"/>
+            <xs:element type="xs:string" name="DateTimeUTC"/>
+            <xs:element type="xs:string" name="Content"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="xs:string" name="ConversationID"/>
+            <xs:element type="xs:string" name="FileName"/>
+            <xs:element type="xs:string" name="FileID"/>
+            <xs:element type="xs:string" name="FileSize"/>
+            <xs:element type="InviterType" name="Inviter"/>
+            <xs:element type="InviteeType" name="Invitee"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="InteractionType" use="optional"/>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="InviteeType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="LoginName"/>
+            <xs:element type="xs:string" name="FirstName"/>
+            <xs:element type="xs:string" name="LastName"/>
+            <xs:element type="xs:string" name="UUID"/>
+            <xs:element type="xs:string" name="FirmNumber"/>
+            <xs:element type="xs:string" name="AccountNumber"/>
+            <xs:element type="xs:string" name="CompanyName"/>
+            <xs:element type="xs:string" name="EmailAddress"/>
+            <xs:element type="xs:string" name="CorporateEmailAddress"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MessageType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="UserType" name="User" minOccurs="0"/>
+            <xs:element type="xs:string" name="DateTime" minOccurs="0"/>
+            <xs:element type="xs:string" name="DateTimeUTC" minOccurs="0"/>
+            <xs:element type="xs:string" name="Content"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="xs:string" name="ConversationID" minOccurs="0"/>
+            <xs:element type="xs:string" name="FileName"/>
+            <xs:element type="xs:string" name="FileID"/>
+            <xs:element type="xs:string" name="FileSize"/>
+            <xs:element type="InviterType" name="Inviter"/>
+            <xs:element type="InviteeType" name="Invitee"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="InteractionType" use="optional"/>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="AttachmentType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="UserType" name="User"/>
+            <xs:element type="xs:string" name="DateTime"/>
+            <xs:element type="xs:string" name="DateTimeUTC"/>
+            <xs:element type="xs:string" name="Content"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="xs:string" name="ConversationID"/>
+            <xs:element type="xs:string" name="FileName"/>
+            <xs:element type="xs:string" name="FileID"/>
+            <xs:element type="xs:string" name="FileSize"/>
+            <xs:element type="InviterType" name="Inviter"/>
+            <xs:element type="InviteeType" name="Invitee"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="InteractionType" use="optional"/>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="ParticipantEnteredType">
+        <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element type="UserType" name="User"/>
+            <xs:element type="xs:string" name="DateTime"/>
+            <xs:element type="xs:string" name="DateTimeUTC"/>
+            <xs:element type="xs:string" name="Content"/>
+            <xs:element type="xs:string" name="StartTime"/>
+            <xs:element type="xs:string" name="StartTimeUTC"/>
+            <xs:element type="xs:string" name="EndTime"/>
+            <xs:element type="xs:string" name="EndTimeUTC"/>
+            <xs:element type="xs:string" name="ConversationID"/>
+            <xs:element type="xs:string" name="FileName"/>
+            <xs:element type="xs:string" name="FileID"/>
+            <xs:element type="xs:string" name="FileSize"/>
+            <xs:element type="InviterType" name="Inviter"/>
+            <xs:element type="InviteeType" name="Invitee"/>
+        </xs:choice>
+        <xs:attribute type="xs:string" name="InteractionType" use="optional"/>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+</xs:schema>

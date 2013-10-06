@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Data provided by Bloomberg LP. -->
+<FileDump>
+    <Version>MSGXML 1.6</Version>
+    <Disclaimer>
+        <DisclaimerReference>60761</DisclaimerReference>
+        <DisclaimerText>
+            For information purposes only. This is not a confirmation. Trade details are subject to terms and conditions
+            contained in our official confirmation. We may make markets, buy/sell as principal or have a position in
+            financial products herein. An employee may be a director of, and we may perform or solicit investment
+            banking or other services from any company herein. We do not guarantee that this information is accurate,
+            complete or that any returns indicated will be achieved. Price/availability is subject to change. This is
+            not an offer to sell or a solicitation of any offer to buy any financial product. Changes to assumptions may
+            have material impact on returns. For info, please contact your rep.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>64441</DisclaimerReference>
+        <DisclaimerText>
+            Not an offer, recommendation, gen. solicitation or off. confirm of terms. Prepared by Research/Sales/Trading
+            from gen. avail. info believed reliable. No representation of accuracy/completeness is made or that you will
+            achieve returns indicated. Assumption changes may materially impact returns; price/avail. may change w/o
+            notice; past perf. not indicative of future results. GS may have a position in any subject investment. GS
+            PRICING IS PROPRIETARY; YOU AGREE NOT TO DISCLOSE &amp; WE RELY ON THAT AGMT WHEN FURNISHING (FULL TERMS:
+            www.gs.com/disclaimer/pricinginfo). For UK, issued/app. by GS Int&apos;l, auth. and reg. by FSA, but not
+            made avail. to retail client.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>72806</DisclaimerReference>
+        <DisclaimerText>
+            Refer to the attached web link for important legal and regulatory information:
+            http://www.ubs.com/ussalestradingdisclaimer
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>78129</DisclaimerReference>
+        <DisclaimerText>
+            This e-mail is intended for the named addressee only and is confidential and may be privileged. If you are
+            not the intended recipient, please delete and notify the sender by return email. Unauthorized copying,
+            disclosure or distribution is prohibited. Any information herein is based on sources believed to be
+            reliable, but Lloyds TSB Bank plc does not warrant its accuracy or completeness, or accept responsibility
+            for any error or omission. Any terms or prices included are indicative only and subject to change without
+            notice. Any transaction will be subject to the applicable terms and conditions. Lloyds TSB Corporate Markets
+            is a trading name of Lloyds TSB Bank plc.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>112487</DisclaimerReference>
+        <DisclaimerText>
+            Nothing contained in this e-mail constitutes or shall be construed as an offering of financial instruments
+            or as investment advice or recommendations of an investment strategy or whether or not to &quot;Buy&quot;,
+            &quot;Sell&quot;, or &quot;Hold&quot; an
+            investment.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>114306</DisclaimerReference>
+        <DisclaimerText>
+            E-mails/IM&apos;s intended for recipient only. Newedge does not warrant accuracy or completeness and
+            information is subject to change without notice. Communication for information only and not a solicitation,
+            recommendation or offer. E-mails may not be secure, error free or timely and information could be lost,
+            destroyed and incomplete. No representation that e-mails or attachments are free of virus or defects and
+            Newedge accepts no responsibility for any loss or damage. Newedge reserves the right to retain messages. For
+            full disclaimer: www.newedge.com
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>115100</DisclaimerReference>
+        <DisclaimerText>
+            ***RBC CAPITAL MARKETS, LLC Disclaimer*** This communication is provided by RBC Capital Markets, LLC (&quot;Firm&quot;)
+            (member FINRA, NYSE, SIPC) and should not be forwarded or reproduced. It does not constitute an offer,
+            recommendation or a solicitation of a trade, nor is it an official confirmation of terms, nor is it a
+            research report or a product of the Firm&apos;s Research Department, and opinions expressed herein may
+            differ from those expressed by the Research Department. The Firm makes no representation as to the accuracy
+            or completeness of, and undertakes no duty to update, information herein. Clients should consult their own
+            advisors regarding any tax, accounting, or legal matters relating hereto.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>117644</DisclaimerReference>
+        <DisclaimerText>
+            This communication has been prepared by RBS plc, RBS N.V. or affiliated. This material is not within the
+            requirements to promote the independence of research or an offering document. Certain transactions mentioned
+            in this material may give rise to substantial risks and may not be suitable for all investors. RBS may have
+            positions, deal or make markets in these securities or related derivatives. Prices are based on current
+            information and are subject to change. This information neither constitutes an offer, recommendation,
+            solicitation, nor confirmation of terms. RBS makes no representations or warranties to the accuracy or
+            completeness.
+            http://www.rbsm.com/psp/public/pagebuilder.aspx?page=co0150
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>117711</DisclaimerReference>
+        <DisclaimerText>
+            This information is issued by HSBC Securities (USA) Inc or its affiliates and is not an offer or
+            solicitation for the purchase or sale of any financial instrument, or an offer to participate in any trading
+            strategy, or an official confirmation of any transaction. The information is believed to be reliable but we
+            do not warrant its completeness or accuracy. Prices and availability are indicative only as of the stated
+            date and subject to change without notice. This information has not been prepared by our Research Dept. Any
+            views expressed herein may not reflect those of our Research Dept. We may hold a position or act as a market
+            maker in any financial instrument discussed herein.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>120362</DisclaimerReference>
+        <DisclaimerText>
+            Disclaimer available at: http://www.theseaportgroup.com/disclaimer
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>122207</DisclaimerReference>
+        <DisclaimerText>
+            This has been prepared for informational purposes only, is confidential and may not be reproduced. It is not
+            from the Research Department or a research report. It is not an offer, recommendation or solicitation to buy
+            or sell, nor an official confirmation of terms, except to the extent prepared by Sales and Trading and
+            subject to SS 1.71 and 23.605 of the U.S. CEA it is a general solicitation of derivatives business. It is
+            based on information generally publicly available from sources believed reliable. No representation is made
+            to accuracy, completeness or returns. Changes to assumptions may have a material impact on returns detailed.
+            Prices and availability are subject to change without notice.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>123247</DisclaimerReference>
+        <DisclaimerText>
+            THIS IS NOT RESEARCH AND IS FOR INFORMATION ONLY FOR CLIENTS. IT IS PREPARED BY SALES AND TRADING, AND
+            GENERALLY, EXCEPT AS STATED, IS NOT AN OFFER OR SOLICITATION FOR PURCHASE OR SALE OF A FINANCIAL INSTRUMENT,
+            NOR A CONFIRMATION OF TERMS. PRICES AND AVAILABILITY ARE INDICATIVE AND MAY CHANGE WITHOUT NOTICE. WE MAY
+            HOLD A POSITION OR ACT AS MARKET MAKER IN A FINANCIAL INSTRUMENT DISCUSSED HEREIN. PLEASE CONSULT YOUR OWN
+            ADVISORS REGARDING TAX, ACCOUNTING OR LEGAL ASPECTS AND EXECUTE TRANSACTIONS THROUGH A J.P. MORGAN ENTITY IN
+            YOUR JURISDICTION UNLESS LAWS PERMIT OTHERWISE. THIS MATERIAL IS A &quot;SOLICITATION&quot; ONLY AS THAT
+            TERM IS USED WITHIN CFTC RULE 1.71 AND 23.605.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>123436</DisclaimerReference>
+        <DisclaimerText>
+            This communication has been prepared by RBS plc, RBS N.V. or affiliate. It may constitute an invitation to
+            consider a derivatives transaction. It is not within the requirements to promote the independence of
+            research or an offering document and is not an offer, recommendation, nor confirmation of terms. Certain
+            transactions mentioned may give rise to substantial risks and may not be suitable for all investors. RBS may
+            have positions, deal or make markets in these securities or related derivatives. Prices are based on current
+            information and are subject to change. RBS makes no representation or warranties to accuracy or
+            completeness. http://www.rbsm.com/psp/public/pagebuilder.aspx?page=co0150
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>123671</DisclaimerReference>
+        <DisclaimerText>
+            This message has been prepared by a Sales or Trading function of one or more affiliates of Deutsche Bank AG
+            and is not the product of the Research Dept. It is not a research report. This material is for the general
+            information of our clients and is a general solicitation of derivatives business for the purposes of, and to
+            the extent it is subject to, 1.71 &amp; 23.605 of the U.S. CEA. This should not be construed as an offer to
+            sell or the solicitation of an offer to buy any security in any jurisdiction where such an offer or
+            solicitation would be illegal. It does not constitute a recommendation or take into account the investment
+            objectives, financial conditions, or needs of individual clients.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>123920</DisclaimerReference>
+        <DisclaimerText>
+            The content of this communication is not intended for any other person. If you are not the intended
+            recipient please notify the sender immediately, delete this message from your system and do not copy,
+            transfer or disclose this message or its contents to any third party. If you are receiving this message as a
+            customer of Citigroup Global Markets Limited and this communication is Market Commentary. Please go to:
+            https://icg.citi.com/icg/data/documents/MarketCommentaryDisclaimer_emea.pdf
+            We reserve the right to monitor and record all electronic messages whether received or sent by us.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>126290</DisclaimerReference>
+        <DisclaimerText>
+            This message, and any attachments, is for the intended recipient(s) only, may contain information that is
+            privileged, confidential and/or proprietary and subject to important terms and conditions available at
+            http://www.bankofamerica.com/emaildisclaimer. If you are not the intended recipient, please delete this
+            message.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>127879</DisclaimerReference>
+        <DisclaimerText>
+            Jefferies archives and monitors outgoing and incoming messages. The contents of this message, including any
+            attachments, are confidential to the ordinary user of the address to which it was addressed. If you are not
+            the addressee of this message you may not copy, forward, disclose or otherwise use it or any part of it in
+            any form whatsoever. This message may be produced at the request of regulators or in connection with civil
+            litigation. Jefferies accepts no liability for any errors or omissions arising as a result of transmission.
+            Use by other than intended recipients is prohibited; if you received this transmission in error please
+            contact the sender.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>128408</DisclaimerReference>
+        <DisclaimerText>
+            This message is for information purposes only, it is not a recommendation, advice, offer or solicitation to
+            buy or sell a product or service nor an official confirmation of any transaction. It is directed at persons
+            who are professionals and is not intended for retail customer use. Intended for recipient only.
+            This message is subject to the terms at: www.barclays.com/emaildisclaimer. For important disclosures, please
+            see: www.barclays.com/salesandtradingdisclaimer regarding market commentary from Barclays Sales and/or
+            Trading, who are active market participants; and in respect of Barclays Research, including disclosures
+            relating to specific issuers, please see http://publicresearch.barclays.com.
+        </DisclaimerText>
+    </Disclaimer>
+    <Disclaimer>
+        <DisclaimerReference>128702</DisclaimerReference>
+        <DisclaimerText>
+            THE SENDER&apos;S TELEPHONE MAY BE RECORDED FOR REGULATORY REASONS. DO NOT FORWARD THIS MESSAGE TO
+            NON-INSTITUTIONAL CLIENTS. THIS IS PREPARED BY SALES AND TRADING AND IS NOT
+            RESEARCH. THIS IS NOT AN OFFER OR SOLICITATION FOR PURCHASE/SALE OF A FINANCIAL INSTRUMENT, NOR A
+            CONFIRMATION OF TERMS. PRICES AND AVAILABILITY ARE INDICATIVE AND MAY
+            CHANGE. WE MAY HOLD A POSITION OR MAKE MARKETS IN A FINANCIAL INSTRUMENT DISCUSSED HEREIN. CONSULT YOUR
+            ADVISORS REGARDING TAX, ACCOUNTING OR LEGAL ASPECTS. EXECUTE
+            TRANSACTIONS THROUGH A J.P. MORGAN ENTITY IN YOUR JURISDICTION UNLESS OTHERWISE PERMITTED. THIS MATERIAL IS
+            A &quot;SOLICITATION&quot; ONLY AS THAT TERM IS USED WITHIN CFTC RULE 1.71 AND 23.605
+        </DisclaimerText>
+    </Disclaimer>
+</FileDump>

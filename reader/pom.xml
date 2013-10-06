@@ -21,7 +21,11 @@
             <artifactId>commons-net</artifactId>
             <version>${apache.commons.net.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>commons-vfs</groupId>
+            <artifactId>commons-vfs</artifactId>
+            <version>${apache.commons.vfs.version}</version>
+        </dependency>
         <dependency>
             <groupId>fr.pilato.spring</groupId>
             <artifactId>spring-elasticsearch</artifactId>

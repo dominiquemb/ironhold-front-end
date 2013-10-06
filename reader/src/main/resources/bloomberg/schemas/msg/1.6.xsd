@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="FileDump" type="FileDumpType">
+        <xs:annotation>
+            <xs:documentation>Data provided by Bloomberg LP.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="SenderType">
+        <xs:sequence>
+            <xs:element type="UserInfoType" name="UserInfo"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="DeviceType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="UserInfoType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="FirstName"/>
+            <xs:element type="xs:string" name="LastName"/>
+            <xs:element type="xs:string" name="FirmNumber" minOccurs="0"/>
+            <xs:element type="xs:string" name="AccountName"/>
+            <xs:element type="xs:string" name="AccountNumber" minOccurs="0"/>
+            <xs:element type="xs:string" name="BloombergUUID" minOccurs="0"/>
+            <xs:element type="xs:string" name="BloombergEmailAddress"/>
+            <xs:element type="xs:string" name="CorporateEmailAddress"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RecipientType">
+        <xs:sequence>
+            <xs:element type="UserInfoType" name="UserInfo"/>
+            <xs:element type="ForwardedToType" name="ForwardedTo" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="DeliveryType" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="SharedMessengerType">
+        <xs:sequence>
+            <xs:element type="UserInfoType" name="UserInfo"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ForwardedToType">
+        <xs:sequence>
+            <xs:element type="RecipientType" name="Recipient"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="FileDumpType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="Version"/>
+            <xs:element type="MessageType" name="Message" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="OrigSenderType">
+        <xs:sequence>
+            <xs:element type="UserInfoType" name="UserInfo"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MessageType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="MsgID"/>
+            <xs:element type="xs:string" name="MsgTime"/>
+            <xs:element type="xs:string" name="MsgTimeUTC"/>
+            <xs:element type="xs:string" name="MsgLang"/>
+            <xs:element type="xs:string" name="MsgType" minOccurs="0"/>
+            <xs:element type="OrigSenderType" name="OrigSender" minOccurs="0"/>
+            <xs:element type="SharedMessengerType" name="SharedMessenger" minOccurs="0"/>
+            <xs:element type="SenderType" name="Sender"/>
+            <xs:element type="RecipientType" name="Recipient" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element type="xs:string" name="Subject"/>
+            <xs:element type="AttachmentType" name="Attachment" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element type="xs:string" name="MsgBody"/>
+            <xs:element type="xs:string" name="DisclaimerReference" minOccurs="0"/>
+            <xs:element type="xs:string" name="Greeting" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AttachmentType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="Reference" minOccurs="0"/>
+            <xs:element type="xs:string" name="FileName" minOccurs="0"/>
+            <xs:element type="xs:string" name="FileID" minOccurs="0"/>
+            <xs:element type="xs:string" name="FileSize" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
