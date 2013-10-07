@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.message.source.BloombergSource;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
@@ -33,6 +34,7 @@ public class AuditView extends AbstractEmailView {
     public static final String USER = "User";
     private static final String IMAP_HOST = "IMAP Host";
     private static final String IMAP_USER = "IMAP Mailbox";
+    private static final String BLOOMBERG_SOURCE = "Bloomberg Source";
     private final VerticalLayout layout;
 
     public AuditView() {
@@ -59,6 +61,7 @@ public class AuditView extends AbstractEmailView {
         List<MessageSource> messageSources = metaDataIndexService.getSources(client, item.getId());
         loadIMAPSources(messageSources);
         loadPSTSources(messageSources);
+        loadBloombergSources(messageSources);
 
         final Table auditTable = new Table("Audit Log");
         auditTable.setSizeFull();
@@ -185,6 +188,44 @@ public class AuditView extends AbstractEmailView {
                 sourceItem.getItemProperty(HOSTNAME).setValue(imapMessageSource.getHostname());
                 sourceItem.getItemProperty(IMAP_HOST).setValue(imapMessageSource.getProtocol() + "://" + imapMessageSource.getImapSource() + ":" + imapMessageSource.getImapPort());
                 sourceItem.getItemProperty(IMAP_USER).setValue(imapMessageSource.getUsername());
+            }
+        }
+
+
+        sourcesTable.setContainerDataSource(sources);
+        sourcesTable.setHeight("100px");
+
+
+        if (sourceCount > 0) {
+            layout.addComponent(sourcesTable);
+        }
+    }
+
+
+    private void loadBloombergSources(List<MessageSource> messageSources) {
+        final Table sourcesTable = new Table("Message Source");
+        sourcesTable.setSizeFull();
+        sourcesTable.setColumnWidth(TIMESTAMP, 150);
+        sourcesTable.setColumnWidth(HOSTNAME, 60);
+        sourcesTable.setColumnWidth(BLOOMBERG_SOURCE, 100);
+        sourcesTable.setColumnExpandRatio(BLOOMBERG_SOURCE, 1);
+
+        IndexedContainer sources = new IndexedContainer();
+        sources.addContainerProperty(TIMESTAMP, Date.class, "");
+        sources.addContainerProperty(HOSTNAME, String.class, "");
+        sources.addContainerProperty(BLOOMBERG_SOURCE, String.class, "");
+
+
+        int sourceCount = 0;
+
+        for (MessageSource messageSource : messageSources) {
+            if (messageSource instanceof BloombergSource) {
+                BloombergSource bloombergSource = (BloombergSource) messageSource;
+                Item sourceItem = sources.addItem(sourceCount);
+                sourceCount++;
+                sourceItem.getItemProperty(TIMESTAMP).setValue(bloombergSource.getLoadTimestamp());
+                sourceItem.getItemProperty(HOSTNAME).setValue(bloombergSource.getHostname());
+                sourceItem.getItemProperty(BLOOMBERG_SOURCE).setValue(bloombergSource.getDescription());
             }
         }
 

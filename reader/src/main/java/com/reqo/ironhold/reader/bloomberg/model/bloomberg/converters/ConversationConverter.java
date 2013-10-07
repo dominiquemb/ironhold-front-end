@@ -6,12 +6,10 @@ import com.reqo.ironhold.reader.bloomberg.model.ib.Attachment;
 import com.reqo.ironhold.reader.bloomberg.model.ib.Message;
 import com.reqo.ironhold.reader.bloomberg.model.msg.*;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.*;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.*;
 import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
@@ -33,7 +31,7 @@ import java.util.regex.Matcher;
 public class ConversationConverter {
     private static Logger logger = Logger.getLogger(ConversationConverter.class);
 
-    public static MimeMailMessage convert(Conversation conversation, DisclaimerType disclaimer, File attachmentsZip) throws EmailException, IOException, MessagingException {
+    public static MimeMailMessage convert(Conversation conversation, DisclaimerType disclaimer, String attachmentsZip) throws EmailException, IOException, MessagingException {
 
 
         MultiPartEmail email = new MultiPartEmail();
@@ -84,10 +82,9 @@ public class ConversationConverter {
         email.setSubject(String.format("Bloomberg Chat %s - %s", conversation.getStartTime().getContent().get(0), conversation.getEndTime().getContent().get(0)));
 
 
-//        processAttachments(email, message, attachmentsZip);
-        email.setFrom("bloombergchat@bloomberg.com");
+        email.setFrom("bloombergchat@bloomberg.net");
         email.setSentDate(new Date(1000 * Long.parseLong(conversation.getStartTimeUTC().getContent().get(0))));
-        email.addHeader("X-IronHoldType", "bloombergConversation");
+        email.addHeader("X-IronHoldMessageType", MessageTypeEnum.BLOOMBERG_CHAT.name());
         String hostname = java.net.InetAddress.getLocalHost().getHostName();
         email.setHostName(hostname);
         email.buildMimeMessage();
@@ -223,13 +220,13 @@ public class ConversationConverter {
         return firstName + " " + lastName;
     }
 
-    private static InputStream getAttachmentAsStream(File attachmentsZip, String name) throws FileSystemException {
-        String dateSuffix = attachmentsZip.getName().replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz", "");
+    private static InputStream getAttachmentAsStream(String attachmentsZip, String name) throws FileSystemException {
+        String dateSuffix = attachmentsZip.replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz", "");
         FileSystemManager fsManager = VFS.getManager();
-        String pathToFile = "tgz:file://" + attachmentsZip.getAbsolutePath() + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
+        String pathToFile = "tgz:" + attachmentsZip + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
         logger.info("Attempting to resolve " + pathToFile);
-
-        FileObject file = fsManager.resolveFile(pathToFile);
+        FileSystemOptions opts = new FileSystemOptions();
+        FileObject file = fsManager.resolveFile(pathToFile, opts);
         return file.getContent().getInputStream();
     }
 

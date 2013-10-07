@@ -6,13 +6,11 @@ import com.reqo.ironhold.reader.bloomberg.model.msg.Message;
 import com.reqo.ironhold.reader.bloomberg.model.msg.Recipient;
 import com.reqo.ironhold.reader.bloomberg.model.msg.UserInfo;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
+import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.*;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.*;
 import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
@@ -34,7 +32,7 @@ import java.util.regex.Matcher;
 public class MessageConverter {
     private static Logger logger = Logger.getLogger(MessageConverter.class);
 
-    public static MimeMailMessage convert(Message message, DisclaimerType disclaimer, File attachmentsZip) throws EmailException, IOException, MessagingException {
+    public static MimeMailMessage convert(Message message, DisclaimerType disclaimer, String attachmentsZip) throws EmailException, IOException, MessagingException {
 
 
         Email email = containsHtml(message) || message.getAttachment().size() > 0 ? new HtmlEmail() : new MultiPartEmail();
@@ -83,7 +81,7 @@ public class MessageConverter {
 
         processAttachments(email, message, attachmentsZip);
         email.setSentDate(new Date(1000 * Long.parseLong(message.getMsgTimeUTC().getContent().get(0))));
-        email.addHeader("X-IronHoldType", "bloombergMessage");
+        email.addHeader("X-IronHoldMessageType", MessageTypeEnum.BLOOMBERG_MESSAGE.name());
         email.addHeader("X-MsgID", message.getMsgID().getContent().get(0));
         email.addHeader("X-MsgTime", message.getMsgTime().getContent().get(0));
         email.addHeader("X-MsgTimeUTC", message.getMsgTimeUTC().getContent().get(0));
@@ -130,7 +128,7 @@ public class MessageConverter {
         return mimeMailMessage;
     }
 
-    private static void processAttachments(Email email, Message message, File attachmentsZip) throws IOException, EmailException {
+    private static void processAttachments(Email email, Message message, String attachmentsZip) throws IOException, EmailException {
         for (Attachment attachment : message.getAttachment()) {
             if (attachment.getFileName() != null && attachment.getFileName().getContent().size() > 0 && !attachment.getFileName().getContent().get(0).equalsIgnoreCase("alt_body.html")) {
                 String fileName = attachment.getFileName().getContent().get(0);
@@ -141,17 +139,17 @@ public class MessageConverter {
         }
     }
 
-    private static InputStream getAttachmentAsStream(File attachmentsZip, String name) throws FileSystemException {
-        String dateSuffix = attachmentsZip.getName().replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz", "");
+    private static InputStream getAttachmentAsStream(String attachmentsZip, String name) throws FileSystemException {
+        String dateSuffix = attachmentsZip.replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz", "");
         FileSystemManager fsManager = VFS.getManager();
-        String pathToFile = "tgz:file://" + attachmentsZip.getAbsolutePath() + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
+        String pathToFile = "tgz:" + attachmentsZip + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
         logger.info("Attempting to resolve " + pathToFile);
-
-        FileObject file = fsManager.resolveFile(pathToFile);
+        FileSystemOptions opts = new FileSystemOptions();
+        FileObject file = fsManager.resolveFile(pathToFile, opts);
         return file.getContent().getInputStream();
     }
 
-    private static String getHTMLBody(Message message, File attachmentsZip) throws IOException {
+    private static String getHTMLBody(Message message, String attachmentsZip) throws IOException {
         if (message.getAttachment() != null) {
             for (Attachment attachment : message.getAttachment()) {
                 if (attachment.getFileName() != null && attachment.getFileName().getContent().size() > 0 && attachment.getFileName().getContent().get(0).equalsIgnoreCase("alt_body.html")) {
@@ -162,13 +160,13 @@ public class MessageConverter {
         return StringUtils.EMPTY;
     }
 
-    private static String getAttachmentAsString(File attachmentsZip, String name) throws IOException {
-        String dateSuffix = attachmentsZip.getName().replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz", "");
+    private static String getAttachmentAsString(String attachmentsZip, String name) throws IOException {
+        String dateSuffix = attachmentsZip.replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz", "");
         FileSystemManager fsManager = VFS.getManager();
-        String pathToFile = "tgz:file://" + attachmentsZip.getAbsolutePath() + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
+        String pathToFile = "tgz:" + attachmentsZip + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
         logger.info("Attempting to resolve " + pathToFile);
-
-        FileObject file = fsManager.resolveFile(pathToFile);
+        FileSystemOptions opts = new FileSystemOptions();
+        FileObject file = fsManager.resolveFile(pathToFile, opts);
         return StringUtils.join(IOUtils.readLines(file.getContent().getInputStream()), "\n");
     }
 

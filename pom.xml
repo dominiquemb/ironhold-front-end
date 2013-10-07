@@ -150,13 +150,13 @@
         <profile>
             <id>development</id>
             <properties>
-                <data.host>localhost</data.host>
-                <data.port>9090</data.port>
+                <data.host>127.0.0.1</data.host>
+                <data.port>9999</data.port>
                 <data.root>/tmp/dataroot</data.root>
                 <archive.root>/tmp/archiveroot</archive.root>
                 <keystore.root>/tmp/keystore</keystore.root>
                 <backup.root>/tmp/backuproot</backup.root>
-                <elasticsearch.hosts>172.16.144.128:9300</elasticsearch.hosts>
+                <elasticsearch.hosts>localhost:9300</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.replicas>0</elasticsearch.replicas>
                 <elasticsearch.shards>10</elasticsearch.shards>

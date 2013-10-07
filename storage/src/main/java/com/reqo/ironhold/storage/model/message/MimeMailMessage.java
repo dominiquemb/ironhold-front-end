@@ -6,6 +6,7 @@ import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
 import com.reqo.ironhold.storage.model.IHasMessageId;
 import com.reqo.ironhold.storage.model.IPartitioned;
+import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -20,6 +21,7 @@ import org.elasticsearch.common.Base64;
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeMessage;
 import javax.swing.*;
 import javax.swing.text.EditorKit;
@@ -77,6 +79,8 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     private String importance;
 
     private String messageId;
+
+    private MessageTypeEnum messageType;
 
     public MimeMailMessage() {
     }
@@ -304,6 +308,12 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
             this.size = rawContents.getBytes().length;
             if (mimeMessage.getHeader("Importance") != null) {
                 this.importance = mimeMessage.getHeader("Importance")[0];
+            }
+
+            if (mimeMessage.getHeader("X-IronHoldMessageType") == null) {
+                this.messageType = MessageTypeEnum.EMAIL;
+            } else {
+                this.messageType = MessageTypeEnum.valueOf(mimeMessage.getHeader("X-IronHoldMessageType")[0]);
             }
 
             InternetAddress internetAddress;
@@ -742,6 +752,10 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
     public void setImportance(String importance) {
         this.importance = importance;
+    }
+
+    public MessageTypeEnum getMessageType() {
+        return messageType;
     }
 
     @Override

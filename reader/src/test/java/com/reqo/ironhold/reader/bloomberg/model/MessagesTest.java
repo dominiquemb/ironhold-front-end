@@ -1,5 +1,6 @@
 package com.reqo.ironhold.reader.bloomberg.model;
 
+import com.reqo.ironhold.reader.bloomberg.BloombergReader;
 import com.reqo.ironhold.reader.bloomberg.model.bloomberg.converters.MessageConverter;
 import com.reqo.ironhold.reader.bloomberg.model.dscl.DisclaimerType;
 import com.reqo.ironhold.reader.bloomberg.model.dscl.FileDumpType;
@@ -51,7 +52,7 @@ public class MessagesTest {
         for (Message message : messages.getMessage()) {
             MessageConverter mc = new MessageConverter();
 
-            MimeMailMessage mimeMessage = mc.convert(message, getDisclaimer(disclaimers, message), attFile);
+            MimeMailMessage mimeMessage = mc.convert(message, BloombergReader.getDisclaimer(disclaimers, message), attFile.getAbsolutePath());
 
             String emlFilePath = temporaryFolder.getRoot() + File.separator + mimeMessage.getMessageId() + ".eml";
             File emlFile = new File(emlFilePath);
@@ -86,16 +87,5 @@ public class MessagesTest {
         Assert.assertEquals(19, disclaimers.getDisclaimer().size());
     }
 
-    private DisclaimerType getDisclaimer(FileDumpType disclaimers, Message message) {
-        if (message.getDisclaimerReference() != null && message.getDisclaimerReference().getContent() != null && message.getDisclaimerReference().getContent().size() > 0) {
-            String disclaimerReference = message.getDisclaimerReference().getContent().get(0);
-            for (DisclaimerType disclaimer : disclaimers.getDisclaimer()) {
-                if (disclaimer.getDisclaimerReference().equalsIgnoreCase(disclaimerReference)) {
-                    return disclaimer;
-                }
 
-            }
-        }
-        return null;
-    }
 }

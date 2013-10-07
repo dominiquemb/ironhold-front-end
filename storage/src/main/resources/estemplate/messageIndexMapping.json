@@ -59,6 +59,10 @@
                 "type": "string",
                 "format": "keyword"
             },
+            "messageType" : {
+                "type": "string",
+                "format": "keyword"
+            },
             "cc": {
                 "dynamic": "true",
                 "properties": {

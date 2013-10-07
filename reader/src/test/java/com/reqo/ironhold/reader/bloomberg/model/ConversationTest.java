@@ -40,7 +40,7 @@ public class ConversationTest {
         ConversationConverter cc = new ConversationConverter();
 
         for (Conversation conversation : conversations.getConversation()) {
-            MimeMailMessage mimeMessage = cc.convert(conversation, null, attFile);
+            MimeMailMessage mimeMessage = cc.convert(conversation, null, attFile.getAbsolutePath());
 
             String emlFilePath = temporaryFolder.getRoot() + File.separator + mimeMessage.getMessageId() + ".eml";
             File emlFile = new File(emlFilePath);

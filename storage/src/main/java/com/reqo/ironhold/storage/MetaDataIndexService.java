@@ -4,6 +4,7 @@ import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.message.source.BloombergSource;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
@@ -17,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.util.*;
@@ -29,6 +31,7 @@ public class MetaDataIndexService extends AbstractIndexService {
 
     static {
         mappings = new HashMap<>();
+        mappings.put(IndexedObjectType.BLOOMBERG_SOURCE, "metaDataBloombergSourceIndexMapping.json");
         mappings.put(IndexedObjectType.PST_MESSAGE_SOURCE, "metaDataPSTMessageSourceIndexMapping.json");
         mappings.put(IndexedObjectType.IMAP_MESSAGE_SOURCE, "metaDataIMAPMessageSourceIndexMapping.json");
         mappings.put(IndexedObjectType.LOG_MESSAGE, "metaDataLogMessageIndexMapping.json");
@@ -66,13 +69,22 @@ public class MetaDataIndexService extends AbstractIndexService {
                     IndexedObjectType.IMAP_MESSAGE_SOURCE,
                     source.getId(),
                     ((IMAPMessageSource) source).serialize());
-        } else {
+        } else if (source instanceof PSTMessageSource) {
             client.store(
                     indexName,
                     IndexedObjectType.PST_MESSAGE_SOURCE,
                     source.getId(),
                     ((PSTMessageSource) source).serialize());
+        } else if (source instanceof BloombergSource) {
+            client.store(
+                    indexName,
+                    IndexedObjectType.BLOOMBERG_SOURCE,
+                    source.getId(),
+                    ((BloombergSource) source).serialize());
+        } else {
+            throw new NotImplementedException();
         }
+
 
     }
 
@@ -91,6 +103,13 @@ public class MetaDataIndexService extends AbstractIndexService {
         SearchResponse response2 = client.getByField(alias, IndexedObjectType.IMAP_MESSAGE_SOURCE, criteria);
         for (SearchHit hit : response2.getHits()) {
             IMAPMessageSource source = new IMAPMessageSource();
+
+            result.add(source.deserialize(hit.getSourceAsString()));
+        }
+
+        SearchResponse response3 = client.getByField(alias, IndexedObjectType.BLOOMBERG_SOURCE, criteria);
+        for (SearchHit hit : response3.getHits()) {
+            BloombergSource source = new BloombergSource();
 
             result.add(source.deserialize(hit.getSourceAsString()));
         }

@@ -2,7 +2,7 @@ package com.reqo.ironhold.reader.eml;
 
 import org.kohsuke.args4j.Option;
 
-public class ReaderOptions {
+public class IMAPReaderOptions {
 
     @Option(name = "-client", usage = "client name", required = true)
     private String client;

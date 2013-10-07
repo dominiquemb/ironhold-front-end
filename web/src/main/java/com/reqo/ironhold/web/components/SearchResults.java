@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
+import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
@@ -46,6 +47,7 @@ public class SearchResults extends HorizontalLayout {
     private FacetPanel toFacetPanel;
     private FacetPanel toDomainFacetPanel;
     private FacetPanel fileExtFacetPanel;
+    private FacetPanel msgTypeFacetPanel;
     private SearchResults me;
     private MessageSearchBuilder builder;
     private boolean facetsSetup;
@@ -83,6 +85,7 @@ public class SearchResults extends HorizontalLayout {
         toDomainFacetPanel.setVisible(true);
         yearFacetPanel.setVisible(true);
         fileExtFacetPanel.setVisible(true);
+        msgTypeFacetPanel.setVisible(true);
 
         performSearch(messageIndexService, authenticatedUser);
         long finished = System.currentTimeMillis();
@@ -128,7 +131,7 @@ public class SearchResults extends HorizontalLayout {
                             if (results.size() < MAX_RESULTS_TO_BE_FACETED) {
                                 builder.withDateFacet().withFromFacet()
                                         .withFromDomainFacet()
-                                        .withToFacet().withToDomainFacet().withFileExtFacet(); // .withToFacet()
+                                        .withToFacet().withToDomainFacet().withFileExtFacet().withMsgTypeFacet(); // .withToFacet()
                             }
                         }
 
@@ -290,6 +293,67 @@ public class SearchResults extends HorizontalLayout {
             } else {
                 fileExtFacetPanel.setVisible(false);
             }
+
+            if (builder.isMsgTypeFacet()) {
+                msgTypeFacetPanel.setVisible(true);
+                TermsFacet msgTypeFacet = response.getFacets().facet(
+                        MessageSearchBuilder.FACET_MSGTYPE);
+                msgTypeFacetPanel.removeAllComponents();
+                int visibleFacets = 0;
+                for (final TermsFacet.Entry entry : msgTypeFacet.getEntries()) {
+                    if (entry.getTerm().toString().trim().length() != 0) {
+                        final HorizontalLayout hl = new HorizontalLayout();
+                        hl.setWidth("100%");
+
+                        String label = MessageTypeEnum.getByValue(
+                                entry.getTerm().toString()).getLabel();
+                        CheckBox checkBox = new CheckBox(StringUtils.abbreviate(label,
+                                20 - Integer.toString(entry.getCount()).length()));
+                        checkBox.setImmediate(true);
+                        checkBox.addValueChangeListener(new ValueChangeListener() {
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                boolean enabled = (Boolean) event.getProperty().getValue();
+                                try {
+                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+
+                                    if (enabled) {
+                                        builder.withMsgTypeFacetValue(entry.getTerm().toString());
+                                    } else {
+                                        builder.withoutMsgTypeFacetValue(entry
+                                                .getTerm().toString());
+                                    }
+                                    performSearch(messageIndexService, authenticatedUser);
+                                } catch (Exception e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                }
+
+                            }
+                        });
+
+                        hl.addComponent(checkBox);
+
+                        Label countLabel = new Label(String.format("%,d",
+                                entry.getCount()));
+                        hl.addComponent(countLabel);
+                        hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
+
+                        checkBox.setWidth(null);
+                        countLabel.setWidth(null);
+                        hl.setExpandRatio(checkBox, 1.0f);
+
+                        msgTypeFacetPanel.addComponent(hl);
+                        visibleFacets++;
+                    }
+                }
+
+                if (visibleFacets == 0) {
+                    msgTypeFacetPanel.setVisible(false);
+                }
+            } else {
+                msgTypeFacetPanel.setVisible(false);
+            }
+
 
             if (builder.isFromFacet()) {
                 fromFacetPanel.setVisible(true);
@@ -588,6 +652,9 @@ public class SearchResults extends HorizontalLayout {
         fileExtFacetPanel = new FacetPanel("Attachment file type:");
         fileExtFacetPanel.setWidth("200px");
 
+        msgTypeFacetPanel = new FacetPanel("Message type:");
+        msgTypeFacetPanel.setWidth("200px");
+
         leftPane.setSpacing(true);
         leftPane.addComponent(sortOptionsBar);
         leftPane.addComponent(fromFacetPanel);
@@ -596,6 +663,7 @@ public class SearchResults extends HorizontalLayout {
         leftPane.addComponent(toDomainFacetPanel);
         leftPane.addComponent(yearFacetPanel);
         leftPane.addComponent(fileExtFacetPanel);
+        leftPane.addComponent(msgTypeFacetPanel);
 
         leftPane.setExpandRatio(fromFacetPanel, 1);
         leftPane.setExpandRatio(fromDomainFacetPanel, 1);
@@ -603,6 +671,7 @@ public class SearchResults extends HorizontalLayout {
         leftPane.setExpandRatio(toDomainFacetPanel, 1);
         leftPane.setExpandRatio(yearFacetPanel, 1);
         leftPane.setExpandRatio(fileExtFacetPanel, 1);
+        leftPane.setExpandRatio(msgTypeFacetPanel, 1);
 
         leftPane.setWidth(Dimensions.LEFT);
         middlePane.setWidth(Dimensions.MIDDLE);
@@ -618,6 +687,7 @@ public class SearchResults extends HorizontalLayout {
         toFacetPanel.setVisible(false);
         toDomainFacetPanel.setVisible(false);
         fileExtFacetPanel.setVisible(false);
+        msgTypeFacetPanel.setVisible(false);
 
         this.addComponent(leftPane);
         this.addComponent(middlePane);

@@ -65,6 +65,7 @@ public class IndexedMailMessageTest {
                 indexedMailMessage.getSize());
         Assert.assertEquals(yearFormat.format(inputMessage.getMessageDate()), indexedMailMessage.getYear());
         Assert.assertEquals(monthDayFormat.format(inputMessage.getMessageDate()), indexedMailMessage.getMonthDay());
+        Assert.assertEquals(inputMessage.getMessageType().name(), indexedMailMessage.getMessageType());
 
     }
 

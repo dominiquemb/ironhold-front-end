@@ -23,6 +23,7 @@ public class MessageSearchBuilder {
     public static final String FACET_YEAR = "date";
     public static final String FACET_TO_DOMAIN = "to_domain";
     public static final String FACET_FILEEXT = "file_ext";
+    public static final String FACET_MSGTYPE = "msg_type";
 
     public static MessageSearchBuilder newBuilder(SearchRequestBuilder builder) {
         return new MessageSearchBuilder(builder);
@@ -33,6 +34,7 @@ public class MessageSearchBuilder {
     private List<String> toFacetValues = new ArrayList<String>();
     private List<String> toDomainFacetValues = new ArrayList<String>();
     private List<String> fileExtFacetValues = new ArrayList<String>();
+    private List<String> msgTypeFacetValues = new ArrayList<String>();
     private List<String> dateFacetValues = new ArrayList<String>();
 
     private final SearchRequestBuilder builder;
@@ -49,6 +51,7 @@ public class MessageSearchBuilder {
     private boolean toFacet;
     private boolean toDomainFacet;
     private boolean fileExtFacet;
+    private boolean msgTypeFacet;
     private IndexedObjectType indexedObjectType;
 
     private MessageSearchBuilder(SearchRequestBuilder builder) {
@@ -118,6 +121,12 @@ public class MessageSearchBuilder {
         return this;
     }
 
+    public MessageSearchBuilder withMsgTypeFacet() {
+        this.msgTypeFacet = true;
+
+        return this;
+    }
+
     public MessageSearchBuilder withFromFacetValue(String term) {
         this.fromFacetValues.add(term);
         return this;
@@ -168,6 +177,16 @@ public class MessageSearchBuilder {
         return this;
     }
 
+    public MessageSearchBuilder withMsgTypeFacetValue(String term) {
+        this.msgTypeFacetValues.add(term);
+        return this;
+    }
+
+    public MessageSearchBuilder withoutMsgTypeFacetValue(String term) {
+        this.msgTypeFacetValues.remove(term);
+        return this;
+    }
+
     public MessageSearchBuilder withYearFacetValue(String term) {
         this.dateFacetValues.add(term);
         return this;
@@ -192,7 +211,8 @@ public class MessageSearchBuilder {
                     || toFacetValues.size() > 0
                     || toDomainFacetValues.size() > 0
                     || dateFacetValues.size() > 0
-                    || fileExtFacetValues.size() > 0) {
+                    || fileExtFacetValues.size() > 0
+                    || msgTypeFacetValues.size() > 0) {
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
                 if (fromFacetValues.size() > 0) {
                     andFilter.add(FilterBuilders.inFilter(
@@ -228,6 +248,14 @@ public class MessageSearchBuilder {
                             IndexFieldEnum.FILEEXT.getValue(),
                             fileExtFacetValues
                                     .toArray(new String[fileExtFacetValues
+                                            .size()])));
+                }
+
+                if (msgTypeFacetValues.size() > 0) {
+                    andFilter.add(FilterBuilders.inFilter(
+                            IndexFieldEnum.MSGTYPE.getValue(),
+                            msgTypeFacetValues
+                                    .toArray(new String[msgTypeFacetValues
                                             .size()])));
                 }
 
@@ -311,6 +339,11 @@ public class MessageSearchBuilder {
                     IndexFieldEnum.FILEEXT.getValue()), loginUser));
         }
 
+        if (msgTypeFacet) {
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_MSGTYPE).field(
+                    IndexFieldEnum.MSGTYPE.getValue()), loginUser));
+        }
+
         return builder;
     }
 
@@ -347,6 +380,7 @@ public class MessageSearchBuilder {
         this.toDomainFacetValues = oldBuilder.toDomainFacetValues;
         this.dateFacetValues = oldBuilder.dateFacetValues;
         this.fileExtFacetValues = oldBuilder.fileExtFacetValues;
+        this.msgTypeFacetValues = oldBuilder.msgTypeFacetValues;
 
         return this;
     }
@@ -397,5 +431,13 @@ public class MessageSearchBuilder {
 
     public void setFileExtFacet(boolean fileExtFacet) {
         this.fileExtFacet = fileExtFacet;
+    }
+
+    public boolean isMsgTypeFacet() {
+        return msgTypeFacet;
+    }
+
+    public void setMsgTypeFacet(boolean msgTypeFacet) {
+        this.msgTypeFacet = msgTypeFacet;
     }
 }

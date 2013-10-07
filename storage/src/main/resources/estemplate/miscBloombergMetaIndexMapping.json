@@ -1,0 +1,83 @@
+{
+    "bloombergMeta": {
+        "properties": {
+            "size": {
+                "type": "long"
+            },
+            "started": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "finished": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messages": {
+                "type": "long"
+            },
+            "duplicates": {
+                "type": "long"
+            },
+            "failures": {
+                "type": "long"
+            },
+            "maxSize": {
+                "type": "long"
+            },
+            "compressedMaxSize": {
+                "type": "long"
+            },
+            "messagesWithAttachments": {
+                "type": "long"
+            },
+            "messagesWithoutAttachments": {
+                "type": "long"
+            },
+            "compressedAverageSize": {
+                "type": "double"
+            },
+            "averageSize": {
+                "type": "double"
+            },
+            "medianSize": {
+                "type": "double"
+            },
+            "medianCompressedSize": {
+                "type": "double"
+            },
+            "source": {
+                "dynamic": "true",
+                "properties": {
+                    "loadTimestamp": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                    },
+                    "messageId": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "ftpHostname": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "username": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "port": {
+                        "type": "integer",
+                        "analyzer": "keyword"
+                    },
+                    "date": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    },
+                    "hostname": {
+                        "type": "string",
+                        "analyzer": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}

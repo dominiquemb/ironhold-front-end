@@ -46,6 +46,7 @@ public class IndexedMailMessage implements IPartitioned {
     private String importance;
     private IndexedAttachment[] attachments;
     private String[] sources;
+    private String messageType;
 
 
     @JsonIgnore
@@ -82,7 +83,7 @@ public class IndexedMailMessage implements IPartitioned {
 
         size = imapMailMessage.getSize();
         importance = imapMailMessage.getImportance();
-
+        messageType = imapMailMessage.getMessageType().name();
 
         if (imapMailMessage.getBodyHTML().trim().length() != 0) {
             Document html = Jsoup.parse(imapMailMessage.getBodyHTML());
@@ -258,6 +259,15 @@ public class IndexedMailMessage implements IPartitioned {
 
     public void setImportance(String importance) {
         this.importance = importance;
+
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 
     @Override

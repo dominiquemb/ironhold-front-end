@@ -238,7 +238,7 @@ public class IMAPReader {
 
     // Main Function for The readEmail Class
     public static void main(String args[]) {
-        ReaderOptions bean = new ReaderOptions();
+        IMAPReaderOptions bean = new IMAPReaderOptions();
         CmdLineParser parser = new CmdLineParser(bean);
         try {
             parser.parseArgument(args);
@@ -390,7 +390,6 @@ public class IMAPReader {
     }
 
     private class IndexCommandListener implements ProtocolCommandListener {
-        private final IMAPMessageSource source;
         private final IMAPBatchMeta metaData;
         private final boolean encrypt;
         private String currentCommand;
@@ -404,15 +403,16 @@ public class IMAPReader {
         private Set<String> toBeDeleted;
 
         public IndexCommandListener(boolean encrypt) {
-            source = new IMAPMessageSource();
+            this.encrypt = encrypt;
+            this.folders = new HashSet<>();
+            this.toBeDeleted = new HashSet<>();
+
+            IMAPMessageSource source = new IMAPMessageSource();
             source.setImapPort(port);
             source.setUsername(username);
             source.setImapSource(hostname);
             source.setImapPort(port);
             source.setProtocol(protocol);
-            this.encrypt = encrypt;
-            this.folders = new HashSet<>();
-            this.toBeDeleted = new HashSet<>();
 
             metaData = new IMAPBatchMeta(source, new Date());
         }
@@ -481,12 +481,21 @@ public class IMAPReader {
                         mailMessage.loadMimeMessageFromSource(rawMessage);
 
                         if (!testMode) {
+                            messageId = mailMessage.getMessageId();
+
+                            IMAPMessageSource source = new IMAPMessageSource();
+                            source.setImapPort(port);
+                            source.setUsername(username);
+                            source.setImapSource(hostname);
+                            source.setImapPort(port);
+                            source.setProtocol(protocol);
+
 
                             source.setLoadTimestamp(new Date());
                             source.setPartition(mailMessage.getPartition());
                             source.setFolder(indexCommandListener.getCurrentFolder());
+                            source.setMessageId(messageId);
 
-                            messageId = mailMessage.getMessageId();
 
                             if (mimeMailMessageStorageService.exists(client, mailMessage.getPartition(), mailMessage.getSubPartition(), messageId)) {
                                 logger.warn("Found duplicate " + messageId);

@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.model.metadata.BloombergMeta;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
@@ -31,6 +32,7 @@ public class MiscIndexService extends AbstractIndexService {
         mappings = new HashMap<>();
         mappings.put(IndexedObjectType.PST_FILE_META, "miscPSTFileMetaIndexMapping.json");
         mappings.put(IndexedObjectType.IMAP_BATCH_META, "miscIMAPBatchMetaIndexMapping.json");
+        mappings.put(IndexedObjectType.BLOOMBERG_META, "miscBloombergMetaIndexMapping.json");
         mappings.put(IndexedObjectType.LOGIN_USER, "metaDataLoginUserIndexMapping.json");
     }
 
@@ -65,6 +67,20 @@ public class MiscIndexService extends AbstractIndexService {
                 meta.serialize());
 
     }
+
+    public void store(String indexPrefix, BloombergMeta meta) throws Exception {
+        String alias = getIndexAlias(indexPrefix);
+        String indexName = getIndexName(alias, PARTITION);
+
+        createIndexIfMissing(indexPrefix, PARTITION);
+
+        client.store(
+                indexName,
+                IndexedObjectType.BLOOMBERG_META,
+                meta.serialize());
+
+    }
+
 
     public PSTFileMeta findExisting(String indexPrefix, PSTFileMeta meta) throws Exception {
         createIndexIfMissing(indexPrefix, PARTITION);

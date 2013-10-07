@@ -1,0 +1,34 @@
+{
+    "bloombergSource": {
+        "properties": {
+            "loadTimestamp": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "messageId": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "ftpHostname": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "username": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "port": {
+                "type": "integer",
+                "analyzer": "keyword"
+            },
+            "date": {
+                "type": "string",
+                "analyzer": "keyword"
+            },
+            "hostname": {
+                "type": "string",
+                "analyzer": "keyword"
+            }
+        }
+    }
+}

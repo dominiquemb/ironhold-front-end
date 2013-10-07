@@ -94,7 +94,7 @@ public class MessageIndexService extends AbstractIndexService {
     public SearchResponse search(MessageSearchBuilder builder, LoginUser loginUser) {
         try {
             SearchRequestBuilder search = builder.build(loginUser);
-            logger.debug(search.toString());
+            logger.info(search.toString());
             SearchResponse response = search.execute().actionGet();
             return response;
         } catch (Exception e) {

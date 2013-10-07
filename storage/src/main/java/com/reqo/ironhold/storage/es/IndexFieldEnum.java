@@ -10,7 +10,7 @@ public enum IndexFieldEnum {
             "BCC", "bcc.address"), BCC_DOMAIN("BCC Domain", "bcc.domain"), SIZE(
             "Size", "size"), BODY("Body", "body"), FILENAME("Filename",
             "attachments.fileName"), FILEEXT("File Ext", "attachments.fileExt"), ATTACHMENT(
-            "Attachment", "attachments.body"), SCORE("Score", "_score"), IMPORTANCE("Importance", "importance");
+            "Attachment", "attachments.body"), SCORE("Score", "_score"), IMPORTANCE("Importance", "importance"), MSGTYPE("Message Type", "messageType");
 
     private final String value;
     private final String label;
