@@ -10,6 +10,7 @@ import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.*;
 import org.apache.commons.vfs.*;
+import org.apache.commons.vfs.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
@@ -226,6 +227,7 @@ public class ConversationConverter {
         String pathToFile = "tgz:" + attachmentsZip + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
         logger.info("Attempting to resolve " + pathToFile);
         FileSystemOptions opts = new FileSystemOptions();
+        FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
         FileObject file = fsManager.resolveFile(pathToFile, opts);
         return file.getContent().getInputStream();
     }

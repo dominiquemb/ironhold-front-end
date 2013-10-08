@@ -23,6 +23,7 @@ import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs.*;
+import org.apache.commons.vfs.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -135,6 +136,7 @@ public class BloombergReader {
         FileSystemOptions opts = new FileSystemOptions();
         FileSystemManager fsManager = VFS.getManager();
         String subdirPath = subdir == null ? "" : (subdir + "/");
+        FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
         FileObject path = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + manifest, opts);
 
         fs = path.getFileSystem();

@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.*;
 import org.apache.commons.vfs.*;
+import org.apache.commons.vfs.provider.ftp.FtpFileSystemConfigBuilder;
 import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
@@ -145,6 +146,7 @@ public class MessageConverter {
         String pathToFile = "tgz:" + attachmentsZip + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
         logger.info("Attempting to resolve " + pathToFile);
         FileSystemOptions opts = new FileSystemOptions();
+        FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
         FileObject file = fsManager.resolveFile(pathToFile, opts);
         return file.getContent().getInputStream();
     }
@@ -166,6 +168,7 @@ public class MessageConverter {
         String pathToFile = "tgz:" + attachmentsZip + "!/bloomberg_attachments_" + dateSuffix + "/" + name;
         logger.info("Attempting to resolve " + pathToFile);
         FileSystemOptions opts = new FileSystemOptions();
+        FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
         FileObject file = fsManager.resolveFile(pathToFile, opts);
         return StringUtils.join(IOUtils.readLines(file.getContent().getInputStream()), "\n");
     }

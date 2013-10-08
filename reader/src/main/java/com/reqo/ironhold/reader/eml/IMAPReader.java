@@ -590,7 +590,8 @@ public class IMAPReader {
                                 !"Calendar".equalsIgnoreCase(folder) &&
                                 !"Drafts".equalsIgnoreCase(folder) &&
                                 !"Tasks".equalsIgnoreCase(folder) &&
-                                !"\"Sent Items\"".equalsIgnoreCase(folder)) {
+                                !"\"Sent Items\"".equalsIgnoreCase(folder) &&
+                                !folder.startsWith("Sync Issues/")) {
                             toBeDeleted.add(folder);
                         }
                     }
