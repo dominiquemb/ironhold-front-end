@@ -24,6 +24,20 @@ public class BloombergReaderOptions {
     @Option(name = "-encrypt", usage = "encrypt data", required = false)
     private boolean encrypt;
 
+    @Option(name = "-subdir", usage = "subdirectory", required = false)
+    private String subdir;
+
+    @Option(name = "-manifest", usage = "manifest file", required = true)
+    private String manifest;
+
+    public String getManifest() {
+        return manifest;
+    }
+
+    public String getSubdir() {
+        return subdir;
+    }
+
 
     public boolean isEncrypt() {
         return encrypt;

@@ -294,6 +294,7 @@ public class SearchResults extends HorizontalLayout {
                 fileExtFacetPanel.setVisible(false);
             }
 
+
             if (builder.isMsgTypeFacet()) {
                 msgTypeFacetPanel.setVisible(true);
                 TermsFacet msgTypeFacet = response.getFacets().facet(

@@ -7,6 +7,7 @@ import com.reqo.ironhold.reader.bloomberg.model.dscl.FileDumpType;
 import com.reqo.ironhold.reader.bloomberg.model.ib.Conversation;
 import com.reqo.ironhold.reader.bloomberg.model.msg.FileDump;
 import com.reqo.ironhold.reader.bloomberg.model.msg.Message;
+import com.reqo.ironhold.reader.notification.EmailNotification;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
@@ -65,6 +66,8 @@ public class BloombergReader {
     private int port;
     private String username;
     private String password;
+    private String subdir;
+    private String manifest;
 
     private BloombergSource source;
     private BloombergMeta metaData;
@@ -94,16 +97,33 @@ public class BloombergReader {
             reader.setPassword(bean.getPassword());
             reader.setClient(bean.getClient());
             reader.setEncrypt(bean.isEncrypt());
+            reader.setManifest(bean.getManifest());
+            reader.setSubdir(bean.getSubdir());
 
             long started = System.currentTimeMillis();
             int number = reader.process();
             long finished = System.currentTimeMillis();
 
 
+            try {
+                EmailNotification.sendSystemNotification("Finished processing bloomberg files for " + bean.getClient(),
+                        String.format("Processed %d messages in %d ms from ftp://%s@%s:%d/%s%s", number, (finished - started), bean.getUsername(), bean.getHostname(), bean.getPort(), bean.getSubdir() == null ? "" : (bean.getSubdir() + "/"), bean.getManifest()));
+            } catch (Exception ex) {
+                logger.warn("Failed to send notification", ex);
+            }
+
             logger.info("Processed " + number
                     + " messages in " + (finished - started) + "ms");
         } catch (Exception e) {
             logger.error("Critical error detected, exiting", e);
+
+            try {
+                EmailNotification.sendSystemNotification("Failed to process bloomberg files for " + bean.getClient(),
+                        String.format("From ftp://%s@%s:%d/%s%s\n%s", bean.getUsername(), bean.getHostname(), bean.getPort(), bean.getSubdir() == null ? "" : (bean.getSubdir() + "/"), bean.getManifest(), e.getMessage()));
+            } catch (Exception ex) {
+                logger.warn("Failed to send notification", ex);
+            }
+
             System.exit(1);
         }
 
@@ -114,7 +134,8 @@ public class BloombergReader {
         FileSystem fs = null;
         FileSystemOptions opts = new FileSystemOptions();
         FileSystemManager fsManager = VFS.getManager();
-        FileObject path = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname +  ":" + port + "/daily_manifest_current.txt", opts);
+        String subdirPath = subdir == null ? "" : (subdir + "/");
+        FileObject path = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + manifest, opts);
 
         fs = path.getFileSystem();
 
@@ -133,19 +154,19 @@ public class BloombergReader {
         for (String line : lines.split("\n")) {
             logger.info(line);
             if (line.contains("msg")) {
-                msgFileName = line.replace("\r","");
+                msgFileName = line.replace("\r", "");
             } else if (line.contains("dscl")) {
-                dsclFileName = line.replace("\r","");
+                dsclFileName = line.replace("\r", "");
             } else if (line.contains("ib")) {
-                ibFileName = line.replace("\r","");
+                ibFileName = line.replace("\r", "");
             } else if (line.contains("att")) {
                 this.dateSuffix = line.replaceAll(".*\\.att\\.", "").replaceAll("\\.tar\\.gz\r", "");
-                attFileName = line.replace("\r","");
+                attFileName = line.replace("\r", "");
             }
         }
 
-        FileObject dsclFile = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname +  ":" + port + "/" + dsclFileName, opts);
-        FileObject msgFile = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname +  ":" + port + "/" + msgFileName, opts);
+        FileObject dsclFile = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + dsclFileName, opts);
+        FileObject msgFile = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + msgFileName, opts);
 
         JAXBContext msgJaxbContext = JAXBContext.newInstance(FileDump.class);
         JAXBContext dsclJaxbContext = JAXBContext.newInstance(FileDumpType.class);
@@ -159,10 +180,10 @@ public class BloombergReader {
 
         MessageConverter mc = new MessageConverter();
 
-        int count=0;
+        int count = 0;
         for (Message message : messages.getMessage()) {
 
-            MimeMailMessage mimeMessage = mc.convert(message, getDisclaimer(disclaimers, message), "ftp://" + username + ":" + password + "@" + hostname +  ":" + port + "/" + attFileName);
+            MimeMailMessage mimeMessage = mc.convert(message, getDisclaimer(disclaimers, message), "ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + attFileName);
             store(mimeMessage);
 
             count++;
@@ -170,17 +191,16 @@ public class BloombergReader {
         }
 
 
-
         JAXBContext jaxbContext = JAXBContext.newInstance(com.reqo.ironhold.reader.bloomberg.model.ib.FileDump.class);
 
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        FileObject ibFile = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + ibFileName, opts);
+        FileObject ibFile = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + ibFileName, opts);
 
         com.reqo.ironhold.reader.bloomberg.model.ib.FileDump conversations = (com.reqo.ironhold.reader.bloomberg.model.ib.FileDump) jaxbUnmarshaller.unmarshal(ibFile.getContent().getInputStream());
         ConversationConverter cc = new ConversationConverter();
 
         for (Conversation conversation : conversations.getConversation()) {
-            MimeMailMessage mimeMessage = cc.convert(conversation, null, "ftp://" + username + ":" + password + "@" + hostname +  ":" + port + "/" + attFileName);
+            MimeMailMessage mimeMessage = cc.convert(conversation, null, "ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + attFileName);
             store(mimeMessage);
             count++;
             logger.info("Processed conversation " + count);
@@ -308,4 +328,19 @@ public class BloombergReader {
         this.encrypt = encrypt;
     }
 
+    public String getSubdir() {
+        return subdir;
+    }
+
+    public void setSubdir(String subdir) {
+        this.subdir = subdir;
+    }
+
+    public String getManifest() {
+        return manifest;
+    }
+
+    public void setManifest(String manifest) {
+        this.manifest = manifest;
+    }
 }
