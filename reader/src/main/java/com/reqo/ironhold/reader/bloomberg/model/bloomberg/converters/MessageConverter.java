@@ -80,7 +80,9 @@ public class MessageConverter {
 
         }
 
-        processAttachments(email, message, attachmentsZip);
+        if (attachmentsZip != null) {
+            processAttachments(email, message, attachmentsZip);
+        }
         email.setSentDate(new Date(1000 * Long.parseLong(message.getMsgTimeUTC().getContent().get(0))));
         email.addHeader("X-IronHoldMessageType", MessageTypeEnum.BLOOMBERG_MESSAGE.name());
         email.addHeader("X-MsgID", message.getMsgID().getContent().get(0));
@@ -130,12 +132,14 @@ public class MessageConverter {
     }
 
     private static void processAttachments(Email email, Message message, String attachmentsZip) throws IOException, EmailException {
-        for (Attachment attachment : message.getAttachment()) {
-            if (attachment.getFileName() != null && attachment.getFileName().getContent().size() > 0 && !attachment.getFileName().getContent().get(0).equalsIgnoreCase("alt_body.html")) {
-                String fileName = attachment.getFileName().getContent().get(0);
+        if (attachmentsZip != null) {
+            for (Attachment attachment : message.getAttachment()) {
+                if (attachment.getFileName() != null && attachment.getFileName().getContent().size() > 0 && !attachment.getFileName().getContent().get(0).equalsIgnoreCase("alt_body.html")) {
+                    String fileName = attachment.getFileName().getContent().get(0);
 
-                InputStream contents = getAttachmentAsStream(attachmentsZip, attachment.getFileID().getContent().get(0));
-                ((HtmlEmail) email).attach(new ByteArrayDataSource(contents, "application/octet-stream"), fileName, fileName, EmailAttachment.ATTACHMENT);
+                    InputStream contents = getAttachmentAsStream(attachmentsZip, attachment.getFileID().getContent().get(0));
+                    ((HtmlEmail) email).attach(new ByteArrayDataSource(contents, "application/octet-stream"), fileName, fileName, EmailAttachment.ATTACHMENT);
+                }
             }
         }
     }

@@ -187,7 +187,8 @@ public class BloombergReader {
         int count = 0;
         for (Message message : messages.getMessage()) {
 
-            MimeMailMessage mimeMessage = mc.convert(message, getDisclaimer(disclaimers, message), "ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + attFileName);
+            String attFilePath = attFileName == null ? null : "ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + attFileName;
+            MimeMailMessage mimeMessage = mc.convert(message, getDisclaimer(disclaimers, message), attFilePath);
             store(mimeMessage);
 
             count++;
@@ -204,7 +205,8 @@ public class BloombergReader {
         ConversationConverter cc = new ConversationConverter();
 
         for (Conversation conversation : conversations.getConversation()) {
-            MimeMailMessage mimeMessage = cc.convert(conversation, null, "ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + attFileName);
+            String attFilePath = attFileName == null ? null : "ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + attFileName;
+            MimeMailMessage mimeMessage = cc.convert(conversation, null, attFilePath);
             store(mimeMessage);
             count++;
             logger.info("Processed conversation " + count);
