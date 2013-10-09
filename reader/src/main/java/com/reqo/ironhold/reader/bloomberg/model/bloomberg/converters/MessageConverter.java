@@ -147,6 +147,7 @@ public class MessageConverter {
         logger.info("Attempting to resolve " + pathToFile);
         FileSystemOptions opts = new FileSystemOptions();
         FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
+        FtpFileSystemConfigBuilder.getInstance().setDataTimeout(opts, null);
         FileObject file = fsManager.resolveFile(pathToFile, opts);
         return file.getContent().getInputStream();
     }
@@ -169,6 +170,7 @@ public class MessageConverter {
         logger.info("Attempting to resolve " + pathToFile);
         FileSystemOptions opts = new FileSystemOptions();
         FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
+        FtpFileSystemConfigBuilder.getInstance().setDataTimeout(opts, null);
         FileObject file = fsManager.resolveFile(pathToFile, opts);
         return StringUtils.join(IOUtils.readLines(file.getContent().getInputStream()), "\n");
     }

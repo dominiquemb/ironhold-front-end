@@ -134,9 +134,11 @@ public class BloombergReader {
         metaData = new BloombergMeta(source, new Date());
         FileSystem fs = null;
         FileSystemOptions opts = new FileSystemOptions();
+
         FileSystemManager fsManager = VFS.getManager();
         String subdirPath = subdir == null ? "" : (subdir + "/");
         FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
+        FtpFileSystemConfigBuilder.getInstance().setDataTimeout(opts, null);
         FileObject path = fsManager.resolveFile("ftp://" + username + ":" + password + "@" + hostname + ":" + port + "/" + subdirPath + manifest, opts);
 
         fs = path.getFileSystem();

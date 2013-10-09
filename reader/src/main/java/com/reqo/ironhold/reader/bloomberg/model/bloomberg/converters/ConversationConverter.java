@@ -228,6 +228,7 @@ public class ConversationConverter {
         logger.info("Attempting to resolve " + pathToFile);
         FileSystemOptions opts = new FileSystemOptions();
         FtpFileSystemConfigBuilder.getInstance().setPassiveMode(opts, true);
+        FtpFileSystemConfigBuilder.getInstance().setDataTimeout(opts, null);
         FileObject file = fsManager.resolveFile(pathToFile, opts);
         return file.getContent().getInputStream();
     }

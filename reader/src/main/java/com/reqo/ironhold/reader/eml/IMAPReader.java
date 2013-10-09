@@ -586,6 +586,7 @@ public class IMAPReader {
                                 !"Notes".equalsIgnoreCase(folder) &&
                                 !"Outbox".equalsIgnoreCase(folder) &&
                                 !"\"RSS Subscriptions\"".equalsIgnoreCase(folder) &&
+                                !"\"RSS Feeds\"".equalsIgnoreCase(folder) &&
                                 !"\"Junk Email\"".equalsIgnoreCase(folder) &&
                                 !"Calendar".equalsIgnoreCase(folder) &&
                                 !"Drafts".equalsIgnoreCase(folder) &&
