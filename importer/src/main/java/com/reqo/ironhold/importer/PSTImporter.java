@@ -163,7 +163,7 @@ public class PSTImporter {
                 try {
 
                     messageId = message.getInternetMessageId();
-                    logger.info("Starting to work on " + messageId);
+                    logger.info("Starting to work on [" + messageId.trim() +"]");
                     if (!this.getIgnoreSet().contains(messageId.trim())) {
                         MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 
@@ -315,7 +315,7 @@ public class PSTImporter {
                 String ignoreList = FileUtils.readFileToString(new File(ignoreListFile));
                 for (String ignoreId : ignoreList.split("\n")) {
                     ignoreSet.add(ignoreId.trim());
-                    logger.info("Ignoring " + ignoreId + "");
+                    logger.info("Ignoring [" + ignoreId.trim() + "]");
                 }
             } catch (Exception e) {
                 logger.warn("Failed to fully process ignore file " + ignoreListFile, e);
