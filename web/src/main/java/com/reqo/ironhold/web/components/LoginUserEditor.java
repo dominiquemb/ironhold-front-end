@@ -290,7 +290,7 @@ public class LoginUserEditor extends Panel {
             Collections.sort(sources, new Comparator<PSTFileMeta>() {
                 @Override
                 public int compare(PSTFileMeta pstFileMeta, PSTFileMeta pstFileMeta2) {
-                    return pstFileMeta.getPstFileName().compareTo(pstFileMeta2.getPstFileName());
+                    return pstFileMeta.getPstFileName().toLowerCase().compareTo(pstFileMeta2.getPstFileName().toLowerCase());
                 }
             });
             start += sources.size();
