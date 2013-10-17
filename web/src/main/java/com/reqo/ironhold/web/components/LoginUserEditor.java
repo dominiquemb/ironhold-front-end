@@ -287,14 +287,22 @@ public class LoginUserEditor extends Panel {
         List<PSTFileMeta> sources;
         do {
             sources = miscIndexService.getPSTFileMetas(client, start, limit);
+            Collections.sort(sources, new Comparator<PSTFileMeta>() {
+                @Override
+                public int compare(PSTFileMeta pstFileMeta, PSTFileMeta pstFileMeta2) {
+                    return pstFileMeta.getPstFileName().compareTo(pstFileMeta2.getPstFileName());
+                }
+            });
             start += sources.size();
             for (PSTFileMeta source : sources) {
-                pstSources.addItem(source.getId());
+                if (source.isCompleted()) {
+                    pstSources.addItem(source.getId());
 
-                pstSources.setItemCaption(source.getId(), FilenameUtils.getBaseName(source.getPstFileName()));
+                    pstSources.setItemCaption(source.getId(), FilenameUtils.getBaseName(source.getPstFileName()));
 
-                if (loginUser != null && loginUser.hasSource(source.getId())) {
-                    pstSources.select(source.getId());
+                    if (loginUser != null && loginUser.hasSource(source.getId())) {
+                        pstSources.select(source.getId());
+                    }
                 }
             }
         } while (sources.size() == limit - 1);
