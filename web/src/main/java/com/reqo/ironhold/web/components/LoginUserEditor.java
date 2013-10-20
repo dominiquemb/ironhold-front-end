@@ -283,7 +283,7 @@ public class LoginUserEditor extends Panel {
         pstSources.removeAllItems();
 
         int start = 0;
-        int limit = 100;
+        int limit = 1000;
         List<PSTFileMeta> sources;
         do {
             sources = miscIndexService.getPSTFileMetas(client, start, limit);
