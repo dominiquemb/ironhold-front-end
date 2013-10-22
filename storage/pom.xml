@@ -82,6 +82,12 @@
         </dependency>
 
         <!-- test dependencies -->
+        <dependency>
+            <groupId>org.fluttercode.datafactory</groupId>
+            <artifactId>datafactory</artifactId>
+            <version>${datafactory.version}</version>
+            <scope>test</scope>
+        </dependency>
 
 
         <dependency>
