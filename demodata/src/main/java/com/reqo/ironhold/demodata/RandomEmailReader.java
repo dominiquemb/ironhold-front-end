@@ -42,11 +42,11 @@ public class RandomEmailReader {
     private static Logger logger = Logger.getLogger(RandomEmailReader.class);
 
 
-    public void process(String client, int number) throws Exception {
+    public void process(String client, int number, int sleep, int interval) throws Exception {
         for (int i = 0; i < number; i++) {
-            if (i % 1000 == 0) {
+            if (i % interval == 0) {
                 logger.info("Generated " + i + " messages");
-                Thread.sleep(5000);
+                Thread.sleep(sleep);
             }
             MimeMailMessage mailMessage = new MimeMailMessage();
             mailMessage.loadMimeMessageFromSource(randomEmailGenerator.generate());
@@ -95,7 +95,7 @@ public class RandomEmailReader {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("demodataContext.xml");
         RandomEmailReader randomEmailReader = context.getBean(RandomEmailReader.class);
-        randomEmailReader.process(bean.getClient(), bean.getNumber());
+        randomEmailReader.process(bean.getClient(), bean.getNumber(), bean.getSleep(), bean.getInterval());
 
 
     }

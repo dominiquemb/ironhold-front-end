@@ -9,6 +9,11 @@ public class Options {
     @Option(name = "-number", usage = "number of messages to generate", required = true)
     private int number;
 
+    @Option(name = "-sleep", usage = "number of milliseconds to sleep between batches", required = true)
+    private int sleep;
+
+    @Option(name = "-interval", usage = "size of batch", required = true)
+    private int interval;
 
 
 
@@ -21,5 +26,11 @@ public class Options {
 		return number;
 	}
 
+    public int getSleep() {
+        return sleep;
+    }
 
+    public int getInterval() {
+        return interval;
+    }
 }
