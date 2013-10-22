@@ -9,6 +9,7 @@ import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
+import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,13 @@ public class RandomEmailReader {
     public RandomEmailReader() {
 
     }
+    private static Logger logger = Logger.getLogger(RandomEmailReader.class);
+
 
     public void process(String client, int number) throws Exception {
         for (int i = 0; i < number; i++) {
             if (number % 1000 == 0) {
+                logger.info("Generated " + i + " messages");
                 Thread.sleep(5000);
             }
             MimeMailMessage mailMessage = new MimeMailMessage();
