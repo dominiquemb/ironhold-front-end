@@ -39,6 +39,7 @@ public class RandomEmailReader {
     public RandomEmailReader() {
 
     }
+
     private static Logger logger = Logger.getLogger(RandomEmailReader.class);
 
 
@@ -63,12 +64,12 @@ public class RandomEmailReader {
 
             mimeMailMessageStorageService.store(client, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId(), mailMessage.getRawContents(), CheckSumHelper.getCheckSum(mailMessage.getRawContents().getBytes()), true);
 
-            LogMessage logMessage = new LogMessage(LogLevel.Success,
-                    mailMessage.getMessageId(),
+            /*  LogMessage logMessage = new LogMessage(LogLevel.Success,
+            mailMessage.getMessageId(),
                     "Stored journaled message from " + source.getProtocol()
                             + "://" + source.getImapSource() + ":"
                             + source.getImapPort());
-            metaDataIndexService.store(client, logMessage);
+            metaDataIndexService.store(client, logMessage);*/
 
             IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mailMessage, true);
             messageIndexService.store(client, indexedMailMessage);
