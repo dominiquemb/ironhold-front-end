@@ -44,7 +44,7 @@ public class RandomEmailReader {
 
     public void process(String client, int number) throws Exception {
         for (int i = 0; i < number; i++) {
-            if (number % 1000 == 0) {
+            if (i % 1000 == 0) {
                 logger.info("Generated " + i + " messages");
                 Thread.sleep(5000);
             }
