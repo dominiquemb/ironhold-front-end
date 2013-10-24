@@ -20,8 +20,10 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.OrFilterBuilder;
@@ -49,8 +51,16 @@ public class IndexClient {
     private String[] esHosts;
     private int esPort;
     private String nodeName;
+    private String restHost;
+    private int restPort;
+    private boolean joinCluster;
 
     public IndexClient(String nodeName) throws Exception {
+        this(nodeName, true);
+    }
+
+    public IndexClient(String nodeName, boolean joinCluster) throws Exception {
+        this.joinCluster = joinCluster;
         Properties prop = new Properties();
         prop.load(IndexClient.class
                 .getResourceAsStream("elasticsearch.properties"));
@@ -58,6 +68,8 @@ public class IndexClient {
         esHosts = prop.getProperty("hosts").split(",");
         esPort = Integer.parseInt(prop.getProperty("port"));
 
+        restHost = prop.getProperty("rest.host");
+        restPort = Integer.parseInt(prop.getProperty("rest.port"));
 
         String hostname = java.net.InetAddress.getLocalHost().getHostName();
         this.nodeName = nodeName + "@" + hostname;
@@ -73,17 +85,23 @@ public class IndexClient {
         if (esClient != null) {
             esClient.close();
         }
+        if (joinCluster) {
 
-        Settings settings = ImmutableSettings.settingsBuilder()
-                .put("discovery.zen.ping.multicast.enabled", false)
-                .put("discovery.zen.ping.unicast.enabled", true)
-                .put("discovery.zen.ping.unicast.hosts", StringUtils.join(esHosts, ","))
-                .put("node.name", this.nodeName)
-                .build();
+            Settings settings = ImmutableSettings.settingsBuilder()
+                    .put("discovery.zen.ping.multicast.enabled", false)
+                    .put("discovery.zen.ping.unicast.enabled", true)
+                    .put("discovery.zen.ping.unicast.hosts", StringUtils.join(esHosts, ","))
+                    .put("node.name", this.nodeName)
+                    .build();
 
-        Node node = NodeBuilder.nodeBuilder().client(true).settings(settings).node().start();
+            Node node = NodeBuilder.nodeBuilder().client(true).settings(settings).node().start();
+            esClient = node.client();
 
-        esClient = node.client();
+        } else {
+
+            esClient = new TransportClient()
+                    .addTransportAddress(new InetSocketTransportAddress(restHost, esPort));
+        }
 
 
     }

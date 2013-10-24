@@ -150,8 +150,10 @@
                 <archive.root>/tmp/archiveroot</archive.root>
                 <keystore.root>/tmp/keystore</keystore.root>
                 <backup.root>/tmp/backuproot</backup.root>
-                <elasticsearch.hosts>localhost:9300</elasticsearch.hosts>
+                <elasticsearch.hosts>localhost</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.rest.host>localhost</elasticsearch.rest.host>
+                <elasticsearch.rest.port>9200</elasticsearch.rest.port>
                 <elasticsearch.replicas>0</elasticsearch.replicas>
                 <elasticsearch.shards>10</elasticsearch.shards>
                 <logger>console</logger>
@@ -170,8 +172,10 @@
                 <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
                 <backup.root>/data/backuproot</backup.root>
-                <elasticsearch.hosts>ih650es001,ih650es002,ih650es003</elasticsearch.hosts>
+                <elasticsearch.hosts>ih650es002,ih650es003,ih650es004</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.rest.host>ih650es001</elasticsearch.rest.host>
+                <elasticsearch.rest.port>9200</elasticsearch.rest.port>
                 <elasticsearch.replicas>2</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
@@ -189,6 +193,8 @@
                 <backup.root>/data/backuproot</backup.root>
                 <elasticsearch.hosts>ih108es001,ih108es002</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.rest.host>ih108es001</elasticsearch.rest.host>
+                <elasticsearch.rest.port>9200</elasticsearch.rest.port>
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
@@ -206,6 +212,8 @@
                 <backup.root>/data/backuproot</backup.root>
                 <elasticsearch.hosts>ihtrces001</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
+                <elasticsearch.rest.host>ihtrces001</elasticsearch.rest.host>
+                <elasticsearch.rest.port>9200</elasticsearch.rest.port>
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
