@@ -172,7 +172,7 @@
                 <archive.root>/data/archiveroot</archive.root>
                 <keystore.root>/data/keystore</keystore.root>
                 <backup.root>/data/backuproot</backup.root>
-                <elasticsearch.hosts>ih650es002,ih650es003,ih650es004</elasticsearch.hosts>
+                <elasticsearch.hosts>ih650es001,ih650es002,ih650es003,ih650es004</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.rest.host>ih650es001</elasticsearch.rest.host>
                 <elasticsearch.rest.port>9200</elasticsearch.rest.port>
