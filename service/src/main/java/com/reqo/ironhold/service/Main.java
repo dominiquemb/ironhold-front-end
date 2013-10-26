@@ -26,6 +26,8 @@ public class Main {
     public static HttpServer startServer(String url, File workingDirectory) {
         Map<String, Object> properties = new HashMap();
         properties.put(ImportPSTResource.WORKING_DIR_PROPERTY, workingDirectory.getAbsolutePath());
+
+
         // create a resource config that scans for JAX-RS resources and providers
         // in com.reqo.ironhold.service package
         final ResourceConfig rc = new ResourceConfig().packages("com.reqo.ironhold.service");
@@ -43,12 +45,13 @@ public class Main {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main1(String[] args) throws IOException {
         final HttpServer server = startServer(BASE_URI, new File("/tmp"));
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.stop();
     }
+
 }
 

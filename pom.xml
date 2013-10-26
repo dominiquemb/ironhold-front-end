@@ -21,6 +21,8 @@
         <module>utils</module>
         <module>uploadclient</module>
         <module>pstinfo</module>
+        <module>pstupload</module>
+        <module>servicemodel</module>
     </modules>
     <scm>
         <connection>scm:git:https://igaysinskiy@bitbucket.org/reqo/ironhold.git</connection>
@@ -222,4 +224,9 @@
         </profile>
 
     </profiles>
+
+
+    <organization>
+        <name>Reqo, Inc.</name>
+    </organization>
 </project>

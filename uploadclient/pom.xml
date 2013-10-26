@@ -18,6 +18,11 @@
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.reqo.ironhold</groupId>
+            <artifactId>servicemodel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
