@@ -74,8 +74,13 @@ public class IndexedMailMessage implements IPartitioned {
         logger.debug("Loading imap message");
         subject = imapMailMessage.getSubject();
         messageDate = imapMailMessage.getMessageDate();
-        year = yearFormat.format(messageDate);
-        monthDay = monthDayFormat.format(messageDate);
+        if (messageDate != null) {
+            year = yearFormat.format(messageDate);
+            monthDay = monthDayFormat.format(messageDate);
+        } else {
+            year = "unknown";
+            monthDay = "unknown";
+        }
         sender = Recipient.normalize(imapMailMessage.getFrom());
         to = Recipient.normalize(imapMailMessage.getTo());
         cc = Recipient.normalize(imapMailMessage.getCc());

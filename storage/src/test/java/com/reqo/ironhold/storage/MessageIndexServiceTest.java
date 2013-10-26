@@ -14,6 +14,7 @@ import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
+import org.apache.commons.io.FileUtils;
 import org.elasticsearch.action.admin.indices.alias.get.IndicesGetAliasesResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -30,8 +31,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 @RunWith(ElasticsearchRunner.class)
@@ -50,6 +57,7 @@ public class MessageIndexServiceTest {
     private PSTMessageTestModel testModel;
     private IndexClient indexClient;
     private LoginUser superUser;
+    private Session session;
 
     @Before
     public void setUp() throws Exception {
@@ -57,7 +65,12 @@ public class MessageIndexServiceTest {
         messageIndexService = new MessageIndexService(indexClient);
         testModel = new PSTMessageTestModel("/attachments.pst");
         superUser = LoginUserTestModel.generate(RoleEnum.SUPER_USER);
-
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.mime.base64.ignoreerrors", "true");
+        props.setProperty("mail.imap.partialfetch", "false");
+        props.setProperty("mail.imaps.partialfetch", "false");
+        session = Session.getInstance(props, null);
 
     }
 
@@ -358,4 +371,41 @@ public class MessageIndexServiceTest {
 
         messageIndexService.forceRefreshMappings(INDEX_PREFIX, true);
     }
+
+    @Test
+    public void testNoDate() throws Exception {
+        File file = FileUtils.toFile(MessageIndexServiceTest.class
+                .getResource("/testNoDate.eml"));
+        InputStream is = new FileInputStream(file);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
+
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessage(mimeMessage);
+
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                mailMessage, true);
+
+        Assert.assertEquals("unknown", indexedMailMessage.getYear());
+        Assert.assertEquals("unknown", indexedMailMessage.getMonthDay());
+        messageIndexService.store(INDEX_PREFIX, indexedMailMessage);
+        indexClient.refresh(INDEX_PREFIX);
+
+
+        String indexName = INDEX_PREFIX + "." + indexedMailMessage.getYear();
+        IndicesExistsResponse exists = client.admin().indices()
+                .prepareExists(indexName).execute().actionGet();
+
+        Assert.assertTrue(exists.isExists());
+
+        GetResponse response = client
+                .prepareGet(indexName, IndexedObjectType.MIME_MESSAGE.getValue(),
+                        indexedMailMessage.getMessageId()).execute()
+                .actionGet();
+        Assert.assertTrue(response.isExists());
+
+        Assert.assertEquals(indexedMailMessage.serialize(), response.getSourceAsString());
+
+    }
+
 }

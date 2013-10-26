@@ -231,4 +231,22 @@ public class IndexedMailMessageTest {
         Assert.assertFalse(assertContent1.equals(parsedContent1));
 
     }
+
+    @Test
+    public void testNoDate() throws Exception {
+        File file = FileUtils.toFile(IndexedMailMessageTest.class
+                .getResource("/testNoDate.eml"));
+        InputStream is = new FileInputStream(file);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
+
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessage(mimeMessage);
+
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
+                mailMessage, true);
+
+        Assert.assertEquals("unknown", indexedMailMessage.getYear());
+        Assert.assertEquals("unknown", indexedMailMessage.getMonthDay());
+
+    }
 }
