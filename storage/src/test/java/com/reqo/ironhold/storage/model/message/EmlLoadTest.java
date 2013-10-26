@@ -851,6 +851,11 @@ public class EmlLoadTest {
         performBasicCheckout("/testBlankContent.eml");
     }
 
+    @Test
+    public void testNoDate() throws Exception {
+        performBasicCheckout("/testNoDate.eml");
+    }
+
 
     @Test
     public void testFromBadAddress() throws Exception {
@@ -898,20 +903,24 @@ public class EmlLoadTest {
         Assert.assertEquals(mimeMessage.getSentDate(),
                 mailMessage.getMessageDate());
 
-        Assert.assertEquals(
-                ((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-                mailMessage.getFrom().getAddress());
-        Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
-                .getPersonal() == null ? StringUtils.EMPTY
-                : ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-                mailMessage.getFrom().getName());
-        Assert.assertEquals(
-                ((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
-                mailMessage.getFrom().getAddress());
-        Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
-                .getPersonal() == null ? StringUtils.EMPTY
-                : ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
-                mailMessage.getFrom().getName());
+        if (mimeMessage.getFrom() != null) {
+            Assert.assertEquals(
+                    ((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
+                    mailMessage.getFrom().getAddress());
+            Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
+                    .getPersonal() == null ? StringUtils.EMPTY
+                    : ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
+                    mailMessage.getFrom().getName());
+
+        } else {
+            Assert.assertEquals("unknown",
+                    mailMessage.getFrom().getAddress());
+            Assert.assertEquals("unknown",
+                    mailMessage.getFrom().getName());
+        }
+
+
+
 
         Assert.assertEquals(mimeMessage.getRecipients(RecipientType.TO).length,
                 mailMessage.getTo().length);
@@ -951,6 +960,8 @@ public class EmlLoadTest {
             Assert.assertEquals(0, mailMessage.getBcc().length);
         }
 
+        Assert.assertNotNull(mailMessage.getPartition());
+        Assert.assertNotNull(mailMessage.getSubPartition());
         return mailMessage;
     }
 }

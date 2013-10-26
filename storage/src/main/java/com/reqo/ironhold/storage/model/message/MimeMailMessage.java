@@ -761,7 +761,11 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     @Override
     @JsonIgnore
     public String getPartition() {
-        return yearFormat.format(this.getMessageDate());
+        if (this.getMessageDate() != null) {
+            return yearFormat.format(this.getMessageDate());
+        } else {
+            return "unknown";
+        }
     }
 
     @Override
@@ -780,6 +784,10 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
     @Override
     public String getSubPartition() {
-        return dayMonthFormat.format(this.getMessageDate());
+        if (this.getMessageDate() != null) {
+            return dayMonthFormat.format(this.getMessageDate());
+        } else {
+            return "unknown";
+        }
     }
 }

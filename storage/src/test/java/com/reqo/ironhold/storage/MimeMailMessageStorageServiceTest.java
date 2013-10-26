@@ -7,15 +7,20 @@ import com.reqo.ironhold.storage.model.exceptions.MessageExistsException;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.commons.mail.HtmlEmail;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 public class MimeMailMessageStorageServiceTest {
@@ -33,6 +38,7 @@ public class MimeMailMessageStorageServiceTest {
 
 
     private LocalMimeMailMessageStorageService storageService;
+    private Session session;
 
 
     @BeforeClass
@@ -50,6 +56,13 @@ public class MimeMailMessageStorageServiceTest {
         String keyStorePath = keyFolder.getRoot().getAbsolutePath() + File.separator + "keystore";
         IKeyStoreService keyStoreService = new LocalKeyStoreService(new File(keyStorePath));
         storageService = new LocalMimeMailMessageStorageService(dataFolder.getRoot(), archiveFolder.getRoot(), keyStoreService);
+
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imap");
+        props.setProperty("mail.mime.base64.ignoreerrors", "true");
+        props.setProperty("mail.imap.partialfetch", "false");
+        props.setProperty("mail.imaps.partialfetch", "false");
+        session = Session.getInstance(props, null);
 
     }
 
@@ -361,6 +374,25 @@ public class MimeMailMessageStorageServiceTest {
         Assert.assertEquals(1, list.size());
         Assert.assertEquals(storageService.normalizeMessageId(inputMessage.getMessageId()), list.get(0));
 
+
+    }
+
+    @Test
+    public void testMessageWithNoDate() throws Exception {
+        File file = FileUtils.toFile(MimeMailMessageStorageServiceTest.class
+                .getResource("/testNoDate.eml"));
+        InputStream is = new FileInputStream(file);
+        MimeMessage mimeMessage = new MimeMessage(session, is);
+
+        MimeMailMessage mailMessage = new MimeMailMessage();
+        mailMessage.loadMimeMessage(mimeMessage);
+
+        Assert.assertEquals("unknown", mailMessage.getPartition());
+        Assert.assertEquals("unknown", mailMessage.getSubPartition());
+
+        storageService.store(TEST_CLIENT, mailMessage.getPartition(), mailMessage.getSubPartition(), mailMessage.getMessageId(), mailMessage.getRawContents(), mailMessage.getCheckSum(), true);
+
+        MimeMailMessageTestModel.verifyStorage(TEST_CLIENT, storageService, mailMessage);
 
     }
 
