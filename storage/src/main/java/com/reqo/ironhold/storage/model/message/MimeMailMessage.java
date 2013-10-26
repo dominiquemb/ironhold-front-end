@@ -523,7 +523,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     private void handleMessage(Message message, boolean processAttachments)
             throws IOException, MessagingException {
         embeddedMessageCount++;
-        if (embeddedMessageCount > 20) {
+        if (embeddedMessageCount > 50) {
             throw new MessagingException("Exceeded embeddedMessageCount, aborting due to potential infinite loop");
         }
         long started = System.currentTimeMillis();

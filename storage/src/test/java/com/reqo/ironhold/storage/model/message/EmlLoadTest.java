@@ -856,6 +856,10 @@ public class EmlLoadTest {
         performBasicCheckout("/testNoDate.eml");
     }
 
+    @Test
+    public void testInfinite() throws Exception {
+        performBasicCheckout("/testInfinite.eml");
+    }
 
     @Test
     public void testFromBadAddress() throws Exception {
