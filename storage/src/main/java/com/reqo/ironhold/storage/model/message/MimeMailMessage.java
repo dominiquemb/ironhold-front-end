@@ -423,6 +423,10 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     String fixedRawContents = this.getRawContents().replaceAll("charset=\"\"", "charset=\"" + encoding + "\"");
                     reset();
                     loadMimeMessageFromSource(fixedRawContents);
+                } else if (e.getMessage().endsWith("cp-1251")) {
+                    String fixedRawContents = this.getRawContents().replaceAll("charset=\"cp-1251\"", "charset=\"cp1251\"");
+                    reset();
+                    loadMimeMessageFromSource(fixedRawContents);
                 } else {
                     throw e;
                 }

@@ -861,6 +861,12 @@ public class EmlLoadTest {
         performBasicCheckout("/testInfinite.eml");
     }
 
+
+    @Test
+    public void testCP1251() throws Exception {
+        performBasicCheckout("/testCP-1251.eml");
+    }
+
     @Test
     public void testFromBadAddress() throws Exception {
         File file = FileUtils.toFile(EmlLoadTest.class
