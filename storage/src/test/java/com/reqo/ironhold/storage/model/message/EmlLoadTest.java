@@ -868,6 +868,13 @@ public class EmlLoadTest {
     }
 
     @Test
+    public void testUnknownEncoding() throws Exception {
+        MimeMailMessage message = performBasicCheckout("/testUnknownEncoding.eml");
+        System.out.println(message.getRawContents());
+    }
+
+
+    @Test
     public void testFromBadAddress() throws Exception {
         File file = FileUtils.toFile(EmlLoadTest.class
                 .getResource("/testFromBadAddress.eml"));
