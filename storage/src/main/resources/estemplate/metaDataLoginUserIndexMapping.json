@@ -1,47 +1,70 @@
 {
-    "loginUser": {
-        "properties": {
-            "lastLogin": {
-                "type": "date",
-                "format": "dateOptionalTime"
-            },
-            "created": {
-                "type": "date",
-                "format": "dateOptionalTime"
-            },
-            "username": {
-                "type": "string",
-                "analyzer": "keyword"
-            },
-            "hashedPassword": {
-                "type": "string",
-                "analyzer": "keyword"
-            },
-            "name": {
-                "type": "string",
-                "analyzer": "keyword"
-            },
-            "recipients": {
-                "dynamic": "true",
-                "properties": {
-                    "address": {
-                        "type": "string",
-                        "analyzer": "keyword"
-                    },
-                    "name": {
-                        "type": "string",
-                        "analyzer": "keyword"
-                    },
-                    "domain": {
-                        "type": "string",
-                        "analyzer": "keyword"
-                    }
-                }
-            },
-             "sources": {
-                "type": "string",
-                "analyzer": "keyword"
+   "loginUser" :
+      {
+         "properties" :
+            {
+               "lastLogin" :
+                  {
+                     "type" : "date",
+                     "format" : "dateOptionalTime"
+                  },
+               "created" :
+                  {
+                     "type" : "date",
+                     "format" : "dateOptionalTime"
+                  },
+               "username" :
+                  {
+                     "type" : "string",
+                     "analyzer" : "keyword"
+                  },
+               "hashedPassword" :
+                  {
+                     "type" : "string",
+                     "analyzer" : "keyword"
+                  },
+               "name" :
+                  {
+                     "type" : "string",
+                     "analyzer" : "keyword"
+                  },
+               "recipients" :
+                  {
+                     "dynamic" : "true",
+                     "properties" :
+                        {
+                           "address" :
+                              {
+                                 "type" : "string",
+                                 "analyzer" : "keyword"
+                              },
+                           "name" :
+                              {
+                                 "type" : "string",
+                                 "analyzer" : "keyword"
+                              },
+                           "domain" :
+                              {
+                                 "type" : "string",
+                                 "analyzer" : "keyword"
+                              }
+                        }
+                  },
+               "sources" :
+                  {
+                     "type" : "string",
+                     "analyzer" : "keyword"
+                  },
+               "lastLoginChannel" :
+                  {
+                     "type" : "string",
+                     "analyzer" : "keyword"
+                  },
+               "lastLoginContext" :
+                  {
+                     "type" : "string",
+                     "analyzer" : "keyword"
+                  }
             }
-        }
-    }
+      }
 }

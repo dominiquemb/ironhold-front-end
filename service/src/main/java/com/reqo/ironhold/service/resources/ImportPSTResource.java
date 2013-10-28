@@ -1,11 +1,14 @@
-package com.reqo.ironhold.service;
+package com.reqo.ironhold.service.resources;
 
+import com.reqo.ironhold.service.beans.WorkingDir;
 import com.reqo.ironhold.utils.FileSplitter;
 import com.reqo.ironhold.utils.FileWithChecksum;
 import com.reqo.ironhold.utils.MD5CheckSum;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.io.FileUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
@@ -18,17 +21,21 @@ import java.util.List;
 import java.util.UUID;
 
 @Path("importpst")
+@Component
 public class ImportPSTResource {
-    public static final String WORKING_DIR_PROPERTY = "WORKING_DIR";
+
+    @Autowired
+    WorkingDir workingDir;
 
     @Context
     Application application;
+
 
     @GET
     @Path("/session")
     public Response createSession() throws IOException {
         String sessionId = UUID.randomUUID().toString();
-        FileUtils.forceMkdir(new File(getProperty(WORKING_DIR_PROPERTY) + File.separator + sessionId));
+        FileUtils.forceMkdir(new File(workingDir.getWorkDir() + File.separator + sessionId));
 
         return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(sessionId).build();
     }
@@ -41,7 +48,7 @@ public class ImportPSTResource {
             @PathParam("fileName") String fileName,
             @FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail) {
-        File directory = new File(getProperty(WORKING_DIR_PROPERTY) + File.separator + sessionId);
+        File directory = new File(workingDir.getWorkDir() + File.separator + sessionId);
         if (sessionId == null || !directory.exists() || !directory.isDirectory() || !directory.canWrite()) {
             return Response.status(400).entity("Session is not valid").build();
         }
@@ -62,7 +69,7 @@ public class ImportPSTResource {
     public List<String> verify(@PathParam("sessionId") String sessionId,
                                @PathParam("fileName") String fileName) throws Exception {
         List<String> issues = new ArrayList();
-        File directory = new File(getProperty(WORKING_DIR_PROPERTY) + File.separator + sessionId);
+        File directory = new File(workingDir.getWorkDir() + File.separator + sessionId);
         List<FileWithChecksum> parts = new ArrayList();
         for (File part : directory.listFiles()) {
             if (!part.getName().endsWith("md5")) {
@@ -92,7 +99,7 @@ public class ImportPSTResource {
     @Path("/session/join/{sessionId}/{fileName}")
     public Response join(@PathParam("sessionId") String sessionId,
                          @PathParam("fileName") String fileName) throws Exception {
-        File directory = new File(getProperty(WORKING_DIR_PROPERTY) + File.separator + sessionId);
+        File directory = new File(workingDir.getWorkDir() + File.separator + sessionId);
         List<FileWithChecksum> parts = new ArrayList();
         for (File part : directory.listFiles()) {
             if (!part.getName().endsWith("md5")) {
@@ -116,10 +123,10 @@ public class ImportPSTResource {
 
     }
 
-    private String getProperty(String propertyName) {
+    /*private String getProperty(String propertyName) {
 
-        return application.getProperties().get(propertyName).toString();
-    }
+        return application..getProperties().get(propertyName).toString();
+    } */
 
     // save uploaded file to new location
     private void writeToFile(InputStream uploadedInputStream,
@@ -143,5 +150,6 @@ public class ImportPSTResource {
         }
 
     }
+
 
 }

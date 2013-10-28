@@ -5,6 +5,7 @@ import com.reqo.ironhold.storage.model.metadata.BloombergMeta;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
@@ -173,8 +174,8 @@ public class MiscIndexService extends AbstractIndexService {
         return result;
     }
 
-    public LoginUser authenticate(String indexPrefix, String username, String password) throws Exception {
-        LoginUser storedUser = usernameExists(indexPrefix, username);
+    public LoginUser authenticate(String indexPrefix, String username, String password, LoginChannelEnum channel, String loginContext) throws Exception {
+        LoginUser storedUser = usernameExists(indexPrefix, username.toLowerCase());
         if (storedUser == null) {
             return null;
         }
@@ -182,6 +183,8 @@ public class MiscIndexService extends AbstractIndexService {
         if (storedUser.getHashedPassword().equals(CheckSumHelper.getCheckSum(password.getBytes())) &&
                 storedUser.hasRole(RoleEnum.CAN_LOGIN)) {
             storedUser.setLastLogin(new Date());
+            storedUser.setLastLoginChannel(channel.name());
+            storedUser.setLastLoginContext(loginContext);
             store(indexPrefix, storedUser);
             return storedUser;
         }

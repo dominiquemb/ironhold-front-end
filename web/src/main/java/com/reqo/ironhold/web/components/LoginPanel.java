@@ -1,6 +1,7 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MiscIndexService;
+import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.vaadin.data.Validator;
@@ -10,6 +11,8 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletService;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang.StringUtils;
@@ -137,7 +140,14 @@ public class LoginPanel extends Panel {
             password.validate();
             client.validate();
 
-            LoginUser authenticatedUser = miscIndexService.authenticate(client.getValue().toLowerCase(), username.getValue(), password.getValue());
+
+
+            LoginUser authenticatedUser = miscIndexService.authenticate(
+                    client.getValue(),
+                    username.getValue(),
+                    password.getValue(),
+                    LoginChannelEnum.WEB_APP,
+                    VaadinServletService.getCurrentServletRequest().getRemoteHost());
             if (authenticatedUser == null) {
                 Notification.show("Invalid credentials", Notification.Type.ERROR_MESSAGE);
             } else {

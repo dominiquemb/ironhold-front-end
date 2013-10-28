@@ -37,6 +37,8 @@ public class LoginUser {
     private Date created;
     private String id;
     private String[] sources;
+    private String lastLoginChannel;
+    private String lastLoginContext;
 
     public LoginUser() {
         this.created = new Date();
@@ -139,6 +141,22 @@ public class LoginUser {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getLastLoginChannel() {
+        return lastLoginChannel;
+    }
+
+    public void setLastLoginChannel(String lastLoginChannel) {
+        this.lastLoginChannel = lastLoginChannel;
+    }
+
+    public String getLastLoginContext() {
+        return lastLoginContext;
+    }
+
+    public void setLastLoginContext(String lastLoginContext) {
+        this.lastLoginContext = lastLoginContext;
     }
 
     public String serialize() throws IOException {

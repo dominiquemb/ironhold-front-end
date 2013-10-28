@@ -1,5 +1,6 @@
-package com.reqo.ironhold.service;
+package com.reqo.ironhold.service.resources;
 
+import com.reqo.ironhold.service.beans.WorkingDir;
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
@@ -9,22 +10,27 @@ import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
 import com.reqo.ironhold.uploadclient.ImportFileClient;
 import com.reqo.ironhold.utils.MD5CheckSum;
+import com.sun.jersey.spi.spring.container.servlet.SpringServlet;
+import com.sun.jersey.test.framework.JerseyTest;
+import com.sun.jersey.test.framework.WebAppDescriptor;
 import fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean;
-import fr.pilato.spring.elasticsearch.ElasticsearchNodeFactoryBean;
+import fr.pilato.spring.elasticsearch.ElasticsearchTransportClientFactoryBean;
 import org.apache.commons.io.FileUtils;
-import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.context.ContextLoaderListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-@ContextConfiguration(locations = "classpath:applicationContext.xml")
-public class ImportPSTResourceTest  extends AbstractJUnit4SpringContextTests {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:testContextClient.xml")
+public class ImportPSTResourceTest extends JerseyTest {
 
     @Autowired
     private LocalMimeMailMessageStorageService mimeMailMessageStorageService;
@@ -45,11 +51,7 @@ public class ImportPSTResourceTest  extends AbstractJUnit4SpringContextTests {
     private IKeyStoreService keyStoreService;
 
     @Autowired
-    private ElasticsearchClientFactoryBean esClient;
-
-    @Autowired
-    private ElasticsearchNodeFactoryBean esNode;
-
+    private ElasticsearchTransportClientFactoryBean esClient;
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -57,24 +59,30 @@ public class ImportPSTResourceTest  extends AbstractJUnit4SpringContextTests {
     @Rule
     public TemporaryFolder clientFolder = new TemporaryFolder();
 
-    @Rule
-    public TemporaryFolder serviceFolder = new TemporaryFolder();
 
-    private HttpServer server;
-    private String baseUrl;
+    @Autowired
+    private WorkingDir workingDir;
+
+    public ImportPSTResourceTest() {
+        super(new WebAppDescriptor.Builder("com.reqo.ironhold.service")
+                .servletPath("service")
+                .contextPath("webapi")
+                .contextParam("contextConfigLocation", "classpath:/testContext.xml")
+                .servletClass(SpringServlet.class)
+                .initParam("javax.ws.rs.Application", "com.reqo.ironhold.service.JerseyApplication")
+                .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
+                .contextListenerClass(ContextLoaderListener.class).build());
+    }
 
     @Before
     public void setUp() throws Exception {
-
+        super.setUp();
+        FileUtils.deleteDirectory(new File(workingDir.getWorkDir()));
+        FileUtils.forceMkdir(new File(workingDir.getWorkDir()));
 
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
         deleteIfExists(new File("/tmp/es/data"));
         FileUtils.forceMkdir(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore());
-
-        // start the server
-        baseUrl = "http://localhost:1111/myapp/";
-        server = Main.startServer(baseUrl, serviceFolder.getRoot());
-
     }
 
     private void deleteIfExists(File file) throws IOException {
@@ -85,13 +93,10 @@ public class ImportPSTResourceTest  extends AbstractJUnit4SpringContextTests {
 
     @After
     public void tearDown() throws Exception {
-        server.stop();
+        super.tearDown();
+        FileUtils.forceDelete(new File(workingDir.getWorkDir()));
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
-        esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
-        this.metaDataIndexService.clearCache();
-        this.miscIndexService.clearCache();
-        this.messageIndexService.clearCache();
     }
 
 
@@ -105,10 +110,10 @@ public class ImportPSTResourceTest  extends AbstractJUnit4SpringContextTests {
         Assert.assertTrue(completeFile.exists());
         Assert.assertEquals(fileSize, completeFile.length());
 
-        ImportFileClient client = new ImportFileClient(baseUrl, "importpst", clientFolder.getRoot(), completeFile);
+        ImportFileClient client = new ImportFileClient(getBaseURI().toString() + "webapi/", "importpst", clientFolder.getRoot(), completeFile);
         client.upload();
 
-        File targetFile = new File(serviceFolder.getRoot().getAbsolutePath() + File.separator + client.getSessionId() + File.separator + completeFile.getName());
+        File targetFile = new File(new File(workingDir.getWorkDir()).getAbsolutePath() + File.separator + client.getSessionId() + File.separator + completeFile.getName());
         Assert.assertTrue(targetFile.exists());
         Assert.assertEquals(fileSize, targetFile.length());
 

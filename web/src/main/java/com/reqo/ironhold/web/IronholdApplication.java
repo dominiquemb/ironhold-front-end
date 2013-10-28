@@ -82,7 +82,6 @@ public class IronholdApplication extends UI {
         }
     }
 
-
     public SearchWindow getSearchWindow() {
         return searchWindow;
     }

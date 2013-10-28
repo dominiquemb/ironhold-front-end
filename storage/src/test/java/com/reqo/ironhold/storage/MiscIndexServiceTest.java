@@ -9,6 +9,7 @@ import com.reqo.ironhold.storage.model.LoginUserTestModel;
 import com.reqo.ironhold.storage.model.PSTFileMetaTestModel;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
+import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.elasticsearch.client.Client;
@@ -120,7 +121,7 @@ public class MiscIndexServiceTest {
 
         Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
 
-        Assert.assertNull(miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername() + "!", loginUser.getUsername()));
+        Assert.assertNull(miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername() + "!", loginUser.getUsername(), LoginChannelEnum.WEB_APP, "192.168.1.1"));
 
     }
 
@@ -138,7 +139,7 @@ public class MiscIndexServiceTest {
 
         Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
 
-        Assert.assertNull(miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername() + "!"));
+        Assert.assertNull(miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername() + "!", LoginChannelEnum.WEB_APP, "192.168.1.1"));
 
     }
 
@@ -156,7 +157,7 @@ public class MiscIndexServiceTest {
 
         Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
 
-        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername());
+        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername(), LoginChannelEnum.WEB_APP, "192.168.1.1");
 
         Assert.assertNotNull(authenticatedUser);
 
@@ -179,7 +180,7 @@ public class MiscIndexServiceTest {
 
         Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
 
-        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername());
+        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername(), LoginChannelEnum.WEB_APP, "192.168.1.1");
 
         Assert.assertNotNull(authenticatedUser);
 
@@ -202,7 +203,7 @@ public class MiscIndexServiceTest {
 
         Assert.assertEquals(loginUser.serialize(), loginUsers.get(0).serialize());
 
-        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername());
+        LoginUser authenticatedUser = miscIndexService.authenticate(INDEX_PREFIX, loginUser.getUsername(), loginUser.getUsername(), LoginChannelEnum.WEB_APP, "192.168.1.1");
 
         Assert.assertNull(authenticatedUser);
 

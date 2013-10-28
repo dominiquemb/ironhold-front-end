@@ -2,7 +2,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass" value="java.lang.System"/>
+        <property name="targetMethod" value="setProperty"/>
+        <property name="arguments">
+            <list>
+                <value>es.index.store.type</value>
+                <value>memory</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="workingDir" class="com.reqo.ironhold.service.beans.WorkingDir" scope="singleton">
+        <constructor-arg value="/tmp/workDir-unittest"/>
+    </bean>
 
     <context:annotation-config/>
     <context:component-scan base-package="com.reqo.ironhold"/>
@@ -22,11 +40,21 @@
     </bean>
 
     <!-- ES beans -->
-    <bean id="esNode" class="fr.pilato.spring.elasticsearch.ElasticsearchNodeFactoryBean"/>
+    <util:map id="esProperties">
+        <entry key="cluster.name" value="test"/>
+        <entry key="index.number_of_shards" value="1"/>
+        <entry key="index.number_of_replicas" value="0"/>
+    </util:map>
 
+    <bean id="esClient" class="fr.pilato.spring.elasticsearch.ElasticsearchTransportClientFactoryBean">
+        <property name="esNodes">
+            <list>
+                <value>localhost:11111</value>
+            </list>
+        </property>
 
-    <bean id="esClient" class="fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean"/>
-
+        <property name="properties" ref="esProperties" />
+    </bean>
 
     <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient">
         <constructor-arg type="org.elasticsearch.client.Client" ref="esClient"/>
@@ -43,6 +71,5 @@
     <bean id="miscIndexService" class="com.reqo.ironhold.storage.MiscIndexService">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
     </bean>
-
 
 </beans>

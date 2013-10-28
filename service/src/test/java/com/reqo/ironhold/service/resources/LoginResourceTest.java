@@ -1,4 +1,4 @@
-package com.reqo.ironhold.service;
+package com.reqo.ironhold.service.resources;
 
 import com.reqo.ironhold.storage.LocalMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
@@ -6,31 +6,34 @@ import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
-import com.reqo.ironhold.uploadclient.ImportFileClient;
 import com.reqo.ironhold.uploadclient.LoginClient;
-import com.reqo.ironhold.utils.MD5CheckSum;
-import fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean;
+import com.sun.jersey.spi.spring.container.servlet.SpringServlet;
+import com.sun.jersey.test.framework.JerseyTest;
+import com.sun.jersey.test.framework.WebAppDescriptor;
 import fr.pilato.spring.elasticsearch.ElasticsearchNodeFactoryBean;
+import fr.pilato.spring.elasticsearch.ElasticsearchTransportClientFactoryBean;
 import org.apache.commons.io.FileUtils;
-import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.context.ContextLoaderListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.util.List;
 
-@ContextConfiguration(locations = "classpath:applicationContext.xml")
-public class LoginResourceTest extends AbstractJUnit4SpringContextTests {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:testContextClient.xml")
+public class LoginResourceTest extends JerseyTest {
 
     @Autowired
     private LocalMimeMailMessageStorageService mimeMailMessageStorageService;
@@ -51,11 +54,7 @@ public class LoginResourceTest extends AbstractJUnit4SpringContextTests {
     private IKeyStoreService keyStoreService;
 
     @Autowired
-    private ElasticsearchClientFactoryBean esClient;
-
-    @Autowired
-    private ElasticsearchNodeFactoryBean esNode;
-
+    private ElasticsearchTransportClientFactoryBean esClient;
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -66,24 +65,29 @@ public class LoginResourceTest extends AbstractJUnit4SpringContextTests {
     @Rule
     public TemporaryFolder serviceFolder = new TemporaryFolder();
 
-    private HttpServer server;
-    private String baseUrl;
     private LoginUser sampleUser;
     private String password = "secret";
     private String username = "testUser";
     private String clientKey = "test";
 
+    public LoginResourceTest() {
+        super(new WebAppDescriptor.Builder("com.reqo.ironhold.service")
+                .servletPath("service")
+                .contextPath("webapi")
+                .contextParam("contextConfigLocation", "classpath:/testContext.xml")
+                .servletClass(SpringServlet.class)
+                .initParam("javax.ws.rs.Application", "com.reqo.ironhold.service.JerseyApplication")
+                .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
+                .contextListenerClass(ContextLoaderListener.class).build());
+    }
+
     @Before
     public void setUp() throws Exception {
-
+        super.setUp();
 
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
         deleteIfExists(new File("/tmp/es/data"));
         FileUtils.forceMkdir(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore());
-
-        // start the server
-        baseUrl = "http://localhost:1111/myapp/";
-        server = Main.startServer(baseUrl, serviceFolder.getRoot());
 
         sampleUser = new LoginUser();
         sampleUser.setUsername(username);
@@ -95,7 +99,11 @@ public class LoginResourceTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(clientKey + "." + MiscIndexService.SUFFIX);
 
-        Assert.assertNotNull(miscIndexService.authenticate(clientKey, username, password));
+        Thread.sleep(1000);
+        LoginUser storedUser = miscIndexService.authenticate(clientKey, username, password, LoginChannelEnum.WEB_APP, "192.168.1.1");
+        Assert.assertNotNull(storedUser);
+        Assert.assertEquals(LoginChannelEnum.WEB_APP.name(), storedUser.getLastLoginChannel());
+        Assert.assertEquals("192.168.1.1", storedUser.getLastLoginContext());
 
     }
 
@@ -107,29 +115,32 @@ public class LoginResourceTest extends AbstractJUnit4SpringContextTests {
 
     @After
     public void tearDown() throws Exception {
-        server.stop();
+        super.tearDown();
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
-        esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
-        this.metaDataIndexService.clearCache();
-        this.miscIndexService.clearCache();
-        this.messageIndexService.clearCache();
     }
 
 
     @Test
     public void testBadLogin() throws Exception {
-        LoginClient client = new LoginClient(baseUrl);
-        boolean result = client.login("client", "username", "password");
+        LoginClient client = new LoginClient(getBaseURI().toString() + "webapi/");
+        boolean result = client.login("client", "username", "password", LoginChannelEnum.WEB_APP.name());
         Assert.assertFalse(result);
     }
 
     @Test
     public void testGoodLogin() throws Exception {
 
-        LoginClient client = new LoginClient(baseUrl);
-        boolean result = client.login(clientKey, username, password);
+        LoginClient client = new LoginClient(getBaseURI().toString() + "webapi/");
+        boolean result = client.login(clientKey, username, password, LoginChannelEnum.PST_UPLOAD.name());
         Assert.assertTrue(result);
+
+        indexClient.refresh(clientKey + "." + MiscIndexService.SUFFIX);
+
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(clientKey, 0, 1);
+        Assert.assertEquals(1, loginUsers.size());
+
+        Assert.assertEquals(LoginChannelEnum.PST_UPLOAD.name(), loginUsers.get(0).getLastLoginChannel());
     }
 
 }

@@ -1,9 +1,15 @@
 package com.reqo.ironhold.uploadclient;
 
 import com.reqo.ironhold.servicemodel.LoginRequest;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 import org.apache.log4j.Logger;
 
-import javax.ws.rs.client.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
@@ -19,28 +25,30 @@ public class LoginClient {
 
     public LoginClient(String baseUrl) {
         this.baseUrl = baseUrl;
-        this.restClient = ClientBuilder.newBuilder().build();
 
+        ClientConfig clientConfig = new DefaultClientConfig();
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        this.restClient = Client.create(clientConfig);
     }
 
 
-    public boolean login(String client, String username, String password) throws IOException {
-        WebTarget webTarget = restClient.target(baseUrl + "/login");
-        Invocation.Builder builder = webTarget.request();
-        LoginRequest loginRequest = new LoginRequest(client, username, password);
+    public boolean login(String client, String username, String password, String loginChannel) throws IOException {
+        logger.info("Attempting login for [" + client + "/" + username + "] via " + loginChannel + " by requesting " + baseUrl + "login");
+        WebResource webTarget = restClient.resource(baseUrl + "login");
+
+        LoginRequest loginRequest = new LoginRequest(client, username, password, loginChannel);
 
         String jsonString = loginRequest.serialize();
 
-        Response response = builder.post(Entity.json(jsonString));
+        ClientResponse response = webTarget.
+                accept(MediaType.TEXT_PLAIN).
+                type(MediaType.APPLICATION_JSON_TYPE).
+                post(ClientResponse.class, jsonString);
 
-
+        logger.info("Response recieved " + response.getStatus());
 
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
-
-
-
-
 
 
 }

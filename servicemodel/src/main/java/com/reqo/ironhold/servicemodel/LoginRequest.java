@@ -13,6 +13,7 @@ public class LoginRequest {
     private String client;
     private String username;
     private String password;
+    private String loginChannel;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -20,10 +21,11 @@ public class LoginRequest {
 
     }
 
-    public LoginRequest(String client, String username, String password) {
+    public LoginRequest(String client, String username, String password, String loginChannel) {
         this.client = client;
         this.username = username;
         this.password = password;
+        this.loginChannel = loginChannel;
     }
 
     public String getClient() {
@@ -48,6 +50,14 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getLoginChannel() {
+        return loginChannel;
+    }
+
+    public void setLoginChannel(String loginChannel) {
+        this.loginChannel = loginChannel;
     }
 
     public String serialize() throws IOException {

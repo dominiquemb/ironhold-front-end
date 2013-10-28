@@ -3,15 +3,14 @@ package com.reqo.ironhold.uploadclient;
 import com.reqo.ironhold.utils.FileSplitter;
 import com.reqo.ironhold.utils.FileWithChecksum;
 import com.reqo.ironhold.utils.MD5CheckSum;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.file.FileDataBodyPart;
 import org.apache.log4j.Logger;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
@@ -26,7 +25,7 @@ import java.util.List;
  */
 public class ImportFileClient {
     private static Logger logger = Logger.getLogger(ImportFileClient.class);
-    private final Client client;
+    private final Client restClient;
     private final String baseUrl;
     private final File workingDirectory;
     private final File completeFile;
@@ -38,7 +37,7 @@ public class ImportFileClient {
         this.resourceName = resourceName;
         this.workingDirectory = workingDirectory;
         this.completeFile = completeFile;
-        this.client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
+        this.restClient = Client.create();
 
     }
 
@@ -63,15 +62,18 @@ public class ImportFileClient {
         long started = System.currentTimeMillis();
 
         logger.info("Starting session");
-        WebTarget webTarget = client.target(baseUrl + resourceName + "/session");
-        Response response = webTarget.request().get();
+        WebResource webTarget = restClient.resource(baseUrl + resourceName + "/session");
 
+
+        ClientResponse response = webTarget.get(ClientResponse.class);
+        EntityTag e = response.getEntityTag();
+        String entity = response.getEntity(String.class);
 
         if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + "[" + response.readEntity(String.class) + "]");
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + "[" + entity + "]");
         }
 
-        this.sessionId = response.readEntity(String.class);
+        this.sessionId = entity;
 
         long finished = System.currentTimeMillis();
 
@@ -97,12 +99,16 @@ public class ImportFileClient {
     }
 
     private void join() {
-        Response response = client
-                .target(baseUrl + resourceName + "/session/join/").path(sessionId).path(completeFile.getName()).request().get();
+        WebResource webTarget = restClient
+                .resource(baseUrl + resourceName + "/session/join/").path(sessionId).path(completeFile.getName());
+
+        ClientResponse response = webTarget.get(ClientResponse.class);
+        EntityTag e = response.getEntityTag();
+        String entity = response.getEntity(String.class);
 
 
         if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + "[" + response.readEntity(String.class) + "]");
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus() + "[" + entity + "]");
         }
     }
 
@@ -111,14 +117,15 @@ public class ImportFileClient {
         long started = System.currentTimeMillis();
         logger.info("Starting upload " + partialFile.getName());
 
-        WebTarget webResource = client
-                .target(baseUrl + resourceName + "/session/upload").path(sessionId).path(partialFile.getName());
+        WebResource webTarget = restClient
+                .resource(baseUrl + resourceName + "/session/upload").path(sessionId).path(partialFile.getName());
 
         FileDataBodyPart fdp = new FileDataBodyPart("file", partialFile);
 
         FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
         formDataMultiPart.bodyPart(fdp);
-        Response response = webResource.request().post(Entity.entity(formDataMultiPart, MediaType.MULTIPART_FORM_DATA_TYPE));
+
+        ClientResponse response = webTarget.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(ClientResponse.class, formDataMultiPart);
 
         if (response.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
