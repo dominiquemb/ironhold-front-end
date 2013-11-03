@@ -17,7 +17,6 @@
         <module>dist</module>
         <module>libpst</module>
         <module>service</module>
-        <module>uploadgui</module>
         <module>utils</module>
         <module>uploadclient</module>
         <module>pstinfo</module>

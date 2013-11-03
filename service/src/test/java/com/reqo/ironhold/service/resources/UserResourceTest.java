@@ -33,7 +33,8 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContextClient.xml")
-public class LoginResourceTest extends JerseyTest {
+@Ignore
+public class UserResourceTest extends JerseyTest {
 
     @Autowired
     private LocalMimeMailMessageStorageService mimeMailMessageStorageService;
@@ -70,7 +71,7 @@ public class LoginResourceTest extends JerseyTest {
     private String username = "testUser";
     private String clientKey = "test";
 
-    public LoginResourceTest() {
+    public UserResourceTest() {
         super(new WebAppDescriptor.Builder("com.reqo.ironhold.service")
                 .servletPath("service")
                 .contextPath("webapi")

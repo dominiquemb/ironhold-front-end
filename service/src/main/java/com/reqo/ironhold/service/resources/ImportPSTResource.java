@@ -1,6 +1,8 @@
 package com.reqo.ironhold.service.resources;
 
 import com.reqo.ironhold.service.beans.WorkingDir;
+import com.reqo.ironhold.service.security.SecuredEnum;
+import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.utils.FileSplitter;
 import com.reqo.ironhold.utils.FileWithChecksum;
 import com.reqo.ironhold.utils.MD5CheckSum;
@@ -8,13 +10,11 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ import java.util.UUID;
 
 @Path("importpst")
 @Component
+@SecuredEnum(RoleEnum.PST_UPLOAD)
 public class ImportPSTResource {
 
     @Autowired
@@ -29,6 +30,9 @@ public class ImportPSTResource {
 
     @Context
     Application application;
+
+    @Context
+    SecurityContext securityContext;
 
 
     @GET

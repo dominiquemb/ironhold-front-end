@@ -15,5 +15,8 @@
     <bean id="loginFrame" class="com.reqo.ironhold.pstupload.frames.LoginFrame" scope="prototype">
     </bean>
 
+    <bean id="loginClient" class="com.reqo.ironhold.uploadclient.LoginClient" scope="prototype">
+        <constructor-arg name="baseUrl" value="http://localhost:8080"/>
+    </bean>
 
 </beans>

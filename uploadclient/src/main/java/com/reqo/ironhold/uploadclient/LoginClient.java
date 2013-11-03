@@ -33,8 +33,8 @@ public class LoginClient {
 
 
     public boolean login(String client, String username, String password, String loginChannel) throws IOException {
-        logger.info("Attempting login for [" + client + "/" + username + "] via " + loginChannel + " by requesting " + baseUrl + "login");
-        WebResource webTarget = restClient.resource(baseUrl + "login");
+        logger.info("Attempting login for [" + client + "/" + username + "] via " + loginChannel + " by requesting " + baseUrl + "user/login");
+        WebResource webTarget = restClient.resource(baseUrl + "user/login");
 
         LoginRequest loginRequest = new LoginRequest(client, username, password, loginChannel);
 

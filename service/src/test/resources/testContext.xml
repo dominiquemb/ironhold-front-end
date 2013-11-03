@@ -3,9 +3,38 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+    <security:http>
+        <security:intercept-url pattern="/css/*.css" access="ROLE_ANONYMOUS"/>
+        <security:intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS"/>
+        <security:intercept-url pattern="/js/lib/**" access="ROLE_ANONYMOUS"/>
+        <security:intercept-url pattern="/login.html" access="ROLE_ANONYMOUS"/>
+        <security:intercept-url pattern="/**" access="ROLE_CAN_LOGIN"/>
+        <security:http-basic/>
+        <security:form-login/>
+        <security:logout/>
+    </security:http>
+
+    <security:authentication-manager alias="main">
+        <security:authentication-provider ref="authenticationProvider">
+
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <security:global-method-security  secured-annotations="enabled" metadata-source-ref="customMetadataSource" />
+
+    <bean id="authenticationProvider" class="com.reqo.ironhold.service.beans.MockCustomAuthenticationProvider"/>
+    <bean id="customMetadataSource" class="org.springframework.security.access.annotation.SecuredAnnotationSecurityMetadataSource">
+        <constructor-arg name="annotationMetadataExtractor">
+            <bean class="com.reqo.ironhold.service.security.EnumAnnotationMetadataExtractor"/>
+        </constructor-arg>
+    </bean>
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="targetClass" value="java.lang.System"/>
@@ -25,7 +54,6 @@
 
 
     <context:annotation-config/>
-    <context:component-scan base-package="com.reqo.ironhold"/>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>

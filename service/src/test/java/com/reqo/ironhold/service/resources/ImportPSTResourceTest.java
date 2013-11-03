@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.io.RandomAccessFile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:testContextClient.xml")
+@Ignore
 public class ImportPSTResourceTest extends JerseyTest {
 
     @Autowired
@@ -65,13 +68,16 @@ public class ImportPSTResourceTest extends JerseyTest {
 
     public ImportPSTResourceTest() {
         super(new WebAppDescriptor.Builder("com.reqo.ironhold.service")
-                .servletPath("service")
                 .contextPath("webapi")
                 .contextParam("contextConfigLocation", "classpath:/testContext.xml")
+                .contextListenerClass(ContextLoaderListener.class)
+                .requestListenerClass(RequestContextListener.class)
+                .servletPath("service")
                 .servletClass(SpringServlet.class)
                 .initParam("javax.ws.rs.Application", "com.reqo.ironhold.service.JerseyApplication")
                 .initParam("com.sun.jersey.api.json.POJOMappingFeature", "true")
-                .contextListenerClass(ContextLoaderListener.class).build());
+                .addFilter(DelegatingFilterProxy.class, "springSecurityFilterChain")
+                .build());
     }
 
     @Before

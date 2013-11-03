@@ -1,7 +1,7 @@
 package com.reqo.ironhold.service;
 
 import com.reqo.ironhold.service.resources.ImportPSTResource;
-import com.reqo.ironhold.service.resources.LoginResource;
+import com.reqo.ironhold.service.resources.UserResource;
 
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ public class JerseyApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> s = new HashSet();
         s.add(ImportPSTResource.class);
-        s.add(LoginResource.class);
+        s.add(UserResource.class);
         return s;
     }
 }
