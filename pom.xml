@@ -22,6 +22,7 @@
         <module>pstinfo</module>
         <module>pstupload</module>
         <module>servicemodel</module>
+        <module>service-integration-tests</module>
     </modules>
     <scm>
         <connection>scm:git:https://igaysinskiy@bitbucket.org/reqo/ironhold.git</connection>

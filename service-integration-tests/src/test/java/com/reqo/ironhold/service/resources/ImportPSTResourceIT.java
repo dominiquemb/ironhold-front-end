@@ -1,5 +1,6 @@
 package com.reqo.ironhold.service.resources;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
@@ -19,14 +20,13 @@ public class ImportPSTResourceIT extends TestCase {
 
     private URI siteBase;
     private HtmlUnitDriver driver;
-
+    private static final String URL = System.getProperty("integration-test.url");
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-
-        siteBase = new URI("http://localhost:10001/service/importpst/session");
+        siteBase = new URI(URL + "importpst/session");
         driver = new HtmlUnitDriver();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -46,7 +46,7 @@ public class ImportPSTResourceIT extends TestCase {
         driver.get(siteBase.toString());
         String source = driver.getPageSource();
         logger.info(source);
-        assertTrue(source.contains("j_spring_security"));
+        Assert.assertTrue(source.contains("j_spring_security"));
 
         WebElement username = driver.findElementByName("j_username");
         WebElement password  = driver.findElementByName("j_password");
@@ -59,10 +59,10 @@ public class ImportPSTResourceIT extends TestCase {
         source = driver.getPageSource();
         logger.info(source);
 
-        assertFalse(source.contains("HTTP"));
+        Assert.assertFalse(source.contains("HTTP"));
 
         String sessionId = source;
-        assertNotNull(UUID.fromString(sessionId));
+        Assert.assertNotNull(UUID.fromString(sessionId));
 
     }
 }
