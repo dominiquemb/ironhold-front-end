@@ -7,7 +7,6 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:/context.xml
-            classpath:/security.xml
         </param-value>
     </context-param>
     <listener>
