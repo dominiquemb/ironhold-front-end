@@ -17,6 +17,7 @@ import javax.ws.rs.core.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Path("importpst")
@@ -38,6 +39,7 @@ public class ImportPSTResource {
     @Path("/session")
     public Response createSession() throws IOException {
         String sessionId = UUID.randomUUID().toString();
+        Objects.requireNonNull(workingDir, "Working Dir is required");
         FileUtils.forceMkdir(new File(workingDir.getWorkDir() + File.separator + sessionId));
 
         return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(sessionId).build();
