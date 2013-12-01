@@ -17,13 +17,13 @@ public class MessageMatch {
 
     private FormattedIndexedMailMessage indexedMailMessage;
     private String bodyWithHighlights;
-    private String subjectWithHiglights;
+    private String subjectWithHighlights;
     private String attachmentWithHighlights;
 
-    public MessageMatch(FormattedIndexedMailMessage indexedMailMessage, String bodyWithHighlights, String subjectWithHiglights, String attachmentWithHighlights) {
+    public MessageMatch(FormattedIndexedMailMessage indexedMailMessage, String bodyWithHighlights, String subjectWithHighlights, String attachmentWithHighlights) {
         this.indexedMailMessage = indexedMailMessage;
         this.bodyWithHighlights = bodyWithHighlights;
-        this.subjectWithHiglights = subjectWithHiglights;
+        this.subjectWithHighlights = subjectWithHighlights;
         this.attachmentWithHighlights = attachmentWithHighlights;
     }
 
@@ -35,12 +35,12 @@ public class MessageMatch {
         this.attachmentWithHighlights = attachmentWithHighlights;
     }
 
-    public String getSubjectWithHiglights() {
-        return subjectWithHiglights;
+    public String getSubjectWithHighlights() {
+        return subjectWithHighlights;
     }
 
-    public void setSubjectWithHiglights(String subjectWithHiglights) {
-        this.subjectWithHiglights = subjectWithHiglights;
+    public void setSubjectWithHighlights(String subjectWithHighlights) {
+        this.subjectWithHighlights = subjectWithHighlights;
     }
 
     public String getBodyWithHighlights() {

@@ -161,7 +161,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.messages =             [
                                                      {
                                                         "bodyWithHighlights" : "\"Good! �Splendid! �_Now_ we're all right and safe! Did you tell Aunty?\" I was going to say yes; but she chipped in and says: �\"About what, Sid?\" \"Why, about the way the whole thing was done.\" \"What whole thing?\" \"Why, _the_ whole thing. �There ain't but one; how we set the runaway nigger free�me and Tom.\" \n",
-                                                        "subjectWithHiglights" : "\"Good!  Splendid!  _Now_ we're all right...",
+                                                        "subjectWithHighlights" : "\"Good!  Splendid!  _Now_ we're all right...",
                                                         "attachmentWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny,\nand C kill the <b>dog</b> before delivery, because bitten",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -250,7 +250,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny, and C kill the <b>dog</b> before delivery, because bitten ... still due to A from B, and which party pays for the <b>dog</b>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <b>dog</b>, and classifiable as earned increment, that is to",
-                                                        "subjectWithHiglights" : "His face flushed indignantly, and he fired...",
+                                                        "subjectWithHighlights" : "His face flushed indignantly, and he fired...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -324,7 +324,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "Caught in the Act Tom Astonishes the School Examination Evening The Master's Dilemma The School House Happy for Two Days Enjoying the Vacation \n",
-                                                        "subjectWithHiglights" : "Caught in the Act  Tom Astonishes the School  Examination...",
+                                                        "subjectWithHighlights" : "Caught in the Act  Tom Astonishes the School  Examination...",
                                                         "attachmentWithHighlights" : "spoken of\nhim as \"Harbison's Bull,\" but a son or a <b>dog</b> of that name was \"Bull\nHarbison.\"]\n \n\n\"Oh, that's",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -423,7 +423,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny, and C kill the <b>dog</b> before delivery, because bitten ... still due to A from B, and which party pays for the <b>dog</b>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <b>dog</b>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <b>dog</b> and the onions and these people of the strange and",
-                                                        "subjectWithHiglights" : "\"It is a mystery that is hidden from me by...",
+                                                        "subjectWithHighlights" : "\"It is a mystery that is hidden from me by...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -527,7 +527,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny, and C kill the <b>dog</b> before delivery, because bitten ... still due to A from B, and which party pays for the <b>dog</b>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <b>dog</b>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <b>dog</b> and the onions and these people of the strange and",
-                                                        "subjectWithHiglights" : "\"You will confine yourself to the questions,...",
+                                                        "subjectWithHighlights" : "\"You will confine yourself to the questions,...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -611,7 +611,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny, and C kill the <b>dog</b> before delivery, because bitten ... still due to A from B, and which party pays for the <b>dog</b>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <b>dog</b>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <b>dog</b> and the onions and these people of the strange and",
-                                                        "subjectWithHiglights" : "\"I wit not what ye refer to.\"  \"How much...",
+                                                        "subjectWithHighlights" : "\"I wit not what ye refer to.\"  \"How much...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -690,7 +690,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny, and C kill the <b>dog</b> before delivery, because bitten ... still due to A from B, and which party pays for the <b>dog</b>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <b>dog</b>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <b>dog</b> and the onions and these people of the strange and",
-                                                        "subjectWithHiglights" : "\"How much is 9 times 6?\"  \"It is a mystery...",
+                                                        "subjectWithHighlights" : "\"How much is 9 times 6?\"  \"It is a mystery...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -789,7 +789,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "spoken of him as \"Harbison's Bull,\" but a son or a <b>dog</b> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <b>dog</b>.\" The <b>dog</b> howled again. The boys' hearts sank once more",
-                                                        "subjectWithHiglights" : "[* If Mr. Harbison owned a slave named Bull,...",
+                                                        "subjectWithHighlights" : "[* If Mr. Harbison owned a slave named Bull,...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -883,7 +883,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "for a sheep worth 4 pence and a <b>dog</b> worth a penny, and C kill the <b>dog</b> before delivery, because bitten ... still due to A from B, and which party pays for the <b>dog</b>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <b>dog</b>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <b>dog</b> and the onions and these people of the strange and",
-                                                        "subjectWithHiglights" : "\"Answer the question!\"  He crowded his wrath...",
+                                                        "subjectWithHighlights" : "\"Answer the question!\"  He crowded his wrath...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
@@ -997,7 +997,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                      },
                                                      {
                                                         "bodyWithHighlights" : "continued to whisper for some little time. Presently a <b>dog</b> set up a long, lugubrious howl just outside--within ... spoken of him as \"Harbison's Bull,\" but a son or a <b>dog</b> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <b>dog</b>.\" The <b>dog</b> howled again. The boys' hearts sank once more",
-                                                        "subjectWithHiglights" : "They continued to whisper for some little...",
+                                                        "subjectWithHighlights" : "They continued to whisper for some little...",
                                                         "attachmentWithHighlights" : "",
                                                         "formattedIndexedMailMessage" :
                                                            {
