@@ -2,7 +2,7 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;

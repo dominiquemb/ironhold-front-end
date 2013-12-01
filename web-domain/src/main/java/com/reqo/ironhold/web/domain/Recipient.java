@@ -1,5 +1,6 @@
-package com.reqo.ironhold.storage.model.message;
+package com.reqo.ironhold.web.domain;
 
+import com.gs.collections.api.block.function.Function;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -8,7 +9,14 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.apache.log4j.Logger;
 
 public class Recipient {
-    private static Logger logger = Logger.getLogger(MimeMailMessage.class);
+    public static final Function<Recipient, String> TO_NAME = new Function<Recipient, String>() {
+        @Override
+        public String valueOf(Recipient recipient) {
+            return recipient.getName();
+        }
+    };
+
+    private static Logger logger = Logger.getLogger(Recipient.class);
 
     private String name;
     private String address;

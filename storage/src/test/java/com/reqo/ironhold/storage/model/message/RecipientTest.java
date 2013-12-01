@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.model.message;
 
+import com.reqo.ironhold.web.domain.Recipient;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;

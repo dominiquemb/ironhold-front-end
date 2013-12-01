@@ -1,5 +1,9 @@
 package com.reqo.ironhold.web.components;
 
+import com.gs.collections.api.block.procedure.Procedure;
+import com.gs.collections.api.list.ImmutableList;
+import com.gs.collections.api.list.MutableList;
+import com.gs.collections.impl.block.factory.Predicates;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
@@ -12,6 +16,7 @@ import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
 import com.reqo.ironhold.web.components.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import com.reqo.ironhold.web.components.pagingcomponent.utilities.FakeList;
+import com.reqo.ironhold.web.domain.*;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
@@ -39,7 +44,7 @@ public class SearchResults extends HorizontalLayout {
     private VerticalLayout messageList;
     private NativeSelect sortFieldSelector;
     private NativeSelect sortOrderSelector;
-    private PagingComponent<SearchHit> pager;
+    private PagingComponent<FormattedIndexedMailMessage> pager;
     private VerticalLayout middlePane;
     private FacetPanel yearFacetPanel;
     private FacetPanel fromFacetPanel;
@@ -94,24 +99,22 @@ public class SearchResults extends HorizontalLayout {
     }
 
     private void performSearch(final MessageIndexService messageIndexService, final LoginUser authenticatedUser) {
-        final SearchResponse response = messageIndexService.getMatchCount(builder, authenticatedUser);
-        if (response == null) {
+        CountSearchResponse response = messageIndexService.getMatchCount(builder, authenticatedUser);
+        if (response.getMatches() < 0) {
             resultLabel.setCaption("Invalid search query");
             return;
         }
 
         if (!facetsSetup) {
-            resultLabel.setCaption(String.format("%,d matches.", response
-                    .getHits().totalHits()));
+            resultLabel.setCaption(String.format("%,d matches.", response.getMatches()));
         } else {
             resultLabel.setCaption(String.format("%,d filtered matches. ",
-                    response.getHits().totalHits()));
+                    response.getMatches()));
         }
 
         final String originalResultLabelValue = resultLabel.getCaption();
 
-        final List<SearchHit> results = new FakeList<SearchHit>((int) response
-                .getHits().totalHits());
+        final List<FormattedIndexedMailMessage> results = new FakeList<FormattedIndexedMailMessage>((int) response.getMatches());
 
         messageList.removeAllComponents();
 
@@ -119,11 +122,11 @@ public class SearchResults extends HorizontalLayout {
             middlePane.removeComponent(pager);
         }
 
-        pager = new PagingComponent<SearchHit>(10, 10, results,
-                new LazyPagingComponentListener<SearchHit>(messageList) {
+        pager = new PagingComponent<FormattedIndexedMailMessage>(10, 10, results,
+                new LazyPagingComponentListener<FormattedIndexedMailMessage>(messageList) {
 
                     @Override
-                    protected Collection<SearchHit> getItemsList(
+                    protected Collection<FormattedIndexedMailMessage> getItemsList(
                             int startIndex, int endIndex) throws Exception {
                         builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
@@ -159,19 +162,19 @@ public class SearchResults extends HorizontalLayout {
 
                         }
 
-                        SearchResponse response = messageIndexService.search(builder, authenticatedUser);
+                        MessageSearchResponse response = messageIndexService.search(builder);
 
                         setUpFacets(response, messageIndexService, authenticatedUser);
 
                         resultLabel.setCaption(String.format(
                                 "%s, Search took %,d ms",
                                 originalResultLabelValue,
-                                response.getTookInMillis()));
-                        return Arrays.asList(response.getHits().getHits());
+                                response.getTimeTaken()));
+                        return response.getMessages().collect(MessageMatch.TO_INDEXEDMAILMESSAGE).toList();
                     }
 
                     @Override
-                    protected Component displayItem(int index, SearchHit item) throws Exception {
+                    protected Component displayItem(int index, FormattedIndexedMailMessage item) throws Exception {
                         return new SearchHitPanel(item, emailPreview, criteria, ((IronholdApplication) getUI()));
                     }
 
@@ -180,75 +183,25 @@ public class SearchResults extends HorizontalLayout {
         middlePane.addComponent(pager, 1);
     }
 
-    private void setUpFacets(SearchResponse response, final MessageIndexService messageIndexService, final LoginUser authenticatedUser) {
+    private void setUpFacets(MessageSearchResponse response, final MessageIndexService messageIndexService, final LoginUser authenticatedUser) {
 
         if (!facetsSetup) {
             if (builder.isDateFacet()) {
                 yearFacetPanel.setVisible(true);
-                TermsFacet dateFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_YEAR);
+
+                FacetGroup dateFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_YEAR));
                 yearFacetPanel.removeAllComponents();
-                List<TermsFacet.Entry> years = (List<TermsFacet.Entry>) dateFacet.getEntries();
+                MutableList<FacetValue> facetValueList = dateFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE);
 
-                for (final TermsFacet.Entry entry : years.subList(0,
-                        Math.min(years.size(), 10))) {
-                    final HorizontalLayout hl = new HorizontalLayout();
-                    hl.setWidth("100%");
+                int minSize = Math.min(10, facetValueList.size());
 
-                    CheckBox checkBox = new CheckBox(entry.getTerm().toString());
-                    checkBox.setImmediate(true);
-                    checkBox.addValueChangeListener(new ValueChangeListener() {
-                        @Override
-                        public void valueChange(ValueChangeEvent event) {
-                            boolean enabled = (Boolean) event.getProperty().getValue();
-                            try {
-                                builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
-
-                                if (enabled) {
-                                    builder.withYearFacetValue(entry.getTerm().toString());
-                                } else {
-                                    builder.withoutYearFacetValue(entry.getTerm().toString());
-                                }
-                                performSearch(messageIndexService, authenticatedUser);
-                            } catch (Exception e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                            }
-
-                        }
-                    });
-
-                    hl.addComponent(checkBox);
-
-                    Label countLabel = new Label(String.format("%,d",
-                            entry.getCount()));
-                    hl.addComponent(countLabel);
-                    hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
-
-                    checkBox.setWidth(null);
-                    countLabel.setWidth(null);
-                    hl.setExpandRatio(checkBox, 1.0f);
-
-                    yearFacetPanel.addComponent(hl);
-
-                }
-            } else {
-                yearFacetPanel.setVisible(false);
-            }
-
-            if (builder.isFileExtFacet()) {
-                fileExtFacetPanel.setVisible(true);
-                TermsFacet fileExtFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_FILEEXT);
-                fileExtFacetPanel.removeAllComponents();
-                int visibleFacets = 0;
-                for (final TermsFacet.Entry entry : fileExtFacet.getEntries()) {
-                    if (entry.getTerm().toString().trim().length() != 0) {
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
                         final HorizontalLayout hl = new HorizontalLayout();
                         hl.setWidth("100%");
 
-                        CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-                                entry.getTerm().toString(),
-                                20 - Integer.toString(entry.getCount()).length()));
+                        CheckBox checkBox = new CheckBox(facetValue.getLabel());
                         checkBox.setImmediate(true);
                         checkBox.addValueChangeListener(new ValueChangeListener() {
                             @Override
@@ -258,10 +211,9 @@ public class SearchResults extends HorizontalLayout {
                                     builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                     if (enabled) {
-                                        builder.withFileExtFacetValue(entry.getTerm().toString());
+                                        builder.withYearFacetValue(facetValue.getLabel());
                                     } else {
-                                        builder.withoutFileExtFacetValue(entry
-                                                .getTerm().toString());
+                                        builder.withoutYearFacetValue(facetValue.getLabel());
                                     }
                                     performSearch(messageIndexService, authenticatedUser);
                                 } catch (Exception e) {
@@ -274,7 +226,66 @@ public class SearchResults extends HorizontalLayout {
                         hl.addComponent(checkBox);
 
                         Label countLabel = new Label(String.format("%,d",
-                                entry.getCount()));
+                                facetValue.getValue()));
+                        hl.addComponent(countLabel);
+                        hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
+
+                        checkBox.setWidth(null);
+                        countLabel.setWidth(null);
+                        hl.setExpandRatio(checkBox, 1.0f);
+
+                        yearFacetPanel.addComponent(hl);
+
+                    }
+                });
+            } else {
+                yearFacetPanel.setVisible(false);
+            }
+
+            if (builder.isFileExtFacet()) {
+                fileExtFacetPanel.setVisible(true);
+                FacetGroup fileExtFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_FILEEXT));
+                fileExtFacetPanel.removeAllComponents();
+
+                MutableList<FacetValue> facetValueList = fileExtFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE).select(Predicates.attributeNotEqual(FacetValue.TO_NAME, StringUtils.EMPTY));
+
+                int minSize = Math.min(10, facetValueList.size());
+
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
+
+
+                        final HorizontalLayout hl = new HorizontalLayout();
+                        hl.setWidth("100%");
+
+                        CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
+                                facetValue.getLabel(),
+                                20 - Long.toString(facetValue.getValue()).length()));
+                        checkBox.setImmediate(true);
+                        checkBox.addValueChangeListener(new ValueChangeListener() {
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                boolean enabled = (Boolean) event.getProperty().getValue();
+                                try {
+                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+
+                                    if (enabled) {
+                                        builder.withFileExtFacetValue(facetValue.getLabel());
+                                    } else {
+                                        builder.withoutFileExtFacetValue(facetValue.getLabel());
+                                    }
+                                    performSearch(messageIndexService, authenticatedUser);
+                                } catch (Exception e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                }
+
+                            }
+                        });
+
+                        hl.addComponent(checkBox);
+
+                        Label countLabel = new Label(String.format("%,d", facetValue.getValue()));
                         hl.addComponent(countLabel);
                         hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
 
@@ -283,11 +294,11 @@ public class SearchResults extends HorizontalLayout {
                         hl.setExpandRatio(checkBox, 1.0f);
 
                         fileExtFacetPanel.addComponent(hl);
-                        visibleFacets++;
                     }
-                }
 
-                if (visibleFacets == 0) {
+                });
+
+                if (facetValueList.size() == 0) {
                     fileExtFacetPanel.setVisible(false);
                 }
             } else {
@@ -297,19 +308,22 @@ public class SearchResults extends HorizontalLayout {
 
             if (builder.isMsgTypeFacet()) {
                 msgTypeFacetPanel.setVisible(true);
-                TermsFacet msgTypeFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_MSGTYPE);
+                FacetGroup msgTypeFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_MSGTYPE));
                 msgTypeFacetPanel.removeAllComponents();
-                int visibleFacets = 0;
-                for (final TermsFacet.Entry entry : msgTypeFacet.getEntries()) {
-                    if (entry.getTerm().toString().trim().length() != 0) {
+                MutableList<FacetValue> facetValueList = msgTypeFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE);
+
+                int minSize = Math.min(10, facetValueList.size());
+
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
                         final HorizontalLayout hl = new HorizontalLayout();
                         hl.setWidth("100%");
 
                         String label = MessageTypeEnum.getByValue(
-                                entry.getTerm().toString()).getLabel();
+                                facetValue.getLabel()).getLabel();
                         CheckBox checkBox = new CheckBox(StringUtils.abbreviate(label,
-                                20 - Integer.toString(entry.getCount()).length()));
+                                20 - Long.toString(facetValue.getValue()).length()));
                         checkBox.setImmediate(true);
                         checkBox.addValueChangeListener(new ValueChangeListener() {
                             @Override
@@ -319,10 +333,9 @@ public class SearchResults extends HorizontalLayout {
                                     builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                     if (enabled) {
-                                        builder.withMsgTypeFacetValue(entry.getTerm().toString());
+                                        builder.withMsgTypeFacetValue(facetValue.getLabel());
                                     } else {
-                                        builder.withoutMsgTypeFacetValue(entry
-                                                .getTerm().toString());
+                                        builder.withoutMsgTypeFacetValue(facetValue.getLabel());
                                     }
                                     performSearch(messageIndexService, authenticatedUser);
                                 } catch (Exception e) {
@@ -335,7 +348,7 @@ public class SearchResults extends HorizontalLayout {
                         hl.addComponent(checkBox);
 
                         Label countLabel = new Label(String.format("%,d",
-                                entry.getCount()));
+                                facetValue.getValue()));
                         hl.addComponent(countLabel);
                         hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
 
@@ -344,11 +357,10 @@ public class SearchResults extends HorizontalLayout {
                         hl.setExpandRatio(checkBox, 1.0f);
 
                         msgTypeFacetPanel.addComponent(hl);
-                        visibleFacets++;
                     }
-                }
+                });
 
-                if (visibleFacets == 0) {
+                if (facetValueList.size() == 0) {
                     msgTypeFacetPanel.setVisible(false);
                 }
             } else {
@@ -358,173 +370,137 @@ public class SearchResults extends HorizontalLayout {
 
             if (builder.isFromFacet()) {
                 fromFacetPanel.setVisible(true);
-                TermsFacet fromFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_FROM_NAME);
+                FacetGroup fromFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_FROM_NAME));
                 fromFacetPanel.removeAllComponents();
-                for (final TermsFacet.Entry entry : fromFacet.getEntries()) {
-                    final HorizontalLayout hl = new HorizontalLayout();
-                    hl.setWidth("100%");
+                MutableList<FacetValue> facetValueList = fromFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE);
 
-                    CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-                            entry.getTerm().toString(),
-                            20 - Integer.toString(entry.getCount()).length()));
-                    checkBox.setImmediate(true);
-                    checkBox.addValueChangeListener(new ValueChangeListener() {
-                        @Override
-                        public void valueChange(ValueChangeEvent event) {
-                            boolean enabled = (Boolean) event.getProperty().getValue();
-                            try {
-                                builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+                int minSize = Math.min(10, facetValueList.size());
 
-                                if (enabled) {
-                                    builder.withFromFacetValue(entry.getTerm().toString());
-                                } else {
-                                    builder.withoutFromFacetValue(entry.getTerm().toString());
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
+
+                        final HorizontalLayout hl = new HorizontalLayout();
+                        hl.setWidth("100%");
+
+                        CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
+                                facetValue.getLabel(),
+                                20 - Long.toString(facetValue.getValue()).length()));
+                        checkBox.setImmediate(true);
+                        checkBox.addValueChangeListener(new ValueChangeListener() {
+                            @Override
+                            public void valueChange(ValueChangeEvent event) {
+                                boolean enabled = (Boolean) event.getProperty().getValue();
+                                try {
+                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+
+                                    if (enabled) {
+                                        builder.withFromFacetValue(facetValue.getLabel());
+                                    } else {
+                                        builder.withoutFromFacetValue(facetValue.getLabel());
+                                    }
+                                    performSearch(messageIndexService, authenticatedUser);
+                                } catch (Exception e) {
+                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                 }
-                                performSearch(messageIndexService, authenticatedUser);
-                            } catch (Exception e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+
                             }
+                        });
 
-                        }
-                    });
+                        hl.addComponent(checkBox);
 
-                    hl.addComponent(checkBox);
+                        Label countLabel = new Label(String.format("%,d",
+                                facetValue.getValue()));
+                        hl.addComponent(countLabel);
+                        hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
 
-                    Label countLabel = new Label(String.format("%,d",
-                            entry.getCount()));
-                    hl.addComponent(countLabel);
-                    hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
+                        checkBox.setWidth(null);
+                        countLabel.setWidth(null);
+                        hl.setExpandRatio(checkBox, 1.0f);
 
-                    checkBox.setWidth(null);
-                    countLabel.setWidth(null);
-                    hl.setExpandRatio(checkBox, 1.0f);
-
-                    fromFacetPanel.addComponent(hl);
-                }
+                        fromFacetPanel.addComponent(hl);
+                    }
+                });
             } else {
                 fromFacetPanel.setVisible(false);
             }
 
             if (builder.isFromDomainFacet()) {
                 fromDomainFacetPanel.setVisible(true);
-                TermsFacet fromDomainFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_FROM_DOMAIN);
+                FacetGroup fromDomainFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_FROM_DOMAIN));
                 fromDomainFacetPanel.removeAllComponents();
-                for (final TermsFacet.Entry entry : fromDomainFacet
-                        .getEntries()) {
-                    if (entry.getTerm().toString().contains(".")) {
-                        final HorizontalLayout hl = new HorizontalLayout();
-                        hl.setWidth("100%");
+                MutableList<FacetValue> facetValueList = fromDomainFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE);
 
-                        CheckBox checkBox = new CheckBox(
-                                StringUtils.abbreviate(entry.getTerm().toString(),
-                                        20 - Integer.toString(entry.getCount())
-                                                .length()));
-                        checkBox.setImmediate(true);
-                        checkBox.addValueChangeListener(new ValueChangeListener() {
-                            @Override
-                            public void valueChange(ValueChangeEvent event) {
-                                boolean enabled = (Boolean) event.getProperty().getValue();
-                                try {
-                                    builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+                int minSize = Math.min(10, facetValueList.size());
 
-                                    if (enabled) {
-                                        builder.withFromDomainFacetValue(entry
-                                                .getTerm().toString());
-                                    } else {
-                                        builder.withoutFromDomainFacetValue(entry
-                                                .getTerm().toString());
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
+                        if (facetValue.getLabel().contains(".")) {
+                            final HorizontalLayout hl = new HorizontalLayout();
+                            hl.setWidth("100%");
+
+                            CheckBox checkBox = new CheckBox(
+                                    StringUtils.abbreviate(facetValue.getLabel(),
+                                            20 - Long.toString(facetValue.getValue())
+                                                    .length()));
+                            checkBox.setImmediate(true);
+                            checkBox.addValueChangeListener(new ValueChangeListener() {
+                                @Override
+                                public void valueChange(ValueChangeEvent event) {
+                                    boolean enabled = (Boolean) event.getProperty().getValue();
+                                    try {
+                                        builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+
+                                        if (enabled) {
+                                            builder.withFromDomainFacetValue(facetValue.getLabel());
+                                        } else {
+                                            builder.withoutFromDomainFacetValue(facetValue.getLabel());
+                                        }
+                                        performSearch(messageIndexService, authenticatedUser);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                                     }
-                                    performSearch(messageIndexService, authenticatedUser);
-                                } catch (Exception e) {
-                                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+
                                 }
+                            });
+                            hl.addComponent(checkBox);
 
-                            }
-                        });
-                        hl.addComponent(checkBox);
+                            Label countLabel = new Label(String.format("%,d",
+                                    facetValue.getValue()));
+                            hl.addComponent(countLabel);
+                            hl.setComponentAlignment(countLabel,
+                                    Alignment.MIDDLE_RIGHT);
 
-                        Label countLabel = new Label(String.format("%,d",
-                                entry.getCount()));
-                        hl.addComponent(countLabel);
-                        hl.setComponentAlignment(countLabel,
-                                Alignment.MIDDLE_RIGHT);
+                            checkBox.setWidth(null);
+                            countLabel.setWidth(null);
+                            hl.setExpandRatio(checkBox, 1.0f);
 
-                        checkBox.setWidth(null);
-                        countLabel.setWidth(null);
-                        hl.setExpandRatio(checkBox, 1.0f);
-
-                        fromDomainFacetPanel.addComponent(hl);
+                            fromDomainFacetPanel.addComponent(hl);
+                        }
                     }
-                }
+                });
             } else {
                 fromDomainFacetPanel.setVisible(false);
             }
 
             if (builder.isToFacet()) {
                 toFacetPanel.setVisible(true);
-                TermsFacet toFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_TO_NAME);
+                FacetGroup toFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_TO_NAME));
                 toFacetPanel.removeAllComponents();
-                for (final TermsFacet.Entry entry : toFacet.getEntries()) {
-                    final HorizontalLayout hl = new HorizontalLayout();
-                    hl.setWidth("100%");
+                MutableList<FacetValue> facetValueList = toFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE);
 
-                    CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
-                            entry.getTerm().toString(),
-                            20 - Integer.toString(entry.getCount()).length()));
-                    checkBox.setImmediate(true);
-                    checkBox.addValueChangeListener(new ValueChangeListener() {
-                        @Override
-                        public void valueChange(ValueChangeEvent event) {
-                            boolean enabled = (Boolean) event.getProperty().getValue();
-                            try {
-                                builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+                int minSize = Math.min(10, facetValueList.size());
 
-                                if (enabled) {
-                                    builder.withToFacetValue(entry.getTerm().toString());
-                                } else {
-                                    builder.withoutToFacetValue(entry.getTerm().toString());
-                                }
-                                performSearch(messageIndexService, authenticatedUser);
-                            } catch (Exception e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                            }
-
-                        }
-                    });
-                    hl.addComponent(checkBox);
-
-                    Label countLabel = new Label(String.format("%,d",
-                            entry.getCount()));
-                    hl.addComponent(countLabel);
-                    hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
-
-                    checkBox.setWidth(null);
-                    countLabel.setWidth(null);
-                    hl.setExpandRatio(checkBox, 1.0f);
-
-                    toFacetPanel.addComponent(hl);
-                }
-            } else {
-                toFacetPanel.setVisible(false);
-            }
-
-            if (builder.isToDomainFacet()) {
-                toDomainFacetPanel.setVisible(true);
-                TermsFacet toDomainFacet = response.getFacets().facet(
-                        MessageSearchBuilder.FACET_TO_DOMAIN);
-                toDomainFacetPanel.removeAllComponents();
-                for (final TermsFacet.Entry entry : toDomainFacet.getEntries()) {
-                    if (entry.getTerm().toString().contains(".")) {
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
                         final HorizontalLayout hl = new HorizontalLayout();
                         hl.setWidth("100%");
 
-                        CheckBox checkBox = new CheckBox(
-                                StringUtils.abbreviate(entry.getTerm().toString(),
-                                        20 - Integer.toString(entry.getCount())
-                                                .length()));
+                        CheckBox checkBox = new CheckBox(StringUtils.abbreviate(
+                                facetValue.getLabel(),
+                                20 - Long.toString(facetValue.getValue()).length()));
                         checkBox.setImmediate(true);
                         checkBox.addValueChangeListener(new ValueChangeListener() {
                             @Override
@@ -534,11 +510,9 @@ public class SearchResults extends HorizontalLayout {
                                     builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
 
                                     if (enabled) {
-                                        builder.withToDomainFacetValue(entry
-                                                .getTerm().toString());
+                                        builder.withToFacetValue(facetValue.getLabel());
                                     } else {
-                                        builder.withoutToDomainFacetValue(entry
-                                                .getTerm().toString());
+                                        builder.withoutToFacetValue(facetValue.getLabel());
                                     }
                                     performSearch(messageIndexService, authenticatedUser);
                                 } catch (Exception e) {
@@ -550,22 +524,82 @@ public class SearchResults extends HorizontalLayout {
                         hl.addComponent(checkBox);
 
                         Label countLabel = new Label(String.format("%,d",
-                                entry.getCount()));
+                                facetValue.getValue()));
                         hl.addComponent(countLabel);
-                        hl.setComponentAlignment(countLabel,
-                                Alignment.MIDDLE_RIGHT);
+                        hl.setComponentAlignment(countLabel, Alignment.MIDDLE_RIGHT);
 
                         checkBox.setWidth(null);
                         countLabel.setWidth(null);
                         hl.setExpandRatio(checkBox, 1.0f);
 
-                        toDomainFacetPanel.addComponent(hl);
+                        toFacetPanel.addComponent(hl);
                     }
-                }
+                });
+            } else {
+                toFacetPanel.setVisible(false);
+            }
+
+            if (builder.isToDomainFacet()) {
+                toDomainFacetPanel.setVisible(true);
+                FacetGroup toDomainFacetGroup = response.getFacets().detect(Predicates.attributeEqual(FacetGroup.GET_NAME, FacetGroupName.FACET_TO_DOMAIN));
+                toDomainFacetPanel.removeAllComponents();
+
+                MutableList<FacetValue> facetValueList = toDomainFacetGroup.getValueMap().toSortedListBy(FacetValue.TO_VALUE);
+
+                int minSize = Math.min(10, facetValueList.size());
+
+                facetValueList.subList(0, minSize).forEach(new Procedure<FacetValue>() {
+                    @Override
+                    public void value(final FacetValue facetValue) {
+                        if (facetValue.getLabel().contains(".")) {
+                            final HorizontalLayout hl = new HorizontalLayout();
+                            hl.setWidth("100%");
+
+                            CheckBox checkBox = new CheckBox(
+                                    StringUtils.abbreviate(facetValue.getLabel(),
+                                            20 - Long.toString(facetValue.getValue())
+                                                    .length()));
+                            checkBox.setImmediate(true);
+                            checkBox.addValueChangeListener(new ValueChangeListener() {
+                                @Override
+                                public void valueChange(ValueChangeEvent event) {
+                                    boolean enabled = (Boolean) event.getProperty().getValue();
+                                    try {
+                                        builder = messageIndexService.getNewBuilder(indexPrefix, builder, authenticatedUser);
+
+                                        if (enabled) {
+                                            builder.withToDomainFacetValue(facetValue.getLabel());
+                                        } else {
+                                            builder.withoutToDomainFacetValue(facetValue.getLabel());
+                                        }
+                                        performSearch(messageIndexService, authenticatedUser);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                    }
+
+                                }
+                            });
+                            hl.addComponent(checkBox);
+
+                            Label countLabel = new Label(String.format("%,d",
+                                    facetValue.getValue()));
+                            hl.addComponent(countLabel);
+                            hl.setComponentAlignment(countLabel,
+                                    Alignment.MIDDLE_RIGHT);
+
+                            checkBox.setWidth(null);
+                            countLabel.setWidth(null);
+                            hl.setExpandRatio(checkBox, 1.0f);
+
+                            toDomainFacetPanel.addComponent(hl);
+                        }
+                    }
+                });
             } else {
                 toDomainFacetPanel.setVisible(false);
             }
         }
+
         facetsSetup = true;
     }
 

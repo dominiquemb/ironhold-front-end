@@ -1,10 +1,21 @@
 package com.reqo.ironhold.storage;
 
+import com.gs.collections.api.block.function.Function;
+import com.gs.collections.api.list.ImmutableList;
+import com.gs.collections.api.list.MutableList;
+import com.gs.collections.api.set.ImmutableSet;
+import com.gs.collections.api.set.MutableSet;
+import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.collections.impl.utility.ArrayIterate;
+import com.gs.collections.impl.utility.ListIterate;
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.get.GetResponse;
@@ -15,14 +26,63 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.facet.Facet;
+import org.elasticsearch.search.facet.Facets;
+import org.elasticsearch.search.facet.terms.TermsFacet;
+import org.elasticsearch.search.highlight.HighlightField;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-public class MessageIndexService extends AbstractIndexService {
+public class MessageIndexService extends AbstractIndexService implements IMessageIndexService {
     private static Logger logger = Logger.getLogger(MessageIndexService.class);
 
     private static Map<IndexedObjectType, String> mappings;
+
+
+    private static final Function<SearchHit, MessageMatch> SEARCHHIT_TO_MESSAGEMATCH = new Function<SearchHit, MessageMatch>() {
+        @Override
+        public MessageMatch valueOf(SearchHit searchHit) {
+            FormattedIndexedMailMessage indexedMailMessage = FormattedIndexedMailMessage.deserialize(searchHit.getSourceAsString());
+
+            Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+            String bodyWithHighlights = indexedMailMessage.getBody();
+            String subjectWithHiglights = indexedMailMessage.getSubject();
+            String attachmentsWithHighlights = StringUtils.EMPTY;
+
+
+            if (highlightFields.containsKey(IndexFieldEnum.BODY.getValue())) {
+                bodyWithHighlights = ArrayIterate.makeString(highlightFields.get(IndexFieldEnum.BODY.getValue()).getFragments(), " ... ");
+            }
+
+            if (highlightFields.containsKey(IndexFieldEnum.SUBJECT.getValue())) {
+                subjectWithHiglights = ArrayIterate.makeString(highlightFields.get(IndexFieldEnum.SUBJECT.getValue()).getFragments(), " ... ");
+            }
+
+            if (highlightFields.containsKey(IndexFieldEnum.ATTACHMENT.getValue())) {
+                attachmentsWithHighlights = ArrayIterate.makeString(highlightFields.get(IndexFieldEnum.ATTACHMENT.getValue()).getFragments(), " ... ");
+            }
+
+
+            return new MessageMatch(indexedMailMessage, bodyWithHighlights, subjectWithHiglights, attachmentsWithHighlights);
+        }
+    };
+
+    private static final Function<Facet, String> FACET_TO_NAME = new Function<Facet, String>() {
+        @Override
+        public String valueOf(Facet facet) {
+            return facet.getName();
+        }
+    };
+
+    private static final Function<TermsFacet.Entry, FacetValue> TERMSFACETENTRY_TO_FACETVALUE = new Function<TermsFacet.Entry, FacetValue>() {
+        @Override
+        public FacetValue valueOf(TermsFacet.Entry entry) {
+            return new FacetValue(entry.getTerm().toString(), entry.getCount());
+        }
+    };
 
     static {
         mappings = new HashMap<>();
@@ -33,11 +93,11 @@ public class MessageIndexService extends AbstractIndexService {
         super(client, "messageIndexSettings.json", mappings);
     }
 
-    public void store(String indexPrefix, IndexedMailMessage message) throws Exception {
+    public void store(String indexPrefix, IndexedMailMessage message) {
         store(indexPrefix, message, true);
     }
 
-    public void store(String indexPrefix, IndexedMailMessage message, boolean checkIfExists) throws Exception {
+    public void store(String indexPrefix, IndexedMailMessage message, boolean checkIfExists) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, message.getPartition());
 
@@ -52,7 +112,7 @@ public class MessageIndexService extends AbstractIndexService {
         }
     }
 
-    public IndexedMailMessage getById(String indexPrefix, String partition, String messageId) throws Exception {
+    public IndexedMailMessage getById(String indexPrefix, String partition, String messageId) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, partition);
 
@@ -69,7 +129,7 @@ public class MessageIndexService extends AbstractIndexService {
         return null;
     }
 
-    public boolean exists(String indexPrefix, String partition, String messageId) throws Exception {
+    public boolean exists(String indexPrefix, String partition, String messageId) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, partition);
 
@@ -78,32 +138,46 @@ public class MessageIndexService extends AbstractIndexService {
         return client.itemExists(indexName, IndexedObjectType.MIME_MESSAGE, messageId);
     }
 
-    public MessageSearchBuilder getNewBuilder(String alias, LoginUser loginUser) throws Exception {
+    public MessageSearchBuilder getNewBuilder(String alias, LoginUser loginUser) {
         if (alias == null || StringUtils.isEmpty(alias)) {
-            throw new Exception("Alias cannot be blank");
+            throw new IllegalArgumentException("Alias cannot be blank");
         }
-        return MessageSearchBuilder.newBuilder(client.getSearchRequestBuilder(alias, loginUser));
+        return MessageSearchBuilder.newBuilder(client.getSearchRequestBuilder(alias, loginUser), loginUser);
     }
 
-    public MessageSearchBuilder getNewBuilder(String alias, MessageSearchBuilder oldBuilder, LoginUser loginUser) throws Exception {
+    public MessageSearchBuilder getNewBuilder(String alias, MessageSearchBuilder oldBuilder, LoginUser loginUser) {
         MessageSearchBuilder newBuilder = MessageSearchBuilder
-                .newBuilder(client.getSearchRequestBuilder(alias, loginUser));
+                .newBuilder(client.getSearchRequestBuilder(alias, loginUser), loginUser);
         return newBuilder.buildFrom(oldBuilder);
     }
 
-    public SearchResponse search(MessageSearchBuilder builder, LoginUser loginUser) {
-        try {
-            SearchRequestBuilder search = builder.build(loginUser);
-            logger.info(search.toString());
-            SearchResponse response = search.execute().actionGet();
-            return response;
-        } catch (Exception e) {
-            logger.warn(e);
-            return null;
+    public MessageSearchResponse search(MessageSearchBuilder builder) {
+        SearchRequestBuilder search = builder.build();
+        logger.info(search.toString());
+        SearchResponse response = search.execute().actionGet();
+
+        final Facets facets = response.getFacets();
+        MutableList<FacetGroup> facetGroups = FastList.newList();
+        if (facets != null) {
+            final MutableList<String> names = ListIterate.collect(facets.facets(), FACET_TO_NAME);
+            facetGroups = names.collect(new Function<String, FacetGroup>() {
+                @Override
+                public FacetGroup valueOf(String facetName) {
+                    TermsFacet termsFacet = facets.facet(facetName);
+
+                    ImmutableList<FacetValue> valueMap = ListIterate.collect(termsFacet.getEntries(), TERMSFACETENTRY_TO_FACETVALUE).sortThis(FacetValue.BY_VALUE).toImmutable();
+                    return new FacetGroup(FacetGroupName.fromValue(facetName), valueMap);
+                }
+            }).sortThis(FacetGroup.BY_ORDER);
         }
+
+        ImmutableList<MessageMatch> messages = ArrayIterate.collect(response.getHits().getHits(), SEARCHHIT_TO_MESSAGEMATCH).toImmutable();
+
+
+        return new MessageSearchResponse(messages, facetGroups.toImmutable(), response.getTookInMillis());
     }
 
-    public long getMatchCount(String indexPrefix, String search, LoginUser loginUser) throws Exception {
+    public CountSearchResponse getMatchCount(String indexPrefix, String search, LoginUser loginUser) {
         try {
             SearchRequestBuilder builder = client.getSearchRequestBuilder(indexPrefix, loginUser);
             QueryBuilder qb = QueryBuilders.queryString(search)
@@ -113,29 +187,30 @@ public class MessageIndexService extends AbstractIndexService {
             builder.setSearchType(SearchType.COUNT);
             SearchResponse response = builder.execute().actionGet();
 
-            return response.getHits().getTotalHits();
+            return new CountSearchResponse(response.getHits().getTotalHits(), response.getTookInMillis());
         } catch (SearchPhaseExecutionException e) {
             logger.warn(e);
-            return -1;
+            return CountSearchResponse.EMPTY_RESPONSE;
         }
     }
 
-    public SearchResponse getMatchCount(MessageSearchBuilder builder, LoginUser loginUser) {
+    public CountSearchResponse getMatchCount(MessageSearchBuilder builder, LoginUser loginUser) {
+        SearchResponse response = builder.build()
+                .setSearchType(SearchType.COUNT).execute().actionGet();
+
+        return new CountSearchResponse(response.getHits().getTotalHits(), response.getTookInMillis());
+    }
+
+    public CountSearchResponse getTotalMessageCount(String indexPrefix, LoginUser loginUser) {
         try {
-            SearchResponse response = builder.build(loginUser)
-                    .setSearchType(SearchType.COUNT).execute().actionGet();
-
-            return response;
-
-        } catch (Exception e) {
+            SearchRequestBuilder search = client.getSearchRequestBuilder(indexPrefix, loginUser);
+            SearchResponse response = search.execute().get();
+            logger.info(search.toString());
+            return new CountSearchResponse(response.getHits().getTotalHits(), response.getTookInMillis());
+        } catch (InterruptedException | ExecutionException e) {
             logger.warn(e);
             return null;
         }
     }
-
-    public long getTotalMessageCount(String indexPrefix, LoginUser loginUser) throws Exception {
-        return client.getTotalMessageCount(indexPrefix, loginUser);
-    }
-
 
 }

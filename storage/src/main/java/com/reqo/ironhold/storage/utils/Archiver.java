@@ -4,7 +4,7 @@ import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexClient;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;

@@ -1,5 +1,6 @@
 package com.reqo.ironhold.web.components;
 
+import com.gs.collections.impl.utility.ArrayIterate;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
@@ -7,11 +8,14 @@ import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.IndexUtils;
 import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
-import com.reqo.ironhold.storage.model.message.Attachment;
+import com.reqo.ironhold.web.domain.Attachment;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.MessageSearchResponse;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
@@ -28,6 +32,7 @@ import org.elasticsearch.search.SearchHits;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
 public class EmailView extends AbstractEmailView {
@@ -43,7 +48,7 @@ public class EmailView extends AbstractEmailView {
         this.setContent(layout);
     }
 
-    public synchronized void show(SearchHitPanel newHitPanel, final SearchHit item,
+    public synchronized void show(SearchHitPanel newHitPanel, final IndexedMailMessage item,
                                   String criteria) throws Exception {
         final String client = (String) getSession().getAttribute("client");
         final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
@@ -52,8 +57,7 @@ public class EmailView extends AbstractEmailView {
 
         addEmailToolBar(layout, client, item);
 
-        String subjectValue = IndexUtils.getFieldValue(item,
-                IndexFieldEnum.SUBJECT, null, false);
+        String subjectValue = item.getSubject();
         if (subjectValue.equals(StringUtils.EMPTY)) {
             subjectValue = "&lt;No subject&gt;";
         }
@@ -64,7 +68,7 @@ public class EmailView extends AbstractEmailView {
         subject.setContentMode(ContentMode.HTML);
         subjectLayout.addComponent(subject);
 
-        String importance = IndexUtils.getFieldValue(item, IndexFieldEnum.IMPORTANCE);
+        String importance = item.getImportance();
         if (importance != null && !importance.isEmpty()) {
             switch (importance) {
                 case MimeMailMessage.IMPORTANCE_HIGH:
@@ -78,19 +82,20 @@ public class EmailView extends AbstractEmailView {
 
         layout.addComponent(subjectLayout);
 
-        final Label date = new Label(IndexUtils.getFieldValue(item,
-                IndexFieldEnum.DATE));
+        final SimpleDateFormat sdf = new SimpleDateFormat(
+                "EEE, d MMM yyyy HH:mm:ss z");
+
+        final Label date = new Label(sdf.format(item.getMessageDate()));
         date.setContentMode(ContentMode.HTML);
         date.setStyleName(Reindeer.LABEL_SMALL);
         layout.addComponent(date);
 
-        addPartyLabel(item, IndexFieldEnum.FROM_NAME, IndexFieldEnum.FROM_ADDRESS);
-        addPartyLabel(item, IndexFieldEnum.TO_NAME, IndexFieldEnum.TO_ADDRESS);
-        addPartyLabel(item, IndexFieldEnum.CC_NAME, IndexFieldEnum.CC_ADDRESS);
-        addPartyLabel(item, IndexFieldEnum.BCC_NAME, IndexFieldEnum.BCC_ADDRESS);
+        addPartyLabel("From", item.getSender());
+        addPartyLabel("To", item.getTo());
+        addPartyLabel("CC", item.getCc());
+        addPartyLabel("BCC", item.getBcc());
 
-        final Label size = new Label(IndexUtils.getFieldValue(item,
-                IndexFieldEnum.SIZE));
+        final Label size = new Label(Long.toString(item.getSize()));
         size.setContentMode(ContentMode.HTML);
         size.setStyleName(Reindeer.LABEL_SMALL);
         layout.addComponent(size);
@@ -100,7 +105,7 @@ public class EmailView extends AbstractEmailView {
 
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
 
-        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId()));
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, item.getYear(), item.getMonthDay(), item.getMessageId()));
         attachments = mailMessage.getAttachments();
 
         if (attachments != null) {
@@ -118,7 +123,7 @@ public class EmailView extends AbstractEmailView {
                                 MetaDataIndexService metaDataIndexService = ((IronholdApplication) getUI()).getMetaDataIndexService();
                                 final String client = (String) getSession().getAttribute("client");
                                 final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
-                                AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.DOWNLOAD, item.getId(), attachment.getFileName());
+                                AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.DOWNLOAD, item.getMessageId(), attachment.getFileName());
                                 metaDataIndexService.store(client, auditLogMessage);
                             } catch (Exception e) {
                                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -152,16 +157,15 @@ public class EmailView extends AbstractEmailView {
         bodyLayout.setMargin(new MarginInfo(true, true, true, true));
         bodyLayout.setSizeFull();
         MessageIndexService messageIndexService = ((IronholdApplication) this.getUI()).getMessageIndexService();
-        SearchHits hits = messageIndexService.search(
+        MessageSearchResponse response = messageIndexService.search(
                 messageIndexService.getNewBuilder(indexPrefix, loginUser).withCriteria(criteria)
-                        .withId(item.getId(), IndexedObjectType.getByValue(item.getType())).withFullBody(), loginUser).getHits();
+                        .withId(item.getMessageId(), IndexedObjectType.getByValue(item.getMessageType())).withFullBody());
 
         String bodyText = null;
         if (displayHTML) {
             bodyText = mailMessage.getBodyHTML().isEmpty() ? mailMessage.getBody() : mailMessage.getBodyHTML();
         } else {
-            bodyText = IndexUtils.getFieldValue(hits.getAt(0),
-                    IndexFieldEnum.BODY, null, false).replaceAll("\r?\n", "<br/>");
+            bodyText = response.getMessages().get(0).getFormattedIndexedMailMessage().getBody().replaceAll("\r?\n", "<br/>");
             while (bodyText.contains("<br/> <br/>")) {
                 bodyText = bodyText.replace("<br/> <br/>", "<br/>");
             }
@@ -176,14 +180,34 @@ public class EmailView extends AbstractEmailView {
 
     }
 
-    private void addPartyLabel(SearchHit item, IndexFieldEnum field, IndexFieldEnum subField) {
-        String value = IndexUtils.getFieldValue(item, field, subField);
-        if (!value.equals(StringUtils.EMPTY)) {
+    private void addPartyLabel(String type, Recipient[] recipients) {
+
+        if (recipients.length > 0) {
             HorizontalLayout hl = new HorizontalLayout();
-            final Label typeLabel = new Label(field.getLabel() + ":");
+            final Label typeLabel = new Label(type + ":");
             typeLabel.setContentMode(ContentMode.HTML);
             hl.addComponent(typeLabel);
-            final Label valueLabel = new Label(value);
+            final Label valueLabel = new Label(ArrayIterate.collect(recipients, Recipient.TO_NAME).makeString(", "));
+            valueLabel.setContentMode(ContentMode.HTML);
+            hl.addComponent(valueLabel);
+
+
+            typeLabel.setWidth("35px");
+            valueLabel.setWidth(null);
+            hl.setExpandRatio(valueLabel, 1.0f);
+
+            layout.addComponent(hl);
+        }
+    }
+
+    private void addPartyLabel(String type, Recipient recipient) {
+
+        if (recipient != null) {
+            HorizontalLayout hl = new HorizontalLayout();
+            final Label typeLabel = new Label(type + ":");
+            typeLabel.setContentMode(ContentMode.HTML);
+            hl.addComponent(typeLabel);
+            final Label valueLabel = new Label(recipient.getName());
             valueLabel.setContentMode(ContentMode.HTML);
             hl.addComponent(valueLabel);
 

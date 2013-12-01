@@ -17,7 +17,11 @@
             <artifactId>libpst</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.reqo.ironhold</groupId>
+            <artifactId>web-domain</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <!-- 3rd party dependencies -->
         <dependency>
@@ -83,7 +87,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>${spring.version}</version>
+            <version>${spring.security.version}</version>
         </dependency>
 
         <!-- test dependencies -->

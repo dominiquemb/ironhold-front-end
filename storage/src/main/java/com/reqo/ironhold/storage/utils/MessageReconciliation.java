@@ -6,7 +6,7 @@ import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
@@ -83,7 +83,7 @@ public class MessageReconciliation {
                             MimeMailMessage mimeMailMessage = new MimeMailMessage();
                             mimeMailMessage.loadMimeMessageFromSource(messageSource);
 
-                            IndexedMailMessage indexedMailMessage = new IndexedMailMessage(mimeMailMessage, true);
+                            IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mimeMailMessage, true);
 
                             for (MessageSource existingSource : metaDataIndexService.getSources(client, messageId)) {
                                 if (existingSource instanceof PSTMessageSource) {

@@ -11,6 +11,7 @@ import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Label;
@@ -44,21 +45,21 @@ public class AuditView extends AbstractEmailView {
         this.setContent(layout);
     }
 
-    public synchronized void show(SearchHitPanel newHitPanel, SearchHit item, String criteria) throws Exception {
+    public synchronized void show(SearchHitPanel newHitPanel, IndexedMailMessage item, String criteria) throws Exception {
         String client = (String) getSession().getAttribute("client");
         layout.removeAllComponents();
 
         addEmailToolBar(layout, client, item);
 
-        final Label messageId = new Label("MessageId: " + item.getId());
+        final Label messageId = new Label("MessageId: " + item.getMessageId());
         layout.addComponent(messageId);
 
 
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
         MetaDataIndexService metaDataIndexService = ((IronholdApplication) this.getUI()).getMetaDataIndexService();
         MimeMailMessage mailMessage = new MimeMailMessage();
-        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId()));
-        List<MessageSource> messageSources = metaDataIndexService.getSources(client, item.getId());
+        mailMessage.loadMimeMessageFromSource(mimeMailMessageStorageService.get(client, item.getYear(), item.getMonthDay(), item.getMessageId()));
+        List<MessageSource> messageSources = metaDataIndexService.getSources(client, item.getMessageId());
         loadIMAPSources(messageSources);
         loadPSTSources(messageSources);
         loadBloombergSources(messageSources);
@@ -73,7 +74,7 @@ public class AuditView extends AbstractEmailView {
         auditLogs.addContainerProperty(MESSAGE, String.class, "");
 
         int logCount = 0;
-        for (AuditLogMessage logMessage : metaDataIndexService.getAuditLogMessages(client, item.getId())) {
+        for (AuditLogMessage logMessage : metaDataIndexService.getAuditLogMessages(client, item.getMessageId())) {
             Item logItem = auditLogs.addItem(logCount);
             logCount++;
             logItem.getItemProperty(TIMESTAMP).setValue(logMessage.getTimestamp());
@@ -99,7 +100,7 @@ public class AuditView extends AbstractEmailView {
         logs.addContainerProperty(MESSAGE, String.class, "");
 
         logCount = 0;
-        for (LogMessage logMessage : metaDataIndexService.getLogMessages(client, item.getId())) {
+        for (LogMessage logMessage : metaDataIndexService.getLogMessages(client, item.getMessageId())) {
             Item logItem = logs.addItem(logCount);
             logCount++;
             logItem.getItemProperty(TIMESTAMP).setValue(logMessage.getTimestamp());

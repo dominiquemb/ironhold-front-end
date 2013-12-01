@@ -4,9 +4,12 @@ import com.pff.PSTAttachment;
 import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
-import com.reqo.ironhold.storage.model.IHasMessageId;
-import com.reqo.ironhold.storage.model.IPartitioned;
+import com.reqo.ironhold.storage.utils.TikaInstance;
+import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
+import com.reqo.ironhold.web.domain.interfaces.IHasMessageId;
+import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
+import com.reqo.ironhold.web.domain.interfaces.ISubPartitioned;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -15,13 +18,18 @@ import org.apache.commons.mail.ByteArrayDataSource;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
+import org.apache.tika.metadata.Metadata;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.elasticsearch.common.Base64;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeMessage;
 import javax.swing.*;
 import javax.swing.text.EditorKit;
@@ -30,6 +38,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +52,7 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     private static Logger logger = Logger.getLogger(MimeMailMessage.class);
     protected SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     protected SimpleDateFormat dayMonthFormat = new SimpleDateFormat("MMdd");
+
 
     private int embeddedMessageCount = 0;
 
@@ -797,5 +807,135 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         } else {
             return "unknown";
         }
+    }
+
+    // Factory methods
+
+    public static IndexedMailMessage toIndexedMailMessage(MimeMailMessage message, boolean extractTextFromAttachments) {
+        IndexedMailMessage indexedMailMessage = new IndexedMailMessage();
+        indexedMailMessage.setMessageId(message.getMessageId());
+
+        logger.debug("Loading imap message");
+        indexedMailMessage.setSubject(message.getSubject());
+        indexedMailMessage.setMessageDate(message.getMessageDate());
+        if (message.getMessageDate() != null) {
+            indexedMailMessage.setYear(message.yearFormat.format(message.getMessageDate()));
+            indexedMailMessage.setMonthDay(message.dayMonthFormat.format(message.getMessageDate()));
+        } else {
+            indexedMailMessage.setYear("unknown");
+            indexedMailMessage.setMonthDay("unknown");
+        }
+        indexedMailMessage.setSender(Recipient.normalize(message.getFrom()));
+        indexedMailMessage.setTo(Recipient.normalize(message.getTo()));
+        indexedMailMessage.setCc(Recipient.normalize(message.getCc()));
+        indexedMailMessage.setBcc(Recipient.normalize(message.getBcc()));
+
+        indexedMailMessage.setSize(message.getSize());
+        indexedMailMessage.setImportance(message.getImportance());
+        indexedMailMessage.setMessageType(message.getMessageType().name());
+
+        if (message.getBodyHTML().trim().length() != 0) {
+            Document html = Jsoup.parse(message.getBodyHTML());
+            StringWriter buffer = new StringWriter();
+            PrintWriter writer = new PrintWriter(buffer);
+
+            for (Node node : html.childNodes()) {
+                parseHtml(writer, node);
+            }
+            indexedMailMessage.setBody(buffer.toString());
+        } else if (message.getBody().trim().length() != 0) {
+            indexedMailMessage.setBody(message.getBody());
+        } else {
+            indexedMailMessage.setBody(StringUtils.EMPTY);
+        }
+        indexedMailMessage.setAttachments(extractAttachmentsFromArray(message.getAttachments(), extractTextFromAttachments));
+
+        logger.debug("Done loading imap message");
+
+        return indexedMailMessage;
+    }
+
+    private static void parseHtml(PrintWriter writer, Node node) {
+        if (node instanceof TextNode) {
+            writer.println(((TextNode) node).text());
+        } else if (node instanceof Element) {
+            for (Node subNode : node.childNodes()) {
+                parseHtml(writer, subNode);
+            }
+        }
+    }
+
+
+    private static IndexedAttachment[] extractAttachmentsFromArray(Attachment[] sourceAttachments, boolean extractTextFromAttachments) {
+        IndexedAttachment[] result = new IndexedAttachment[sourceAttachments.length];
+        int counter = 0;
+        for (Attachment sourceAttachment : sourceAttachments) {
+
+            IndexedAttachment indexedAttachment = Attachment.toIndexedAttachment(sourceAttachment, extractTextFromAttachments);
+
+            if (extractTextFromAttachments) {
+                logger.info("Attempting to extract text from " + sourceAttachment.getFileName());
+                indexedAttachment.setBody(extractText(sourceAttachment.getBody()));
+            } else {
+                logger.info("Skipping extraction of text from " + sourceAttachment.getFileName());
+                indexedAttachment.setBody(StringUtils.EMPTY);
+            }
+
+            result[counter++] = indexedAttachment;
+        }
+
+        return result;
+    }
+
+
+    private static String extractText(final String body) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        CompletionService<String> taskCompletionService = new ExecutorCompletionService<String>(
+                executorService);
+
+        try {
+
+            Callable<String> task = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    try {
+                        byte[] bytes = Base64.decode(body);
+                        String parsedContent;
+
+                        // Set the maximum length of strings returned by the parseToString
+                        // method, -1 sets no limit
+                        parsedContent = TikaInstance.tika().parseToString(
+                                new ByteArrayInputStream(bytes), new Metadata(), -1);
+
+                        return parsedContent;
+                    } catch (Exception e) {
+                        logger.warn("Failed to extract characters " + e.getMessage());
+                    }
+
+                    return StringUtils.EMPTY;
+                }
+            };
+            Future<String> future = taskCompletionService.submit(task);
+
+            Future<String> result = taskCompletionService.poll(2, TimeUnit.MINUTES);
+            if (result == null) {
+                if (future.isDone()) {
+                    return future.get();
+                } else {
+                    logger.warn("Extraction task did not return in time, canceling");
+                    return StringUtils.EMPTY;
+                }
+            }
+
+
+            return result.get();
+        } catch (Exception e) {
+            logger.warn(e);
+        } finally {
+            executorService.shutdownNow();
+        }
+
+        return StringUtils.EMPTY;
     }
 }

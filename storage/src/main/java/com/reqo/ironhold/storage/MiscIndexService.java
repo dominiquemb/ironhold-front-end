@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
+import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
 import com.reqo.ironhold.storage.model.metadata.BloombergMeta;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
@@ -23,7 +24,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 
-public class MiscIndexService extends AbstractIndexService {
+public class MiscIndexService extends AbstractIndexService implements IMiscIndexService {
     public static final String PARTITION = null;
     private static Logger logger = Logger.getLogger(MiscIndexService.class);
     public static final String SUFFIX = "misc";
@@ -42,7 +43,7 @@ public class MiscIndexService extends AbstractIndexService {
     }
 
 
-    public void store(String indexPrefix, PSTFileMeta meta) throws Exception {
+    public void store(String indexPrefix, PSTFileMeta meta)  {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -56,7 +57,7 @@ public class MiscIndexService extends AbstractIndexService {
 
     }
 
-    public void store(String indexPrefix, IMAPBatchMeta meta) throws Exception {
+    public void store(String indexPrefix, IMAPBatchMeta meta)  {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -69,7 +70,7 @@ public class MiscIndexService extends AbstractIndexService {
 
     }
 
-    public void store(String indexPrefix, BloombergMeta meta) throws Exception {
+    public void store(String indexPrefix, BloombergMeta meta)  {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -83,7 +84,7 @@ public class MiscIndexService extends AbstractIndexService {
     }
 
 
-    public PSTFileMeta findExisting(String indexPrefix, PSTFileMeta meta) throws Exception {
+    public PSTFileMeta findExisting(String indexPrefix, PSTFileMeta meta)  {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
@@ -104,7 +105,7 @@ public class MiscIndexService extends AbstractIndexService {
         return null;
     }
 
-    public PSTFileMeta getPSTFileMeta(String indexPrefix, String id) throws Exception {
+    public PSTFileMeta getPSTFileMeta(String indexPrefix, String id)  {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
@@ -118,7 +119,7 @@ public class MiscIndexService extends AbstractIndexService {
         return null;
     }
 
-    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit) throws Exception {
+    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit)  {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
@@ -147,7 +148,7 @@ public class MiscIndexService extends AbstractIndexService {
     }
 
 
-    public void store(String indexPrefix, LoginUser loginUser) throws Exception {
+    public void store(String indexPrefix, LoginUser loginUser)  {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -174,7 +175,7 @@ public class MiscIndexService extends AbstractIndexService {
         return result;
     }
 
-    public LoginUser authenticate(String indexPrefix, String username, String password, LoginChannelEnum channel, String loginContext) throws Exception {
+    public LoginUser authenticate(String indexPrefix, String username, String password, LoginChannelEnum channel, String loginContext) {
         LoginUser storedUser = usernameExists(indexPrefix, username.toLowerCase());
         if (storedUser == null) {
             return null;
@@ -199,7 +200,7 @@ public class MiscIndexService extends AbstractIndexService {
         return client.getCount(alias, IndexedObjectType.LOGIN_USER);
     }
 
-    public LoginUser usernameExists(String indexPrefix, String username) throws ExecutionException, InterruptedException, IOException {
+    public LoginUser usernameExists(String indexPrefix, String username)  {
         String alias = getIndexAlias(indexPrefix);
         Set<Pair<String, String>> criteria = new HashSet<>();
         Pair<String, String> pair = new ImmutablePair("username", username.toLowerCase());

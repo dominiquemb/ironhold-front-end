@@ -63,13 +63,21 @@ public class PSTFileMeta {
                 false);
     }
 
-    public String serialize() throws IOException {
-        persistCalculations();
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            persistCalculations();
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public PSTFileMeta deserialize(String source) throws IOException {
-        return mapper.readValue(source, PSTFileMeta.class);
+    public PSTFileMeta deserialize(String source) {
+        try {
+            return mapper.readValue(source, PSTFileMeta.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void persistCalculations() {

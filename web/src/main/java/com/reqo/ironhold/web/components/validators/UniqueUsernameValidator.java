@@ -27,18 +27,8 @@ public class UniqueUsernameValidator extends AbstractStringValidator {
     @Override
     protected boolean isValidValue(String value) {
         if (value.isEmpty()) return true;
-        try {
-            LoginUser matchUser = miscIndexService.usernameExists(client, value);
-            return matchUser == null || (loginUser != null && loginUser.getId().equals(matchUser.getId()));
-        } catch (ExecutionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return false;
-
+        LoginUser matchUser = miscIndexService.usernameExists(client, value);
+        return matchUser == null || (loginUser != null && loginUser.getId().equals(matchUser.getId()));
     }
 
     public LoginUser getLoginUser() {

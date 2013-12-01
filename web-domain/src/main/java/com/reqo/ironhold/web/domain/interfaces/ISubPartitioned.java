@@ -1,4 +1,4 @@
-package com.reqo.ironhold.storage.model.message;
+package com.reqo.ironhold.web.domain.interfaces;
 
 /**
  * User: ilya

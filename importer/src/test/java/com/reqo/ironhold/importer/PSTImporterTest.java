@@ -8,7 +8,7 @@ import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
 import com.reqo.ironhold.utils.MD5CheckSum;

@@ -1,6 +1,6 @@
 package com.reqo.ironhold.storage.es;
 
-import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
@@ -18,7 +18,6 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -32,6 +31,7 @@ import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -55,25 +55,30 @@ public class IndexClient {
     private int restPort;
     private boolean joinCluster;
 
-    public IndexClient(String nodeName) throws Exception {
+    public IndexClient(String nodeName) {
         this(nodeName, true);
     }
 
-    public IndexClient(String nodeName, boolean joinCluster) throws Exception {
-        this.joinCluster = joinCluster;
-        Properties prop = new Properties();
-        prop.load(IndexClient.class
-                .getResourceAsStream("elasticsearch.properties"));
+    public IndexClient(String nodeName, boolean joinCluster) {
+        try {
 
-        esHosts = prop.getProperty("hosts").split(",");
-        esPort = Integer.parseInt(prop.getProperty("port"));
+            this.joinCluster = joinCluster;
+            Properties prop = new Properties();
+            prop.load(IndexClient.class
+                    .getResourceAsStream("elasticsearch.properties"));
 
-        restHost = prop.getProperty("rest.host");
-        restPort = Integer.parseInt(prop.getProperty("rest.port"));
+            esHosts = prop.getProperty("hosts").split(",");
+            esPort = Integer.parseInt(prop.getProperty("port"));
 
-        String hostname = java.net.InetAddress.getLocalHost().getHostName();
-        this.nodeName = nodeName + "@" + hostname;
-        reconnect();
+            restHost = prop.getProperty("rest.host");
+            restPort = Integer.parseInt(prop.getProperty("rest.port"));
+
+            String hostname = java.net.InetAddress.getLocalHost().getHostName();
+            this.nodeName = nodeName + "@" + hostname;
+            reconnect();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -81,7 +86,7 @@ public class IndexClient {
         this.esClient = esClient;
     }
 
-    private void reconnect() throws Exception {
+    private void reconnect() {
         if (esClient != null) {
             esClient.close();
         }
@@ -110,71 +115,100 @@ public class IndexClient {
      * ITEM OPERATIONS *
      */
 
-    public void store(String indexName, IndexedObjectType type, String id, String object) throws ExecutionException, InterruptedException {
-        IndexResponse result =
-                esClient.prepareIndex(indexName, type.getValue(), id)
-                        .setSource(object)
-                        .execute()
-                        .get();
-
-    }
-
-    public void store(String indexName, IndexedObjectType type, String object) throws ExecutionException, InterruptedException {
-        IndexResponse result =
-                esClient.prepareIndex(indexName, type.getValue())
-                        .setSource(object)
-                        .execute()
-                        .get();
-
-    }
-
-    public DeleteResponse delete(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
-        return esClient.prepareDelete(indexName, type.getValue(),
-                id).execute().get();
-
-    }
-
-    public boolean itemExists(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
-        GetResponse response = esClient
-                .prepareGet(indexName, type.getValue(), id)
-                .setFields("_id").execute().get();
-        return response.isExists();
-    }
-
-    public GetResponse getById(String indexName, IndexedObjectType type, String id) throws ExecutionException, InterruptedException {
-        return esClient.prepareGet(indexName, type.getValue(), id).execute().get();
-    }
-
-    public SearchResponse getByField(String indexName, IndexedObjectType type, Set<Pair<String, String>> criteria, String sortField, SortOrder order) throws ExecutionException, InterruptedException {
-        SearchRequestBuilder request = esClient.prepareSearch(indexName)
-                .setTypes(type.getValue())
-                .addField("_source");
-
-        if (sortField != null) {
-            request.addSort(sortField, order);
+    public void store(String indexName, IndexedObjectType type, String id, String object) {
+        try {
+            IndexResponse result =
+                    esClient.prepareIndex(indexName, type.getValue(), id)
+                            .setSource(object)
+                            .execute()
+                            .get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
 
-        AndFilterBuilder fb = FilterBuilders.andFilter();
-        for (Pair<String, String> criterion : criteria) {
-            fb.add(FilterBuilders.termFilter(criterion.getKey(), criterion.getValue()));
-        }
-
-        request.setFilter(fb);
-
-        logger.info(request.toString());
-        return request.execute().get();
     }
 
-    public SearchResponse getByField(String indexName, IndexedObjectType type, Set<Pair<String, String>> criteria) throws ExecutionException, InterruptedException {
+    public void store(String indexName, IndexedObjectType type, String object) {
+        try {
+            IndexResponse result =
+                    esClient.prepareIndex(indexName, type.getValue())
+                            .setSource(object)
+                            .execute()
+                            .get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DeleteResponse delete(String indexName, IndexedObjectType type, String id) {
+        try {
+            return esClient.prepareDelete(indexName, type.getValue(),
+                    id).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean itemExists(String indexName, IndexedObjectType type, String id) {
+        GetResponse response = null;
+        try {
+            response = esClient
+                    .prepareGet(indexName, type.getValue(), id)
+                    .setFields("_id").execute().get();
+            return response.isExists();
+
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public GetResponse getById(String indexName, IndexedObjectType type, String id) {
+        try {
+            return esClient.prepareGet(indexName, type.getValue(), id).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SearchResponse getByField(String indexName, IndexedObjectType type, Set<Pair<String, String>> criteria, String sortField, SortOrder order) {
+        try {
+
+            SearchRequestBuilder request = esClient.prepareSearch(indexName)
+                    .setTypes(type.getValue())
+                    .addField("_source");
+
+            if (sortField != null) {
+                request.addSort(sortField, order);
+            }
+
+            AndFilterBuilder fb = FilterBuilders.andFilter();
+            for (Pair<String, String> criterion : criteria) {
+                fb.add(FilterBuilders.termFilter(criterion.getKey(), criterion.getValue()));
+            }
+
+            request.setFilter(fb);
+
+            logger.debug(request.toString());
+            return request.execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SearchResponse getByField(String indexName, IndexedObjectType type, Set<Pair<String, String>> criteria) {
         return getByField(indexName, type, criteria, null, SortOrder.DESC);
     }
 
-    public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) throws ExecutionException, InterruptedException {
-        SearchRequestBuilder request = esClient.prepareSearch(indexName)
-                .setTypes(type.getValue())
-                .addField("_source").setFrom(start).setSize(limit);
-        logger.debug(request.toString());
-        return request.execute().get();
+    public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) {
+        try {
+            SearchRequestBuilder request = esClient.prepareSearch(indexName)
+                    .setTypes(type.getValue())
+                    .addField("_source").setFrom(start).setSize(limit);
+            logger.debug(request.toString());
+            return request.execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -182,58 +216,78 @@ public class IndexClient {
      */
 
 
-    public boolean indexExists(String indexName) throws ExecutionException, InterruptedException {
-        IndicesExistsResponse exists = esClient.admin().indices()
-                .prepareExists(indexName).execute().get();
+    public boolean indexExists(String indexName) {
+        IndicesExistsResponse exists = null;
+        try {
+            exists = esClient.admin().indices()
+                    .prepareExists(indexName).execute().get();
 
-        return exists.isExists();
+            return exists.isExists();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void createIndex(String indexName, String alias, String indexSettingsFile) throws Exception {
-        if (indexName == null || alias == null) {
-            throw new IllegalArgumentException("Index or alias cannot be null");
-        }
-        String indexSettingsFileContents = readJsonDefinition(indexSettingsFile);
-
-        CreateIndexResponse response1 = esClient.admin().indices()
-                .prepareCreate(indexName).setSettings(indexSettingsFileContents).execute()
-                .get();
-        if (!response1.isAcknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: "
-                    + response1.toString());
-        }
-
-        if (!indexName.equals(alias)) {
-            IndicesAliasesResponse response3 = esClient.admin().indices()
-                    .prepareAliases().addAlias(indexName, alias).execute()
-                    .get();
-            if (!response3.isAcknowledged()) {
-                throw new Exception("ES Request did not get acknowledged: "
-                        + response3.toString());
+    public void createIndex(String indexName, String alias, String indexSettingsFile) {
+        try {
+            if (indexName == null || alias == null) {
+                throw new IllegalArgumentException("Index or alias cannot be null");
             }
+            String indexSettingsFileContents = readJsonDefinition(indexSettingsFile);
+
+            CreateIndexResponse response1 = esClient.admin().indices()
+                    .prepareCreate(indexName).setSettings(indexSettingsFileContents).execute()
+                    .get();
+            if (!response1.isAcknowledged()) {
+                throw new RuntimeException("ES Request did not get acknowledged: "
+                        + response1.toString());
+            }
+
+            if (!indexName.equals(alias)) {
+                IndicesAliasesResponse response3 = esClient.admin().indices()
+                        .prepareAliases().addAlias(indexName, alias).execute()
+                        .get();
+                if (!response3.isAcknowledged()) {
+                    throw new RuntimeException("ES Request did not get acknowledged: "
+                            + response3.toString());
+                }
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized void addTypeMapping(String indexName, IndexedObjectType type, String mappingsFile) {
+        try {
+
+            String mappingFileContents = readJsonDefinition(mappingsFile);
+            logger.info("Applying mapping for " + indexName + " of type " + type.getValue());
+            PutMappingResponse response2 = null;
+            response2 = esClient.admin().indices()
+                    .preparePutMapping(indexName)
+                    .setType(type.getValue())
+                    .setSource(mappingFileContents).execute().get();
+            if (!response2.isAcknowledged()) {
+                throw new RuntimeException("ES Request did not get acknowledged: "
+                        + response2.toString());
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
 
     }
 
-    public synchronized void addTypeMapping(String indexName, IndexedObjectType type, String mappingsFile) throws Exception {
-        String mappingFileContents = readJsonDefinition(mappingsFile);
-        logger.info("Applying mapping for " + indexName + " of type " + type.getValue());
-        PutMappingResponse response2 = esClient.admin().indices()
-                .preparePutMapping(indexName)
-                .setType(type.getValue())
-                .setSource(mappingFileContents).execute().get();
-        if (!response2.isAcknowledged()) {
-            throw new Exception("ES Request did not get acknowledged: "
-                    + response2.toString());
-        }
-    }
 
-
-    public void refresh(String indexPrefix) throws Exception {
-        RefreshResponse refresh = esClient.admin().indices()
-                .prepareRefresh(indexPrefix).execute().get();
-        if (refresh.getFailedShards() > 0) {
-            throw new Exception("Refresh failed");
+    public void refresh(String indexPrefix) {
+        try {
+            RefreshResponse refresh = esClient.admin().indices()
+                    .prepareRefresh(indexPrefix).execute().get();
+            if (refresh.getFailedShards() > 0) {
+                throw new RuntimeException("Refresh failed");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -246,26 +300,14 @@ public class IndexClient {
         return search;
     }
 
-    public SearchRequestBuilder getSearchRequestBuilder(String alias, LoginUser loginUser) throws Exception {
+    public SearchRequestBuilder getSearchRequestBuilder(String alias, LoginUser loginUser) {
         SearchRequestBuilder search = esClient.prepareSearch(alias);
         applyFilters(search, loginUser);
         return search;
     }
 
 
-    public long getTotalMessageCount(String alias, LoginUser loginUser) throws Exception {
-        try {
-            SearchRequestBuilder search = esClient.prepareSearch(alias).setSearchType(SearchType.COUNT).setNoFields();
-            applyFilters(search, loginUser);
-            logger.info(search.toString());
-            return search.execute().get().getHits().getTotalHits();
-        } catch (ExecutionException e) {
-            logger.warn(e);
-            return 0;
-        }
-    }
-
-    private void applyFilters(SearchRequestBuilder search, LoginUser loginUser) throws Exception {
+    private void applyFilters(SearchRequestBuilder search, LoginUser loginUser) {
         if (loginUser.hasRole(RoleEnum.CAN_SEARCH) || loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
             if (!loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
                 OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
@@ -283,7 +325,7 @@ public class IndexClient {
                 search.setFilter(filterBuilders);
             }
         } else {
-            throw new Exception("This user does not have search role");
+            throw new SecurityException("This user does not have search role");
         }
 
     }
@@ -303,7 +345,7 @@ public class IndexClient {
     /**
      * Helper methods
      */
-    private static String readJsonDefinition(String fileName) throws Exception {
+    private static String readJsonDefinition(String fileName) {
         return readFileInClasspath("/estemplate/" + fileName);
     }
 
@@ -312,12 +354,13 @@ public class IndexClient {
      *
      * @param url File URL Example : /es/twitter/_settings.json
      * @return File content or null if file doesn't exist
-     * @throws Exception
+     * @
      */
-    public static String readFileInClasspath(String url) throws Exception {
-        StringBuffer bufferJSON = new StringBuffer();
-
+    public static String readFileInClasspath(String url) {
         try {
+            StringBuffer bufferJSON = new StringBuffer();
+
+
             InputStream ips = IndexClient.class.getResourceAsStream(url);
             InputStreamReader ipsr = new InputStreamReader(ips);
             BufferedReader br = new BufferedReader(ipsr);
@@ -327,11 +370,12 @@ public class IndexClient {
                 bufferJSON.append(line);
             }
             br.close();
-        } catch (Exception e) {
-            return null;
+            return bufferJSON.toString();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        return bufferJSON.toString();
     }
 
     public Client getClient() {

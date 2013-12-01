@@ -5,10 +5,11 @@ import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
 import com.reqo.ironhold.storage.model.log.AuditActionEnum;
 import com.reqo.ironhold.storage.model.log.AuditLogMessage;
-import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
+import com.reqo.ironhold.web.domain.CountSearchResponse;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.*;
@@ -204,8 +205,8 @@ public class LoginUserViewer extends Panel {
 
         emailAddresses.setValue(sb.toString());
         if (loginUser.hasRole(RoleEnum.CAN_SEARCH) || loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
-            long messageCount = messageIndexService.getTotalMessageCount(client, loginUser);
-            searchResults.setValue(messageCount + " messages");
+            CountSearchResponse result = messageIndexService.getTotalMessageCount(client, loginUser);
+            searchResults.setValue(result.getMatches() + " messages");
         } else {
             searchResults.setValue("User can't search");
         }

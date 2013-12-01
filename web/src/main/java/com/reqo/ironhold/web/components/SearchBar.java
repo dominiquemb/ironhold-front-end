@@ -3,6 +3,7 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.CountSearchResponse;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Label;
@@ -25,7 +26,7 @@ public class SearchBar extends VerticalLayout {
 
         final MessageIndexService messageIndexService = ironholdApplication.getMessageIndexService();
         final Label previewLabel = new Label(String.format(
-                "%,d total messages", messageIndexService.getTotalMessageCount(client, loginUser)));
+                "%,d total messages", messageIndexService.getTotalMessageCount(client, loginUser).getMatches()));
 
         searchTextField.addTextChangeListener(new TextChangeListener() {
 
@@ -35,7 +36,8 @@ public class SearchBar extends VerticalLayout {
 
                     long results = 0;
                     try {
-                        results = messageIndexService.getMatchCount(client, event.getText(), loginUser);
+                        CountSearchResponse matchResult = messageIndexService.getMatchCount(client, event.getText(), loginUser);
+                        results = matchResult.getMatches();
                         if (results >= 0) {
                             previewLabel.setValue(String.format(
                                     "%,d matched messages", results));
@@ -47,16 +49,8 @@ public class SearchBar extends VerticalLayout {
                     }
 
                 } else {
-                    try {
-                        previewLabel.setValue(String.format("%,d total messages",
-                                messageIndexService.getTotalMessageCount(client, loginUser)));
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    } catch (Exception e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
+                    previewLabel.setValue(String.format("%,d total messages",
+                            messageIndexService.getTotalMessageCount(client, loginUser)));
                 }
             }
         });

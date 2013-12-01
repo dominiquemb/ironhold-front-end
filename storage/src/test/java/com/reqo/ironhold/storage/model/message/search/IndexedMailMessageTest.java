@@ -2,7 +2,7 @@ package com.reqo.ironhold.storage.model.message.search;
 
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
@@ -45,8 +45,7 @@ public class IndexedMailMessageTest {
     public void testIndexedMailMessageConstructor() throws Exception {
         MimeMailMessage inputMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                inputMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(inputMessage, true);
 
         Assert.assertEquals(inputMessage
                 .getMessageId(), indexedMailMessage.getMessageId());
@@ -83,8 +82,7 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
 
         String parsedContent = indexedMailMessage.getAttachments()[0].getBody()
                 .replaceAll("[ \\t\\n\\r]+", " ");
@@ -108,8 +106,8 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
+
 
         String parsedContent1 = indexedMailMessage.getAttachments()[0]
                 .getBody().replaceAll("[ \\t\\n\\r]+", " ");
@@ -128,8 +126,8 @@ public class IndexedMailMessageTest {
 
         MimeMailMessage pstMessage = MimeMailMessage.getMimeMailMessage(testModel.generateOriginalPSTMessage());
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                pstMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(pstMessage, true);
+
 
         String parsedContent1 = indexedMailMessage.getAttachments()[0]
                 .getBody().replaceAll("[ \\t\\n\\r]+", " ");
@@ -154,8 +152,8 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
+
         String json = indexedMailMessage.serialize().replace("\\n", "").replace(" ", "");
 
         String assertContent = FileUtils.readFileToString(assertFile)
@@ -174,8 +172,8 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
+
 
         String parsedContent = indexedMailMessage.getAttachments()[0].getBody();
 
@@ -194,8 +192,8 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
+
 
 
         Assert.assertEquals(1, indexedMailMessage.getAttachments().length);
@@ -219,8 +217,8 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, false);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, false);
+
 
         String parsedContent1 = indexedMailMessage.getAttachments()[0]
                 .getBody().replaceAll("[ \\t\\n\\r]+", " ");
@@ -242,8 +240,8 @@ public class IndexedMailMessageTest {
         MimeMailMessage mailMessage = new MimeMailMessage();
         mailMessage.loadMimeMessage(mimeMessage);
 
-        IndexedMailMessage indexedMailMessage = new IndexedMailMessage(
-                mailMessage, true);
+        IndexedMailMessage indexedMailMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
+
 
         Assert.assertEquals("unknown", indexedMailMessage.getYear());
         Assert.assertEquals("unknown", indexedMailMessage.getMonthDay());

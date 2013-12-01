@@ -10,7 +10,7 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.sun.mail.iap.Argument;
 import com.sun.mail.iap.ProtocolException;
@@ -155,7 +155,7 @@ public class DownloadCommand implements IMAPFolder.ProtocolCommand {
                             .getRawContents().length(), storedSize);
 
                     try {
-                        messageIndexService.store(client, new IndexedMailMessage(mailMessage, true));
+                        messageIndexService.store(client, MimeMailMessage.toIndexedMailMessage(mailMessage, true));
                     } catch (Exception e) {
                         logger.error("Failed to index message " + mailMessage.getMessageId(), e);
                         metaDataIndexService.store(client, new IndexFailure(mailMessage.getMessageId(), mailMessage.getPartition(), e));

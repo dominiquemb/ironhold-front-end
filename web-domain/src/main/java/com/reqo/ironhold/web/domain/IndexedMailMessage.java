@@ -1,10 +1,6 @@
-package com.reqo.ironhold.storage.model.search;
+package com.reqo.ironhold.web.domain;
 
-import com.reqo.ironhold.storage.model.IPartitioned;
-import com.reqo.ironhold.storage.model.message.Attachment;
-import com.reqo.ironhold.storage.model.message.MimeMailMessage;
-import com.reqo.ironhold.storage.model.message.Recipient;
-import org.apache.commons.lang3.StringUtils;
+import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,24 +8,15 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
 public class IndexedMailMessage implements IPartitioned {
     private static Logger logger = Logger.getLogger(IndexedMailMessage.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
-
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     private String messageId;
     private String subject;
@@ -37,7 +24,6 @@ public class IndexedMailMessage implements IPartitioned {
     private String year;
     private String monthDay;
     private Recipient sender;
-    private Recipient realSender;
     private Recipient[] to;
     private Recipient[] cc;
     private Recipient[] bcc;
@@ -49,74 +35,11 @@ public class IndexedMailMessage implements IPartitioned {
     private String messageType;
 
 
-    @JsonIgnore
-    private SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
-
-    @JsonIgnore
-    private SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMdd");
-
     public IndexedMailMessage() {
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
     }
 
-    public IndexedMailMessage(MimeMailMessage mimeMessage, boolean extractTextFromAttachments) {
-        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
-                false);
-        messageId = mimeMessage.getMessageId();
-        load(mimeMessage);
-
-        attachments = IndexedAttachment.fromArray(mimeMessage.getAttachments(), extractTextFromAttachments);
-    }
-
-
-    private void load(MimeMailMessage imapMailMessage) {
-        logger.debug("Loading imap message");
-        subject = imapMailMessage.getSubject();
-        messageDate = imapMailMessage.getMessageDate();
-        if (messageDate != null) {
-            year = yearFormat.format(messageDate);
-            monthDay = monthDayFormat.format(messageDate);
-        } else {
-            year = "unknown";
-            monthDay = "unknown";
-        }
-        sender = Recipient.normalize(imapMailMessage.getFrom());
-        to = Recipient.normalize(imapMailMessage.getTo());
-        cc = Recipient.normalize(imapMailMessage.getCc());
-        bcc = Recipient.normalize(imapMailMessage.getBcc());
-
-        size = imapMailMessage.getSize();
-        importance = imapMailMessage.getImportance();
-        messageType = imapMailMessage.getMessageType().name();
-
-        if (imapMailMessage.getBodyHTML().trim().length() != 0) {
-            Document html = Jsoup.parse(imapMailMessage.getBodyHTML());
-            StringWriter buffer = new StringWriter();
-            PrintWriter writer = new PrintWriter(buffer);
-
-            for (Node node : html.childNodes()) {
-                parseHtml(writer, node);
-            }
-            body = buffer.toString();
-        } else if (imapMailMessage.getBody().trim().length() != 0) {
-            body = imapMailMessage.getBody();
-        } else {
-            body = StringUtils.EMPTY;
-        }
-        logger.debug("Done loading imap message");
-
-    }
-
-    private void parseHtml(PrintWriter writer, Node node) {
-        if (node instanceof TextNode) {
-            writer.println(((TextNode) node).text());
-        } else if (node instanceof Element) {
-            for (Node subNode : ((Element) node).childNodes()) {
-                parseHtml(writer, subNode);
-            }
-        }
-    }
 
     public void addSource(String sourceId) {
         if (sources == null) {
@@ -137,14 +60,22 @@ public class IndexedMailMessage implements IPartitioned {
         this.sources = sources;
     }
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public IndexedMailMessage deserialize(String json)
-            throws IOException {
-        return mapper.readValue(json, IndexedMailMessage.class);
+    public static IndexedMailMessage deserialize(String json) {
+        try {
+            return mapper.readValue(json, IndexedMailMessage.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     public String getMessageId() {
         return messageId;
@@ -218,14 +149,6 @@ public class IndexedMailMessage implements IPartitioned {
         this.body = body;
     }
 
-    public Attachment[] getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(Attachment[] attachments) {
-        this.attachments = IndexedAttachment.fromArray(attachments, true);
-    }
-
     public String getYear() {
         return year;
     }
@@ -273,6 +196,14 @@ public class IndexedMailMessage implements IPartitioned {
 
     public void setMessageType(String messageType) {
         this.messageType = messageType;
+    }
+
+    public IndexedAttachment[] getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(IndexedAttachment[] attachments) {
+        this.attachments = attachments;
     }
 
     @Override

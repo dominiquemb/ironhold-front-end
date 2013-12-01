@@ -1,14 +1,19 @@
-package com.reqo.ironhold.storage.model.message;
+package com.reqo.ironhold.web.domain;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.concurrent.*;
 
 public class Attachment {
+    private static Logger logger = Logger.getLogger(Attachment.class);
+
     private int size;
     private Date creationTime;
     private Date modificationTime;
@@ -121,6 +126,21 @@ public class Attachment {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    public static IndexedAttachment toIndexedAttachment(Attachment sourceAttachment, boolean extractTextFromAttachments) {
+
+        IndexedAttachment indexedAttachment = new IndexedAttachment();
+        indexedAttachment.setContentType(sourceAttachment.getContentType());
+        indexedAttachment.setContentDisposition(sourceAttachment.getContentDisposition());
+        indexedAttachment.setCreationTime(sourceAttachment.getCreationTime());
+        indexedAttachment.setFileExt(sourceAttachment.getFileExt());
+        indexedAttachment.setFileName(sourceAttachment.getFileName());
+        indexedAttachment.setModificationTime(sourceAttachment.getModificationTime());
+        indexedAttachment.setSize(sourceAttachment.getSize());
+
+
+        return indexedAttachment;
     }
 
 }

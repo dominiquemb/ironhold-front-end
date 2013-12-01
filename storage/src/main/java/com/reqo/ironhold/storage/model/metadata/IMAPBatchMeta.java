@@ -15,204 +15,212 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class IMAPBatchMeta {
-	private static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper();
 
-	static {
-		mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
-				false);
-	}
-
-
-	private IMAPMessageSource source;
-	private Date started;
-	private Date finished;
-	private long messages;
-	private long duplicates;
-	private long failures;
-
-	private long batchSize;
-	private long maxSize;
-	private long compressedMaxSize;
-
-	private long messagesWithAttachments;
-	private long messagesWithoutAttachments;
-
-	@JsonIgnore
-	private Mean sizeMean = new Mean();
-	@JsonIgnore
-	private Median sizeMedian = new Median();
-	@JsonIgnore
-	private Mean compressedSizeMean = new Mean();
-	@JsonIgnore
-	private Median compressedSizeMedian = new Median();
-	private double compressedAverageSize;
-	private double averageSize;
-	private double medianSize;
-	private double medianCompressedSize;
-	@JsonIgnore
-	private boolean isDirty = false;
-
-    public String serialize() throws IOException {
-        persistCalculations();
-        return mapper.writeValueAsString(this);
+    static {
+        mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+                false);
     }
 
-    public IMAPBatchMeta deserialize(String source) throws IOException {
-        return mapper.readValue(source, IMAPBatchMeta.class);
+
+    private IMAPMessageSource source;
+    private Date started;
+    private Date finished;
+    private long messages;
+    private long duplicates;
+    private long failures;
+
+    private long batchSize;
+    private long maxSize;
+    private long compressedMaxSize;
+
+    private long messagesWithAttachments;
+    private long messagesWithoutAttachments;
+
+    @JsonIgnore
+    private Mean sizeMean = new Mean();
+    @JsonIgnore
+    private Median sizeMedian = new Median();
+    @JsonIgnore
+    private Mean compressedSizeMean = new Mean();
+    @JsonIgnore
+    private Median compressedSizeMedian = new Median();
+    private double compressedAverageSize;
+    private double averageSize;
+    private double medianSize;
+    private double medianCompressedSize;
+    @JsonIgnore
+    private boolean isDirty = false;
+
+    public String serialize() {
+        try {
+            persistCalculations();
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-	public void persistCalculations() {
-		if (isDirty) {
-			this.averageSize = sizeMean.evaluate();
-			this.compressedAverageSize = compressedSizeMean.evaluate();
+    public IMAPBatchMeta deserialize(String source) {
+        try {
+            return mapper.readValue(source, IMAPBatchMeta.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-			this.medianSize = sizeMedian.evaluate(sizeMean.getData());
-			this.medianCompressedSize = compressedSizeMedian
-					.evaluate(compressedSizeMean.getData());
+    public void persistCalculations() {
+        if (isDirty) {
+            this.averageSize = sizeMean.evaluate();
+            this.compressedAverageSize = compressedSizeMean.evaluate();
 
-			isDirty = false;
-		}
-	}
+            this.medianSize = sizeMedian.evaluate(sizeMean.getData());
+            this.medianCompressedSize = compressedSizeMedian
+                    .evaluate(compressedSizeMean.getData());
 
-	public IMAPBatchMeta() {
+            isDirty = false;
+        }
+    }
 
-	}
+    public IMAPBatchMeta() {
 
-	public IMAPBatchMeta(IMAPMessageSource source, Date started) {
-		super();
-		this.setSource(source);
-		this.started = started;
-		this.sizeMean.setData(new double[] {});
-		this.compressedSizeMean.setData(new double[] {});
-	}
+    }
 
-	public void incrementAttachmentStatistics(boolean hasAttachment) {
-		if (hasAttachment) {
-			messagesWithAttachments++;
-		} else {
-			messagesWithoutAttachments++;
-		}
-	}
+    public IMAPBatchMeta(IMAPMessageSource source, Date started) {
+        super();
+        this.setSource(source);
+        this.started = started;
+        this.sizeMean.setData(new double[]{});
+        this.compressedSizeMean.setData(new double[]{});
+    }
 
-	public void incrementBatchSize(long size) {
-		batchSize += size;
-	}
+    public void incrementAttachmentStatistics(boolean hasAttachment) {
+        if (hasAttachment) {
+            messagesWithAttachments++;
+        } else {
+            messagesWithoutAttachments++;
+        }
+    }
 
-	public void incrementMessages() {
-		this.messages++;
-	}
+    public void incrementBatchSize(long size) {
+        batchSize += size;
+    }
 
-	public void incrementFailures() {
-		this.failures++;
-	}
+    public void incrementMessages() {
+        this.messages++;
+    }
 
-	public void incrementDuplicates() {
-		this.duplicates++;
-	}
+    public void incrementFailures() {
+        this.failures++;
+    }
 
-	public void updateSizeStatistics(long size, long compressedSize) {
-		isDirty = true;
-		double[] sizes = Arrays.copyOf(sizeMean.getData(),
-				sizeMean.getData().length + 1);
-		sizes[sizeMean.getData().length] = size;
-		sizeMean.setData(sizes);
+    public void incrementDuplicates() {
+        this.duplicates++;
+    }
 
-		double[] csizes = Arrays.copyOf(compressedSizeMean.getData(),
-				compressedSizeMean.getData().length + 1);
-		csizes[compressedSizeMean.getData().length] = compressedSize;
-		compressedSizeMean.setData(csizes);
+    public void updateSizeStatistics(long size, long compressedSize) {
+        isDirty = true;
+        double[] sizes = Arrays.copyOf(sizeMean.getData(),
+                sizeMean.getData().length + 1);
+        sizes[sizeMean.getData().length] = size;
+        sizeMean.setData(sizes);
 
-		if (size > maxSize) {
-			maxSize = size;
-		}
+        double[] csizes = Arrays.copyOf(compressedSizeMean.getData(),
+                compressedSizeMean.getData().length + 1);
+        csizes[compressedSizeMean.getData().length] = compressedSize;
+        compressedSizeMean.setData(csizes);
 
-		if (compressedSize > compressedMaxSize) {
-			compressedMaxSize = compressedSize;
-		}
-	}
+        if (size > maxSize) {
+            maxSize = size;
+        }
 
-	public double getCompressedAverageSize() {
-		return compressedAverageSize;
-	}
+        if (compressedSize > compressedMaxSize) {
+            compressedMaxSize = compressedSize;
+        }
+    }
 
-	public long getCompressedMaxSize() {
-		return compressedMaxSize;
-	}
+    public double getCompressedAverageSize() {
+        return compressedAverageSize;
+    }
 
-	public Date getStarted() {
-		return started;
-	}
+    public long getCompressedMaxSize() {
+        return compressedMaxSize;
+    }
 
-	public Date getFinished() {
-		return finished;
-	}
+    public Date getStarted() {
+        return started;
+    }
 
-	public void setFinished(Date finished) {
-		this.finished = finished;
-	}
+    public Date getFinished() {
+        return finished;
+    }
 
-	public long getMessages() {
-		return messages;
-	}
+    public void setFinished(Date finished) {
+        this.finished = finished;
+    }
 
-	public long getDuplicates() {
-		return duplicates;
-	}
+    public long getMessages() {
+        return messages;
+    }
 
-	public long getFailures() {
-		return failures;
-	}
+    public long getDuplicates() {
+        return duplicates;
+    }
 
-	public double getAverageSize() {
-		return averageSize;
-	}
+    public long getFailures() {
+        return failures;
+    }
 
-	public long getMaxSize() {
-		return maxSize;
-	}
+    public double getAverageSize() {
+        return averageSize;
+    }
 
-	public long getMessagesWithAttachments() {
-		return messagesWithAttachments;
-	}
+    public long getMaxSize() {
+        return maxSize;
+    }
 
-	public long getMessagesWithoutAttachments() {
-		return messagesWithoutAttachments;
-	}
+    public long getMessagesWithAttachments() {
+        return messagesWithAttachments;
+    }
 
-	public double getMedianSize() {
-		return medianSize;
-	}
+    public long getMessagesWithoutAttachments() {
+        return messagesWithoutAttachments;
+    }
 
-	public double getMedianCompressedSize() {
-		return medianCompressedSize;
-	}
+    public double getMedianSize() {
+        return medianSize;
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+    public double getMedianCompressedSize() {
+        return medianCompressedSize;
+    }
 
-	@Override
-	public boolean equals(Object rhs) {
-		return EqualsBuilder.reflectionEquals(this, rhs);
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
-	}
+    @Override
+    public boolean equals(Object rhs) {
+        return EqualsBuilder.reflectionEquals(this, rhs);
 
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
+    }
 
-	public IMAPMessageSource getSource() {
-		return source;
-	}
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
 
-	public void setSource(IMAPMessageSource source) {
-		this.source = source;
-	}
+    public IMAPMessageSource getSource() {
+        return source;
+    }
 
-	public long getBatchSize() {
-		return batchSize;
-	}
+    public void setSource(IMAPMessageSource source) {
+        this.source = source;
+    }
+
+    public long getBatchSize() {
+        return batchSize;
+    }
 
 }

@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ public class EmailPreviewPanel extends TabSheet {
     private SearchHitPanel currentHitPanel;
 
     private SearchHitPanel newHitPanel;
-    private SearchHit item;
+    private IndexedMailMessage item;
     private String criteria;
     private String indexPrefix;
     private boolean tabsConfigured = false;
@@ -53,11 +54,11 @@ public class EmailPreviewPanel extends TabSheet {
     }
 
 
-    public synchronized void show(SearchHitPanel newHitPanel, SearchHit item, String criteria) throws Exception {
+    public synchronized void show(SearchHitPanel newHitPanel, IndexedMailMessage item, String criteria) throws Exception {
         MetaDataIndexService metaDataIndexService = ((IronholdApplication) this.getUI()).getMetaDataIndexService();
         final String client = (String) getSession().getAttribute("client");
         final LoginUser loginUser = (LoginUser) getSession().getAttribute("loginUser");
-        AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.VIEW, item.getId(), criteria);
+        AuditLogMessage auditLogMessage = new AuditLogMessage(loginUser, AuditActionEnum.VIEW, item.getMessageId(), criteria);
         metaDataIndexService.store(client, auditLogMessage);
         if (!tabsConfigured) {
             this.addTab(textView, "Text");

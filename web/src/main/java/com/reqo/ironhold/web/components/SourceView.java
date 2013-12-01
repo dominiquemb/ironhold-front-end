@@ -3,6 +3,7 @@ package com.reqo.ironhold.web.components;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -27,19 +28,19 @@ public class SourceView extends AbstractEmailView {
         this.setContent(layout);
     }
 
-    public synchronized void show(SearchHitPanel newHitPanel, final SearchHit item, String criteria) throws Exception {
+    public synchronized void show(SearchHitPanel newHitPanel, final IndexedMailMessage item, String criteria) throws Exception {
         String client = (String) getSession().getAttribute("client");
 
         layout.removeAllComponents();
 
         addEmailToolBar(layout, client, item);
 
-        final Label messageId = new Label("<b>MessageId: " + StringEscapeUtils.escapeHtml4(item.getId()) + "</b>");
+        final Label messageId = new Label("<b>MessageId: " + StringEscapeUtils.escapeHtml4(item.getMessageId()) + "</b>");
         messageId.setContentMode(ContentMode.HTML);
         layout.addComponent(messageId);
 
         IMimeMailMessageStorageService mimeMailMessageStorageService = ((IronholdApplication) this.getUI()).getMimeMailMessageStorageService();
-        final String mailMessage = mimeMailMessageStorageService.get(client, (String) item.getFields().get(IndexFieldEnum.YEAR.getValue()).getValue(), (String) item.getFields().get(IndexFieldEnum.MONTH_DAY.getValue()).getValue(), item.getId());
+        final String mailMessage = mimeMailMessageStorageService.get(client, item.getYear(), item.getMonthDay(), item.getMessageId());
 
         final Label body = new Label(StringEscapeUtils.escapeHtml4(mailMessage).replaceAll("\r?\n", "<br/>"));
 

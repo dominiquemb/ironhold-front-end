@@ -1,0 +1,498 @@
+<div id="tab-discovery" class="tab-discovery tab-pane in active">
+<div class="main">
+<div class="dashboard col-xs-7">
+<div class="searchbar row">
+    <div class="pull-left search-tags">
+        <form class="form-search">
+            <div class="input-group">
+                <div class="input-container">
+                    <div class="input-history widget-box widget-box-simple collapsed">
+                        <input type="text" class="search-input form-control search-field" placeholder="Tag search"/>
+
+                        <div class="pull-right widget-header">
+                            <div class="widget-toolbar pull-right">
+                                <a href="#" data-action="collapse">
+                                    <i class="fa icon-caret-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-body-inner">
+                                <div class="widget-main">
+                                    <ul>
+                                        <li>
+                                            Result 1
+                                        </li>
+                                        <li>
+                                            Result 2
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-light btn-sm">
+                                                    <i class="fa icon-forward icon-on-right"></i>
+                                                </button>
+											</span>
+            </div>
+        </form>
+    </div>
+    <div class="search-query">
+        <form class="form-search">
+            <div class="input-group">
+                <div class="input-container">
+                    <div class="input-history widget-box widget-box-simple collapsed">
+                        <input type="text" class="search-input form-control search-field"
+                               placeholder="Type your query" data-ng-model="inputSearch"/>
+
+                        <div class="pull-right widget-header">
+                            <div class="widget-toolbar pull-right">
+                                <a href="#" data-action="collapse">
+                                    <i class="fa icon-caret-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="widget-body-inner">
+                                <div class="widget-main">
+                                    <ul>
+                                        <li>
+                                            Result 1
+                                        </li>
+                                        <li>
+                                            Result 2
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-light btn-sm" data-ng-click="search()">
+                                                    <i class="fa icon-search icon-on-right bigger-110"></i>
+                                                </button>
+											</span>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row middlebar" data-ng-show="isSearchResultsVisible()">
+								<span class="pull-left middlebar_left">
+									<div class="btn-group btn-group-ironhold">
+                                        <div class="btn btn-default dropdown pull-left">
+                                        </div>
+                                        <div class="dropdown pull-left btn btn-default">
+                                        </div>
+                                        <div class="btn-right pull-left btn btn-default">
+                                        </div>
+                                    </div>
+								</span>
+								<span class="pull-left middlebar_center">
+									<div class="middlebar_center_top">
+										<span class="matches_number blue-primary">
+											<strong>{{ searchMatches }}</strong> matched messages
+										</span>
+                                    </div>
+									<div class="middlebar_center_bottom">
+                                        <span class="gray-medium">search took <strong
+                                                class="gray-dark matches_time">{{ searchTime }}</strong> ms</span>
+                                    </div>
+								</span>
+								<span class="pull-right middlebar_right pagination-container">
+									<ul class="pull-right pagination pagination-background-white text-primary">
+                                        <li class="disabled">
+                                            <a href="#" class="pagination_prev">&laquo;</a>
+                                        </li>
+                                        <li class="active">
+                                            <a href="#" class="pagination_1">1</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="pagination_2">2</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="pagination_3">3</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="pagination_last">&raquo;</a>
+                                        </li>
+                                    </ul>
+								</span>
+</div>
+<div class="row msglist" data-ng-show="isSearchResultsVisible()">
+<div class="pull-left toshrink sidebar-left">
+<div class="toggle pull-right">
+    <i class="fa icon-angle-left"></i>
+</div>
+<div class="scrollbar-hidden filter-list">
+<ul class="filter-list-inner">
+<li class="widget-box widget-box-simple  filter-container row" data-ng-repeat="facet in facets">
+    <div class="widget-header">
+        <div class="widget-toolbar">
+            <a href="#" data-action="collapse">
+                <i class="icon-four-thirty-up"></i>
+            </a>
+        </div>
+												<span class="filter-list-name">
+                                                    {{ facet.name.label }}
+												</span>
+    </div>
+    <div class="widget-body">
+        <div class="widget-body-inner">
+            <ul class="widget-main">
+                <li class="filter" data-ng-repeat="facetValue in facet.valueMap">
+                    <div class="pull-left checkbox">
+                        <i class="fa icon-check"></i>
+                    </div>
+															<span class="filter-name">
+																{{ facetValue.label }}
+															</span>
+															<span class="text-primary filter-value">
+																{{ facetValue.value }}
+															</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</li>
+</ul>
+</div>
+<!-- .filter-list -->
+</div>
+<div class="listing togrow scrollbar-hidden message-list-container">
+<ul class="results message-list">
+<li class="result row message-item message-item-unbordered"  data-ng-repeat="message in messages">
+    <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
+        <tbody>
+        <tr>
+            <td class="message-icons col-xs-1">
+                <i data-ng-show="hasAttachment(message)" class="fa icon-paperclip"></i>
+                <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="fa icon-envelope"></i>
+            </td>
+            <td class="message-sender col-xs-3">
+                {{ message.formattedIndexedMailMessage.sender.name }}
+            </td>
+            <td class="message-subject col-xs-3">
+                {{ message.subjectWithHiglights }}
+            </td>
+            <td class="message-subject col-xs-3">
+                {{ message.formattedIndexedMailMessage.formattedMessageDate }}
+            </td>
+            <td class="message-subject col-xs-1">
+                {{ message.formattedIndexedMailMessage.formattedSize }}
+            </td>
+            <td rowspan="3" class="message-flag col-xs-1">
+                <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
+            </td>
+            <td rowspan="3" class="checkmark">
+                <i class="fa icon-check"></i>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="1">
+            </td>
+            <td colspan="4" class="dropdown-toggle">
+                <div class="widget-box widget-box-simple">
+																<span class="widget-header pull-left dropdown-header">
+																	<span class="widget-toolbar">
+																		<a href="#" data-action="collapse">
+                                                                            <b class="icon-four-thirty-up icon-on-right"></b></a>
+																	</span>
+																	<strong class="dropdown-title">Body</strong>
+																</span>
+																<span class="widget-body">
+																	<div class="widget-body-inner">
+                                                                        <div class="widget-main gray-medium">
+                                                                            {{ message.bodyWithHighlights }}
+                                                                        </div>
+                                                                    </div>
+																</span>
+                </div>
+            </td>
+        </tr>
+        <tr data-ng-show="hasAttachmentHighlight(message)">
+            <td colspan="1">
+            </td>
+            <td colspan="4" class="dropdown-toggle">
+                <div class="widget-box widget-box-simple">
+																<span class="widget-header pull-left dropdown-header">
+																	<span class="widget-toolbar">
+																		<a href="#" data-action="collapse">
+                                                                            <b class="icon-four-thirty-up icon-on-right"></b></a>
+																	</span>
+																	<strong class="dropdown-title">Attachment</strong>
+																</span>
+																<span class="widget-body">
+																	<div class="widget-body-inner">
+                                                                        <div class="widget-main gray-medium">
+                                                                            {{ message.attachmentWithHighlights }}
+                                                                        </div>
+                                                                    </div>
+																</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</li>
+
+</ul>
+</div>
+</div>
+</div>
+<div class="col-xs-5 msgview" data-ng-show="isMessageVisible()">
+<div class="tabbable">
+<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
+    <li class="active">
+        <a data-toggle="tab" href="#msgview-text">Text</a>
+    </li>
+    <li>
+        <a data-toggle="tab" href="#msgview-html">HTML</a>
+    </li>
+    <li>
+        <a data-toggle="tab" href="#msgview-source">Source</a>
+    </li>
+    <li>
+        <a data-toggle="tab" href="#msgview-audit">Audit</a>
+    </li>
+</ul>
+<div class="tab-content">
+<div id="msgview-text" class="msgview-text tab-pane in active">
+<div class="row controlbar">
+									<span class="controlbar_left pull-left controlbar_section">
+										<span class="dropdown pull-left controlbar_item follow-up">
+											<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                                <div class="msgview_img flag-lg"></div>
+                                                <div class="pull-right controlbar_item-name">Follow Up</div>
+                                                <b class="fa icon-caret-down icon-on-right pull-right"></b>
+                                            </a>
+											<ul class="dropdown-menu dropdown-info">
+                                                <li>
+                                                    <a data-toggle="tab" href="#">Link 1</a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#">Link 2</a>
+                                                </li>
+                                            </ul>
+										</span>
+										<a href="#" class="controlbar_item pull-left forward">
+                                            <div class="msgview_img forward-lg"></div>
+                                            <div class="pull-right controlbar_item-name">Forward</div>
+                                        </a>
+										<div class="vert-div"></div>
+									</span>
+									<span class="controlbar_middle controlbar_section pull-left">
+										<span class="dropdown controlbar_item assign-policy pull-left">
+											<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                                <div class="msgview_img archive-lg"></div>
+                                                <div class="pull-left controlbar_item-name">Assign Policy</div>
+                                                <b class="fa icon-caret-down pull-right icon-on-right"></b>
+                                            </a>
+											<ul class="dropdown-menu dropdown-info">
+                                                <li>
+                                                    <a data-toggle="tab" href="#">Link 1</a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#">Link 2</a>
+                                                </li>
+                                            </ul>
+										</span>
+										<span class="dropdown controlbar_item categorize pull-left">
+											<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                                <div class="msgview_img tiles-lg"></div>
+                                                <div class="controlbar_item-name pull-right">Categorize</div>
+                                                <b class="fa icon-caret-down icon-on-right pull-right"></b>
+                                            </a>
+											<ul class="dropdown-menu dropdown-info">
+                                                <li>
+                                                    <a data-toggle="tab" href="#">Link 1</a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab" href="#">Link 2</a>
+                                                </li>
+                                            </ul>
+										</span>
+										<span class="controlbar_item controlbar-group-vertical pull-left">
+											<div class="controlbar-group-row row">
+                                                <a class="controlbar-group_item meeting">
+                                                    <div class="msgview_img-sm cal-invite-sm pull-left"></div>
+                                                    <div class="pull-right controlbar_item-name">Meeting</div>
+                                                </a>
+                                            </div>
+											<div class="controlbar-group-row row">
+												<span class="dropdown controlbar-group_item im">
+													<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                                        <div class="msgview_img-sm im-sm pull-left"></div>
+                                                        <div class="pull-left controlbar_item-name">IM</div>
+                                                        <b class="fa icon-caret-down pull-right icon-on-right"></b>
+                                                    </a>
+													<ul class="dropdown-menu dropdown-info">
+                                                        <li>
+                                                            <a data-toggle="tab" href="#">Link 1</a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-toggle="tab" href="#">Link 2</a>
+                                                        </li>
+                                                    </ul>
+												</span>
+                                            </div>
+											<div class="controlbar-group-row row">
+												<span class="dropdown controlbar-group_item more">
+													<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                                                        <div class="msgview_img-sm cal-phone-sm pull-left"></div>
+                                                        <div class="pull-left controlbar_item-name">More</div>
+                                                        <b class="fa icon-caret-down pull-right icon-on-right"></b>
+                                                    </a>
+													<ul class="dropdown-menu dropdown-info">
+                                                        <li>
+                                                            <a data-toggle="tab" href="#">Link 1</a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-toggle="tab" href="#">Link 2</a>
+                                                        </li>
+                                                    </ul>
+												</span>
+                                            </div>
+										</span>
+									<div class="vert-div"></div>
+									</span>
+</div>
+<div class="msgview_main">
+    <div class="row msgview_top">
+        <div class="pull-left from-picture-container">
+            <div class="from-picture empty-photo msgview_img-xl"></div>
+        </div>
+        <div class="pull-left header-container">
+            <h3 class="gray-dark msgview_subject">{{ currentMessage.formattedIndexedMailMessage.subject }}</h3>
+            <h4 class="text-primary msgview_date">{{ currentMessage.formattedIndexedMailMessage.formattedMessageDate }} ({{ currentMessage.formattedIndexedMailMessage.age }})</h4>
+        </div>
+    </div>
+    <div class="row msgview_middle scrollbar-hidden">
+        <div class="scrollable-content">
+            <div class="message-header">
+											<span class="pull-left header-info-left">
+												<div class="label-container from">
+													<span class="label from pull-left">
+														From
+													</span>
+                                                </div>
+												<div class="label-container to">
+													<span class="label to pull-left">
+														To	
+													</span>
+                                                </div>
+												<div class="label-container cc">
+													<span class="label cc pull-left">
+														Cc
+													</span>
+                                                </div>
+												<div class="label-container bcc">
+													<span class="label bcc pull-left">
+														Bcc
+													</span>
+                                                </div>
+											</span>
+											<span class="pull-left header-info-right">
+												<div class="label-content from gray-dark">
+                                                    {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{ currentMessage.formattedIndexedMailMessage.sender.address }}&gt;
+                                                </div>
+												<div class="label-content to gray-dark">
+                                                    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.to">
+                                                        {{ person.name }} &lt;{{ person.address }}&gt;;
+                                                    </span>
+                                                </div>
+                                                <div class="label-content cc gray-dark">
+                                                    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.cc">
+                                                        {{ person.name }} &lt;{{ person.address }}&gt;;
+                                                    </span>
+                                                </div>
+                                                <div class="label-content bcc gray-dark">
+                                                    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
+                                                        {{ person.name }} &lt;{{ person.address }}&gt;;
+                                                    </span>
+                                                </div>
+											</span>
+            </div>
+            <!-- .message-header -->
+            <div class="pull-right message-body-container">
+                <div class="message-body-content">
+                    {{ currentMessage.formattedIndexedMailMessage.body }}
+                </div>
+            </div>
+        </div>
+        <!-- .scrollable-content -->
+    </div>
+    <div class="row msgview_bottom expandable">
+        <div class="widget-box widget-box-simple">
+            <div class="widget-header">
+                <div class="widget-toolbar pull-right">
+                    <a href="#" data-action="collapse">
+                        <i class="expandable-toggle fa-angle-up fa icon-angle-up icon-on-right"></i>
+                    </a>
+
+                </div>
+            </div>
+            <div class="widget-body" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                <div class="widget-body-inner">
+                    <div class="widget-main">
+                        <ul class="attachments">
+                            <li class="attachment col-xs-12 first">
+                                <div class="col-xs-2 icon-container">
+                                    <div class="msgview_img-xl attachment-img"></div>
+                                </div>
+                                <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">{{ attachment.fileName }}</span>
+                                                                <span class="attachment-body gray-dark">
+                                                                    {{ attachment.body }}
+                                                                </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- widget-main -->
+                </div>
+                <!-- widget-body-inner -->
+            </div>
+            <!-- .widget-body -->
+        </div>
+        <!-- .widget-box -->
+    </div>
+</div>
+</div>
+<!-- .msgview-text -->
+<div id="msgview-html" class="msgview-html tab-pane">
+    HTML tab content will go here.
+</div>
+<div id="msgview-source" class="msgview-source tab-pane">
+    Source tab content will go here.
+</div>
+<div id="msgview-audit" class="msgview-audit tab-pane">
+    Audit tab content will go here.
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- .row.main -->
+</div>
+<!-- #tab-discovery -->
+<div id="tab-tags" class="tab-pane">
+    Tags tab content goes here
+</div>
+<div id="tab-folders" class="tab-pane">
+    Folders tab content goes here
+</div>
+<div id="tab-logs" class="tab-pane">
+    Logs tab content goes here
+</div>
+<div id="tab-users" class="tab-pane">
+    Users tab content goes here
+</div>
+<div id="tab-settings" class="tab-pane">
+    Settings tab content goes here
+</div>

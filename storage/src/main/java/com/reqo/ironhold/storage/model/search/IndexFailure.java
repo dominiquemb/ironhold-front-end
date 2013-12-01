@@ -1,7 +1,7 @@
 package com.reqo.ironhold.storage.model.search;
 
-import com.reqo.ironhold.storage.model.IHasMessageId;
-import com.reqo.ironhold.storage.model.IPartitioned;
+import com.reqo.ironhold.web.domain.interfaces.IHasMessageId;
+import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.ObjectMapper;

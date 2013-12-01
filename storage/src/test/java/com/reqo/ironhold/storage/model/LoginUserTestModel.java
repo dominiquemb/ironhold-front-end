@@ -1,6 +1,6 @@
 package com.reqo.ironhold.storage.model;
 
-import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;

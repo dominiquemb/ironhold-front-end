@@ -4,6 +4,7 @@ import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.model.PSTMessageTestModel;
 import com.reqo.ironhold.storage.utils.ChecksumUtils;
+import com.reqo.ironhold.web.domain.Attachment;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.mail.EmailException;

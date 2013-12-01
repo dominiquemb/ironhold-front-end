@@ -1,6 +1,6 @@
 package com.reqo.ironhold.storage.model.user;
 
-import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.web.domain.Recipient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -159,12 +159,20 @@ public class LoginUser {
         this.lastLoginContext = lastLoginContext;
     }
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public LoginUser deserialize(String source) throws IOException {
-        return mapper.readValue(source, LoginUser.class);
+    public LoginUser deserialize(String source) {
+        try {
+            return mapper.readValue(source, LoginUser.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

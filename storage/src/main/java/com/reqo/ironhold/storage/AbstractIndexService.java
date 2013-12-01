@@ -52,24 +52,36 @@ public abstract class AbstractIndexService {
     }
 
 
-    protected synchronized void createIndexIfMissing(String indexPrefix, String partition) throws Exception {
+    protected synchronized void createIndexIfMissing(String indexPrefix, String partition) {
         if (!indexes.contains(partition == null || partition.isEmpty() ? "none" : partition)) {
             String indexAlias = getIndexAlias(indexPrefix);
             String indexName = getIndexName(indexAlias, partition);
 
             if (!client.indexExists(indexName)) {
                 client.createIndex(indexName, indexAlias, indexSettingsFile);
-                Thread.sleep(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    logger.warn(e);
+                }
                 for (IndexedObjectType type : mappings.keySet()) {
                     client.addTypeMapping(indexName, type, mappings.get(type));
                 }
-                Thread.sleep(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    logger.warn(e);
+                }
 
             } else {
                 for (IndexedObjectType type : mappings.keySet()) {
                     client.addTypeMapping(indexName, type, mappings.get(type));
                 }
-                Thread.sleep(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    logger.warn(e);
+                }
             }
 
             this.indexes.add(partition == null || partition.isEmpty() ? "none" : partition);
@@ -81,30 +93,43 @@ public abstract class AbstractIndexService {
         indexes.clear();
     }
 
-    public void deleteByField(String indexPrefix, String partition, IndexedObjectType type, String field, String value) throws ExecutionException, InterruptedException {
-        String indexAlias = getIndexAlias(indexPrefix);
-        String indexName = getIndexName(indexAlias, partition);
+    public void deleteByField(String indexPrefix, String partition, IndexedObjectType type, String field, String value) {
+        try {
 
-        QueryBuilder qb = QueryBuilders.fieldQuery(field, value);
-        client.getClient().prepareDeleteByQuery(indexName).setTypes(type.getValue()).setQuery(qb).execute().get();
+            String indexAlias = getIndexAlias(indexPrefix);
+            String indexName = getIndexName(indexAlias, partition);
+
+            QueryBuilder qb = QueryBuilders.fieldQuery(field, value);
+            client.getClient().prepareDeleteByQuery(indexName).setTypes(type.getValue()).setQuery(qb).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public void forceRefreshMappings(String indexPrefix, boolean followAliases) throws Exception {
-        if (followAliases) {
-            IndicesGetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
-            Map<String, List<AliasMetaData>> aliases = response.getAliases();
-            for (String indexName : aliases.keySet()) {
-                for (IndexedObjectType type : mappings.keySet()) {
-                    client.addTypeMapping(indexName, type, mappings.get(type));
+    public void forceRefreshMappings(String indexPrefix, boolean followAliases) {
+        try {
+            if (followAliases) {
+                IndicesGetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
+                Map<String, List<AliasMetaData>> aliases = response.getAliases();
+                for (String indexName : aliases.keySet()) {
+                    for (IndexedObjectType type : mappings.keySet()) {
+                        client.addTypeMapping(indexName, type, mappings.get(type));
+                    }
                 }
-            }
-            Thread.sleep(1000);
-        } else {
-            for (IndexedObjectType type : mappings.keySet()) {
-                client.addTypeMapping(indexPrefix, type, mappings.get(type));
-            }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    logger.warn(e);
+                }
+            } else {
+                for (IndexedObjectType type : mappings.keySet()) {
+                    client.addTypeMapping(indexPrefix, type, mappings.get(type));
+                }
 
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 }

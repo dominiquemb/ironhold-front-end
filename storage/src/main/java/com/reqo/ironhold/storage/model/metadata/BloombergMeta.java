@@ -53,13 +53,21 @@ public class BloombergMeta {
     @JsonIgnore
     private boolean isDirty = false;
 
-    public String serialize() throws IOException {
-        persistCalculations();
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            persistCalculations();
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public BloombergMeta deserialize(String source) throws IOException {
-        return mapper.readValue(source, BloombergMeta.class);
+    public BloombergMeta deserialize(String source) {
+        try {
+            return mapper.readValue(source, BloombergMeta.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void persistCalculations() {

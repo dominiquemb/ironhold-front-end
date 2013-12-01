@@ -1,7 +1,7 @@
 package com.reqo.ironhold.storage.model.message.source;
 
-import com.reqo.ironhold.storage.model.IHasMessageId;
-import com.reqo.ironhold.storage.model.IPartitioned;
+import com.reqo.ironhold.web.domain.interfaces.IHasMessageId;
+import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

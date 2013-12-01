@@ -18,7 +18,7 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.BloombergSource;
 import com.reqo.ironhold.storage.model.metadata.BloombergMeta;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -258,7 +258,7 @@ public class BloombergReader {
         try {
             IndexedMailMessage indexedMessage = messageIndexService.getById(client, mailMessage.getPartition(), mailMessage.getMessageId());
             if (indexedMessage == null) {
-                indexedMessage = new IndexedMailMessage(mailMessage, true);
+                indexedMessage = MimeMailMessage.toIndexedMailMessage(mailMessage, true);
             }
             messageIndexService.store(client, indexedMessage, false);
         } catch (Exception e) {

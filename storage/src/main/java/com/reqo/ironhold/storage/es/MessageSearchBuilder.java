@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage.es;
 
-import com.reqo.ironhold.storage.model.message.Recipient;
+import com.reqo.ironhold.web.domain.FacetGroupName;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.storage.model.user.RoleEnum;
@@ -17,16 +18,8 @@ import java.util.List;
 
 public class MessageSearchBuilder {
 
-    public static final String FACET_FROM_NAME = "from";
-    public static final String FACET_FROM_DOMAIN = "from_domain";
-    public static final String FACET_TO_NAME = "to";
-    public static final String FACET_YEAR = "date";
-    public static final String FACET_TO_DOMAIN = "to_domain";
-    public static final String FACET_FILEEXT = "file_ext";
-    public static final String FACET_MSGTYPE = "msg_type";
-
-    public static MessageSearchBuilder newBuilder(SearchRequestBuilder builder) {
-        return new MessageSearchBuilder(builder);
+    public static MessageSearchBuilder newBuilder(SearchRequestBuilder builder, LoginUser loginUser) {
+        return new MessageSearchBuilder(builder, loginUser);
     }
 
     private List<String> fromFacetValues = new ArrayList<String>();
@@ -53,9 +46,11 @@ public class MessageSearchBuilder {
     private boolean fileExtFacet;
     private boolean msgTypeFacet;
     private IndexedObjectType indexedObjectType;
+    private LoginUser loginUser;
 
-    private MessageSearchBuilder(SearchRequestBuilder builder) {
+    private MessageSearchBuilder(SearchRequestBuilder builder, LoginUser loginUser) {
         this.builder = builder;
+        this.loginUser = loginUser;
     }
 
     public MessageSearchBuilder withCriteria(String criteria) {
@@ -203,7 +198,7 @@ public class MessageSearchBuilder {
         return this;
     }
 
-    public SearchRequestBuilder build(LoginUser loginUser) throws Exception {
+    public SearchRequestBuilder build() {
         if (id == null) {
             QueryStringQueryBuilder qb = QueryBuilders.queryString(criteria);
             qb.defaultOperator(Operator.AND);
@@ -310,44 +305,45 @@ public class MessageSearchBuilder {
         builder.setHighlighterPreTags("<b>").setHighlighterPostTags("</b>");
 
         if (dateFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_YEAR).order(TermsFacet.ComparatorType.REVERSE_TERM)
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_YEAR.getValue()).order(TermsFacet.ComparatorType.REVERSE_TERM)
                     .field(IndexFieldEnum.YEAR.getValue()), loginUser));
         }
 
         if (fromFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_FROM_NAME).exclude("unknown").field(
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_FROM_NAME.getValue()).exclude("unknown").field(
                     IndexFieldEnum.FROM_NAME.getValue()), loginUser));
         }
 
         if (fromDomainFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_FROM_DOMAIN).exclude("unknown").field(
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_FROM_DOMAIN.getValue()).exclude("unknown").field(
                     IndexFieldEnum.FROM_DOMAIN.getValue()), loginUser));
         }
 
         if (toFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_TO_NAME).exclude("unknown").field(
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_TO_NAME.getValue()).exclude("unknown").field(
                     IndexFieldEnum.TO_NAME.getValue()), loginUser));
         }
 
         if (toDomainFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_TO_DOMAIN).exclude("unknown").field(
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_TO_DOMAIN.getValue()).exclude("unknown").field(
                     IndexFieldEnum.TO_DOMAIN.getValue()), loginUser));
         }
 
         if (fileExtFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_FILEEXT).field(
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_FILEEXT.getValue()).field(
                     IndexFieldEnum.FILEEXT.getValue()), loginUser));
         }
 
         if (msgTypeFacet) {
-            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FACET_MSGTYPE).field(
+            builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_MSGTYPE.getValue()).field(
                     IndexFieldEnum.MSGTYPE.getValue()), loginUser));
         }
 
+        builder.addField("_source");
         return builder;
     }
 
-    private TermsFacetBuilder applyLoginFilters(TermsFacetBuilder termsFacetBuilder, LoginUser loginUser) throws Exception {
+    private TermsFacetBuilder applyLoginFilters(TermsFacetBuilder termsFacetBuilder, LoginUser loginUser) {
         if (loginUser.hasRole(RoleEnum.CAN_SEARCH) || loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
             if (!loginUser.hasRole(RoleEnum.CAN_SEARCH_ALL)) {
                 OrFilterBuilder filterBuilders = FilterBuilders.orFilter();
@@ -365,7 +361,7 @@ public class MessageSearchBuilder {
                 termsFacetBuilder.facetFilter(filterBuilders);
             }
         } else {
-            throw new Exception("This user does not have search role");
+            throw new SecurityException("This user does not have search role");
         }
 
         return termsFacetBuilder;
@@ -384,6 +380,46 @@ public class MessageSearchBuilder {
 
         return this;
     }
+
+
+    public MessageSearchBuilder withNamedFacet(FacetGroupName facetName) {
+        if (facetName.equals(FacetGroupName.FACET_FROM_NAME))
+            return this.withFromFacet();
+        if (facetName.equals(FacetGroupName.FACET_FROM_DOMAIN))
+            return this.withFromDomainFacet();
+        if (facetName.equals(FacetGroupName.FACET_TO_NAME))
+            return this.withToFacet();
+        if (facetName.equals(FacetGroupName.FACET_YEAR))
+            return this.withDateFacet();
+        if (facetName.equals(FacetGroupName.FACET_TO_DOMAIN))
+            return this.withToDomainFacet();
+        if (facetName.equals(FacetGroupName.FACET_FILEEXT))
+            return this.withFileExtFacet();
+        if (facetName.equals(FacetGroupName.FACET_MSGTYPE))
+            return this.withMsgTypeFacet();
+
+        throw new IllegalArgumentException("Unknown facet [" + facetName + "]");
+    }
+
+    public MessageSearchBuilder withNamedFacetValue(FacetGroupName facetName, String facetValue) {
+        if (facetName.equals(FacetGroupName.FACET_FROM_NAME))
+            return this.withFromFacetValue(facetValue);
+        if (facetName.equals(FacetGroupName.FACET_FROM_DOMAIN))
+            return this.withFromDomainFacetValue(facetValue);
+        if (facetName.equals(FacetGroupName.FACET_TO_NAME))
+            return this.withToFacetValue(facetValue);
+        if (facetName.equals(FacetGroupName.FACET_YEAR))
+            return this.withYearFacetValue(facetValue);
+        if (facetName.equals(FacetGroupName.FACET_TO_DOMAIN))
+            return this.withToDomainFacetValue(facetValue);
+        if (facetName.equals(FacetGroupName.FACET_FILEEXT))
+            return this.withFileExtFacetValue(facetValue);
+        if (facetName.equals(FacetGroupName.FACET_MSGTYPE))
+            return this.withMsgTypeFacetValue(facetValue);
+
+        throw new IllegalArgumentException("Unknown facet [" + facetName + "]");
+    }
+
 
     public boolean isDateFacet() {
         return dateFacet;
@@ -440,4 +476,5 @@ public class MessageSearchBuilder {
     public void setMsgTypeFacet(boolean msgTypeFacet) {
         this.msgTypeFacet = msgTypeFacet;
     }
+
 }

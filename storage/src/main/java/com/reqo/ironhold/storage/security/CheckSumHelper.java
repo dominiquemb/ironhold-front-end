@@ -11,10 +11,14 @@ import java.security.NoSuchAlgorithmException;
  * Time: 10:21 AM
  */
 public class CheckSumHelper {
-    public static String getCheckSum(byte[] content) throws NoSuchAlgorithmException {
-        MessageDigest complete = MessageDigest.getInstance("MD5");
-        complete.update(content);
+    public static String getCheckSum(byte[] content) {
+        try {
+            MessageDigest complete = MessageDigest.getInstance("MD5");
+            complete.update(content);
 
-        return Base64.encodeBytes(complete.digest());
+            return Base64.encodeBytes(complete.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

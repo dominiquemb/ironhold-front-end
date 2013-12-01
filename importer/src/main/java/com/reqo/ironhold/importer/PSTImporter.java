@@ -14,7 +14,7 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
-import com.reqo.ironhold.storage.model.search.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
 import org.apache.commons.io.FileUtils;
@@ -210,7 +210,7 @@ public class PSTImporter {
                             IndexedMailMessage indexedMessage = messageIndexService.getById(client, mimeMailMessage.getPartition(), mimeMailMessage.getMessageId());
                             if (indexedMessage == null) {
 
-                                indexedMessage = new IndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId.trim()));
+                                indexedMessage = MimeMailMessage.toIndexedMailMessage(mimeMailMessage, !ignoreAttachmentExtractSet.contains(messageId.trim()));
                             }
                             indexedMessage.addSource(metaData.getId());
                             messageIndexService.store(client, indexedMessage, false);
