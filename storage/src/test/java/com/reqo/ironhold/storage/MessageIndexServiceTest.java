@@ -208,15 +208,15 @@ public class MessageIndexServiceTest {
 
         Assert.assertEquals(1, response.getMessages().size());
 
-        assertFacet(response.getFacets(), FacetGroupName.FACET_YEAR.getValue(), 1, indexedMailMessage.getYear(), 1);
-        assertFacet(response.getFacets(), FacetGroupName.FACET_TO_NAME.getValue(), 1, indexedMailMessage.getTo()[0].getName(), 1);
-        assertFacet(response.getFacets(), FacetGroupName.FACET_FROM_NAME.getValue(), 1, indexedMailMessage.getSender().getName(), 1);
-        assertFacet(response.getFacets(), FacetGroupName.FACET_TO_DOMAIN.getValue(), 1, indexedMailMessage.getTo()[0].getDomain(), 1);
-        assertFacet(response.getFacets(), FacetGroupName.FACET_FROM_DOMAIN.getValue(), 1, indexedMailMessage.getSender().getDomain(), 1);
-        assertFacet(response.getFacets(), FacetGroupName.FACET_FILEEXT.getValue(), 1, indexedMailMessage.getAttachments()[0].getFileExt(), 1);
+        assertFacet(response.getFacets(), FacetGroupName.FACET_YEAR, 1, indexedMailMessage.getYear(), 1);
+        assertFacet(response.getFacets(), FacetGroupName.FACET_TO_NAME, 1, indexedMailMessage.getTo()[0].getName(), 1);
+        assertFacet(response.getFacets(), FacetGroupName.FACET_FROM_NAME, 1, indexedMailMessage.getSender().getName(), 1);
+        assertFacet(response.getFacets(), FacetGroupName.FACET_TO_DOMAIN, 1, indexedMailMessage.getTo()[0].getDomain(), 1);
+        assertFacet(response.getFacets(), FacetGroupName.FACET_FROM_DOMAIN, 1, indexedMailMessage.getSender().getDomain(), 1);
+        assertFacet(response.getFacets(), FacetGroupName.FACET_FILEEXT, 1, indexedMailMessage.getAttachments()[0].getFileExt(), 1);
     }
 
-    private void assertFacet(ImmutableList<FacetGroup> facets, String facetGroupName, int totalSize, String thisLabel, int thisValue) {
+    private void assertFacet(ImmutableList<FacetGroup> facets, FacetGroupName facetGroupName, int totalSize, String thisLabel, int thisValue) {
         FacetGroup facetGroup = facets.detect(Predicates.attributeEqual(FacetGroup.GET_NAME, facetGroupName));
         Assert.assertEquals(totalSize, facetGroup.getValueMap().size());
         Assert.assertEquals(thisLabel, facetGroup.getValueMap().getFirst().getLabel());
