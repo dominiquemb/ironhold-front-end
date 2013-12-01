@@ -165,8 +165,15 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
                 public FacetGroup valueOf(String facetName) {
                     TermsFacet termsFacet = facets.facet(facetName);
 
-                    ImmutableList<FacetValue> valueMap = ListIterate.collect(termsFacet.getEntries(), TERMSFACETENTRY_TO_FACETVALUE).sortThis(FacetValue.BY_VALUE).toImmutable();
-                    return new FacetGroup(FacetGroupName.fromValue(facetName), valueMap);
+                    MutableList<FacetValue> valueMap = ListIterate.collect(termsFacet.getEntries(), TERMSFACETENTRY_TO_FACETVALUE);
+
+                    if (facetName.equals(FacetGroupName.FACET_YEAR.getValue())) {
+                        valueMap = valueMap.sortThis(FacetValue.BY_NAME);
+                    } else {
+                        valueMap = valueMap.sortThis(FacetValue.BY_VALUE);
+                    }
+
+                    return new FacetGroup(FacetGroupName.fromValue(facetName), valueMap.toImmutable());
                 }
             }).sortThis(FacetGroup.BY_ORDER);
         }

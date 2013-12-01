@@ -16,7 +16,7 @@ public class FacetGroupName {
     public static final FacetGroupName FACET_TO_DOMAIN = new FacetGroupName("To by domain:", "to_domain", 4);
     public static final FacetGroupName FACET_YEAR = new FacetGroupName("Year:", "date", 5);
     public static final FacetGroupName FACET_FILEEXT = new FacetGroupName("Attachment file type:", "file_ext", 6);
-    public static final FacetGroupName FACET_MSGTYPE = new FacetGroupName("Message type:", "msg_type.domain", 7);
+    public static final FacetGroupName FACET_MSGTYPE = new FacetGroupName("Message type:", "msg_type", 7);
 
     private final String value;
     private final String label;

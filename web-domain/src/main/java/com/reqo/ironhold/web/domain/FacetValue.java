@@ -17,6 +17,13 @@ public class FacetValue {
         }
     };
 
+    public static final Comparator<FacetValue> BY_NAME = new Comparator<FacetValue>() {
+        @Override
+        public int compare(FacetValue facetValue, FacetValue facetValue2) {
+            return facetValue2.getLabel().compareTo(facetValue.getLabel());
+        }
+    };
+
     public static final Function<FacetValue, Long> TO_VALUE = new Function<FacetValue, Long>() {
         @Override
         public Long valueOf(FacetValue facetValue) {

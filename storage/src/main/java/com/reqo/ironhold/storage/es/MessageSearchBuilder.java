@@ -288,6 +288,8 @@ public class MessageSearchBuilder {
         }
         builder.addHighlightedField(IndexFieldEnum.ATTACHMENT.getValue(), 100,
                 1);
+        builder.setHighlighterPreTags("<span class=\"blue-hilite\">");
+        builder.setHighlighterPostTags("</span>");
 
         if (sortField != null) {
             if (!("_score".equals(sortField.getValue()) && sortOrder
@@ -302,7 +304,6 @@ public class MessageSearchBuilder {
             }
 
         }
-        builder.setHighlighterPreTags("<b>").setHighlighterPostTags("</b>");
 
         if (dateFacet) {
             builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_YEAR.getValue()).order(TermsFacet.ComparatorType.REVERSE_TERM)
