@@ -131,7 +131,7 @@
 </div>
 <div class="scrollbar-hidden filter-list">
 <ul class="filter-list-inner">
-<li class="widget-box widget-box-simple  filter-container row" data-ng-repeat="facet in facets">
+<li class="widget-box widget-box-simple  filter-container row" ng-class="{'collapsed': facet.collapsed === true}" data-ng-repeat="facet in facets">
     <div class="widget-header">
         <div class="widget-toolbar">
             <a href="#" data-action="collapse">
@@ -145,7 +145,7 @@
     <div class="widget-body">
         <div class="widget-body-inner">
             <ul class="widget-main">
-                <li class="filter" data-ng-repeat="facetValue in facet.valueMap">
+                <li class="filter" ng-class="{'active': facetValue.selected === true}" ng-click="toggleActiveState(facetValue)" data-ng-repeat="facetValue in facet.valueMap">
                     <div class="pull-left checkbox">
                         <i class="fa icon-check"></i>
                     </div>

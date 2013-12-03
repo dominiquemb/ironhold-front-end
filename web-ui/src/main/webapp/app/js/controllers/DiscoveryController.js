@@ -13,6 +13,14 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         }, 0);
     }
 
+    $scope.toggleActiveState = function(item) {
+	item.selected = !item.selected;
+    }
+
+    $scope.toggleCollapse = function(item) {
+	item.collapsed = !item.collapsed;
+    }
+
     $scope.isSearchResultsVisible = function() {
         return $scope.showSearchResults;
     }
@@ -55,49 +63,60 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "from",
                                                "label" : "From by name:",
+					       "collapsed": false,
                                                "order" : 1
                                             },
                                          "valueMap" :
                                             [
                                                {
                                                   "label" : "Thelma Cline",
-                                                  "value" : 28
+                                                  "value" : 28,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Melissa Knight",
-                                                  "value" : 28
+                                                  "value" : 28,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Tyrone Ayala",
-                                                  "value" : 26
+                                                  "value" : 26,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Nathan Thompson",
-                                                  "value" : 25
+                                                  "value" : 25,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Trevor Holman",
-                                                  "value" : 24
+                                                  "value" : 24,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Russell Hobbs",
-                                                  "value" : 23
+                                                  "value" : 23,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Wyatt Santiago",
-                                                  "value" : 22
+                                                  "value" : 22,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Virginia Pitts",
-                                                  "value" : 22
+                                                  "value" : 22,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Todd Gay",
-                                                  "value" : 22
+                                                  "value" : 22,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "Ron Chambers",
-                                                  "value" : 22
+                                                  "value" : 22,
+						  "selected": false
                                                }
                                             ]
                                       },
@@ -106,48 +125,59 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "from_domain",
                                                "label" : "From by domain:",
+					       "collapsed": false,
                                                "order" : 2
                                             },
                                          "valueMap" :
                                             [
                                                {
                                                   "label" : "yah00.us",
-                                                  "value" : 139
+                                                  "value" : 139,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "ma1l2u.net",
-                                                  "value" : 98
+                                                  "value" : 98,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "somema1l.com",
-                                                  "value" : 82
+                                                  "value" : 82,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "yah00.co.uk",
-                                                  "value" : 74
+                                                  "value" : 74,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "somema1l.us",
-                                                  "value" : 66
+                                                  "value" : 66,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "everyma1l.co.uk",
-                                                  "value" : 62
+                                                  "value" : 62,
+						  "selected": false
                                                },
                                                {
                                                   "label" : "somema1l.org",
+						  "selected": false,
                                                   "value" : 61
                                                },
                                                {
                                                   "label" : "ma1lbox.com",
+						  "selected": false,
                                                   "value" : 59
                                                },
                                                {
                                                   "label" : "yah00.biz",
+						  "selected": false,
                                                   "value" : 58
                                                },
                                                {
                                                   "label" : "ma1l2u.us",
+						  "selected": false,
                                                   "value" : 53
                                                }
                                             ]
@@ -157,47 +187,58 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "to",
                                                "label" : "To by name:",
+					       "collapsed": false,
                                                "order" : 3
                                             },
                                          "valueMap" :
                                             [
                                                {
                                                   "label" : "Ruth Kinney",
+						  "selected": false,
                                                   "value" : 46
                                                },
                                                {
                                                   "label" : "Tammy Chaney",
+						  "selected": false,
                                                   "value" : 45
                                                },
                                                {
                                                   "label" : "Tina Chang",
+						  "selected": false,
                                                   "value" : 43
                                                },
                                                {
                                                   "label" : "Thelma Gaines",
+						  "selected": false,
                                                   "value" : 41
                                                },
                                                {
                                                   "label" : "Tammy Harvey",
+						  "selected": false,
                                                   "value" : 39
                                                },
                                                {
                                                   "label" : "Russell Hobbs",
+						  "selected": false,
                                                   "value" : 39
                                                },
                                                {
                                                   "label" : "Virginia Pitts",
+						  "selected": false,
                                                   "value" : 38
                                                },
                                                {
                                                   "label" : "Wyatt Santiago",
+						  "selected": false,
                                                   "value" : 37
                                                },
                                                {
                                                   "label" : "Lynn Robles",
+						  "selected": false,
                                                   "value" : 37
                                                },
                                                {
+						  "selected": false,
                                                   "label" : "Terry Roberson",
                                                   "value" : 35
                                                }
@@ -208,48 +249,59 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "to_domain",
                                                "label" : "To by domain:",
+					       "collapsed": true,
                                                "order" : 4
                                             },
                                          "valueMap" :
                                             [
                                                {
                                                   "label" : "yah00.us",
+						  "selected": false,
                                                   "value" : 337
                                                },
                                                {
                                                   "label" : "ma1l2u.net",
+						  "selected": false,
                                                   "value" : 242
                                                },
                                                {
                                                   "label" : "ma1lbox.com",
+						  "selected": false,
                                                   "value" : 186
                                                },
                                                {
                                                   "label" : "somema1l.com",
+						  "selected": false,
                                                   "value" : 158
                                                },
                                                {
                                                   "label" : "everyma1l.net",
+						  "selected": false,
                                                   "value" : 150
                                                },
                                                {
                                                   "label" : "everyma1l.co.uk",
+						  "selected": false,
                                                   "value" : 143
                                                },
                                                {
                                                   "label" : "b1zmail.net",
+						  "selected": false,
                                                   "value" : 139
                                                },
                                                {
                                                   "label" : "yah00.co.uk",
+						  "selected": false,
                                                   "value" : 136
                                                },
                                                {
                                                   "label" : "somema1l.org",
+						  "selected": false,
                                                   "value" : 131
                                                },
                                                {
                                                   "label" : "somema1l.us",
+						  "selected": false,
                                                   "value" : 123
                                                }
                                             ]
@@ -259,47 +311,58 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "date",
                                                "label" : "Year:",
+					       "collapsed": true,
                                                "order" : 5
                                             },
                                          "valueMap" :
                                             [
                                                {
                                                   "label" : "2010",
+						  "selected": false,
                                                   "value" : 101
                                                },
                                                {
                                                   "label" : "2009",
+						  "selected": false,
                                                   "value" : 169
                                                },
                                                {
                                                   "label" : "2008",
+						  "selected": false,
                                                   "value" : 235
                                                },
                                                {
                                                   "label" : "2007",
+						  "selected": false,
                                                   "value" : 191
                                                },
                                                {
                                                   "label" : "2006",
+						  "selected": false,
                                                   "value" : 192
                                                },
                                                {
+						  "selected": false,
                                                   "label" : "2005",
                                                   "value" : 189
                                                },
                                                {
+						  "selected": false,
                                                   "label" : "2004",
                                                   "value" : 187
                                                },
                                                {
+						  "selected": false,
                                                   "label" : "2003",
                                                   "value" : 179
                                                },
                                                {
+						  "selected": false,
                                                   "label" : "2002",
                                                   "value" : 190
                                                },
                                                {
+						  "selected": false,
                                                   "label" : "2001",
                                                   "value" : 182
                                                }
@@ -310,11 +373,13 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "file_ext",
                                                "label" : "Attachment file type:",
+					       "collapsed": true,
                                                "order" : 6
                                             },
                                          "valueMap" :
                                             [
                                                {
+						  "selected": false,
                                                   "label" : "pdf",
                                                   "value" : 1891
                                                }
@@ -325,11 +390,13 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                             {
                                                "value" : "msg_type",
                                                "label" : "Message type:",
+					       "collapsed": true,
                                                "order" : 7
                                             },
                                          "valueMap" :
                                             [
                                                {
+						  "selected": false,
                                                   "label" : "email",
                                                   "value" : 1891
                                                }
