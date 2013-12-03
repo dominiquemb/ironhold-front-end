@@ -289,7 +289,7 @@ body .text-primary {
 
 /* carets */
 .icon-four-thirty-up {
-	background: url(../images/sprites/carets.png) 0px 1px !important;
+	background: url(../img/sprites/carets.png) 0px 1px !important;
 	width:6px !important;
 	height:7px !important;
 	float:left;
@@ -297,7 +297,7 @@ body .text-primary {
 }
 
 .icon-four-thirty-down {
-	background: url(../images/sprites/carets.png) 1px -6px !important;
+	background: url(../img/sprites/carets.png) 1px -6px !important;
 	width:6px !important;
 	height:7px !important;
 	float:left;
@@ -332,43 +332,43 @@ body .text-primary {
 	margin-top: 10px;
 	width: 16px;
 	height: 14px;
-	background: url(../images/sprites/msgview_icons.png) -4px -82px;
+	background: url(../img/sprites/msgview_icons.png) -4px -82px;
 }
 
 .flag-lg {
-	background: url(../images/sprites/msgview_icons.png) 0px 0px;
+	background: url(../img/sprites/msgview_icons.png) 0px 0px;
 }
 
 .forward-lg {
-	background: url(../images/sprites/msgview_icons.png) -32px 0px;
+	background: url(../img/sprites/msgview_icons.png) -32px 0px;
 }
 
 .archive-lg {
-	background: url(../images/sprites/msgview_icons.png) 0px -32px;
+	background: url(../img/sprites/msgview_icons.png) 0px -32px;
 }
 
 .tiles-lg {
-	background: url(../images/sprites/msgview_icons.png) -30px -32px;
+	background: url(../img/sprites/msgview_icons.png) -30px -32px;
 }
 
 .cal-invite-sm {
-	background: url(../images/sprites/msgview_icons.png) -27px -66px;
+	background: url(../img/sprites/msgview_icons.png) -27px -66px;
 }
 
 .cal-phone-sm {
-	background: url(../images/sprites/msgview_icons.png) -2px -66px;
+	background: url(../img/sprites/msgview_icons.png) -2px -66px;
 }
 
 .im-sm {
-	background: url(../images/sprites/msgview_icons.png) -47px -66px;
+	background: url(../img/sprites/msgview_icons.png) -47px -66px;
 }
 
 .empty-photo {
-	background: url(../images/sprites/msgview_icons.png) -64px 0px;
+	background: url(../img/sprites/msgview_icons.png) -64px 0px;
 }
 
 .attachment-img {
-	background: url(../images/sprites/msgview_icons.png) -64px -46px;
+	background: url(../img/sprites/msgview_icons.png) -64px -46px;
 }
 
 .img-xs {
@@ -378,32 +378,32 @@ body .text-primary {
 }
 
 .attachment-img-xs {
-	background: url(../images/sprites/email_icons.png) 0px 0px;
+	background: url(../img/sprites/email_icons.png) 0px 0px;
 }
 
 .envelope-img-xs {
-	background: url(../images/sprites/email_icons.png) -15px 0px;
+	background: url(../img/sprites/email_icons.png) -15px 0px;
 }
 
 .flag-img-xs {
-	background: url(../images/sprites/email_icons.png) -15px 15px;
+	background: url(../img/sprites/email_icons.png) -15px 15px;
 }
 
 /* btn */
 .btn-group-ironhold .btn-left {
-	background: url(../images/sprites/btn-group.png) 0px 0px;
+	background: url(../img/sprites/btn-group.png) 0px 0px;
 	width: 75px;
 	height: 34px;
 }
 
 .btn-group-ironhold .btn-middle {
-	background: url(../images/sprites/btn-group.png) -74px 0px;
+	background: url(../img/sprites/btn-group.png) -74px 0px;
 	width: 74px;
 	height: 34px;
 }
 
 .btn-group-ironhold .btn-right {
-	background: url(../images/sprites/btn-group.png) -147px 0px;
+	background: url(../img/sprites/btn-group.png) -147px 0px;
 	width: 75px;
 	height: 34px;
 }
@@ -778,12 +778,12 @@ body ul {
 }
 
 .jspVerticalBar {
-	background: url(../images/sprites/scrollbar_middle.png) repeat-y !important;
+	background: url(../img/sprites/scrollbar_middle.png) repeat-y !important;
 	width: 10px !important;
 }
 
 .jspHorizontalBar {
-	background: url(../images/sprites/scrollbar_middle_horiz.png) repeat-x !important;
+	background: url(../img/sprites/scrollbar_middle_horiz.png) repeat-x !important;
 	height: 10px !important;
 }
 
@@ -792,35 +792,35 @@ body ul {
 }
 
 .jspArrowLeft {
-	background: url(../images/sprites/scrollbar_arrows_horiz.png) 0px 0px !important;
+	background: url(../img/sprites/scrollbar_arrows_horiz.png) 0px 0px !important;
 }
 
 .jspArrowLeft:hover {
-	background: url(../images/sprites/scrollbar_arrows_horiz.png) 16px 0px !important;
+	background: url(../img/sprites/scrollbar_arrows_horiz.png) 16px 0px !important;
 }
 
 .jspArrowRight {
-	background: url(../images/sprites/scrollbar_arrows_horiz.png) 0px 16px !important;
+	background: url(../img/sprites/scrollbar_arrows_horiz.png) 0px 16px !important;
 }
 
 .jspArrowRight:hover {
-	background: url(../images/sprites/scrollbar_arrows_horiz.png) 16px 16px !important;
+	background: url(../img/sprites/scrollbar_arrows_horiz.png) 16px 16px !important;
 }
 
 .jspArrowUp {
-	background: url(../images/sprites/scrollbar_arrows.png) 16px 0px !important;
+	background: url(../img/sprites/scrollbar_arrows.png) 16px 0px !important;
 }
 
 .jspArrowUp:hover {
-	background: url(../images/sprites/scrollbar_arrows.png) 16px 16px !important;
+	background: url(../img/sprites/scrollbar_arrows.png) 16px 16px !important;
 }
 
 .jspArrowDown {
-	background: url(../images/sprites/scrollbar_arrows.png) 0px 0px !important;
+	background: url(../img/sprites/scrollbar_arrows.png) 0px 0px !important;
 }
 
 .jspArrowDown:hover {
-	background: url(../images/sprites/scrollbar_arrows.png) 0px 16px !important;
+	background: url(../img/sprites/scrollbar_arrows.png) 0px 16px !important;
 }
 
 /* results */
