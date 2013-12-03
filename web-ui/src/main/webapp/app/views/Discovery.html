@@ -242,7 +242,7 @@
 </div>
 </div>
 </div>
-<div class="col-xs-5 msgview" data-ng-show="isMessageVisible()">
+<div class="col-xs-5 msgview"  data-ng-show="isSearchResultsVisible()">
 <div class="tabbable">
 <ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
     <li class="active">
@@ -359,7 +359,10 @@
 									<div class="vert-div"></div>
 									</span>
 </div>
-<div class="msgview_main">
+<div class="placeholder_text" data-ng-show="!isMessageVisible()">
+	Please select a message on the left.
+</div>
+<div class="msgview_main" data-ng-show="isMessageVisible()">
     <div class="row msgview_top">
         <div class="pull-left from-picture-container">
             <div class="from-picture empty-photo msgview_img-xl"></div>
