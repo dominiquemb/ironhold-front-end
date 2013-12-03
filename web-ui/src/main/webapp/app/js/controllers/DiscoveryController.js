@@ -3,6 +3,15 @@
 ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $sce) {
     $scope.showSearchResults = false;
     $scope.showMessage = false;
+  
+    $scope.initCustomScrollbars = function() {
+        setTimeout(function() {
+                $('.scrollbar-hidden').jScrollPane({
+                        verticalArrowPositions: 'split',
+                        horizontalArrowPositions: 'split'
+                });
+        }, 0);
+    }
 
     $scope.isSearchResultsVisible = function() {
         return $scope.showSearchResults;
@@ -37,6 +46,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.showSearchResults = true;
         $scope.searchMatches = Math.ceil(Math.random()*1000);
         $scope.searchTime = Math.ceil(Math.random()*100);
+	
+	$scope.initCustomScrollbars();
 
         $scope.facets =[
                                       {
