@@ -170,67 +170,69 @@
     <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
         <tbody>
         <tr>
-            <td class="message-icons col-xs-1">
-                <i data-ng-show="hasAttachment(message)" class="fa icon-paperclip"></i>
+            <td rowspan="3" class="message-icons col-xs-1">
                 <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="fa icon-envelope"></i>
             </td>
-            <td class="message-sender col-xs-3">
+            <td class="message-sender col-xs-6">
                 {{ message.formattedIndexedMailMessage.sender.name }}
             </td>
-            <td class="message-subject col-xs-3" data-ng-bind-html="message.subjectWithHighlights">
+            <td class="message-size col-xs-6" data-ng-bind-html="message.subjectWithHighlights">
             </td>
-            <td class="message-subject col-xs-3">
-                {{ message.formattedIndexedMailMessage.formattedMessageDate }}
-            </td>
-            <td class="message-subject col-xs-1">
-                {{ message.formattedIndexedMailMessage.formattedSize }}
-            </td>
-            <td rowspan="3" class="message-flag col-xs-1">
+            <td rowspan="4" class="message-flag col-xs-1">
                 <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
             </td>
-            <td rowspan="3" class="checkmark">
+            <td rowspan="4" class="checkmark">
                 <i class="fa icon-check"></i>
             </td>
         </tr>
         <tr>
-            <td colspan="1">
+            <td class="message-subject col-xs-6">
+                {{ message.formattedIndexedMailMessage.formattedMessageDate }}
             </td>
-            <td colspan="4" class="dropdown-toggle">
+            <td class="message-date col-xs-6">
+                {{ message.formattedIndexedMailMessage.formattedSize }}
+            </td>
+	</tr>
+	<tr>
+            <td colspan="2" class="dropdown-toggle">
                 <div class="widget-box widget-box-simple">
-																<span class="widget-header pull-left dropdown-header">
-																	<span class="widget-toolbar">
-																		<a href="#" data-action="collapse">
-                                                                            <b class="icon-four-thirty-up icon-on-right"></b></a>
-																	</span>
-																	<strong class="dropdown-title">Body</strong>
-																</span>
-																<span class="widget-body">
-																	<div class="widget-body-inner">
-                                                                        <div class="widget-main gray-medium"  data-ng-bind-html="message.bodyWithHighlights">
-                                                                        </div>
-                                                                    </div>
-																</span>
+			<span class="widget-header pull-left dropdown-header">
+				<span class="widget-toolbar">
+					<a>
+                                        	<b class="icon-four-thirty-up icon-on-right"></b>
+					</a>
+				</span>
+				<strong class="dropdown-title">Body</strong>
+			</span>
+			<span class="widget-body">
+				<div class="widget-body-inner">
+                                	<div class="widget-main gray-medium"  data-ng-bind-html="message.bodyWithHighlights">
+                                        </div>
+                                </div>
+			</span>
                 </div>
             </td>
         </tr>
         <tr data-ng-show="hasAttachmentHighlight(message)">
-            <td colspan="1">
-            </td>
-            <td colspan="4" class="dropdown-toggle">
+	    <td rowspan="1" class="col-xs-1">
+		<i class="img-xs attachment-img-xs"></i>	
+	    </td>
+            <td colspan="2" class="dropdown-toggle">
                 <div class="widget-box widget-box-simple">
-																<span class="widget-header pull-left dropdown-header">
-																	<span class="widget-toolbar">
-																		<a href="#" data-action="collapse">
-                                                                            <b class="icon-four-thirty-up icon-on-right"></b></a>
-																	</span>
-																	<strong class="dropdown-title">Attachment</strong>
-																</span>
-																<span class="widget-body">
-																	<div class="widget-body-inner">
-                                                                        <div class="widget-main gray-medium"  data-ng-bind-html="message.attachmentWithHighlights">
-                                                                        </div>
-                                                                    </div>
-																</span>
+			<span class="widget-header pull-left dropdown-header">
+				<span class="widget-toolbar">
+					<a>
+                                        	<b class="icon-four-thirty-up icon-on-right"></b>
+					</a>
+				</span>
+				<strong class="dropdown-title">Attachment</strong>
+			</span>
+			<span class="widget-body">
+				<div class="widget-body-inner">
+					<div class="widget-main gray-medium"  data-ng-bind-html="message.attachmentWithHighlights">
+					</div>
+				</div>
+			</span>
                 </div>
             </td>
         </tr>
