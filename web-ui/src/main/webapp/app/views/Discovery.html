@@ -218,18 +218,19 @@
 		<i class="img-xs attachment-img-xs"></i>	
 	    </td>
             <td colspan="2" class="dropdown-toggle">
-                <div class="widget-box widget-box-simple">
+                <div class="widget-box widget-box-simple" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments">
 			<span class="widget-header pull-left dropdown-header">
 				<span class="widget-toolbar">
 					<a>
                                         	<b class="icon-four-thirty-up icon-on-right"></b>
 					</a>
 				</span>
-				<strong class="dropdown-title">Attachment</strong>
+				<strong class="dropdown-title">{{ attachment.fileName }}</strong>
 			</span>
 			<span class="widget-body">
 				<div class="widget-body-inner">
-					<div class="widget-main gray-medium"  data-ng-bind-html="message.attachmentWithHighlights">
+					<div class="widget-main gray-medium">
+						{{ attachment.body }}
 					</div>
 				</div>
 			</span>
