@@ -171,7 +171,7 @@
         <tbody>
         <tr>
             <td rowspan="3" class="message-icons col-xs-1">
-                <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="fa icon-envelope"></i>
+                <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="pull-right fa icon-envelope"></i>
             </td>
             <td class="message-sender col-xs-6">
                 {{ message.formattedIndexedMailMessage.sender.name }}
@@ -214,8 +214,8 @@
             </td>
         </tr>
         <tr data-ng-show="hasAttachmentHighlight(message)">
-	    <td rowspan="1" class="col-xs-1">
-		<i class="img-xs attachment-img-xs"></i>	
+	    <td rowspan="1" class="message-icons col-xs-1">
+		<i class="img-xs attachment-img-xs pull-right"></i>	
 	    </td>
             <td colspan="2" class="dropdown-toggle">
                 <div class="widget-box widget-box-simple" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments">
