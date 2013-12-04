@@ -62,8 +62,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                          "name" :
                                             {
                                                "value" : "from",
-                                               "label" : "From by name:",
 					       "collapsed": false,
+                                               "label" : "From by name:",
                                                "order" : 1
                                             },
                                          "valueMap" :

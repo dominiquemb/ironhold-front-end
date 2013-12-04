@@ -1152,6 +1152,10 @@ body ul {
 	color: #58585a;	
 }
 
+.sidebar-left .widget-toolbar i {
+	cursor: pointer;
+}
+
 .sidebar-left .widget-toolbar .filter-list-name {
 	margin-left: 13px;
 }

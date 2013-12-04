@@ -131,11 +131,11 @@
 </div>
 <div class="scrollbar-hidden filter-list">
 <ul class="filter-list-inner">
-<li class="widget-box widget-box-simple  filter-container row" ng-class="{'collapsed': facet.collapsed === true}" data-ng-repeat="facet in facets">
+<li class="widget-box widget-box-simple filter-container row" data-ng-repeat="facet in facets" ng-class="{'collapsed': facet.name.collapsed === true}">
     <div class="widget-header">
         <div class="widget-toolbar">
-            <a href="#" data-action="collapse">
-                <i class="icon-four-thirty-up"></i>
+            <a>
+                <i ng-click="toggleCollapse(facet.name)" ng-class="{'icon-four-thirty-up': facet.name.collapsed === false, 'icon-four-thirty-down': facet.name.collapsed === true}"></i>
             </a>
         </div>
 												<span class="filter-list-name">
