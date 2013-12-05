@@ -491,18 +491,15 @@ body .text-primary {
 	height: 23px;
 }
 
-.searchbar .input-history .widget-header {
-	margin-top: -34px;
-	width: 20px;
-	line-height: 17px !important;
+.searchbar .input-history .dropdown-toggle {
+	position: absolute;
+	right: 7px;
+	top: 7px;
 }
 
-.searchbar .wiget-toolbar {
-	line-height: 25px;
-}
-
-.searchbar .input-history .widget-toolbar a {
-	margin-right: 4px;
+.searchbar .input-history .dropdown-menu {
+	margin-top: 10px;
+	width: 100%;
 }
 
 .searchbar .input-history li {
@@ -511,13 +508,6 @@ body .text-primary {
 
 .searchbar .input-container {
 	position: relative;
-}
-
-.searchbar .input-history .widget-main {
-	background-color: #fff;
-	-moz-box-shadow: 0 0 5px #888;
-	-webkit-box-shadow: 0 0 5px#888;
-	box-shadow: 0 0 5px #888;
 }
 
 .searchbar {

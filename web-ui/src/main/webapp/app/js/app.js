@@ -1,5 +1,5 @@
 'use strict';
-var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize'])
+var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider.when('/discovery',
             {
@@ -8,24 +8,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
             });
         $routeProvider.otherwise({redirectTo: '/discovery'});
         //$locationProvider.html5Mode(true);
-     })
-
-	.controller('dropdownCtrl', function($scope) {
-		$scope.collapsed = true;
-		$scope.toggleCollapse = function() {
-			$scope.collapsed = !$scope.collapsed;
-		}
-	})
-
-	.directive('dropdown', function() {
-		return {
-			restrict: 'A',
-			scope: {
-				dropdownElem: '=dataDropdownName'
-			}
-		}
-	});
-
+     });
 
 String.prototype.endsWith = function(suffix) {
     return this.toLowerCase().indexOf(suffix.toLowerCase(), this.length - suffix.length) !== -1;

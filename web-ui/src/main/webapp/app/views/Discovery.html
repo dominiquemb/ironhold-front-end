@@ -5,20 +5,14 @@
     <div class="pull-left search-tags">
         <form class="form-search">
             <div class="input-group">
-                <div class="input-container" ng-controller="dropdownCtrl">
-                    <div class="input-history widget-box widget-box-simple" ng-class="{'collapsed': collapsed === true}" data-dropdown-name="tagHistory" dropdown>
+                <div class="input-container">
+                    <div class="input-history dropdown">
                         <input type="text" class="search-input form-control search-field" placeholder="Tag search"/>
 
-                        <div class="pull-right widget-header">
-                            <div class="widget-toolbar pull-right">
-                                <a>
-                                    <i ng-click="toggleCollapse()" class="fa icon-caret-down"></i>
+                                <a class="dropdown-toggle">
+                                    <i class="fa icon-caret-down"></i>
                                 </a>
-                            </div>
-                        </div>
-                        <div class="widget-body">
-                            <div class="widget-body-inner">
-                                <div class="widget-main">
+                        <div class="dropdown-menu dropdown-info">
                                     <ul>
                                         <li>
                                             Result 1
@@ -27,8 +21,6 @@
                                             Result 2
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
                         </div>
 
                     </div>
@@ -44,21 +36,15 @@
     <div class="search-query">
         <form class="form-search">
             <div class="input-group">
-                <div class="input-container" ng-controller="dropdownCtrl">
-                    <div class="input-history widget-box widget-box-simple collapsed" ng-class="{'collapsed': collapsed === true}" dropdown data-dropdown-name="searchHistory">
+                <div class="input-container">
+                    <div class="input-history dropdown">
                         <input type="text" class="search-input form-control search-field"
                                placeholder="Type your query" data-ng-model="inputSearch"/>
 
-                        <div class="pull-right widget-header">
-                            <div class="widget-toolbar pull-right">
-                                <a>
-                                    <i ng-click="toggleCollapse()" class="fa icon-caret-down"></i>
+                                <a class="dropdown-toggle">
+                                    <i class="fa icon-caret-down"></i>
                                 </a>
-                            </div>
-                        </div>
-                        <div class="widget-body">
-                            <div class="widget-body-inner">
-                                <div class="widget-main">
+                        <div class="dropdown-menu dropdown-info">
                                     <ul>
                                         <li>
                                             Result 1
@@ -67,8 +53,6 @@
                                             Result 2
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
                         </div>
 
                     </div>
