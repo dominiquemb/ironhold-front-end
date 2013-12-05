@@ -8,7 +8,23 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
             });
         $routeProvider.otherwise({redirectTo: '/discovery'});
         //$locationProvider.html5Mode(true);
-});
+     })
+
+	.controller('dropdownCtrl', function($scope) {
+		$scope.collapsed = true;
+		$scope.toggleCollapse = function() {
+			$scope.collapsed = !$scope.collapsed;
+		}
+	})
+
+	.directive('dropdown', function() {
+		return {
+			restrict: 'A',
+			scope: {
+				dropdownElem: '=dataDropdownName'
+			}
+		}
+	});
 
 
 String.prototype.endsWith = function(suffix) {
