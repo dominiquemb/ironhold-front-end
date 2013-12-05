@@ -132,6 +132,10 @@ body .text-primary {
 	padding-left: 0px;
 }
 
+.msgview .placeholder_text {
+	float: left;
+}
+
 .msgview .scrollbar-hidden,
 .msgview .scrollbar-hidden .jspContainer,
 .msgview .scrollbar-hidden .jspPane {
@@ -611,11 +615,10 @@ body .text-primary {
 	border-bottom: 1px solid #c5d0dc;
 	height: 62px;
 	width: auto;
-	overflow: hidden;
 }
 
 .controlbar_section .vert-div {
-	height: 78px;
+	height: 57px;
 	width: 1px;
 	background-color: #c5d0dc;
 	position: absolute;
@@ -631,8 +634,14 @@ body .text-primary {
 
 .controlbar_item {
 	margin: 5px 5px;
-	width: 80px;
+	width: auto;
 	text-align: center;
+}
+
+.controlbar_item .dropdown-menu {
+	width: 100%;
+	min-width: 100%;
+	text-align: left;
 }
 
 .controlbar_item .icon-caret-down {
