@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $sce) {
+ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $sce, searchResultsService) {
     $scope.showSearchResults = false;
     $scope.showMessage = false;
   
@@ -58,8 +58,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.showSearchResults = true;
         $scope.searchMatches = Math.ceil(Math.random()*1000);
         $scope.searchTime = Math.ceil(Math.random()*100);
-	
-	$scope.initCustomScrollbars('.scrollbar-hidden');
+
+	    $scope.initCustomScrollbars('.scrollbar-hidden');
+
+        searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
 
         $scope.facets =[
                                       {

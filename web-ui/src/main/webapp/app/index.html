@@ -107,14 +107,14 @@
 <div class="push"></div>
 </div>
 <!-- .wrapper -->
-<div class="row footer">
+<div class="row footer" data-ng-controller="FooterController">
     <div class="footer-inner col-xs-12">
 			<span class="search-total col-xs-2">
 				<span class="label-title">
 					Search Total:
 				</span>
 				<span class="label-content">
-					3,987
+					{{ searchMatches }}
 				</span>
 			</span>
 			<span class="after-filter col-xs-2">
@@ -145,6 +145,7 @@
 <!-- Controllers -->
 <script src="js/controllers/TabController.js"></script>
 <script src="js/controllers/DiscoveryController.js"></script>
+<script src="js/controllers/FooterController.js"></script>
 
 <!-- Directives -->
 <script src="js/directives/DiscoveryDirectives.js"></script>
