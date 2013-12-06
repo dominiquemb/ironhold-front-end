@@ -4,13 +4,17 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.showSearchResults = false;
     $scope.showMessage = false;
   
-    $scope.initCustomScrollbars = function() {
+    $scope.initCustomScrollbars = function(selector) {
         setTimeout(function() {
-                $('.scrollbar-hidden').jScrollPane({
+                $(selector).jScrollPane({
                         verticalArrowPositions: 'split',
                         horizontalArrowPositions: 'split'
                 });
         }, 0);
+    };
+
+    $scope.reinitScrollbars = function() {
+	$('.scrollbar-hidden').data('jsp').reinitialise();
     }
 
     $scope.toggleActiveState = function(item) {
@@ -55,7 +59,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.searchMatches = Math.ceil(Math.random()*1000);
         $scope.searchTime = Math.ceil(Math.random()*100);
 	
-	$scope.initCustomScrollbars();
+	$scope.initCustomScrollbars('.scrollbar-hidden');
 
         $scope.facets =[
                                       {

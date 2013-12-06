@@ -208,7 +208,7 @@ body .text-primary {
 	margin: 2px 0px 0px 0px;
 }
 
-.msgview_main {
+.sgview_main {
 	margin-top: 10px;
 }
 
@@ -250,7 +250,9 @@ body .text-primary {
 }
 
 .msgview_middle {
-	position: relative;
+	position: absolute;
+	height: auto;
+	top: 112px;
 	margin: 0px 0px;
 }
 

@@ -66,7 +66,7 @@
         </form>
     </div>
 </div>
-<div class="row middlebar" data-ng-show="isSearchResultsVisible()">
+<div class="row middlebar" data-ng-show="isSearchResultsVisible()" in-view="console.log('test')">
 								<span class="pull-left middlebar_left">
 									<div class="btn-group btn-group-ironhold">
                                         <div class="btn btn-default dropdown pull-left">
@@ -349,7 +349,7 @@
 <div class="placeholder_text" data-ng-show="!isMessageVisible()">
 	Please select a message on the left.
 </div>
-<div class="msgview_main" data-ng-show="isMessageVisible()">
+<div class="msgview_main" data-ng-show="isMessageVisible()" in-view="console.log('test')">
     <div class="row msgview_top">
         <div class="pull-left from-picture-container">
             <div class="from-picture empty-photo msgview_img-xl"></div>
@@ -359,7 +359,7 @@
             <h4 class="text-primary msgview_date">{{ currentMessage.formattedIndexedMailMessage.formattedMessageDate }} ({{ currentMessage.formattedIndexedMailMessage.age }})</h4>
         </div>
     </div>
-    <div class="row msgview_middle scrollbar-hidden">
+    <div class="row msgview_middle">
         <div class="scrollable-content">
             <div class="message-header">
 											<span class="pull-left header-info-left">
