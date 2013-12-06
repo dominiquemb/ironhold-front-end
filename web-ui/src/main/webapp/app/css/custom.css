@@ -35,7 +35,7 @@ body .text-primary {
 .form-search .input-group .search-input {
 	height: 18px;
 	padding: 0px;
-	margin: 8px 0px 8px 10px;
+	margin: 4px 0px 4px 10px;
 	border: 0px;
 	/*border-right: 1px solid #b5b5b5;*/
 	font-weight: bold;
@@ -498,13 +498,14 @@ body .text-primary {
 }
 
 .searchbar .input-history .dropdown-toggle {
+	cursor: pointer;
 	position: absolute;
 	right: 7px;
-	top: 7px;
+	top: 3px;
 }
 
 .searchbar .input-history .dropdown-menu {
-	margin-top: 10px;
+	margin-top: 2px;
 	width: 100%;
 }
 
@@ -541,6 +542,7 @@ body .text-primary {
 }
 
 .searchbar .btn.btn-link.btn-sm {
+	text-decoration: none;
 	line-height: 18px !important;
 	color: #aaa !important;
 	padding: 4px 8px 4px 0px !important;

@@ -26,7 +26,7 @@
                     </div>
                 </div>
 		<span class="input-group-btn">
-			<button type="button" class="btn btn-light btn-sm">
+			<button type="button" class="btn btn-link btn-sm">
                         	<i class="fa icon-forward icon-on-right"></i>
                         </button>
 		</span>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 		<span class="input-group-btn">
-			<button type="button" class="btn btn-light btn-sm" data-ng-click="search()">
+			<button type="button" class="btn btn-link btn-sm" data-ng-click="search()">
                         	<i class="fa icon-search icon-on-right bigger-110"></i>
                         </button>
 		</span>
@@ -362,49 +362,55 @@
     <div class="row msgview_middle">
         <div class="scrollable-content">
             <div class="message-header">
-											<span class="pull-left header-info-left">
-												<div class="label-container from">
-													<span class="label from pull-left">
-														From
-													</span>
-                                                </div>
-												<div class="label-container to">
-													<span class="label to pull-left">
-														To	
-													</span>
-                                                </div>
-												<div class="label-container cc">
-													<span class="label cc pull-left">
-														Cc
-													</span>
-                                                </div>
-												<div class="label-container bcc">
-													<span class="label bcc pull-left">
-														Bcc
-													</span>
-                                                </div>
-											</span>
-											<span class="pull-left header-info-right">
-												<div class="label-content from gray-dark">
+		<table class="pull-left header-info">
+			<tr>
+				<td class="label-container from">
+					<span class="label from pull-left">
+						From
+					</span>
+				</td>
+				<td class="label-content from gray-dark">
                                                     {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{ currentMessage.formattedIndexedMailMessage.sender.address }}&gt;
-                                                </div>
-												<div class="label-content to gray-dark">
-                                                    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.to">
-                                                        {{ person.name }} &lt;{{ person.address }}&gt;;
-                                                    </span>
-                                                </div>
-                                                <div class="label-content cc gray-dark">
+                                </td>
+			</tr>
+			<tr>
+				<td class="label-container to">
+					<span class="label to pull-left">
+						To	
+					</span>
+                                </td>
+				
+				<td class="label-content to gray-dark">
+                                        <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.to">
+                                        	{{ person.name }} &lt;{{ person.address }}&gt;;
+                                	</span>
+                                </td>
+			</tr>
+			<tr>
+				<td class="label-container cc">
+					<span class="label cc pull-left">
+						Cc
+					</span>
+                                </td>
+                                <td class="label-content cc gray-dark">
                                                     <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.cc">
                                                         {{ person.name }} &lt;{{ person.address }}&gt;;
                                                     </span>
-                                                </div>
-                                                <div class="label-content bcc gray-dark">
-                                                    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
-                                                        {{ person.name }} &lt;{{ person.address }}&gt;;
-                                                    </span>
-                                                </div>
-											</span>
-            </div>
+                                </td>
+			</tr>
+			<tr>
+				<td class="label-container bcc">
+					<span class="label bcc pull-left">
+						Bcc
+					</span>
+                                </td>
+                                <td class="label-content bcc gray-dark">
+                                	<span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
+                                        	{{ person.name }} &lt;{{ person.address }}&gt;;
+                                </td>
+			</tr>
+	            </table>
+	    </div>
             <!-- .message-header -->
             <div class="pull-right message-body-container">
                 <div class="message-body-content"   data-ng-bind-html="currentMessage.bodyWithHighlights">
@@ -420,22 +426,46 @@
                     <a data-action="collapse">
                         <i class="expandable-toggle fa-angle-up fa icon-angle-up icon-on-right"></i>
                     </a>
-
                 </div>
             </div>
-            <div class="widget-body" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+	    <div class="attachments-minimal col-xs-12">
+		<ul class="attachments">
+			<li class="attachment col-xs-12 first" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+				<div class="pull-left icon-container">
+					<div class="msgview_img-xl attachment-img"></div>
+				</div>
+				<div class="pull-left attachment-text">
+					<span class="text-primary attachment-title">
+						<a>
+							{{ attachment.fileName }}
+						</a>
+						:
+					</span>
+					<span class="attachment-body gray-dark">
+						{{ attachment.body }}
+					</span>
+				</div>	
+			</li>
+		</ul>
+	    </div>
+            <div class="widget-body">
                 <div class="widget-body-inner">
                     <div class="widget-main">
                         <ul class="attachments">
-                            <li class="attachment col-xs-12 first">
+                            <li class="attachment col-xs-12 first" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
                                 <div class="col-xs-2 icon-container">
                                     <div class="msgview_img-xl attachment-img"></div>
                                 </div>
                                 <div class="col-xs-10 attachment-text">
-                                    <span class="text-primary attachment-title">{{ attachment.fileName }}</span>
-                                                                <span class="attachment-body gray-dark">
-                                                                    {{ attachment.body }}
-                                                                </span>
+                                    <span class="text-primary attachment-title">
+					<a>
+						{{ attachment.fileName }}
+					</a>
+					:
+				    </span>
+                                    <span class="attachment-body gray-dark">
+                                    	{{ attachment.body }}
+                                    </span>
                                 </div>
                             </li>
                         </ul>
