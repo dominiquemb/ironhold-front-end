@@ -68,6 +68,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
             $scope.search();
         } else {
             $scope.showSearchResults = false;
+            $scope.selectedFacets = [];
             $timeout.cancel(typingTimer);
             typingTimer = $timeout(function() {
                   $scope.searchPreview();
@@ -88,6 +89,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.search = function () {
+        $scope.selectedFacets = [];
         $scope.showSearchResults = true;
         $scope.showSearchPreviewResults = true;
         $scope.searchMatches = Math.ceil(Math.random()*1000);
