@@ -39,7 +39,7 @@
                 <div class="input-container">
                     <div class="input-history dropdown">
                         <input type="text" class="search-input form-control search-field"
-                               placeholder="Type your query" data-ng-model="inputSearch"/>
+                               placeholder="Type your query" data-ng-model="inputSearch" data-ng-keyup="searchKeyUp($event)"/>
 
                                 <a class="dropdown-toggle">
                                     <i class="fa icon-caret-down"></i>
@@ -66,7 +66,7 @@
         </form>
     </div>
 </div>
-<div class="row middlebar" data-ng-show="isSearchResultsVisible()" in-view="console.log('test')">
+<div class="row middlebar" data-ng-show="isSearchPreviewResultsVisible()" in-view="console.log('test')">
 								<span class="pull-left middlebar_left">
 									<div class="btn-group btn-group-ironhold">
                                         <div class="btn btn-default dropdown pull-left">

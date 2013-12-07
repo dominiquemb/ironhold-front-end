@@ -1,11 +1,14 @@
 'use strict';
 
-ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $sce, searchResultsService) {
+ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, searchResultsService) {
+    var typingTimer;
+
     $scope.showSearchResults = false;
+    $scope.showSearchPreviewResults = false;
     $scope.showMessage = false;
   
     $scope.initCustomScrollbars = function(selector) {
-        setTimeout(function() {
+        $timeout(function() {
                 $(selector).jScrollPane({
                         verticalArrowPositions: 'split',
                         horizontalArrowPositions: 'split'
@@ -22,12 +25,16 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.toggleCollapse = function(item) {
-	item.collapsed = !item.collapsed;
+	    item.collapsed = !item.collapsed;
     }
 
     $scope.isSearchResultsVisible = function() {
         return $scope.showSearchResults;
     }
+
+     $scope.isSearchPreviewResultsVisible = function() {
+            return $scope.showSearchPreviewResults;
+        }
 
     $scope.isMessageVisible = function() {
         return $scope.showMessage;
@@ -49,13 +56,34 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         return message.formattedIndexedMailMessage.importance == importance;
     }
 
+    $scope.searchKeyUp = function($event) {
+        if ($event.keyCode == 13) { // ENTER
+            $timeout.cancel(typingTimer);
+            $scope.search();
+        } else {
+            $scope.showSearchResults = false;
+            $timeout.cancel(typingTimer);
+            typingTimer = $timeout(function() {
+                  $scope.searchPreview();
+                }, 500);
+        }
+    }
+
     $scope.selectMessage = function(message) {
         $scope.currentMessage = message;
         $scope.showMessage = true;
     }
 
+    $scope.searchPreview = function () {
+        $scope.showSearchResults = false;
+        $scope.showSearchPreviewResults = true;
+        $scope.searchMatches = Math.ceil(Math.random()*1000);
+        $scope.searchTime = Math.ceil(Math.random()*100);
+    }
+
     $scope.search = function () {
         $scope.showSearchResults = true;
+        $scope.showSearchPreviewResults = true;
         $scope.searchMatches = Math.ceil(Math.random()*1000);
         $scope.searchTime = Math.ceil(Math.random()*100);
 
