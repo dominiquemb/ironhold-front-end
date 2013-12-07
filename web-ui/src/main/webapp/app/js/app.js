@@ -48,9 +48,9 @@ ironholdApp.directive('truncate', function() {
 			maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
 
 			if (totalHeight > scope.desiredHeight) {
-				if (scope.truncated !== true) {
-					scope.truncated = true;
-					scope.originalText = scope.text;
+				if (scope.$parent.truncated !== true) {
+					scope.$parent.truncated = true;
+					scope.$parent.originalText = scope.text;
 				}
 				var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
 				$(elem).html(result);
