@@ -75,7 +75,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                          "valueMap" :
                                             [
                                                {
-                                                  "label" : "Thelma Cline",
+                                                  "label" : "Thelma Cline Thelma Cline Thelma Cline Thelma Cline Thelma Cline Thelma Cline Thelma Cline Thelma Cline",
                                                   "value" : 28,
 						  "selected": false
                                                },
@@ -90,12 +90,12 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 						  "selected": false
                                                },
                                                {
-                                                  "label" : "Nathan Thompson",
+                                                  "label" : "Nathan Thompson Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
                                                   "value" : 25,
 						  "selected": false
                                                },
                                                {
-                                                  "label" : "Trevor Holman",
+                                                  "label" : "Trevor Holman Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
                                                   "value" : 24,
 						  "selected": false
                                                },
@@ -110,7 +110,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 						  "selected": false
                                                },
                                                {
-                                                  "label" : "Virginia Pitts",
+                                                  "label" : "Virginia Pitts Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
                                                   "value" : 22,
 						  "selected": false
                                                },
@@ -152,7 +152,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 						  "selected": false
                                                },
                                                {
-                                                  "label" : "yah00.co.uk",
+                                                  "label" : "yah00.co.uk Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
                                                   "value" : 74,
 						  "selected": false
                                                },
@@ -172,7 +172,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 61
                                                },
                                                {
-                                                  "label" : "ma1lbox.com",
+                                                  "label" : "ma1lbox.com Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 59
                                                },
@@ -214,7 +214,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 43
                                                },
                                                {
-                                                  "label" : "Thelma Gaines",
+                                                  "label" : "Thelma Gaines Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 41
                                                },
@@ -229,7 +229,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 39
                                                },
                                                {
-                                                  "label" : "Virginia Pitts",
+                                                  "label" : "Virginia Pitts Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 38
                                                },
@@ -239,7 +239,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 37
                                                },
                                                {
-                                                  "label" : "Lynn Robles",
+                                                  "label" : "Lynn Robles Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 37
                                                },
@@ -281,7 +281,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 158
                                                },
                                                {
-                                                  "label" : "everyma1l.net",
+                                                  "label" : "everyma1l.net Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 150
                                                },
@@ -296,7 +296,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 139
                                                },
                                                {
-                                                  "label" : "yah00.co.uk",
+                                                  "label" : "yah00.co.uk Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 136
                                                },
@@ -306,7 +306,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 131
                                                },
                                                {
-                                                  "label" : "somema1l.us",
+                                                  "label" : "somema1l.us Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 123
                                                }
@@ -333,7 +333,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                   "value" : 169
                                                },
                                                {
-                                                  "label" : "2008",
+                                                  "label" : "2008 Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
 						  "selected": false,
                                                   "value" : 235
                                                },
@@ -354,7 +354,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                },
                                                {
 						  "selected": false,
-                                                  "label" : "2004",
+                                                  "label" : "2004 Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
                                                   "value" : 187
                                                },
                                                {
@@ -369,7 +369,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                },
                                                {
 						  "selected": false,
-                                                  "label" : "2001",
+                                                  "label" : "2001 Some Really Long Text To Show That This Truncates When It Goes Beyond One Line",
                                                   "value" : 182
                                                }
                                             ]

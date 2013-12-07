@@ -29,6 +29,45 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
+String.prototype.plaintext = function(text) {
+	if (typeof text === "String") {
+		text.replace(/<(?:.|\n)*?>/gm, '');
+	}
+	else return false;
+};
+
+ironholdApp.directive('truncate', function() {
+	return {	
+		scope: {
+			'charPxlWidth': '=truncFontWidth',
+			'desiredHeight': '=truncDesiredHeight',
+			'trailingDots': '=truncTrailingDots',
+			'text': '@truncText'
+		},
+		restrict: 'ACE',
+		link: function(scope, elem, attrs) {
+			var charsPerLine = Math.floor( $(elem).width() / scope.charPxlWidth),
+			totalLines = Math.floor(scope.text.length / charsPerLine),
+			fontSize = parseInt($(elem).css('font-size')),
+			totalHeight = Math.floor( fontSize * totalLines),
+			desiredLines = Math.floor( scope.desiredHeight / fontSize ),
+			maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
+
+			if (totalHeight > scope.desiredHeight) {
+				if (scope.truncated !== true) {
+					scope.truncated = true;
+					scope.originalText = scope.text;
+				}
+				var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
+				$(elem).html(result);
+			}
+			else {
+				$(elem).html(scope.text);
+			}
+		}
+	}
+});
+
 String.prototype.endsWith = function(suffix) {
     return this.toLowerCase().indexOf(suffix.toLowerCase(), this.length - suffix.length) !== -1;
 };

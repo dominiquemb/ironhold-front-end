@@ -129,13 +129,11 @@
     <div class="widget-body">
         <div class="widget-body-inner">
             <ul class="widget-main">
-                <li class="filter" ng-class="{'active': facetValue.selected === true}" ng-click="toggleActiveState(facetValue)" data-ng-repeat="facetValue in facet.valueMap">
+                <li class="filter" data-ng-class="{'active': facetValue.selected === true}" data-ng-click="toggleActiveState(facetValue)" data-ng-repeat="facetValue in facet.valueMap">
                     <div class="pull-left checkbox">
                         <i class="fa icon-check"></i>
                     </div>
-															<span class="filter-name">
-																{{ facetValue.label }}
-															</span>
+															<span class="filter-name truncate" trunc-text="{{ facetValue.label }}" trunc-font-width="7" trunc-desired-height="21" trunc-trailing-dots="true"></span>
 															<span class="text-primary filter-value">
 																{{ facetValue.value }}
 															</span>
