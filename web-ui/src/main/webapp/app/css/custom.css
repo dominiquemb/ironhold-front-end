@@ -602,7 +602,7 @@ body .text-primary {
 }
 
 .middlebar .pagination-container {
-	margin-top: 17px;
+	margin-top: 2px;
 }
 
 .middlebar .pagination > li.active > a, .middlebar .pagination > li.active > a:hover {

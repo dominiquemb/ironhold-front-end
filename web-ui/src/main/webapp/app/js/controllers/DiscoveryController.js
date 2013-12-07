@@ -6,6 +6,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.showSearchResults = false;
     $scope.showSearchPreviewResults = false;
     $scope.showMessage = false;
+    $scope.selectedFacets = [];
   
     $scope.initCustomScrollbars = function(selector) {
         $timeout(function() {
@@ -21,7 +22,12 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.toggleActiveState = function(item) {
-	item.selected = !item.selected;
+	    item.selected = !item.selected;
+        if (item.selected) {
+            $scope.selectedFacets.push(item);
+        } else {
+            $scope.selectedFacets.remove(item);
+        }
     }
 
     $scope.toggleCollapse = function(item) {

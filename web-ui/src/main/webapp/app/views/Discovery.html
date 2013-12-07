@@ -84,11 +84,10 @@
 										</span>
                                     </div>
 									<div class="middlebar_center_bottom">
-                                        <span class="gray-medium">search took <strong
-                                                class="gray-dark matches_time">{{ searchTime }}</strong> ms</span>
+                                        <span data-ng-repeat="facetValue in selectedFacets">{{ facetValue.label }} <a data-ng-click="toggleActiveState(facetValue)">x</a></span>
                                     </div>
 								</span>
-								<span class="pull-right middlebar_right pagination-container">
+								<span class="pull-right middlebar_right pagination-container" data-ng-show="isSearchResultsVisible()">
 									<ul class="pull-right pagination pagination-background-white text-primary">
                                         <li class="disabled">
                                             <a class="pagination_prev">&laquo;</a>

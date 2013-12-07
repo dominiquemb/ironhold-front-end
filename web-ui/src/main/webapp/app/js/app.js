@@ -29,12 +29,6 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
-String.prototype.plaintext = function(text) {
-	if (typeof text === "String") {
-		text.replace(/<(?:.|\n)*?>/gm, '');
-	}
-	else return false;
-};
 
 ironholdApp.directive('truncate', function() {
 	return {	
@@ -70,4 +64,23 @@ ironholdApp.directive('truncate', function() {
 
 String.prototype.endsWith = function(suffix) {
     return this.toLowerCase().indexOf(suffix.toLowerCase(), this.length - suffix.length) !== -1;
+};
+
+
+String.prototype.plaintext = function(text) {
+	if (typeof text === "String") {
+		text.replace(/<(?:.|\n)*?>/gm, '');
+	}
+	else return false;
+};
+
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
 };
