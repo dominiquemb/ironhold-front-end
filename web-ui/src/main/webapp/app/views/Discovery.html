@@ -176,18 +176,18 @@
 	</tr>
 	<tr>
             <td colspan="2" class="dropdown-toggle">
-                <div class="widget-box widget-box-simple">
+                <div class="widget-box widget-box-simple" ng-class="{'collapsed': message.bodyWithHighlights.collapsed}">
 			<span class="widget-header pull-left dropdown-header">
 				<span class="widget-toolbar">
 					<a>
-                                        	<b class="icon-four-thirty-up icon-on-right"></b>
+                                        	<b ng-click="toggleCollapse(message.bodyWithHighlights)" ng-class="{'icon-four-thirty-up': message.bodyWithHighlights.collapsed  === false, 'icon-four-thirty-down': message.bodyWithHighlights.collapsed === true}" class="icon-on-right"></b>
 					</a>
 				</span>
 				<strong class="dropdown-title">Body</strong>
 			</span>
 			<span class="widget-body">
 				<div class="widget-body-inner">
-                                	<div class="widget-main gray-medium"  data-ng-bind-html="message.bodyWithHighlights">
+                                	<div class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights.text }}" trunc-desired-height="message.bodyWithHighlights.collapsed ? '21' : '84'" trunc-font-width="message.bodyWithHighlights.collapsed ? '6' : '5'" trunc-trailing-dots="true">
                                         </div>
                                 </div>
 			</span>

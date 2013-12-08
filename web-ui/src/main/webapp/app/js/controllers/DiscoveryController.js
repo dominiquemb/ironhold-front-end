@@ -448,7 +448,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
         $scope.messages =                        [
                                                                 {
-                                                                   "bodyWithHighlights" : "\"Good! �Splendid! �_Now_ we're all right and safe! Did you tell Aunty?\" I was going to say yes; but she chipped in and says: �\"About what, Sid?\" \"Why, about the way the whole thing was done.\" \"What whole thing?\" \"Why, _the_ whole thing. �There ain't but one; how we set the runaway nigger free�me and Tom.\" \n",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "\"Good! �Splendid! �_Now_ we're all right and safe! Did you tell Aunty?\" I was going to say yes; but she chipped in and says: �\"About what, Sid?\" \"Why, about the way the whole thing was done.\" \"What whole thing?\" \"Why, _the_ whole thing. �There ain't but one; how we set the runaway nigger free�me and Tom.\" \n"
+								   },
                                                                    "subjectWithHighlights" : "\"Good!  Splendid!  _Now_ we're all right...",
                                                                    "attachmentWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny,\nand C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten",
                                                                    "formattedIndexedMailMessage" :
@@ -538,7 +541,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to"
+									},
                                                                    "subjectWithHighlights" : "His face flushed indignantly, and he fired...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -613,7 +619,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "Caught in the Act Tom Astonishes the School Examination Evening The Master's Dilemma The School House Happy for Two Days Enjoying the Vacation \n",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "Caught in the Act Tom Astonishes the School Examination Evening The Master's Dilemma The School House Happy for Two Days Enjoying the Vacation \n"
+									},
                                                                    "subjectWithHighlights" : "Caught in the Act  Tom Astonishes the School  Examination...",
                                                                    "attachmentWithHighlights" : "spoken of\nhim as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull\nHarbison.\"]\n \n\n\"Oh, that's",
                                                                    "formattedIndexedMailMessage" :
@@ -713,7 +722,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
+									},
                                                                    "subjectWithHighlights" : "\"It is a mystery that is hidden from me by...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -818,7 +830,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
+									},
                                                                    "subjectWithHighlights" : "\"You will confine yourself to the questions,...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -903,7 +918,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
+									},
                                                                    "subjectWithHighlights" : "\"I wit not what ye refer to.\"  \"How much...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -983,7 +1001,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
+									},
                                                                    "subjectWithHighlights" : "\"How much is 9 times 6?\"  \"It is a mystery...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -1083,7 +1104,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "spoken of him as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <span class=\"blue-hilite\">dog</span>.\" The <span class=\"blue-hilite\">dog</span> howled again. The boys' hearts sank once more",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "spoken of him as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <span class=\"blue-hilite\">dog</span>.\" The <span class=\"blue-hilite\">dog</span> howled again. The boys' hearts sank once more"
+									},
                                                                    "subjectWithHighlights" : "[* If Mr. Harbison owned a slave named Bull,...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -1178,7 +1202,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
+									},
                                                                    "subjectWithHighlights" : "\"Answer the question!\"  He crowded his wrath...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
@@ -1293,7 +1320,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
-                                                                   "bodyWithHighlights" : "continued to whisper for some little time. Presently a <span class=\"blue-hilite\">dog</span> set up a long, lugubrious howl just outside--within ... spoken of him as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <span class=\"blue-hilite\">dog</span>.\" The <span class=\"blue-hilite\">dog</span> howled again. The boys' hearts sank once more",
+                                                                   "bodyWithHighlights" : {
+									collapsed: false,
+									text: "continued to whisper for some little time. Presently a <span class=\"blue-hilite\">dog</span> set up a long, lugubrious howl just outside--within ... spoken of him as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <span class=\"blue-hilite\">dog</span>.\" The <span class=\"blue-hilite\">dog</span> howled again. The boys' hearts sank once more"
+									},
                                                                    "subjectWithHighlights" : "They continued to whisper for some little...",
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
