@@ -6,6 +6,7 @@ import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.domain.CountSearchResponse;
 import com.reqo.ironhold.web.domain.MessageSearchResponse;
+import com.reqo.ironhold.web.domain.SuggestSearchResponse;
 
 /**
  * User: ilya
@@ -61,6 +62,11 @@ public class MockMessageIndexService implements IMessageIndexService {
 
     @Override
     public CountSearchResponse getTotalMessageCount(String indexPrefix, LoginUser loginUser) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public SuggestSearchResponse getSuggestions(String indexPrefix, String search, LoginUser loginUser) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

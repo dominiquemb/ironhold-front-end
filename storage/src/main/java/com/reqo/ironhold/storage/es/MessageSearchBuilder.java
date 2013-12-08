@@ -478,4 +478,11 @@ public class MessageSearchBuilder {
         this.msgTypeFacet = msgTypeFacet;
     }
 
+    public String getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
+    }
 }

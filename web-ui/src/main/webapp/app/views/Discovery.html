@@ -82,6 +82,11 @@
 										<span class="matches_number blue-primary">
 											<strong>{{ searchMatches }}</strong> matched messages
 										</span>
+                                        <span class="matches_number blue-primary" data-ng-show="anySuggestions()">
+                                            Did you mean <span data-ng-repeat="suggestion in suggestions">
+                                                <span data-ng-repeat="option in suggestion.options"><a data-ng-click="replace(suggestion.text, option)">{{ option }}</a> </span>
+                                            </span>
+                                        </span>
                                     </div>
 									<div class="middlebar_center_bottom">
                                         <span data-ng-repeat="facetValue in selectedFacets">{{ facetValue.label }} <a data-ng-click="toggleActiveState(facetValue)">x</a></span>

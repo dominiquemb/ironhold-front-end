@@ -5,10 +5,7 @@ import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
 import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
 import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.web.domain.CountSearchResponse;
-import com.reqo.ironhold.web.domain.FacetGroupName;
-import com.reqo.ironhold.web.domain.IndexedMailMessage;
-import com.reqo.ironhold.web.domain.MessageSearchResponse;
+import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,16 +44,23 @@ public class MessageController {
     ApiResponse<CountSearchResponse> getCount(@PathVariable("clientKey") String clientKey, @RequestParam String criteria) {
         ApiResponse<CountSearchResponse> apiResponse = new ApiResponse<CountSearchResponse>();
 
-        try {
+        CountSearchResponse result = messageIndexService.getMatchCount(clientKey, criteria, getDefaultUser());
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
-            CountSearchResponse result = messageIndexService.getMatchCount(clientKey, criteria, getDefaultUser());
-            apiResponse.setPayload(result);
-            apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+        return apiResponse;
 
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+    }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/suggest")
+    public
+    @ResponseBody
+    ApiResponse<SuggestSearchResponse> getSuggestions(@PathVariable("clientKey") String clientKey, @RequestParam String criteria) {
+        ApiResponse<SuggestSearchResponse> apiResponse = new ApiResponse<SuggestSearchResponse>();
+
+        SuggestSearchResponse result = messageIndexService.getSuggestions(clientKey, criteria, getDefaultUser());
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
         return apiResponse;
 

@@ -9,16 +9,16 @@ import com.gs.collections.api.set.ImmutableSet;
  * Time: 10:08 AM
  */
 public class MessageSearchResponse {
-    private ImmutableList<MessageMatch> messages;
-    private ImmutableList<FacetGroup> facets;
-    private long timeTaken;
+    private final ImmutableList<MessageMatch> messages;
+    private final ImmutableList<FacetGroup> facets;
+    private final ImmutableList<Suggestion> suggestions;
+    private final long timeTaken;
 
-    public MessageSearchResponse() {
-    }
 
-    public MessageSearchResponse(ImmutableList<MessageMatch> messages, ImmutableList<FacetGroup> facets, long timeTaken) {
+    public MessageSearchResponse(ImmutableList<MessageMatch> messages, ImmutableList<FacetGroup> facets, ImmutableList<Suggestion> suggestions, long timeTaken) {
         this.messages = messages;
         this.facets = facets;
+        this.suggestions = suggestions;
         this.timeTaken = timeTaken;
     }
 
@@ -26,23 +26,15 @@ public class MessageSearchResponse {
         return messages;
     }
 
-    public void setMessages(ImmutableList<MessageMatch> messages) {
-        this.messages = messages;
-    }
-
-    public long getTimeTaken() {
-        return timeTaken;
-    }
-
-    public void setTimeTaken(long timeTaken) {
-        this.timeTaken = timeTaken;
-    }
-
     public ImmutableList<FacetGroup> getFacets() {
         return facets;
     }
 
-    public void setFacets(ImmutableList<FacetGroup> facets) {
-        this.facets = facets;
+    public ImmutableList<Suggestion> getSuggestions() {
+        return suggestions;
+    }
+
+    public long getTimeTaken() {
+        return timeTaken;
     }
 }

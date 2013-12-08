@@ -31,8 +31,13 @@ import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.Facets;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.highlight.HighlightField;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
+import org.elasticsearch.search.suggest.term.TermSuggestion;
+import org.elasticsearch.search.suggest.term.TermSuggestionBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -153,6 +158,11 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
 
     public MessageSearchResponse search(MessageSearchBuilder builder) {
         SearchRequestBuilder search = builder.build();
+
+        TermSuggestionBuilder termSuggestion = new TermSuggestionBuilder("termSuggestion");
+        termSuggestion.field(IndexFieldEnum.BODY.getValue()).text(builder.getCriteria());
+        search.addSuggestion(termSuggestion);
+
         logger.info(search.toString());
         SearchResponse response = search.execute().actionGet();
 
@@ -180,8 +190,24 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
 
         ImmutableList<MessageMatch> messages = ArrayIterate.collect(response.getHits().getHits(), SEARCHHIT_TO_MESSAGEMATCH).toImmutable();
 
+        TermSuggestion suggestion = response.getSuggest().getSuggestion("termSuggestion");
+        MutableList<Suggestion> suggestions = ListIterate.collect(suggestion.getEntries(), new Function<TermSuggestion.Entry, Suggestion>() {
+            @Override
+            public Suggestion valueOf(TermSuggestion.Entry termSuggestion) {
 
-        return new MessageSearchResponse(messages, facetGroups.toImmutable(), response.getTookInMillis());
+                MutableList<String> options = ListIterate.collect(termSuggestion.getOptions(), new Function<TermSuggestion.Entry.Option, String>() {
+                    @Override
+                    public String valueOf(TermSuggestion.Entry.Option option) {
+                        return option.getText().toString();
+                    }
+                });
+
+                return new Suggestion(termSuggestion.getText().toString(), options.toImmutable());
+            }
+        });
+
+
+        return new MessageSearchResponse(messages, facetGroups.toImmutable(), suggestions.toImmutable(), response.getTookInMillis());
     }
 
     public CountSearchResponse getMatchCount(String indexPrefix, String search, LoginUser loginUser) {
@@ -217,6 +243,41 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
         } catch (InterruptedException | ExecutionException e) {
             logger.warn(e);
             return null;
+        }
+    }
+
+
+    public SuggestSearchResponse getSuggestions(String indexPrefix, String search, LoginUser loginUser) {
+        try {
+
+            SearchRequestBuilder builder = client.getSearchRequestBuilder(indexPrefix, loginUser);
+            TermSuggestionBuilder termSuggestion = new TermSuggestionBuilder("termSuggestion");
+            termSuggestion.field(IndexFieldEnum.BODY.getValue()).text(search);
+
+            builder.addSuggestion(termSuggestion);
+            builder.setSearchType(SearchType.COUNT);
+            SearchResponse response = builder.execute().actionGet();
+
+            TermSuggestion suggestion = response.getSuggest().getSuggestion("termSuggestion");
+            MutableList<Suggestion> suggestions = ListIterate.collect(suggestion.getEntries(), new Function<TermSuggestion.Entry, Suggestion>() {
+                @Override
+                public Suggestion valueOf(TermSuggestion.Entry termSuggestion) {
+
+                    MutableList<String> options = ListIterate.collect(termSuggestion.getOptions(), new Function<TermSuggestion.Entry.Option, String>() {
+                        @Override
+                        public String valueOf(TermSuggestion.Entry.Option option) {
+                            return option.getText().toString();
+                        }
+                    });
+
+                    return new Suggestion(termSuggestion.getText().toString(), options.toImmutable());
+                }
+            });
+
+            return new SuggestSearchResponse(response.getTookInMillis(), suggestions.toImmutable());
+        } catch (SearchPhaseExecutionException e) {
+            logger.warn(e);
+            return SuggestSearchResponse.EMPTY_RESPONSE;
         }
     }
 

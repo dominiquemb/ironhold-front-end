@@ -5,6 +5,7 @@ import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.domain.CountSearchResponse;
 import com.reqo.ironhold.web.domain.MessageSearchResponse;
+import com.reqo.ironhold.web.domain.SuggestSearchResponse;
 
 /**
  * User: ilya
@@ -35,5 +36,6 @@ public interface IMessageIndexService {
 
     CountSearchResponse getTotalMessageCount(String indexPrefix, LoginUser loginUser);
 
+    SuggestSearchResponse getSuggestions(String indexPrefix, String search, LoginUser loginUser);
 
 }

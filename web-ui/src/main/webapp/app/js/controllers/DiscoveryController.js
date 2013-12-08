@@ -18,7 +18,16 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     };
 
     $scope.reinitScrollbars = function() {
-	$('.scrollbar-hidden').data('jsp').reinitialise();
+    	$('.scrollbar-hidden').data('jsp').reinitialise();
+    }
+
+    $scope.anySuggestions = function() {
+        return $scope.suggestions != undefined && $scope.suggestions.length > 0;
+    }
+
+    $scope.replace = function(oldText, newText) {
+        $scope.inputSearch = $scope.inputSearch.replace(oldText, newText);
+        $scope.search();
     }
 
     $scope.toggleActiveState = function(item) {
@@ -1398,6 +1407,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 }
                                                              ];
+
+        $scope.suggestions = [{"text":"womn","options":["woman","women","worn","womb","won"]}];
 
     }
 });
