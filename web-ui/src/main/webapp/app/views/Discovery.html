@@ -199,19 +199,18 @@
 		<i class="img-xs attachment-img-xs pull-right"></i>	
 	    </td>
             <td colspan="2" class="dropdown-toggle">
-                <div class="widget-box widget-box-simple" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments">
+                <div class="widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments" ng-class="{'collapsed': attachment.collapsed}">
 			<span class="widget-header pull-left dropdown-header">
 				<span class="widget-toolbar">
 					<a>
-                                        	<b class="icon-four-thirty-up icon-on-right"></b>
+                                        	<b ng-click="toggleCollapse(attachment)" ng-class="{'icon-four-thirty-up': attachment.collapsed  === false, 'icon-four-thirty-down': attachment.collapsed === true}" class="icon-on-right"></b>
 					</a>
 				</span>
 				<strong class="dropdown-title">{{ attachment.fileName }}</strong>
 			</span>
 			<span class="widget-body">
 				<div class="widget-body-inner">
-					<div class="widget-main gray-medium">
-						{{ attachment.body }}
+					<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="attachment.collapsed ? '21' : '84'" trunc-font-width="attachment.collapsed ? '7' : '6'" trunc-trailing-dots="true">
 					</div>
 				</div>
 			</span>

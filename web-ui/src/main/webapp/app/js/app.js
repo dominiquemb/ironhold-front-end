@@ -40,24 +40,29 @@ ironholdApp.directive('truncate', function() {
 		},
 		restrict: 'ACE',
 		link: function(scope, elem, attrs) {
-			var charsPerLine = Math.floor( $(elem).width() / scope.charPxlWidth),
-			totalLines = Math.floor(scope.text.length / charsPerLine),
-			fontSize = parseInt($(elem).css('font-size')),
-			totalHeight = Math.floor( fontSize * totalLines),
-			desiredLines = Math.floor( scope.desiredHeight / fontSize ),
-			maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
+			scope.$watch(
+			'[charPxlWidth, desiredHeight, trailingDots, text]', 
+			function() {
+				var charsPerLine = Math.floor( $(elem).width() / scope.charPxlWidth ),
+				totalLines = Math.floor(scope.text.length / charsPerLine),
+				fontSize = parseInt($(elem).css('font-size')),
+				totalHeight = Math.floor( fontSize * totalLines),
+				desiredLines = Math.floor( scope.desiredHeight / fontSize ),
+				maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
 
-			if (totalHeight > scope.desiredHeight) {
-				if (scope.$parent.truncated !== true) {
-					scope.$parent.truncated = true;
-					scope.$parent.originalText = scope.text;
+				if (totalHeight > scope.desiredHeight) {
+					if (scope.$parent.truncated !== true) {
+						scope.$parent.truncated = true;
+						scope.$parent.originalText = scope.text;
+					}
+					var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
+					$(elem).html(result);
 				}
-				var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
-				$(elem).html(result);
-			}
-			else {
-				$(elem).html(scope.text);
-			}
+				else {
+					$(elem).html(scope.text);
+				}
+			},
+			true);
 		}
 	}
 });
