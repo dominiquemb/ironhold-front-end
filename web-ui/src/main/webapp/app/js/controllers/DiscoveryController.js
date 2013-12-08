@@ -85,9 +85,37 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         }
     }
 
+    $scope.unselectAllMessages = function() {
+	angular.forEach($scope.messages, function(message) {
+		message.selected = false;	
+	});
+    }
+
     $scope.selectMessage = function(message) {
+	$scope.unselectAllMessages();
+	message.selected = true;
         $scope.currentMessage = message;
         $scope.showMessage = true;
+    }
+
+    $scope.unhilightAllMessages = function(message) {
+	angular.forEach($scope.messages, function(entry) {
+		$scope.unhighlightMessage(entry);
+	});
+    }
+
+    $scope.highlightAllMessages = function(message) {
+	angular.forEach($scope.messages, function(entry) {
+		$scope.highlightMessage(entry);
+	});
+    }
+
+    $scope.highlightMessage = function(message) {
+	message.highlighted = true;
+    }
+
+    $scope.unhilightMessage = function(message) {
+	message.highlighted = false;
     }
 
     $scope.searchPreview = function () {
@@ -457,6 +485,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
         $scope.messages =                        [
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "\"Good! �Splendid! �_Now_ we're all right and safe! Did you tell Aunty?\" I was going to say yes; but she chipped in and says: �\"About what, Sid?\" \"Why, about the way the whole thing was done.\" \"What whole thing?\" \"Why, _the_ whole thing. �There ain't but one; how we set the runaway nigger free�me and Tom.\" \n"
@@ -550,6 +580,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to"
@@ -628,6 +660,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "Caught in the Act Tom Astonishes the School Examination Evening The Master's Dilemma The School House Happy for Two Days Enjoying the Vacation \n"
@@ -731,6 +765,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
@@ -839,6 +875,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
@@ -927,6 +965,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
@@ -1010,6 +1050,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
@@ -1113,6 +1155,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "spoken of him as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <span class=\"blue-hilite\">dog</span>.\" The <span class=\"blue-hilite\">dog</span> howled again. The boys' hearts sank once more"
@@ -1211,6 +1255,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny, and C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten ... still due to A from B, and which party pays for the <span class=\"blue-hilite\">dog</span>, C or D, and who gets the money? If A, is the penny ... possible profit which might have inured from the <span class=\"blue-hilite\">dog</span>, and classifiable as earned increment, that is to ... ducts of thought. Wherefore I beseech you let the <span class=\"blue-hilite\">dog</span> and the onions and these people of the strange and"
@@ -1329,6 +1375,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                       }
                                                                 },
                                                                 {
+								   "selected": false,
+								   "highlighted": false,
                                                                    "bodyWithHighlights" : {
 									collapsed: false,
 									text: "continued to whisper for some little time. Presently a <span class=\"blue-hilite\">dog</span> set up a long, lugubrious howl just outside--within ... spoken of him as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull Harbison.\"] \"Oh, that's good--I ... death; I'd a bet anything it was a _stray_ <span class=\"blue-hilite\">dog</span>.\" The <span class=\"blue-hilite\">dog</span> howled again. The boys' hearts sank once more"
