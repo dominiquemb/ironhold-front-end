@@ -421,37 +421,10 @@
         <!-- .scrollable-content -->
     </div>
     <div class="row msgview_bottom expandable">
-        <div class="widget-box widget-box-simple">
-            <div class="widget-header">
-                <div class="widget-toolbar pull-right">
+        <div data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
                     <a data-action="collapse">
-                        <i class="expandable-toggle fa-angle-up fa icon-angle-up icon-on-right"></i>
+                        <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)" class="expandable-toggle fa-angle-up fa icon-angle-up icon-on-right"></i>
                     </a>
-                </div>
-            </div>
-	    <div class="attachments-minimal col-xs-12">
-		<ul class="attachments">
-			<li class="attachment col-xs-12 first" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
-				<div class="pull-left icon-container">
-					<div class="msgview_img-xl attachment-img"></div>
-				</div>
-				<div class="pull-left attachment-text">
-					<span class="text-primary attachment-title">
-						<a>
-							{{ attachment.fileName }}
-						</a>
-						:
-					</span>
-					<span class="attachment-body gray-dark">
-						{{ attachment.body }}
-					</span>
-				</div>	
-			</li>
-		</ul>
-	    </div>
-            <div class="widget-body">
-                <div class="widget-body-inner">
-                    <div class="widget-main">
                         <ul class="attachments">
                             <li class="attachment col-xs-12 first" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
                                 <div class="col-xs-2 icon-container">
@@ -464,18 +437,11 @@
 					</a>
 					:
 				    </span>
-                                    <span class="attachment-body gray-dark">
-                                    	{{ attachment.body }}
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'" trunc-font-width="5" trunc-trailing-dots="true">
                                     </span>
                                 </div>
                             </li>
                         </ul>
-                    </div>
-                    <!-- widget-main -->
-                </div>
-                <!-- widget-body-inner -->
-            </div>
-            <!-- .widget-body -->
         </div>
         <!-- .widget-box -->
     </div>

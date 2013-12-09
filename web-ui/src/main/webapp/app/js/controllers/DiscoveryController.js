@@ -495,6 +495,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "for a sheep worth 4 pence and a <span class=\"blue-hilite\">dog</span> worth a penny,\nand C kill the <span class=\"blue-hilite\">dog</span> before delivery, because bitten",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<370509511.127199.1385256121997.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "\"Good!  Splendid!  _Now_ we're all right...",
                                                                          "messageDate" : "04/27/2006",
@@ -590,6 +593,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<63228029.113963.1385256027294.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "His face flushed indignantly, and he fired...",
                                                                          "messageDate" : "10/01/2010",
@@ -670,6 +676,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "spoken of\nhim as \"Harbison's Bull,\" but a son or a <span class=\"blue-hilite\">dog</span> of that name was \"Bull\nHarbison.\"]\n \n\n\"Oh, that's",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<1266457719.101543.1385255942251.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "Caught in the Act  Tom Astonishes the School  Examination...",
                                                                          "messageDate" : "11/24/2009",
@@ -775,6 +784,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<431871714.63680.1385255692180.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "\"It is a mystery that is hidden from me by...",
                                                                          "messageDate" : "03/06/2004",
@@ -885,6 +897,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<958863512.212216.1385256690684.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "\"You will confine yourself to the questions,...",
                                                                          "messageDate" : "03/20/2003",
@@ -975,6 +990,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<57329824.121094.1385256078329.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "\"I wit not what ye refer to.\"  \"How much...",
                                                                          "messageDate" : "02/21/2001",
@@ -1060,6 +1078,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<736010588.128285.1385256129967.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "\"How much is 9 times 6?\"  \"It is a mystery...",
                                                                          "messageDate" : "09/28/2001",
@@ -1165,6 +1186,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<915106005.144305.1385256246900.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "[* If Mr. Harbison owned a slave named Bull,...",
                                                                          "messageDate" : "10/12/2002",
@@ -1265,6 +1289,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<1050572952.241424.1385256876186.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "\"Answer the question!\"  He crowded his wrath...",
                                                                          "messageDate" : "12/05/2007",
@@ -1385,6 +1412,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                                                                    "attachmentWithHighlights" : "",
                                                                    "formattedIndexedMailMessage" :
                                                                       {
+									 "collapsedAttachments": {
+										"collapsed": false
+									 },
                                                                          "messageId" : "<109700206.103376.1385255954368.JavaMail.ilya@crunchbang>",
                                                                          "subject" : "They continued to whisper for some little...",
                                                                          "messageDate" : "01/27/2007",

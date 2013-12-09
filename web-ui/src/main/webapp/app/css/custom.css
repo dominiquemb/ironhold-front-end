@@ -126,10 +126,20 @@ body .text-primary {
 .msgview {
 	position: absolute;
 	right: 0px;
-	bottom: 19px;
+	bottom: 0px;
 	top: 0px;
 	overflow: hidden !important;
 	padding-left: 0px;
+}
+
+.msgview .placeholder_text {
+	position: absolute;
+}
+
+.msgview .tabbable {
+	margin-top: 19px;
+	position: absolute;
+	bottom:0px;
 }
 
 .msgview .placeholder_text {

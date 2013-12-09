@@ -50,7 +50,7 @@ ironholdApp.directive('truncate', function() {
 				desiredLines = Math.floor( scope.desiredHeight / fontSize ),
 				maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
 
-				if (totalHeight > scope.desiredHeight) {
+				if ((totalHeight > scope.desiredHeight) && (scope.desiredHeight > 0)) {
 					if (scope.$parent.truncated !== true) {
 						scope.$parent.truncated = true;
 						scope.$parent.originalText = scope.text;
