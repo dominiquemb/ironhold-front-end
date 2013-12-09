@@ -422,8 +422,9 @@
     </div>
     <div class="row msgview_bottom expandable">
         <div data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
-                    <a data-action="collapse">
-                        <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)" class="expandable-toggle fa-angle-up fa icon-angle-up icon-on-right"></i>
+                    <a data-action="collapse" class="expandable-toggle">
+                        <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)" 
+			   data-ng-class="{'icon-angle-up': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === true, 'icon-angle-down': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === false}" class="fa-angle-up fa icon-on-right"></i>
                     </a>
                         <ul class="attachments">
                             <li class="attachment col-xs-12 first" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">

@@ -70,8 +70,8 @@ body .text-primary {
 #tab-discovery, 
 .top-nav > .tab-content, 
 .main-area, 
-.main-area .tabbable, 
-.main-area .navigation, 
+.main-area > .navigation > .tabbable, 
+.main-area > .navigation, 
 .wrapper {
 	min-width: 1230px;
 	width: 100%;
@@ -137,8 +137,10 @@ body .text-primary {
 }
 
 .msgview .tabbable {
-	margin-top: 19px;
+	top: 0px;
 	position: absolute;
+	right: 0px;	
+	left: 0px;
 	bottom:0px;
 }
 
@@ -254,17 +256,6 @@ body .text-primary {
 	margin-left: 50px;
 }
 
-.msgview_bottom .widget-box .widget-header {
-	position: absolute;
-	right: 0px;
-	z-index: 1;
-}
-
-.msgview_bottom .widget-box .widget-header .widget-toolbar {
-	line-height: 0px;
-	height: 17px;
-}
-
 .msgview_middle {
 	position: absolute;
 	height: auto;
@@ -304,6 +295,9 @@ body .text-primary {
 .msgview .expandable-toggle {
 	cursor: pointer;
 	padding-right: 12px;
+	position: absolute;
+	right: 0px;
+	z-index: 2;
 }
 
 /* message-list */
