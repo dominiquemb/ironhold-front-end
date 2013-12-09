@@ -35,7 +35,8 @@ body .text-primary {
 .form-search .input-group .search-input {
 	height: 18px;
 	padding: 0px;
-	margin: 4px 0px 4px 10px;
+	margin: 4px 0px;
+	padding: 0px 0px 0px 10px;
 	border: 0px;
 	/*border-right: 1px solid #b5b5b5;*/
 	font-weight: bold;
