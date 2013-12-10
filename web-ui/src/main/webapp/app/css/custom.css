@@ -23,6 +23,15 @@ body .text-primary {
 	color: #2e69b3;
 }
 
+/* clear-form */
+.clear-form .clear-form-trigger {
+	display: none;
+}
+
+.clear-form.clear-form-active .clear-form-trigger {
+	display: inline;
+}
+
 .background-white {
 	background-color: #fff;
 }

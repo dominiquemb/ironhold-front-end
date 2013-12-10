@@ -29,6 +29,28 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
+ironholdApp.directive('clearForm', function() {
+	return {
+		scope: {
+		},
+		restrict: 'ACE',
+		link: function(scope, elem, attrs) {
+			scope.$watch(function() {
+				return $(elem).find('.clear-form-input').val().length;
+			}, function(length) {
+console.log(length);
+				if (length > 0) {
+					$(elem).addClass('clear-form-active');
+				}
+			});
+			$(elem).find('.clear-form-trigger').on('click', function() {
+				$(elem).find('.clear-form-input').val('');
+				$(elem).removeClass('clear-form-active');
+				scope.$parent.$apply();
+			});
+		}
+	}
+});
 
 ironholdApp.directive('truncate', function() {
 	return {	

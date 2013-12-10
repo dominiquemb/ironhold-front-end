@@ -4,10 +4,10 @@
 <div class="searchbar row">
     <div class="pull-left search-tags">
         <form class="form-search">
-            <div class="input-group">
+            <div class="input-group clear-form">
                 <div class="input-container">
                     <div class="input-history dropdown">
-                        <input type="text" class="search-input form-control search-field" placeholder="Tag search"/>
+                        <input type="text" class="search-input clear-form-input form-control search-field" placeholder="Tag search"/>
 
                                 <a class="dropdown-toggle">
                                     <i class="fa icon-caret-down"></i>
@@ -29,16 +29,19 @@
 			<button type="button" class="btn btn-link btn-sm">
                         	<i class="fa icon-forward icon-on-right"></i>
                         </button>
+			<button type="button" class="btn btn-link btn-sm clear-form-trigger">
+                        	<i class="fa icon-times icon-on-right bigger-110"></i>
+                        </button>
 		</span>
             </div>
         </form>
     </div>
     <div class="search-query">
         <form class="form-search">
-            <div class="input-group">
+            <div class="input-group clear-form">
                 <div class="input-container">
                     <div class="input-history dropdown">
-                        <input type="text" class="search-input form-control search-field"
+                        <input type="text" class="search-input clear-form-input form-control search-field"
                                placeholder="Type your query" data-ng-model="inputSearch" data-ng-keyup="searchKeyUp($event)"/>
 
                                 <a class="dropdown-toggle">
@@ -53,20 +56,23 @@
                                             Result 2
                                         </li>
                                     </ul>
-                        </div>
+                        </div> <!-- .dropdown-menu -->
 
-                    </div>
-                </div>
+                    </div> <!-- .dropdown -->
+                </div> <!-- .input-container -->
 		<span class="input-group-btn">
 			<button type="button" class="btn btn-link btn-sm" data-ng-click="search()">
                         	<i class="fa icon-search icon-on-right bigger-110"></i>
+                        </button>
+			<button type="button" class="btn btn-link btn-sm clear-form-trigger">
+                        	<i class="fa icon-times icon-on-right bigger-110"></i>
                         </button>
 		</span>
             </div>
         </form>
     </div>
 </div>
-<div class="row middlebar" data-ng-show="isSearchPreviewResultsVisible()" in-view="console.log('test')">
+<div class="row middlebar" data-ng-show="isSearchPreviewResultsVisible()">
 								<span class="pull-left middlebar_left">
 									<div class="btn-group btn-group-ironhold">
                                         <div class="btn btn-default dropdown pull-left">
