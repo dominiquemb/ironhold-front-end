@@ -1,5 +1,5 @@
 'use strict';
-var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap'])
+var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','splitter','ui.bootstrap'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider.when('/discovery',
             {
@@ -50,7 +50,17 @@ ironholdApp.directive('clearForm', function() {
 		}
 	}
 });
-
+/*
+ironholdApp.directive('splitter', function() {
+	return {
+		scope: {},
+		restrict: 'ACE',
+		link: function(scope, elem, attrs) {
+			$(elem).
+		};
+	}
+});
+*/
 ironholdApp.directive('truncate', function() {
 	return {	
 		scope: {

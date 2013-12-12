@@ -158,6 +158,12 @@ body .text-primary {
 */
 }
 
+.split-handler {
+	width: 4px;
+	z-index: 99;
+	cursor: ew-resize;
+}
+
 .splitter-bar {
 	width: 5px;
 	cursor: ew-resize;
