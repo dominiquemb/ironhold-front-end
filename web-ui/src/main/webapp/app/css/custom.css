@@ -611,6 +611,23 @@ body .text-primary {
 }
 
 /* pagination */
+.pagination {
+	margin: 0px;
+}
+
+.pagination li a {
+	padding: 2px 7px;
+}
+
+.pagination-plain li {
+	float: left;
+	color: #666;
+}
+
+.pagination-plain li a {
+	color: #2e69b3;
+}
+
 .pagination.pagination-background-white > li > a {
 	background-color: #fff;
 }
@@ -662,7 +679,7 @@ body .text-primary {
 .middlebar .pagination-container {
 	margin-top: 2px;
 }
-
+/*
 .middlebar .pagination > li.active > a, .middlebar .pagination > li.active > a:hover {
 	background-color: #2e69b3;
 	border-color: #2e69b3;
@@ -670,7 +687,7 @@ body .text-primary {
 
 .middlebar .pagination > li > a, .middlebar .pager > li > a {
 	color: #2e69b3;
-}
+}*/
 
 /* msgview controlbar */
 .controlbar {
@@ -770,14 +787,6 @@ body .text-primary {
 
 .matches {
 	margin-top: 20px;
-}
-
-.pagination {
-	margin: 0px;
-}
-
-.pagination li a {
-	padding: 2px 7px;
 }
 
 body ul {
