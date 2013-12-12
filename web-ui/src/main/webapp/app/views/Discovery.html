@@ -95,7 +95,6 @@
                                         </span>
                                     </div>
 									<div class="middlebar_center_bottom">
-                                        <span data-ng-repeat="facetValue in selectedFacets">{{ facetValue.label }} <a data-ng-click="toggleActiveState(facetValue)">x</a></span>
                                     </div>
 								</span>
 								<span class="pull-right middlebar_right pagination-container" data-ng-show="isSearchResultsVisible()">
@@ -157,78 +156,86 @@
 <!-- .filter-list -->
 </div>
 <div class="listing togrow scrollbar-hidden message-list-container">
-<ul class="results message-list">
-<li class="result row message-item message-item-unbordered"  data-ng-repeat="message in messages" data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
-    <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
-        <tbody>
-        <tr>
-            <td rowspan="3" class="message-icons col-xs-1">
-                <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="pull-right fa icon-envelope"></i>
-            </td>
-            <td class="message-sender col-xs-6">
-                {{ message.formattedIndexedMailMessage.sender.name }}
-            </td>
-            <td class="message-size col-xs-6" data-ng-bind-html="message.subjectWithHighlights">
-            </td>
-            <td rowspan="4" class="message-flag col-xs-1">
-                <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
-            </td>
-            <td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
-                <i class="fa icon-check"></i>
-            </td>
-        </tr>
-        <tr>
-            <td class="message-subject col-xs-6">
-                {{ message.formattedIndexedMailMessage.formattedMessageDate }}
-            </td>
-            <td class="message-date col-xs-6">
-                {{ message.formattedIndexedMailMessage.formattedSize }}
-            </td>
-	</tr>
-	<tr>
-            <td colspan="2" class="dropdown-toggle">
-                <div class="widget-box widget-box-simple" ng-class="{'collapsed': message.bodyWithHighlights.collapsed}">
-			<span class="widget-header pull-left dropdown-header">
-				<span class="widget-toolbar">
-					<a>
-                                        	<b ng-click="toggleCollapse(message.bodyWithHighlights)" ng-class="{'icon-four-thirty-up': message.bodyWithHighlights.collapsed  === false, 'icon-four-thirty-down': message.bodyWithHighlights.collapsed === true}" class="icon-on-right"></b>
-					</a>
+	<div class="filter-tag-container" ng-show="anySelectedFacets()">
+		<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
+			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
+			</div> 
+			<i class="fa icon-times filter-tag-close" data-ng-click="toggleActiveState(facetValue)"></i>
+		</span>
+		<span class="filter-tag filter-tag-reset" data-ng-click="unselectAllFacets()">Reset All</span>
+	</div>
+	<ul class="results message-list">
+	<li class="result row message-item message-item-unbordered"  data-ng-repeat="message in messages" data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
+	    <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
+		<tbody>
+		<tr>
+		    <td rowspan="3" class="message-icons col-xs-1">
+			<i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="pull-right fa icon-envelope"></i>
+		    </td>
+		    <td class="message-sender col-xs-6">
+			{{ message.formattedIndexedMailMessage.sender.name }}
+		    </td>
+		    <td class="message-size col-xs-6" data-ng-bind-html="message.subjectWithHighlights">
+		    </td>
+		    <td rowspan="4" class="message-flag col-xs-1">
+			<i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
+		    </td>
+		    <td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
+			<i class="fa icon-check"></i>
+		    </td>
+		</tr>
+		<tr>
+		    <td class="message-subject col-xs-6">
+			{{ message.formattedIndexedMailMessage.formattedMessageDate }}
+		    </td>
+		    <td class="message-date col-xs-6">
+			{{ message.formattedIndexedMailMessage.formattedSize }}
+		    </td>
+		</tr>
+		<tr>
+		    <td colspan="2" class="dropdown-toggle">
+			<div class="widget-box widget-box-simple" ng-class="{'collapsed': message.bodyWithHighlights.collapsed}">
+				<span class="widget-header pull-left dropdown-header">
+					<span class="widget-toolbar">
+						<a>
+							<b ng-click="toggleCollapse(message.bodyWithHighlights)" ng-class="{'icon-four-thirty-up': message.bodyWithHighlights.collapsed  === false, 'icon-four-thirty-down': message.bodyWithHighlights.collapsed === true}" class="icon-on-right"></b>
+						</a>
+					</span>
+					<strong class="dropdown-title">Body</strong>
 				</span>
-				<strong class="dropdown-title">Body</strong>
-			</span>
-			<span class="widget-body">
-				<div class="widget-body-inner">
-                                	<div class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights.text }}" trunc-desired-height="message.bodyWithHighlights.collapsed ? '21' : '84'" trunc-font-width="message.bodyWithHighlights.collapsed ? '6' : '5'" trunc-trailing-dots="true">
-                                        </div>
-                                </div>
-			</span>
-                </div>
-            </td>
-        </tr>
-        <tr data-ng-show="hasAttachmentHighlight(message)">
-	    <td rowspan="1" class="message-icons col-xs-1">
-		<i class="img-xs attachment-img-xs pull-right"></i>	
-	    </td>
-            <td colspan="2" class="dropdown-toggle">
-                <div class="widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments" ng-class="{'collapsed': attachment.collapsed}">
-			<span class="widget-header pull-left dropdown-header">
-				<span class="widget-toolbar">
-					<a>
-                                        	<b ng-click="toggleCollapse(attachment)" ng-class="{'icon-four-thirty-up': attachment.collapsed  === false, 'icon-four-thirty-down': attachment.collapsed === true}" class="icon-on-right"></b>
-					</a>
-				</span>
-				<strong class="dropdown-title">{{ attachment.fileName }}</strong>
-			</span>
-			<span class="widget-body">
-				<div class="widget-body-inner">
-					<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="attachment.collapsed ? '21' : '84'" trunc-font-width="attachment.collapsed ? '7' : '6'" trunc-trailing-dots="true">
+				<span class="widget-body">
+					<div class="widget-body-inner">
+						<div class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights.text }}" trunc-desired-height="message.bodyWithHighlights.collapsed ? '21' : '84'" trunc-font-width="message.bodyWithHighlights.collapsed ? '6' : '5'" trunc-trailing-dots="true">
+						</div>
 					</div>
-				</div>
-			</span>
-                </div>
-            </td>
-        </tr>
-        </tbody>
+				</span>
+			</div>
+		    </td>
+		</tr>
+		<tr data-ng-show="hasAttachmentHighlight(message)">
+		    <td rowspan="1" class="message-icons col-xs-1">
+			<i class="img-xs attachment-img-xs pull-right"></i>	
+		    </td>
+		    <td colspan="2" class="dropdown-toggle">
+			<div class="widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments" ng-class="{'collapsed': attachment.collapsed}">
+				<span class="widget-header pull-left dropdown-header">
+					<span class="widget-toolbar">
+						<a>
+							<b ng-click="toggleCollapse(attachment)" ng-class="{'icon-four-thirty-up': attachment.collapsed  === false, 'icon-four-thirty-down': attachment.collapsed === true}" class="icon-on-right"></b>
+						</a>
+					</span>
+					<strong class="dropdown-title">{{ attachment.fileName }}</strong>
+				</span>
+				<span class="widget-body">
+					<div class="widget-body-inner">
+						<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="attachment.collapsed ? '21' : '84'" trunc-font-width="attachment.collapsed ? '7' : '6'" trunc-trailing-dots="true">
+						</div>
+					</div>
+				</span>
+			</div>
+		    </td>
+		</tr>
+		</tbody>
     </table>
 </li>
 

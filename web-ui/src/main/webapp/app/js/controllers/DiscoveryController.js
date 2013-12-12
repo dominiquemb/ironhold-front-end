@@ -17,6 +17,17 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         }, 0);
     };
 
+    $scope.anySelectedFacets = function() {
+	return ( $scope.selectedFacets.length > 0 ) ? true : false;
+    }
+
+    $scope.unselectAllFacets = function() {
+	angular.forEach($scope.selectedFacets, function(facet) {
+		facet.selected = false;
+	});
+	$scope.selectedFacets = [];
+    }
+
     $scope.reinitScrollbars = function() {
     	$('.scrollbar-hidden').data('jsp').reinitialise();
     }

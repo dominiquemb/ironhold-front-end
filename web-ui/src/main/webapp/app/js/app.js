@@ -38,7 +38,6 @@ ironholdApp.directive('clearForm', function() {
 			scope.$watch(function() {
 				return $(elem).find('.clear-form-input').val().length;
 			}, function(length) {
-console.log(length);
 				if (length > 0) {
 					$(elem).addClass('clear-form-active');
 				}
@@ -58,31 +57,32 @@ ironholdApp.directive('truncate', function() {
 			'charPxlWidth': '=truncFontWidth',
 			'desiredHeight': '=truncDesiredHeight',
 			'trailingDots': '=truncTrailingDots',
+			'containerWidth': '=containerWidth',
 			'text': '@truncText'
 		},
 		restrict: 'ACE',
 		link: function(scope, elem, attrs) {
 			scope.$watch(
-			'[charPxlWidth, desiredHeight, trailingDots, text]', 
+			'[charPxlWidth, containerWidth, desiredHeight, trailingDots, text]', 
 			function() {
-				var charsPerLine = Math.floor( $(elem).width() / scope.charPxlWidth ),
-				totalLines = Math.floor(scope.text.length / charsPerLine),
-				fontSize = parseInt($(elem).css('font-size')),
-				totalHeight = Math.floor( fontSize * totalLines),
-				desiredLines = Math.floor( scope.desiredHeight / fontSize ),
-				maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
-
-				if ((totalHeight > scope.desiredHeight) && (scope.desiredHeight > 0)) {
-					if (scope.$parent.truncated !== true) {
-						scope.$parent.truncated = true;
-						scope.$parent.originalText = scope.text;
+					var width = ( scope.containerWidth !== undefined ) ? scope.containerWidth : $(elem).width(),
+					charsPerLine = Math.floor( width / scope.charPxlWidth ),
+					totalLines = Math.floor(scope.text.length / charsPerLine),
+					fontSize = parseInt($(elem).css('font-size')),
+					totalHeight = Math.floor( fontSize * totalLines),
+					desiredLines = Math.floor( scope.desiredHeight / fontSize ),
+					maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
+					if ((totalHeight > scope.desiredHeight) && (scope.desiredHeight > 0)) {
+						if (scope.$parent.truncated !== true) {
+							scope.$parent.truncated = true;
+							scope.$parent.originalText = scope.text;
+						}
+						var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
+						$(elem).html(result);
 					}
-					var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
-					$(elem).html(result);
-				}
-				else {
-					$(elem).html(scope.text);
-				}
+					else {
+						$(elem).html(scope.text);
+					}
 			},
 			true);
 		}

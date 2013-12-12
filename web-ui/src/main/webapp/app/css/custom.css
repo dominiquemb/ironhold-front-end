@@ -23,6 +23,43 @@ body .text-primary {
 	color: #2e69b3;
 }
 
+/* filter-tag */
+.filter-tag-container {
+	margin: 0px 7px 10px 7px;
+	position: relative;
+	width: 100%;
+	float: left;
+	font-size: 11px;
+}
+
+.filter-tag-reset {
+	color: #2e69b3;
+}
+
+.filter-tag {
+	background-color:#e7e7e7;
+	padding: 0px 4px;
+	float: left;
+	margin: 1px 2px;
+	position: relative;
+	border: 1px solid #dedede;
+}
+
+.filter-tag-text {
+	float: left;
+	margin-right: 5px;
+	height: 17px;
+	overflow: hidden;
+	width: auto;
+	color: #666;
+}
+
+.filter-tag-close {
+	color: #999;
+	float: left;
+	margin-top: 2px;
+}
+
 /* clear-form */
 .clear-form .clear-form-trigger {
 	display: none;
@@ -850,9 +887,10 @@ body ul {
 
 /* results */
 .results {
-	margin-left: 15px;
+	margin: 0px 15px 31px 0px;
+	position: relative;
+	float: left;
 	font-size: 11px;
-	margin-right: 31px;
 }
 
 .results .result {
