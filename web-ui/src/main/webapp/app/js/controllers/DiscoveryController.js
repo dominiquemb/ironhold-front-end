@@ -33,7 +33,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.anySuggestions = function() {
-        return $scope.suggestions != undefined && $scope.suggestions.length > 0;
+        return ($scope.suggestions != undefined && $scope.suggestions.length > 0 && $scope.selectedFacets.length === 0);
     }
 
     $scope.replace = function(oldText, newText) {

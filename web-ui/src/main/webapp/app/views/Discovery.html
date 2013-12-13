@@ -2,40 +2,6 @@
 <div class="main" data-splitter>
 <div class="dashboard col-xs-7">
 <div class="searchbar row">
-    <div class="pull-left search-tags">
-        <form class="form-search">
-            <div class="input-group clear-form">
-                <div class="input-container">
-                    <div class="input-history dropdown">
-                        <input type="text" class="search-input clear-form-input form-control search-field" placeholder="Tag search"/>
-
-                                <a class="dropdown-toggle">
-                                    <i class="fa icon-caret-down"></i>
-                                </a>
-                        <div class="dropdown-menu dropdown-info">
-                                    <ul>
-                                        <li>
-                                            Result 1
-                                        </li>
-                                        <li>
-                                            Result 2
-                                        </li>
-                                    </ul>
-                        </div>
-
-                    </div>
-                </div>
-		<span class="input-group-btn">
-			<button type="button" class="btn btn-link btn-sm">
-                        	<i class="fa icon-forward icon-on-right"></i>
-                        </button>
-			<button type="button" class="btn btn-link btn-sm clear-form-trigger">
-                        	<i class="fa icon-times icon-on-right bigger-110"></i>
-                        </button>
-		</span>
-            </div>
-        </form>
-    </div>
     <div class="search-query">
         <form class="form-search">
             <div class="input-group clear-form">
@@ -73,30 +39,6 @@
     </div>
 </div>
 <div class="row middlebar" data-ng-show="isSearchPreviewResultsVisible()">
-								<span class="pull-left middlebar_left">
-									<div class="btn-group btn-group-ironhold">
-                                        <div class="btn btn-default dropdown pull-left">
-                                        </div>
-                                        <div class="dropdown pull-left btn btn-default">
-                                        </div>
-                                        <div class="btn-right pull-left btn btn-default">
-                                        </div>
-                                    </div>
-								</span>
-								<span class="pull-left middlebar_center">
-									<div class="middlebar_center_top">
-										<span class="matches_number blue-primary">
-											<strong>{{ searchMatches }}</strong> matched messages
-										</span>
-                                        <span class="matches_number blue-primary" data-ng-show="anySuggestions()">
-                                            Did you mean <span data-ng-repeat="suggestion in suggestions">
-                                                <span data-ng-repeat="option in suggestion.options"><a data-ng-click="replace(suggestion.text, option)">{{ option }}</a> </span>
-                                            </span>
-                                        </span>
-                                    </div>
-									<div class="middlebar_center_bottom">
-                                    </div>
-								</span>
 								<span class="pull-right middlebar_right pagination-container" data-ng-show="isSearchResultsVisible()">
 									<ul class="pull-right pagination-plain text-primary">
                                         <li class="disabled">
@@ -115,6 +57,28 @@
                                              | <a class="pagination_last">next</a> &gt;
                                         </li>
                                     </ul>
+								</span>
+                                        <div class="matches_number blue-primary puill-left" data-ng-show="anySuggestions()">
+                                            Did you mean: <span data-ng-repeat="suggestion in suggestions">
+                                                <span data-ng-repeat="option in suggestion.options"><a data-ng-click="replace(suggestion.text, option)">{{ option }}</a> </span>
+                                            </span>
+                                        </div>
+										<div class="matches_number blue-primary pull-left">
+											<strong>{{ searchMatches }}</strong> matched messages
+										</div>
+								<span class="pull-left middlebar_center">
+									<div class="middlebar_center_top">
+	<div class="filter-tag-container" ng-show="anySelectedFacets()">
+		<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
+			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
+			</div> 
+			<i class="fa icon-times filter-tag-close" data-ng-click="toggleActiveState(facetValue)"></i>
+		</span>
+		<span class="filter-tag filter-tag-reset" data-ng-click="unselectAllFacets()">Reset All</span>
+	</div>
+                                    </div>
+									<div class="middlebar_center_bottom">
+                                    </div>
 								</span>
 </div>
 <div class="row msglist" data-ng-show="isSearchResultsVisible()">
@@ -156,14 +120,6 @@
 <!-- .filter-list -->
 </div>
 <div class="listing togrow scrollbar-hidden message-list-container">
-	<div class="filter-tag-container" ng-show="anySelectedFacets()">
-		<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
-			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
-			</div> 
-			<i class="fa icon-times filter-tag-close" data-ng-click="toggleActiveState(facetValue)"></i>
-		</span>
-		<span class="filter-tag filter-tag-reset" data-ng-click="unselectAllFacets()">Reset All</span>
-	</div>
 	<ul class="results message-list">
 	<li class="result row message-item message-item-unbordered"  data-ng-repeat="message in messages" data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
 	    <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
