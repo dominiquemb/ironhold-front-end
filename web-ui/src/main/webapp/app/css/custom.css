@@ -904,7 +904,7 @@ body ul {
 
 /* results */
 .results {
-	margin: 0px 15px 31px 0px;
+	margin: 0px 10px 31px 0px;
 	position: relative;
 	float: left;
 	font-size: 11px;
@@ -923,6 +923,11 @@ body ul {
 
 .results .result.active-single {
 	background-color: #CAD9EB;
+}
+
+.results .result.active-single .widget-main,
+.results .result.active-multi .widget-main {
+	color: #666;
 }
 
 .result .message-icons {
