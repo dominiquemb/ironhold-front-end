@@ -162,10 +162,10 @@
             <properties>
                 <data.host>127.0.0.1</data.host>
                 <data.port>9999</data.port>
-                <data.root>/tmp/dataroot</data.root>
-                <archive.root>/tmp/archiveroot</archive.root>
-                <keystore.root>/tmp/keystore</keystore.root>
-                <backup.root>/tmp/backuproot</backup.root>
+                <data.root>/data/dataroot</data.root>
+                <archive.root>/data/archiveroot</archive.root>
+                <keystore.root>/data/keystore</keystore.root>
+                <backup.root>/data/backuproot</backup.root>
                 <elasticsearch.hosts>localhost</elasticsearch.hosts>
                 <elasticsearch.port>9300</elasticsearch.port>
                 <elasticsearch.rest.host>localhost</elasticsearch.rest.host>
