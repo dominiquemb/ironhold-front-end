@@ -3,6 +3,7 @@ html, body {
 	margin: 0px;
 	padding: 0px;
 	overflow: hidden;
+	font-family: arial !important;
 }
 
 body a {
@@ -86,7 +87,7 @@ body .text-primary {
 	padding: 0px 0px 0px 10px;
 	border: 0px;
 	/*border-right: 1px solid #b5b5b5;*/
-	font-weight: bold;
+	font-weight: normal;
 	line-height: 16px;
 }
 
@@ -359,7 +360,11 @@ body .text-primary {
 	border: 0px;
 }
 
-/* carets */
+/* icon */
+.fa {
+	font-size: 16px;
+}
+
 .icon-four-thirty-up {
 	background: url(../img/sprites/carets.png) 0px 1px !important;
 	width:6px !important;
@@ -566,7 +571,7 @@ body .text-primary {
 	cursor: pointer;
 	position: absolute;
 	right: 7px;
-	top: 3px;
+	top: 5px;
 }
 
 .searchbar .input-history .dropdown-menu {
@@ -743,7 +748,7 @@ body .text-primary {
 }
 
 .controlbar_item-name {
-	margin: 0px 10px;
+	margin: 0px 13px;
 }
 
 .controlbar-group-row .controlbar_item-name {
@@ -1288,7 +1293,7 @@ body ul {
 
 /* nav-tabs */
 .nav-tabs {
-	font-weight:bold;
+	font-weight: normal;
 }
 
 .nav-tabs[class*="tab-color"].inactive-text-gray > li > a {
