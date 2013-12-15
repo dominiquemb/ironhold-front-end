@@ -82,13 +82,6 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
         }
     };
 
-    private static final Function<TermsFacet.Entry, FacetValue> TERMSFACETENTRY_TO_FACETVALUE = new Function<TermsFacet.Entry, FacetValue>() {
-        @Override
-        public FacetValue valueOf(TermsFacet.Entry entry) {
-            return new FacetValue(entry.getTerm().toString(), entry.getCount());
-        }
-    };
-
     static {
         mappings = new HashMap<>();
         mappings.put(IndexedObjectType.MIME_MESSAGE, "messageIndexMapping.json");
@@ -175,7 +168,7 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
                 public FacetGroup valueOf(String facetName) {
                     TermsFacet termsFacet = facets.facet(facetName);
 
-                    MutableList<FacetValue> valueMap = ListIterate.collect(termsFacet.getEntries(), TERMSFACETENTRY_TO_FACETVALUE);
+                    MutableList<FacetValue> valueMap = ListIterate.collect(termsFacet.getEntries(), new TermsFacetEntryToFacetValueFunction(facetName));
 
                     if (facetName.equals(FacetGroupName.FACET_YEAR.getValue())) {
                         valueMap = valueMap.sortThis(FacetValue.BY_NAME);
@@ -280,5 +273,20 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
             return SuggestSearchResponse.EMPTY_RESPONSE;
         }
     }
+
+    public class TermsFacetEntryToFacetValueFunction implements Function<TermsFacet.Entry, FacetValue> {
+        private final String facetName;
+
+        public TermsFacetEntryToFacetValueFunction(String facetName) {
+            this.facetName = facetName;
+        }
+
+        @Override
+        public FacetValue valueOf(TermsFacet.Entry entry) {
+            return new FacetValue(facetName, entry.getTerm().toString(), entry.getCount());
+        }
+    }
+
+    ;
 
 }

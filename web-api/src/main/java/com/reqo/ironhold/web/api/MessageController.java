@@ -66,6 +66,35 @@ public class MessageController {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/{clientKey}")
+    public
+    @ResponseBody
+    ApiResponse<MessageSearchResponse> getMessages(@PathVariable("clientKey") String clientKey,
+                                                   @RequestParam String criteria,
+                                                   @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                                   @RequestBody FacetValue[] facetValues) {
+        ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
+
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser());
+
+        searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
+
+
+        for (FacetValue facetValue : facetValues) {
+            FacetGroupName facetGroupName = FacetGroupName.fromValue(facetValue.getFacetName());
+            searchBuilder.withNamedFacetValue(facetGroupName, facetValue.getLabel());
+        }
+
+        MessageSearchResponse result = messageIndexService.search(searchBuilder);
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}")
     public
     @ResponseBody
@@ -82,19 +111,8 @@ public class MessageController {
 
 
         for (String facet : facets) {
-            String[] chunks = facet.split(":");
-            String facetName = chunks[0];
-            FacetGroupName facetGroupName = FacetGroupName.fromValue(facetName);
+            FacetGroupName facetGroupName = FacetGroupName.fromValue(facet);
             searchBuilder.withNamedFacet(facetGroupName);
-
-            if (chunks.length > 1) {
-                // has facet values
-                String facetValuesString = chunks[1];
-                String[] facetValues = facetValuesString.split(",");
-                for (String facetValue : facetValues) {
-                    searchBuilder.withNamedFacetValue(facetGroupName, facetValue);
-                }
-            }
         }
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);

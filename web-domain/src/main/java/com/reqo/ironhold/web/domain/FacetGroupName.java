@@ -1,7 +1,5 @@
 package com.reqo.ironhold.web.domain;
 
-import java.util.Comparator;
-
 /**
  * User: ilya
  * Date: 12/1/13

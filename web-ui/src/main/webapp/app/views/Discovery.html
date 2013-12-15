@@ -72,7 +72,7 @@
 		<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
 			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
 			</div> 
-			<i class="fa icon-times filter-tag-close" data-ng-click="toggleActiveState(facetValue)"></i>
+			<i class="fa icon-times filter-tag-close" data-ng-click="toggleFacet(facetValue, facetValue.facetGroupCode)"></i>
 		</span>
 		<span class="filter-tag filter-tag-reset" data-ng-click="unselectAllFacets()">Reset All</span>
 	</div>
@@ -102,7 +102,7 @@
     <div class="widget-body">
         <div class="widget-body-inner">
             <ul class="widget-main">
-                <li class="filter" data-ng-class="{'active': facetValue.selected === true}" data-ng-click="toggleActiveState(facetValue)" data-ng-repeat="facetValue in facet.valueMap">
+                <li class="filter" data-ng-class="{'active': facetValue.selected === true}" data-ng-click="toggleFacet(facetValue, facet.name.value)" data-ng-repeat="facetValue in facet.valueMap">
                     <div class="pull-left checkbox">
                         <i class="fa icon-check"></i>
                     </div>

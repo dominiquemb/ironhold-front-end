@@ -33,16 +33,32 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     $scope.replace = function(oldText, newText) {
         $scope.inputSearch = $scope.inputSearch.replace(oldText, newText);
+        $scope.reset();
         $scope.search();
     }
 
-    $scope.toggleActiveState = function(item) {
-	    item.selected = !item.selected;
-        if (item.selected) {
-            $scope.selectedFacets.push(item);
+    $scope.toggleFacet = function(facet, facetGroupCode) {
+	    facet.selected = !facet.selected;
+        if (facet.selected) {
+            $scope.selectedFacets.push(facet);
         } else {
-            $scope.selectedFacets.remove(item);
+            $scope.selectedFacets.remove(facet);
         }
+
+        $scope.updateSearch();
+    }
+
+    $scope.updateSearch = function() {
+        restMessagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
+                $scope.searchMatches = result.payload.matches;
+                $scope.searchTime = result.payload.timeTaken;
+                $scope.messages = result.payload.messages;
+                angular.forEach($scope.messages, function(message) {
+                    message.collapsedBody = false;
+                    message.collapsedAttachments = false;
+                });
+                searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
+        });
     }
 
     $scope.toggleCollapse = function(item) {
@@ -70,6 +86,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         angular.forEach($scope.messages, function(message) {
             message.selected = false;
         });
+
+        $scope.updateSearch();
     }
 
     $scope.selectMessage = function(message) {
@@ -137,13 +155,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.search = function () {
-        $scope.reset();
-
-/*        angular.forEach($scope.selectedFacets, function(facet) {
-            facet.selected = false;
-        });*/
-
-
         restMessagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext"}).then(function(result) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
