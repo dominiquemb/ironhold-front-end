@@ -13,12 +13,14 @@ public class MessageSearchResponse {
     private final ImmutableList<FacetGroup> facets;
     private final ImmutableList<Suggestion> suggestions;
     private final long timeTaken;
+    private final long matches;
 
 
-    public MessageSearchResponse(ImmutableList<MessageMatch> messages, ImmutableList<FacetGroup> facets, ImmutableList<Suggestion> suggestions, long timeTaken) {
+    public MessageSearchResponse(ImmutableList<MessageMatch> messages, ImmutableList<FacetGroup> facets, ImmutableList<Suggestion> suggestions, long matches, long timeTaken) {
         this.messages = messages;
         this.facets = facets;
         this.suggestions = suggestions;
+        this.matches = matches;
         this.timeTaken = timeTaken;
     }
 
@@ -36,5 +38,10 @@ public class MessageSearchResponse {
 
     public long getTimeTaken() {
         return timeTaken;
+    }
+
+
+    public long getMatches() {
+        return matches;
     }
 }

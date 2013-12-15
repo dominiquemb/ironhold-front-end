@@ -38,8 +38,8 @@
         </form>
     </div>
 </div>
-<div class="row middlebar" data-ng-show="isSearchPreviewResultsVisible()">
-								<span class="pull-right middlebar_right pagination-container" data-ng-show="isSearchResultsVisible()">
+<div class="row middlebar" data-ng-show="showSearchPreviewResults">
+								<span class="pull-right middlebar_right pagination-container" data-ng-show="showSearchResults">
 									<ul class="pull-right pagination-plain text-primary">
                                         <li class="disabled">
                                             &lt; <a class="pagination_prev">previous</a> | 
@@ -58,7 +58,7 @@
                                         </li>
                                     </ul>
 								</span>
-                                        <div class="matches_number blue-primary puill-left" data-ng-show="anySuggestions()">
+                                        <div class="matches_number blue-primary puill-left" data-ng-show="showSuggestions">
                                             Did you mean: <span data-ng-repeat="suggestion in suggestions">
                                                 <span data-ng-repeat="option in suggestion.options"><a data-ng-click="replace(suggestion.text, option)">{{ option }}</a> </span>
                                             </span>
@@ -68,7 +68,7 @@
 										</div>
 								<span class="pull-left middlebar_center">
 									<div class="middlebar_center_top">
-	<div class="filter-tag-container" ng-show="anySelectedFacets()">
+	<div class="filter-tag-container" ng-show="selectedFacets.length > 0">
 		<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
 			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
 			</div> 
@@ -81,7 +81,7 @@
                                     </div>
 								</span>
 </div>
-<div class="row msglist" data-ng-show="isSearchResultsVisible()">
+<div class="row msglist" data-ng-show="showSearchResults">
 <div class="pull-left toshrink sidebar-left">
 <div class="toggle pull-right">
     <i class="fa icon-angle-left"></i>
@@ -92,7 +92,7 @@
     <div class="widget-header">
         <div class="widget-toolbar">
             <a>
-                <i ng-click="toggleCollapse(facet.name)" ng-class="{'icon-four-thirty-up': facet.name.collapsed === false, 'icon-four-thirty-down': facet.name.collapsed === true}"></i>
+                <i ng-click="toggleCollapse(facet.name.collapsed)" ng-class="{'icon-four-thirty-up': facet.name.collapsed === false, 'icon-four-thirty-down': facet.name.collapsed === true}"></i>
             </a>
         </div>
 												<span class="filter-list-name">
@@ -150,18 +150,18 @@
 		</tr>
 		<tr>
 		    <td colspan="2" class="dropdown-toggle">
-			<div class="widget-box widget-box-simple" ng-class="{'collapsed': message.bodyWithHighlights.collapsed}">
+			<div class="widget-box widget-box-simple" ng-class="{'collapsed': message.collapsedBody}">
 				<span class="widget-header pull-left dropdown-header">
 					<span class="widget-toolbar">
 						<a>
-							<b ng-click="toggleCollapse(message.bodyWithHighlights)" ng-class="{'icon-four-thirty-up': message.bodyWithHighlights.collapsed  === false, 'icon-four-thirty-down': message.bodyWithHighlights.collapsed === true}" class="icon-on-right"></b>
+							<b ng-click="toggleCollapse(message.collapsedBody)" ng-class="{'icon-four-thirty-up': message.collapsedBody  === false, 'icon-four-thirty-down': message.collapsedBody === true}" class="icon-on-right"></b>
 						</a>
 					</span>
 					<strong class="dropdown-title">Body</strong>
 				</span>
 				<span class="widget-body">
 					<div class="widget-body-inner">
-						<div class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights.text }}" trunc-desired-height="message.bodyWithHighlights.collapsed ? '21' : '84'" trunc-font-width="message.bodyWithHighlights.collapsed ? '6' : '5'" trunc-trailing-dots="true">
+						<div class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="message.collapsedBody ? '21' : '84'" trunc-font-width="message.collapsedBody ? '6' : '5'" trunc-trailing-dots="true">
 						</div>
 					</div>
 				</span>
@@ -199,7 +199,7 @@
 </div>
 </div>
 </div>
-<div class="col-xs-5 msgview"  data-ng-show="isSearchResultsVisible()">
+<div class="col-xs-5 msgview"  data-ng-show="showSearchResults">
 <div class="tabbable">
 <ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
     <li class="active">
@@ -316,10 +316,10 @@
 									<div class="vert-div"></div>
 									</span>
 </div>
-<div class="placeholder_text" data-ng-show="!isMessageVisible()">
+<div class="placeholder_text" data-ng-hide="showMessage">
 	Please select a message on the left.
 </div>
-<div class="msgview_main" data-ng-show="isMessageVisible()" in-view="console.log('test')">
+<div class="msgview_main" data-ng-show="showMessage" in-view="console.log('test')">
     <div class="row msgview_top">
         <div class="pull-left from-picture-container">
             <div class="from-picture empty-photo msgview_img-xl"></div>

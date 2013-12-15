@@ -111,7 +111,7 @@
     <div class="footer-inner col-xs-12">
 			<span class="search-total col-xs-2">
 				<span class="label-title">
-					Search Total:
+					Search Results:
 				</span>
 				<span class="label-content">
 					{{ searchMatches }}
@@ -122,7 +122,15 @@
 					Time Took:
 				</span>
 				<span class="label-content">
-					{{ searchTime }}
+					{{ searchTime }}ms
+				</span>
+			</span>
+            <span class="search-total col-xs-2">
+				<span class="label-title">
+					Total:
+				</span>
+				<span class="label-content">
+					{{ totalMessages }}
 				</span>
 			</span>
     </div>
@@ -137,6 +145,8 @@
 <script src='lib/angular-resource.min.js'></script>
 <script src='lib/angular-sanitize.min.js'></script>
 <script src='lib/ui-bootstrap-tpls-0.7.0.min.js'></script>
+<script src='lib/lodash.min.js'></script>
+<script src='lib/restangular.min.js'></script>
 
 <!-- Routes and config-->
 <script src="js/app.js"></script>

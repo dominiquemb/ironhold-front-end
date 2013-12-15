@@ -207,7 +207,7 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
         });
 
 
-        return new MessageSearchResponse(messages, facetGroups.toImmutable(), suggestions.toImmutable(), response.getTookInMillis());
+        return new MessageSearchResponse(messages, facetGroups.toImmutable(), suggestions.toImmutable(), response.getHits().getTotalHits(), response.getTookInMillis());
     }
 
     public CountSearchResponse getMatchCount(String indexPrefix, String search, LoginUser loginUser) {

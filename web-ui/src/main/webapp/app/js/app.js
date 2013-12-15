@@ -1,5 +1,5 @@
 'use strict';
-var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap'])
+var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular'])
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider.when('/discovery',
             {

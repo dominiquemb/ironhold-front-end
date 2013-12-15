@@ -41,7 +41,7 @@ public class MessageController {
     @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/count")
     public
     @ResponseBody
-    ApiResponse<CountSearchResponse> getCount(@PathVariable("clientKey") String clientKey, @RequestParam String criteria) {
+    ApiResponse<CountSearchResponse> getCount(@PathVariable("clientKey") String clientKey, @RequestParam(required = false, defaultValue = "*") String criteria) {
         ApiResponse<CountSearchResponse> apiResponse = new ApiResponse<CountSearchResponse>();
 
         CountSearchResponse result = messageIndexService.getMatchCount(clientKey, criteria, getDefaultUser());
