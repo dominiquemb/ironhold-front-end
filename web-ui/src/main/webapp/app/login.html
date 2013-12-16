@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>IronHold</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/custom.css" rel="stylesheet"/>
+    <link href="css/login.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/jscrollpane/jquery.jscrollpane.css"/>
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="css/font-awesome-ie7.min.css"/>
+    <![endif]-->
+
+    <!-- fonts -->
+    <link rel="stylesheet" href="css/ace-fonts.css"/>
+
+    <!-- ace styles -->
+    <link rel="stylesheet" href="css/ace.min.css"/>
+
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="css/ace-ie.min.css"/>
+    <![endif]-->
+
+    <!-- inline styles related to this page -->
+
+    <!-- ace settings handler -->
+    <script src="lib/ace-extra.min.js"></script>
+</head>
+<body class="login-layout login-layout-white">
+	<div class="login-container">
+		<div class="login-box login-box-ironhold visible border widget-box">
+			<div class="widget-body">
+				<div class="widget-main background-white">
+					<h4 class="header blue lighter bigger">
+						<img class="logo" src="img/logo.png" />
+					</h4>
+					<div class="space-6"></div>
+					<form>
+						<fieldset>
+							<label class="block clearfix">
+								<span class="block input-icon input-icon-right">
+									<input type="text" class="form-control username" placeholder="Username" />
+									<i class="icon-user"></i>
+								</span>
+							</label>
+
+							<label class="block clearfix">
+								<span class="block input-icon input-icon-right">
+									<input type="password" class="form-control pass" placeholder="Password" />
+									<i class="icon-lock"></i>
+								</span>
+							</label>
+
+							<label class="block clearfix">
+								<span class="block input-icon input-icon-right">
+									<input type="text" class="form-control client-key" placeholder="Client Key" />
+									<i class="icon-lock"></i>
+								</span>
+							</label>
+
+							<div class="space"></div>
+
+							<div class="clearfix">
+								<label class="inline">
+									<input type="checkbox" class="ace" />
+									<span class="lbl"> Remember Me</span>
+								</label>
+
+								<button type="button" class="width-35 pull-right btn btn-sm btn-primary">
+									<i class="icon-key"></i>
+									Login
+								</button>
+							</div>
+
+							<div class="space-4"></div>
+						</fieldset>
+					</form>
+				</div> <!-- .widget-main -->
+				<div class="toolbar clearfix">
+					<div>
+						<a class="pull-left forgot-password-link">
+							Forgot username?
+						</a>
+					</div>
+					<div>
+						<a class="pull-right forgot-password-link">
+							Forgot password?
+						</a>
+					</div>
+				</div>
+			</div> <!-- .widget-box -->
+		</div> <!-- .login-box -->
+	</div>
+
+
+
+<script src='lib/jquery-2.0.3.min.js'></script>
+<script src="lib/jscrollpane/jquery.jscrollpane.min.js"></script>
+<script src='lib/angular.min.js'></script>
+<script src='lib/angular-route.min.js'></script>
+<script src='lib/angular-resource.min.js'></script>
+<script src='lib/angular-sanitize.min.js'></script>
+<script src='lib/ui-bootstrap-tpls-0.7.0.min.js'></script>
+<script src='lib/lodash.min.js'></script>
+<script src='lib/restangular.min.js'></script>
+
+<!-- Routes and config-->
+<script src="js/app.js"></script>
+
+<!-- Controllers -->
+<script src="js/controllers/TabController.js"></script>
+<script src="js/controllers/DiscoveryController.js"></script>
+<script src="js/controllers/FooterController.js"></script>
+
+<!-- Directives -->
+<script src="js/directives/DiscoveryDirectives.js"></script>
+
+</body>
+</html>

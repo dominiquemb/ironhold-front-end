@@ -1,0 +1,29 @@
+.login-layout .login-container .login-box.login-box-ironhold {
+	margin: 5% auto auto auto;
+	width: 400px;
+}
+
+.login-layout.login-layout-white {
+	background-color: #FFF;
+}
+
+.login-layout.login-layout-white .widget-box {
+	background-color: #F8F8F8;
+}
+
+.login-layout.login-layout-white .background-white {
+	background-color: #FFF !important;
+}
+
+.login-box-ironhold .btn-primary {
+	background-color: #2E69B3 !important;
+	border-color: #2E69B3;
+}
+
+.login-box.login-box-ironhold .toolbar {
+	background-color: #2E69B3;
+}
+
+.login-box.login-box-ironhold .forgot-password-link {
+	color: #FFF;
+}
