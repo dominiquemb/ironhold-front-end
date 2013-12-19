@@ -1,6 +1,21 @@
 'use strict';
-var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular'])
-    .config(function ($routeProvider, $locationProvider) {
+var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular','ui.router'])
+    .config(function ($stateProvider, $urlRouterProvider) {
+	    $urlRouterProvider.otherwise('/login');	    
+	    $stateProvider
+	    .state('login', {
+		    url: "/login",
+		    templateUrl: "views/Login.html"
+	    })
+	    .state('main', {
+		    url: "/main",
+		    templateUrl: "views/Navigation.html"
+	    })
+	    .state('main.discovery', {
+		    url: "/discovery",
+		    templateUrl: "views/Discovery.html"
+	    });
+    /*
         $routeProvider.when('/discovery',
             {
                 templateUrl:'views/Discovery.html',
@@ -8,7 +23,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
             });
         $routeProvider.otherwise({redirectTo: '/discovery'});
         //$locationProvider.html5Mode(true);
-     });
+    */ });
 
 ironholdApp.factory('searchResultsService', function ($rootScope) {
     var sharedService = { };

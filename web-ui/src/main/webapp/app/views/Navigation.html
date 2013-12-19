@@ -1,0 +1,108 @@
+<div class="wrapper">
+	<div class="top-section">
+	    <img class="logo" src="img/logo.png"/>
+
+	    <div class="welcome_name pull-right">
+		<div class="dropdown help pull-right">
+		    <a class="dropdown-toggle pull-right">
+			<div class="question-mark">
+			    <b class="fa icon-caret-down icon-on-right"></b>
+			</div>
+		    </a>
+		    <ul class="dropdown-menu dropdown-info">
+			<li>
+			    <a data-toggle="tab" href="#">Link 1</a>
+			</li>
+			<li>
+			    <a data-toggle="tab" href="#">Link 2</a>
+			</li>
+			<li>
+			    <a data-toggle="tab" href="#">Link 3</a>
+			</li>
+		    </ul>
+		</div>
+		<div class="user-photo pull-right"></div>
+		<div class="dropdown name pull-right">
+		    <a class="dropdown-toggle pull-left">
+			Name Here
+			<b class="fa icon-caret-down icon-on-right"></b>
+		    </a>
+		    <ul class="dropdown-menu dropdown-info">
+			<li>
+			    <a data-toggle="tab" href="#">Link 1</a>
+			</li>
+			<li>
+			    <a data-toggle="tab" href="#">Link 2</a>
+			</li>
+			<li>
+			    <a data-toggle="tab" href="#">Link 3</a>
+			</li>
+		    </ul>
+		</div>
+	    </div>
+	</div>
+	<div class="main-area">
+	<div class="navigation">
+	<div class="tabbable">
+	<ul class="top-nav upper nav nav-tabs padding-12 inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white" data-ng-controller="TabController">
+	    <li data-ng-class="{'active':getClass('discovery')}">
+		<a data-toggle="tab" data-ui-sref="main.discovery">Discovery</a>
+	    </li>
+	    <li data-ng-class="{'active':getClass('tags')}">
+		<a data-toggle="tab">Tags</a>
+	    </li>
+	    <li data-ng-class="{'active':getClass('folders')}">
+		<a data-toggle="tab">Folders</a>
+	    </li>
+	    <li data-ng-class="{'active':getClass('logs')}">
+		<a data-toggle="tab">Logs</a>
+	    </li>
+	    <li data-ng-class="{'active':getClass('users')}">
+		<a data-toggle="tab">Users</a>
+	    </li>
+	    <li data-ng-class="{'active':getClass('settings')}">
+		<a data-toggle="tab">Settings</a>
+	    </li>
+	</ul>
+
+	<div class="tab-content top-nav" data-ui-view>
+
+	</div>
+	<!-- .tab-content -->
+	</div>
+	<!-- .tabbable -->
+	</div>
+	<!-- .navigation -->
+	</div>
+	<!-- .row.main-area -->
+	<div class="push"></div>
+	</div>
+	<!-- .wrapper -->
+	<div class="row footer" data-ng-controller="FooterController">
+	    <div class="footer-inner col-xs-12">
+				<span class="search-total col-xs-2">
+					<span class="label-title">
+						Search Results:
+					</span>
+					<span class="label-content">
+						{{ searchMatches }}
+					</span>
+				</span>
+		    <span class="search-total col-xs-2">
+					<span class="label-title">
+						Time Took:
+					</span>
+					<span class="label-content">
+						{{ searchTime }}ms
+					</span>
+				</span>
+		    <span class="search-total col-xs-2">
+					<span class="label-title">
+						Total:
+					</span>
+					<span class="label-content">
+						{{ totalMessages }}
+					</span>
+				</span>
+	    </div>
+</div>
