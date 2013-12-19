@@ -104,7 +104,7 @@
 						</h4>	
 						<div class="space-6"></div>
 						<p>
-							Please enter your email.
+							Please enter your email address.  You will receive an email with your username.
 						</p>
 						<form>
 							<fieldset>
@@ -152,7 +152,7 @@
 									</span>
 								</label>
 								<div class="cleafix">
-									<button type="button" class="width-35 pull-right btn btn-sm btn-primary">
+									<button type="button" class="width-35 pull-right btn btn-sm btn-primary" data-ng-click="makeVisible('forgot-password-step-2')">
 										<i class="icon-lightbulb"></i>
 										Submit
 									</button>
@@ -167,7 +167,109 @@
 						</a>
 					</div>
 				</div> <!-- .widget-body -->
-			</div> <!-- .forgot-box.forgot-username -->
+			</div> <!-- .forgot-box.forgot-password -->
+			<div class="forgot-box forgot-password-step-2 widget-box border" data-ng-class="{'visible': isVisible('forgot-password-step-2')}">
+				<div class="widget-body">
+					<div class="widget-main background-white">
+    						<img class="logo" src="img/logo.png"/>
+						<h4 class="header lighter bigger">
+							<i class="fa icon-key"></i>
+							Retrieve Password - Step 2
+						</h4>	
+						<div class="space-6"></div>
+						<p>
+							Please enter your password reset code which was sent to you by email. 
+						</p>
+						<form>
+							<fieldset>
+								<label class="block clearfix">
+									<span class="block input-icon input-icon-right">
+										<input type="reset-code" class="form-control" placeholder="Reset Code" />
+									</span>
+								</label>
+								<div class="cleafix">
+									<button type="button" class="width-35 pull-right btn btn-sm btn-primary" data-ng-click="verifyResetCode()">
+										<i class="icon-lightbulb"></i>
+										Submit
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</div> <!-- .widget-main -->
+					<div class="toolbar center">
+						<a class="back-to-login-link" data-ng-click="makeVisible('login')">
+							Back to login
+							<i class="icon-arrow-right"></i>
+						</a>
+					</div>
+				</div> <!-- .widget-body -->
+			</div> <!-- .forgot-box.forgot-password-step-2 -->
+
+			<div class="forgot-box forgot-password-step-3 widget-box border" data-ng-class="{'visible': isVisible('forgot-password-step-3')}">
+				<div class="widget-body">
+					<div class="widget-main background-white">
+    						<img class="logo" src="img/logo.png"/>
+						<h4 class="header lighter bigger">
+							<i class="fa icon-key"></i>
+							Retrieve Password - Step 3
+						</h4>	
+						<div class="space-6"></div>
+						<p>
+							Please enter a new password. 
+						</p>
+						<form>
+							<fieldset>
+								<label class="block clearfix">
+									<span class="block input-icon input-icon-right">
+										<input type="password" class="form-control" placeholder="New Password" />
+									</span>
+								</label>
+								<label class="block clearfix">
+									<span class="block input-icon input-icon-right">
+										<input type="password-confirm" class="form-control" placeholder="Re-Enter New Password" />
+									</span>
+								</label>
+								<div class="cleafix">
+									<button type="button" class="width-35 pull-right btn btn-sm btn-primary" data-ng-click="makeVisible('forgot-password-step-4')">
+										<i class="icon-lightbulb"></i>
+										Submit
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</div> <!-- .widget-main -->
+					<div class="toolbar center">
+						<a class="back-to-login-link" data-ng-click="makeVisible('login')">
+							Back to login
+							<i class="icon-arrow-right"></i>
+						</a>
+					</div>
+				</div> <!-- .widget-body -->
+			</div> <!-- .forgot-box.forgot-password-step-3 -->
+
+
+			<div class="forgot-box forgot-password-step-4 widget-box border" data-ng-class="{'visible': isVisible('forgot-password-step-4')}">
+				<div class="widget-body">
+					<div class="widget-main background-white">
+    						<img class="logo" src="img/logo.png"/>
+						<h4 class="header lighter bigger">
+							<i class="fa icon-key"></i>
+							Password Reset Successful
+						</h4>	
+						<div class="space-6"></div>
+						<p>
+							Your password has been successfully reset.  You can now use your new password to log in. 
+						</p>
+					</div> <!-- .widget-main -->
+					<div class="toolbar center">
+						<a class="back-to-login-link" data-ng-click="makeVisible('login')">
+							Back to login
+							<i class="icon-arrow-right"></i>
+						</a>
+					</div>
+				</div> <!-- .widget-body -->
+			</div> <!-- .forgot-box.forgot-password-step-4 -->
+
 		</div> <!-- .position-relative -->
 	</div> <!-- .login-container -->
 </div> <!-- .login-layout -->
