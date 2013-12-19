@@ -14,6 +14,26 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 	    .state('main.discovery', {
 		    url: "/discovery",
 		    templateUrl: "views/Discovery.html"
+	    })
+	    .state('main.tags', {
+		    url: "/tags",
+		    templateUrl: "views/Tags.html"
+	    })
+	    .state('main.folders', {
+		    url: "/folders",
+		    templateUrl: "views/Folders.html"
+	    })
+	    .state('main.logs', {
+		    url: "/logs",
+		    templateUrl: "views/Logs.html"
+	    })
+	    .state('main.users', {
+		    url: "/users",
+		    templateUrl: "views/Users.html"
+	    })
+	    .state('main.settings', {
+		    url: "/settings",
+		    templateUrl: "views/Settings.html"
 	    });
     /*
         $routeProvider.when('/discovery',

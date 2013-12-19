@@ -65,6 +65,7 @@
 					</div>
 				</div> <!-- .widget-box -->
 			</div> <!-- .login-box -->
+
 			<div class="forgot-box forgot-username widget-box border" data-ng-class="{'visible': isVisible('forgot-username')}">
 				<div class="widget-body">
 					<div class="widget-main background-white">
@@ -86,7 +87,7 @@
 									</span>
 								</label>
 								<div class="cleafix">
-									<button type="button" class="width-35 pull-right btn btn-sm btn-primary">
+									<button type="button" class="width-35 pull-right btn btn-sm btn-primary" data-ng-click="makeVisible('forgot-username-step-2')">
 										<i class="icon-lightbulb"></i>
 									Submit	
 									</button>
@@ -101,7 +102,30 @@
 						</a>
 					</div>
 				</div> <!-- .widget-body -->
-			</div> <!-- .forgot-box.forgot-password -->
+			</div> <!-- .forgot-box.forgot-username -->
+
+			<div class="forgot-box forgot-username-step-2 widget-box border" data-ng-class="{'visible': isVisible('forgot-username-step-2')}">
+				<div class="widget-body">
+					<div class="widget-main background-white">
+						<img class="logo" src="img/logo.png"/>
+						<h4 class="header lighter bigger">
+							<i class="fa icon-key"></i>
+							Email Sent
+						</h4>	
+						<div class="space-6"></div>
+						<p>
+							A username reminder has been sent to the email address provided. 
+						</p>
+					</div> <!-- .widget-main -->
+					<div class="toolbar center">
+						<a class="back-to-login-link" data-ng-click="makeVisible('login')">
+							Back to login
+							<i class="icon-arrow-right"></i>
+						</a>
+					</div>
+				</div> <!-- .widget-body -->
+			</div> <!-- .forgot-box.forgot-username-step-2 -->
+
 			<div class="forgot-box forgot-password widget-box border" data-ng-class="{'visible': isVisible('forgot-password')}">
 				<div class="widget-body">
 					<div class="widget-main background-white">
