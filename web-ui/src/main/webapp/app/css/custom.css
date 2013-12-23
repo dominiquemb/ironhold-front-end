@@ -112,11 +112,11 @@ body .text-primary {
 	height: 100%;
 }
 
-#tab-discovery {
+.main-area > .navigation > .tabbable > .tab-content > .tab-pane {
 	position: relative;
 }
 
-#tab-discovery, 
+.main-area > .navigation > .tabbable > .tab-content > .tab-pane, 
 .top-nav > .tab-content, 
 .main-area, 
 .main-area > .navigation > .tabbable, 
