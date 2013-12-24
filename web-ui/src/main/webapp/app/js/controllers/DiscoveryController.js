@@ -9,6 +9,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.showMessage = false;
     $scope.selectedFacets = [];
     $scope.currentPage = 1;
+    $scope.pageSize = 10;
     searchResultsService.prepForBroadcast("-", "- ");
     var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
 
@@ -50,7 +51,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.updateSearch = function() {
-        restMessagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
+        restMessagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage, pageSize: $scope.pageSize}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
                 $scope.searchMatches = result.payload.matches;
                 $scope.searchTime = result.payload.timeTaken;
                 $scope.messages = result.payload.messages;
@@ -164,7 +165,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.search = function () {
-        restMessagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext"}).then(function(result) {
+        restMessagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", pageSize: $scope.pageSize}).then(function(result) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.facets = result.payload.facets;

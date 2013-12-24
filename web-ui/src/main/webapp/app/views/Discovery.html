@@ -47,12 +47,12 @@
 								<span class="pull-right middlebar_right pagination-container"
                                       data-ng-show="showSearchResults">
 									<ul class="pull-right pagination-plain text-primary">
-                                        <li class="disabled">
-                                            &lt; <a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">previous</a>
+                                        <li data-ng-hide="currentPage==1">
+                                        &lt; <a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">previous</a>
                                             |&nbsp;
                                         </li>
-                                        <li class="active">
-                                            pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{
+                                        <li class="active" data-ng-hide="currentPage==1">
+                                        pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{
                                             currentPage - 1 }}</a>,
                                         </li>
                                         <li>
