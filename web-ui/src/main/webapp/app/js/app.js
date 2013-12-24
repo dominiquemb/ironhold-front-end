@@ -13,7 +13,8 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 	    })
 	    .state('main.discovery', {
 		    url: "/discovery",
-		    templateUrl: "views/Discovery.html"
+		    templateUrl: "views/Discovery.html",
+		    controller: 'DiscoveryController'
 	    })
 	    .state('main.tags', {
 		    url: "/tags",
