@@ -8,6 +8,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.showSuggestions = false;
     $scope.showMessage = false;
     $scope.selectedFacets = [];
+    $scope.currentPage = 1;
     searchResultsService.prepForBroadcast("-", "- ");
     var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
 
@@ -49,7 +50,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.updateSearch = function() {
-        restMessagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
+        restMessagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
                 $scope.searchMatches = result.payload.matches;
                 $scope.searchTime = result.payload.timeTaken;
                 $scope.messages = result.payload.messages;
@@ -128,6 +129,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.messages = [];
         $scope.suggestions = [];
         $scope.selectedFacets = [];
+        $scope.currentPage = 1;
     }
 
 
@@ -152,6 +154,13 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
             $scope.showSearchPreviewResults = true;
         });
 
+    }
+
+    $scope.goTo = function(page) {
+        if (page > 0) {
+            $scope.currentPage = page;
+            $scope.updateSearch();
+        }
     }
 
     $scope.search = function () {
