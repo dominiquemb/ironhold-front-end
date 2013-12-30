@@ -1,6 +1,6 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.domain.LoginUser;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.HorizontalLayout;

@@ -1,8 +1,8 @@
 package com.reqo.ironhold.storage.model;
 
-import com.reqo.ironhold.storage.model.log.AuditActionEnum;
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
+import com.reqo.ironhold.web.domain.AuditActionEnum;
+import com.reqo.ironhold.web.domain.AuditLogMessage;
+import com.reqo.ironhold.web.domain.RoleEnum;
 
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;

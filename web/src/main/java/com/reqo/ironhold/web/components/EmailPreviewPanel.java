@@ -1,16 +1,11 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MetaDataIndexService;
-import com.reqo.ironhold.storage.model.log.AuditActionEnum;
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.web.IronholdApplication;
-import com.reqo.ironhold.web.domain.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.*;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.log4j.Logger;
-import org.elasticsearch.search.SearchHit;
 
 @SuppressWarnings("serial")
 public class EmailPreviewPanel extends TabSheet {

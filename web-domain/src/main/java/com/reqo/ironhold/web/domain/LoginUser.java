@@ -1,6 +1,5 @@
-package com.reqo.ironhold.storage.model.user;
+package com.reqo.ironhold.web.domain;
 
-import com.reqo.ironhold.web.domain.Recipient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

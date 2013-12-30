@@ -1,8 +1,8 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;

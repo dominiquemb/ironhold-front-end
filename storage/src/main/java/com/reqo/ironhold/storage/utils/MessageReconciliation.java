@@ -7,7 +7,7 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.web.domain.IndexedMailMessage;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import org.apache.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

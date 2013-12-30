@@ -34,15 +34,23 @@ public class PSTMessageSource extends MessageSource {
         this.pstFileMetaId = pstFileMetaId;
     }
 
-    public String serialize() throws IOException {
+    public String serialize() {
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
         mapper.enableDefaultTyping();
-        return mapper.writeValueAsString(this);
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public PSTMessageSource deserialize(String source) throws IOException {
-        return mapper.readValue(source, PSTMessageSource.class);
+    public PSTMessageSource deserialize(String source) {
+        try {
+            return mapper.readValue(source, PSTMessageSource.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getPstFileMetaId() {

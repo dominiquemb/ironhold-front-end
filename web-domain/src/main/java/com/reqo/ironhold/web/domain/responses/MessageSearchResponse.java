@@ -1,7 +1,9 @@
-package com.reqo.ironhold.web.domain;
+package com.reqo.ironhold.web.domain.responses;
 
 import com.gs.collections.api.list.ImmutableList;
-import com.gs.collections.api.set.ImmutableSet;
+import com.reqo.ironhold.web.domain.FacetGroup;
+import com.reqo.ironhold.web.domain.MessageMatch;
+import com.reqo.ironhold.web.domain.Suggestion;
 
 /**
  * User: ilya

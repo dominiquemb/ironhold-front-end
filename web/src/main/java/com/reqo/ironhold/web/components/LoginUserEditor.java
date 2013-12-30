@@ -2,15 +2,15 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.web.components.validators.EmailListValidator;
 import com.reqo.ironhold.web.components.validators.PasswordValidator;
 import com.reqo.ironhold.web.components.validators.UniqueUsernameValidator;
 import com.reqo.ironhold.web.components.validators.UsernameStringValidator;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.Recipient;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.EmailValidator;

@@ -1,9 +1,9 @@
 package com.reqo.ironhold.storage.model;
 
-import com.reqo.ironhold.web.domain.Recipient;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.Recipient;
+import com.reqo.ironhold.web.domain.RoleEnum;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;

@@ -29,12 +29,20 @@ public class BloombergSource extends MessageSource {
         this.date = date;
     }
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public BloombergSource deserialize(String source) throws IOException {
-        return mapper.readValue(source, BloombergSource.class);
+    public BloombergSource deserialize(String source) {
+        try {
+            return mapper.readValue(source, BloombergSource.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getDescription() {

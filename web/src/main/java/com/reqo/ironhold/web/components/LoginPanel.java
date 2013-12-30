@@ -1,9 +1,9 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.LoginChannelEnum;
+import com.reqo.ironhold.web.domain.LoginUser;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.NullValidator;
 import com.vaadin.data.validator.StringLengthValidator;
@@ -11,7 +11,6 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ClassResource;
 import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletService;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
@@ -139,7 +138,6 @@ public class LoginPanel extends Panel {
             username.validate();
             password.validate();
             client.validate();
-
 
 
             LoginUser authenticatedUser = miscIndexService.authenticate(

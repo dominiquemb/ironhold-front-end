@@ -1,10 +1,10 @@
 package com.reqo.ironhold.storage.utils;
 
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.web.domain.Recipient;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.Recipient;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;

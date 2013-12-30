@@ -6,10 +6,10 @@ import com.reqo.ironhold.storage.model.metadata.BloombergMeta;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
-import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
+import com.reqo.ironhold.web.domain.LoginChannelEnum;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
@@ -43,7 +43,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
     }
 
 
-    public void store(String indexPrefix, PSTFileMeta meta)  {
+    public void store(String indexPrefix, PSTFileMeta meta) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -57,7 +57,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
 
     }
 
-    public void store(String indexPrefix, IMAPBatchMeta meta)  {
+    public void store(String indexPrefix, IMAPBatchMeta meta) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -70,7 +70,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
 
     }
 
-    public void store(String indexPrefix, BloombergMeta meta)  {
+    public void store(String indexPrefix, BloombergMeta meta) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -84,7 +84,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
     }
 
 
-    public PSTFileMeta findExisting(String indexPrefix, PSTFileMeta meta)  {
+    public PSTFileMeta findExisting(String indexPrefix, PSTFileMeta meta) {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
@@ -105,7 +105,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         return null;
     }
 
-    public PSTFileMeta getPSTFileMeta(String indexPrefix, String id)  {
+    public PSTFileMeta getPSTFileMeta(String indexPrefix, String id) {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
@@ -119,7 +119,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         return null;
     }
 
-    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit)  {
+    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit) {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
@@ -148,7 +148,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
     }
 
 
-    public void store(String indexPrefix, LoginUser loginUser)  {
+    public void store(String indexPrefix, LoginUser loginUser) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, PARTITION);
 
@@ -200,7 +200,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         return client.getCount(alias, IndexedObjectType.LOGIN_USER);
     }
 
-    public LoginUser usernameExists(String indexPrefix, String username)  {
+    public LoginUser usernameExists(String indexPrefix, String username) {
         String alias = getIndexAlias(indexPrefix);
         Set<Pair<String, String>> criteria = new HashSet<>();
         Pair<String, String> pair = new ImmutablePair("username", username.toLowerCase());

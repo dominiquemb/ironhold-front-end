@@ -1,8 +1,7 @@
 package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
-import com.reqo.ironhold.storage.model.log.AuditActionEnum;
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
+import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.source.BloombergSource;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
@@ -10,8 +9,10 @@ import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
+import com.reqo.ironhold.web.domain.AuditActionEnum;
+import com.reqo.ironhold.web.domain.AuditLogMessage;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
@@ -20,11 +21,9 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
-public class MetaDataIndexService extends AbstractIndexService {
+public class MetaDataIndexService extends AbstractIndexService implements IMetaDataIndexService {
     private static Logger logger = Logger.getLogger(MetaDataIndexService.class);
     public static final String SUFFIX = "meta";
     private static Map<IndexedObjectType, String> mappings;
@@ -44,7 +43,7 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public void store(String indexPrefix, IndexFailure failure) throws Exception {
+    public void store(String indexPrefix, IndexFailure failure) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, failure.getPartition());
 
@@ -57,7 +56,7 @@ public class MetaDataIndexService extends AbstractIndexService {
                 failure.serialize());
     }
 
-    public void store(String indexPrefix, MessageSource source) throws Exception {
+    public void store(String indexPrefix, MessageSource source) {
         String alias = getIndexAlias(indexPrefix);
         String indexName = getIndexName(alias, source.getPartition());
 
@@ -88,7 +87,7 @@ public class MetaDataIndexService extends AbstractIndexService {
 
     }
 
-    public List<MessageSource> getSources(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
+    public List<MessageSource> getSources(String indexPrefix, String messageId) {
         String alias = getIndexAlias(indexPrefix);
         Set<Pair<String, String>> criteria = new HashSet<>();
         criteria.add(new ImmutablePair("messageId", messageId));
@@ -118,7 +117,7 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public void store(String indexPrefix, LogMessage logMessage) throws Exception {
+    public void store(String indexPrefix, LogMessage logMessage) {
 
         createIndexIfMissing(indexPrefix, logMessage.getPartition());
         String indexName = getIndexName(getIndexAlias(indexPrefix), logMessage.getPartition());
@@ -131,7 +130,7 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public void store(String indexPrefix, AuditLogMessage auditLogMessage) throws Exception {
+    public void store(String indexPrefix, AuditLogMessage auditLogMessage) {
 
         if (!auditLogMessage.getLoginUser().hasRole(RoleEnum.SUPER_USER)) {
             createIndexIfMissing(indexPrefix, auditLogMessage.getPartition());
@@ -147,7 +146,7 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
+    public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, String messageId) {
         String alias = getIndexAlias(indexPrefix);
         Set<Pair<String, String>> criteria = new HashSet<>();
         criteria.add(new ImmutablePair("messageId", messageId));
@@ -164,7 +163,7 @@ public class MetaDataIndexService extends AbstractIndexService {
     }
 
 
-    public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, LoginUser loginUser, AuditActionEnum action) throws ExecutionException, InterruptedException, IOException {
+    public List<AuditLogMessage> getAuditLogMessages(String indexPrefix, LoginUser loginUser, AuditActionEnum action) {
         String alias = getIndexAlias(indexPrefix);
         Set<Pair<String, String>> criteria = new HashSet<>();
         criteria.add(new ImmutablePair("username", loginUser.getUsername()));
@@ -182,7 +181,7 @@ public class MetaDataIndexService extends AbstractIndexService {
         return result;
     }
 
-    public List<LogMessage> getLogMessages(String indexPrefix, String messageId) throws IOException, ExecutionException, InterruptedException {
+    public List<LogMessage> getLogMessages(String indexPrefix, String messageId) {
         String alias = getIndexAlias(indexPrefix);
         Set<Pair<String, String>> criteria = new HashSet<>();
         criteria.add(new ImmutablePair("messageId", messageId));
@@ -198,7 +197,7 @@ public class MetaDataIndexService extends AbstractIndexService {
         return result;
     }
 
-    public List<IndexFailure> getIndexFailures(String indexPrefix, int limit) throws Exception {
+    public List<IndexFailure> getIndexFailures(String indexPrefix, int limit) {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByType(alias, IndexedObjectType.INDEX_FAILURE, 0, limit);
         List<IndexFailure> result = new ArrayList<>();

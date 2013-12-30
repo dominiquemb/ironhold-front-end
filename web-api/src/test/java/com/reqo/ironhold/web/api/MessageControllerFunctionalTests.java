@@ -1,7 +1,7 @@
 package com.reqo.ironhold.web.api;
 
 import com.reqo.ironhold.web.api.mocks.MockMessageIndexService;
-import com.reqo.ironhold.web.domain.CountSearchResponse;
+import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -74,13 +74,14 @@ public class MessageControllerFunctionalTests {
 
         ApiResponse<CountSearchResponse> result = this.jsonToObject(resultActions.andReturn().getResponse().getContentAsString());
 
-        Assert.assertTrue(result.getPayload().getMatches() >  0);
+        Assert.assertTrue(result.getPayload().getMatches() > 0);
 
 
     }
 
     private ApiResponse<CountSearchResponse> jsonToObject(String jsonString) throws IOException {
         jacksonObjectMapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-        return jacksonObjectMapper.readValue(jsonString, new TypeReference<ApiResponse<CountSearchResponse>>() {});
+        return jacksonObjectMapper.readValue(jsonString, new TypeReference<ApiResponse<CountSearchResponse>>() {
+        });
     }
 }

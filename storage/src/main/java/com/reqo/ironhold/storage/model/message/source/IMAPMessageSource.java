@@ -31,12 +31,20 @@ public class IMAPMessageSource extends MessageSource {
         this.folder = folder;
     }
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public IMAPMessageSource deserialize(String source) throws IOException {
-        return mapper.readValue(source, IMAPMessageSource.class);
+    public IMAPMessageSource deserialize(String source) {
+        try {
+            return mapper.readValue(source, IMAPMessageSource.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getDescription() {

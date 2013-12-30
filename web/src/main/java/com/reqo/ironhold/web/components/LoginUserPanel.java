@@ -1,7 +1,7 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.domain.LoginUser;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;

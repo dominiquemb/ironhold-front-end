@@ -3,6 +3,7 @@
 ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService) {
     var typingTimer;
 
+    $scope.mode = 'text';
     $scope.showSearchResults = false;
     $scope.showSearchPreviewResults = false;
     $scope.showSuggestions = false;
@@ -12,6 +13,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.pageSize = 10;
     searchResultsService.prepForBroadcast("-", "- ");
     var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
+
+    $scope.switchMode = function(newMode) {
+        $scope.mode = newMode;
+    }
 
     $scope.initCustomScrollbars = function(selector) {
         $timeout(function() {
@@ -95,8 +100,11 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.selectMessage = function(message) {
         $scope.unselectAllMessages();
         message.selected = true;
-        $scope.currentMessage = message;
-        $scope.showMessage = true;
+        restMessagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
+            $scope.currentMessage = result.payload.messages[0];
+            $scope.showMessage = true;
+            $scope.mode = 'text';
+        });
     }
 
     $scope.unhilightAllMessages = function(message) {

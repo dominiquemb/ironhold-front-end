@@ -31,12 +31,20 @@ public class IndexFailure implements IHasMessageId, IPartitioned {
         this.exceptionText = exception.getMessage();
     }
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public IndexFailure deserialize(String source) throws IOException {
-        return mapper.readValue(source, IndexFailure.class);
+    public IndexFailure deserialize(String source) {
+        try {
+            return mapper.readValue(source, IndexFailure.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

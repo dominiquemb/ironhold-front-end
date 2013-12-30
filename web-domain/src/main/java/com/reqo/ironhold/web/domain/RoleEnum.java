@@ -1,4 +1,4 @@
-package com.reqo.ironhold.storage.model.user;
+package com.reqo.ironhold.web.domain;
 
 import org.springframework.security.access.ConfigAttribute;
 

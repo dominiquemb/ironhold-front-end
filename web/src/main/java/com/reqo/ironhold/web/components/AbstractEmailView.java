@@ -1,13 +1,11 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
-import com.reqo.ironhold.storage.es.IndexFieldEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.domain.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.LoginUser;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-import org.elasticsearch.search.SearchHit;
 
 /**
  * User: ilya

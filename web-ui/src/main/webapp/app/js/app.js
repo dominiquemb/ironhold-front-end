@@ -5,7 +5,8 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 	    $stateProvider
 	    .state('login', {
 		    url: "/login",
-		    templateUrl: "views/Login.html"
+		    templateUrl: "views/Login.html",
+		    controller: 'LoginController'
 	    })
 	    .state('main', {
 		    url: "/main",

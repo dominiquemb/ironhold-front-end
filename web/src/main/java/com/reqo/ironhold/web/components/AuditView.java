@@ -2,8 +2,6 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
-import com.reqo.ironhold.storage.es.IndexFieldEnum;
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.BloombergSource;
@@ -11,6 +9,7 @@ import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.AuditLogMessage;
 import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -18,7 +17,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import org.apache.commons.io.FileUtils;
-import org.elasticsearch.search.SearchHit;
 
 import java.util.Date;
 import java.util.List;

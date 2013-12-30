@@ -3,8 +3,8 @@ package com.reqo.ironhold.storage.interfaces;
 import com.reqo.ironhold.storage.model.metadata.BloombergMeta;
 import com.reqo.ironhold.storage.model.metadata.IMAPBatchMeta;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
-import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.domain.LoginChannelEnum;
+import com.reqo.ironhold.web.domain.LoginUser;
 
 import java.io.IOException;
 import java.util.List;

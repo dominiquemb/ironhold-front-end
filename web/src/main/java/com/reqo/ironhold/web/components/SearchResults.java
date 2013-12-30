@@ -1,33 +1,27 @@
 package com.reqo.ironhold.web.components;
 
 import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.api.list.ImmutableList;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.impl.block.factory.Predicates;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
-import com.reqo.ironhold.storage.model.log.AuditActionEnum;
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
 import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.components.pagingcomponent.PagingComponent;
 import com.reqo.ironhold.web.components.pagingcomponent.listener.impl.LazyPagingComponentListener;
 import com.reqo.ironhold.web.components.pagingcomponent.utilities.FakeList;
 import com.reqo.ironhold.web.domain.*;
+import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
+import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.sort.SortOrder;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 

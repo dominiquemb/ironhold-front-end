@@ -1,9 +1,9 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MetaDataIndexService;
-import com.reqo.ironhold.storage.model.log.AuditActionEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
+import com.reqo.ironhold.web.domain.AuditActionEnum;
+import com.reqo.ironhold.web.domain.LoginUser;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;

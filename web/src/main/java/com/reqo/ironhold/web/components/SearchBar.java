@@ -1,15 +1,13 @@
 package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.MessageIndexService;
-import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
-import com.reqo.ironhold.web.domain.CountSearchResponse;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-
-import java.util.concurrent.ExecutionException;
 
 @SuppressWarnings("serial")
 public class SearchBar extends VerticalLayout {

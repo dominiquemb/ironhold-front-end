@@ -3,9 +3,14 @@ package com.reqo.ironhold.web.api;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
-import com.reqo.ironhold.storage.model.user.LoginChannelEnum;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.web.domain.*;
+import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.web.domain.FacetGroupName;
+import com.reqo.ironhold.web.domain.FacetValue;
+import com.reqo.ironhold.web.domain.LoginChannelEnum;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
+import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
+import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,14 +129,18 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{partition}/{messageId:.+}")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{messageId:.+}")
     public
     @ResponseBody
-    ApiResponse<IndexedMailMessage> getMessage(@PathVariable("clientKey") String clientKey, @PathVariable("partition") String partition, @PathVariable("messageId") String messageId) {
-        ApiResponse<IndexedMailMessage> apiResponse = new ApiResponse<>();
+    ApiResponse<MessageSearchResponse> getMessage(@PathVariable("clientKey") String clientKey, @PathVariable("messageId") String messageId, @RequestParam String criteria) {
+        ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
-        IndexedMailMessage message = messageIndexService.getById(clientKey, partition, messageId);
-        apiResponse.setPayload(message);
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser());
+        searchBuilder.withCriteria(criteria).withFullBody().withId(messageId, IndexedObjectType.MIME_MESSAGE);
+
+        MessageSearchResponse result = messageIndexService.search(searchBuilder);
+
+        apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
         return apiResponse;

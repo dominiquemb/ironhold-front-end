@@ -1,9 +1,9 @@
 package com.reqo.ironhold.storage.es;
 
-import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.storage.model.user.RoleEnum;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.Recipient;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;

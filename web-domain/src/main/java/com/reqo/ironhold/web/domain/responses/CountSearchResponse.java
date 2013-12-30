@@ -1,4 +1,4 @@
-package com.reqo.ironhold.web.domain;
+package com.reqo.ironhold.web.domain.responses;
 
 /**
  * User: ilya

@@ -1,11 +1,8 @@
 package com.reqo.ironhold.web.components.validators;
 
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.storage.model.user.LoginUser;
+import com.reqo.ironhold.web.domain.LoginUser;
 import com.vaadin.data.validator.AbstractStringValidator;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 /**
  * User: ilya

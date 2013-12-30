@@ -1,6 +1,6 @@
 package com.reqo.ironhold.web.components;
 
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
+import com.reqo.ironhold.web.domain.AuditLogMessage;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;

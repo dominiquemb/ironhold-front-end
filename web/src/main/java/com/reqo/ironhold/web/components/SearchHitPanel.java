@@ -2,15 +2,8 @@ package com.reqo.ironhold.web.components;
 
 import com.gs.collections.impl.utility.ArrayIterate;
 import com.reqo.ironhold.storage.MetaDataIndexService;
-import com.reqo.ironhold.storage.es.IndexFieldEnum;
-import com.reqo.ironhold.storage.es.IndexUtils;
-import com.reqo.ironhold.storage.model.log.AuditActionEnum;
-import com.reqo.ironhold.storage.model.log.AuditLogMessage;
-import com.reqo.ironhold.storage.model.user.LoginUser;
 import com.reqo.ironhold.web.IronholdApplication;
-import com.reqo.ironhold.web.domain.FormattedIndexedMailMessage;
-import com.reqo.ironhold.web.domain.IndexedMailMessage;
-import com.reqo.ironhold.web.domain.Recipient;
+import com.reqo.ironhold.web.domain.*;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -20,7 +13,6 @@ import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.elasticsearch.search.SearchHit;
 
 import java.text.SimpleDateFormat;
 

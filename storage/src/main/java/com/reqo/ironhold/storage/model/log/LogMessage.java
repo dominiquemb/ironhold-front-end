@@ -21,95 +21,107 @@ public class LogMessage implements IHasMessageId, IPartitioned {
     protected SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
 
     private String messageId;
-	private String host;
-	private Date timestamp;
-	private String message;
-	private LogLevel level;
+    private String host;
+    private Date timestamp;
+    private String message;
+    private LogLevel level;
 
-	public LogMessage() throws UnknownHostException {
-		super();
+    public LogMessage() {
+        super();
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
-		this.host = InetAddress.getLocalHost().getHostName();
-		this.timestamp = new Date();
-	}
+        try {
+            this.host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            this.host = "unknown";
+        }
+        this.timestamp = new Date();
+    }
 
-	public LogMessage(LogLevel level, String messageId, String message) throws UnknownHostException {
-		super();
+    public LogMessage(LogLevel level, String messageId, String message) throws UnknownHostException {
+        super();
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
-		this.messageId = messageId;
-		this.message = message;
-		this.level = level;
-		
-		this.host = InetAddress.getLocalHost().getHostName();
-		this.timestamp = new Date();
+        this.messageId = messageId;
+        this.message = message;
+        this.level = level;
 
-	}
+        this.host = InetAddress.getLocalHost().getHostName();
+        this.timestamp = new Date();
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
     }
 
-    public LogMessage deserialize(String source) throws IOException {
-        return mapper.readValue(source, LogMessage.class);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-	public String getMessageId() {
-		return messageId;
-	}
+    public LogMessage deserialize(String source) {
+        try {
+            return mapper.readValue(source, LogMessage.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
-	}
+    public String getMessageId() {
+        return messageId;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
+    public Date getTimestamp() {
+        return timestamp;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public LogLevel getLevel() {
-		return level;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	public void setLevel(LogLevel level) {
-		this.level = level;
-	}
+    public LogLevel getLevel() {
+        return level;
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+    public void setLevel(LogLevel level) {
+        this.level = level;
+    }
 
-	@Override
-	public boolean equals(Object rhs) {
-		return EqualsBuilder.reflectionEquals(this, rhs);
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
-	}
+    @Override
+    public boolean equals(Object rhs) {
+        return EqualsBuilder.reflectionEquals(this, rhs);
 
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
 
     @Override
     public String getPartition() {

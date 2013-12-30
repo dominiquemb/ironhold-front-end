@@ -3,10 +3,10 @@ package com.reqo.ironhold.web.api.mocks;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.web.domain.IndexedMailMessage;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import com.reqo.ironhold.web.domain.CountSearchResponse;
-import com.reqo.ironhold.web.domain.MessageSearchResponse;
-import com.reqo.ironhold.web.domain.SuggestSearchResponse;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
+import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
+import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 
 /**
  * User: ilya

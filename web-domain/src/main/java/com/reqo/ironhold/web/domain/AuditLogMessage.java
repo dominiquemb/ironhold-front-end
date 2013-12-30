@@ -1,9 +1,9 @@
-package com.reqo.ironhold.storage.model.log;
+package com.reqo.ironhold.web.domain;
 
+import com.gs.collections.api.block.function.Function;
 import com.reqo.ironhold.web.domain.interfaces.IHasMessageId;
 import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
-import com.reqo.ironhold.storage.model.user.LoginUser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -20,6 +20,14 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuditLogMessage implements IHasMessageId, IPartitioned {
     private ObjectMapper mapper = new ObjectMapper();
+
+    public static Function<AuditLogMessage, Comparable> SORT_BY_CONTEXT = new Function<AuditLogMessage, Comparable>() {
+        @Override
+        public Comparable valueOf(AuditLogMessage auditLogMessage) {
+            return auditLogMessage.getContext();
+        }
+    };
+
     protected SimpleDateFormat yearFormat = new SimpleDateFormat("YYYY");
 
     private String messageId;
@@ -29,11 +37,15 @@ public class AuditLogMessage implements IHasMessageId, IPartitioned {
     private Date timestamp;
     private LoginUser loginUser;
 
-    public AuditLogMessage() throws UnknownHostException {
+    public AuditLogMessage() {
         super();
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
-        this.host = InetAddress.getLocalHost().getHostName();
+        try {
+            this.host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            this.host = "unknown";
+        }
         this.timestamp = new Date();
     }
 
@@ -55,12 +67,20 @@ public class AuditLogMessage implements IHasMessageId, IPartitioned {
 
     }
 
-    public String serialize() throws IOException {
-        return mapper.writeValueAsString(this);
+    public String serialize() {
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public AuditLogMessage deserialize(String source) throws IOException {
-        return mapper.readValue(source, AuditLogMessage.class);
+    public AuditLogMessage deserialize(String source) {
+        try {
+            return mapper.readValue(source, AuditLogMessage.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getMessageId() {
