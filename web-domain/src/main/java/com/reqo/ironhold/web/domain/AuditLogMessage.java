@@ -49,11 +49,11 @@ public class AuditLogMessage implements IHasMessageId, IPartitioned {
         this.timestamp = new Date();
     }
 
-    public AuditLogMessage(LoginUser loginUser, AuditActionEnum action, String messageId) throws UnknownHostException {
+    public AuditLogMessage(LoginUser loginUser, AuditActionEnum action, String messageId) {
         this(loginUser, action, messageId, StringUtils.EMPTY);
     }
 
-    public AuditLogMessage(LoginUser loginUser, AuditActionEnum action, String messageId, String context) throws UnknownHostException {
+    public AuditLogMessage(LoginUser loginUser, AuditActionEnum action, String messageId, String context) {
         super();
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
                 false);
@@ -62,7 +62,11 @@ public class AuditLogMessage implements IHasMessageId, IPartitioned {
         this.loginUser = loginUser;
         this.context = context;
 
-        this.host = InetAddress.getLocalHost().getHostName();
+        try {
+            this.host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            this.host = "unknown";
+        }
         this.timestamp = new Date();
 
     }

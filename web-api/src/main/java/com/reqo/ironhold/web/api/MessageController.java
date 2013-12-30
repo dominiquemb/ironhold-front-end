@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * User: ilya
@@ -25,6 +27,7 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping(value = "/messages")
 public class MessageController {
+    private final ExecutorService backgroundExecutor;
     private IMessageIndexService messageIndexService;
     private IMiscIndexService miscIndexService;
     private IMetaDataIndexService metaDataIndexService;
@@ -36,6 +39,8 @@ public class MessageController {
         this.messageIndexService = messageIndexService;
         this.miscIndexService = miscIndexService;
         this.metaDataIndexService = metaDataIndexService;
+
+        this.backgroundExecutor = Executors.newFixedThreadPool(10);
     }
 
 
@@ -104,8 +109,8 @@ public class MessageController {
     @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}")
     public
     @ResponseBody
-    ApiResponse<MessageSearchResponse> getMessages(@PathVariable("clientKey") String clientKey,
-                                                   @RequestParam String criteria,
+    ApiResponse<MessageSearchResponse> getMessages(@PathVariable("clientKey") final String clientKey,
+                                                   @RequestParam final String criteria,
                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
                                                    @RequestParam(required = false, defaultValue = "0") int page,
                                                    @RequestParam(required = false, defaultValue = "") String[] facets) {
@@ -122,11 +127,15 @@ public class MessageController {
         }
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
-        try {
-            metaDataIndexService.store(clientKey, new AuditLogMessage(getDefaultUser(), AuditActionEnum.SEARCH, null, criteria));
-        } catch (Exception e) {
-            logger.warn("Failed to record audit activity", e);
-        }
+
+        backgroundExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                metaDataIndexService.store(clientKey, new AuditLogMessage(getDefaultUser(), AuditActionEnum.SEARCH, null, criteria));
+
+            }
+        });
+
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
