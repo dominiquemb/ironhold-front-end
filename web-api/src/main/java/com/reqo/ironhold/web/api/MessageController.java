@@ -2,12 +2,10 @@ package com.reqo.ironhold.web.api;
 
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
+import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
-import com.reqo.ironhold.web.domain.FacetGroupName;
-import com.reqo.ironhold.web.domain.FacetValue;
-import com.reqo.ironhold.web.domain.LoginChannelEnum;
-import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
@@ -29,13 +27,15 @@ import javax.inject.Inject;
 public class MessageController {
     private IMessageIndexService messageIndexService;
     private IMiscIndexService miscIndexService;
+    private IMetaDataIndexService metaDataIndexService;
 
     private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
     @Inject
-    public MessageController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService) {
+    public MessageController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService, IMetaDataIndexService metaDataIndexService) {
         this.messageIndexService = messageIndexService;
         this.miscIndexService = miscIndexService;
+        this.metaDataIndexService = metaDataIndexService;
     }
 
 
@@ -93,6 +93,7 @@ public class MessageController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
+
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
@@ -121,7 +122,11 @@ public class MessageController {
         }
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
-
+        try {
+            metaDataIndexService.store(clientKey, new AuditLogMessage(getDefaultUser(), AuditActionEnum.SEARCH, null, criteria));
+        } catch (Exception e) {
+            logger.warn("Failed to record audit activity", e);
+        }
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 

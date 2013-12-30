@@ -11,7 +11,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.selectedFacets = [];
     $scope.currentPage = 1;
     $scope.pageSize = 10;
-    $scope.searchHistory = [];
     searchResultsService.prepForBroadcast("-", "- ");
     var messagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
     var usersService = Restangular.setBaseUrl('http://localhost:8080/users');
@@ -46,6 +45,12 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     $scope.replace = function(oldText, newText) {
         $scope.inputSearch = $scope.inputSearch.replace(oldText, newText);
+        $scope.reset();
+        $scope.search();
+    }
+
+    $scope.replace = function(newText) {
+        $scope.inputSearch = newText;
         $scope.reset();
         $scope.search();
     }

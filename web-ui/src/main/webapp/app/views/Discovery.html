@@ -17,8 +17,9 @@
 
                         <div class="dropdown-menu dropdown-info">
                             <ul>
-                                <li data-ng-repeat="context in searchHistory">
-                                    {{ context }}
+                                <li data-ng-repeat="history in searchHistory.messages">
+                                    <a data-ng-click="replace(history.context)">
+                                        {{ history.context }}</a>
                                 </li>
                             </ul>
                         </div>
