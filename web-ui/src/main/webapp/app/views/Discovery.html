@@ -151,10 +151,10 @@
                             <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
                                class="pull-right img-xs envelope-img-xs"></i>
                         </td>
-                        <td class="message-sender col-xs-6">
+                        <td class="message-sender col-xs-3">
                             {{ message.formattedIndexedMailMessage.sender.name }}
                         </td>
-                        <td class="message-size col-xs-6" data-ng-bind-html="message.subjectWithHighlights">
+                        <td class="message-size col-xs-8" data-ng-bind-html="message.subjectWithHighlights">
                         </td>
                         <td rowspan="4" class="message-flag col-xs-1">
                             <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
@@ -164,10 +164,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="message-subject col-xs-6">
+                        <td class="message-subject col-xs-3">
                             {{ message.formattedIndexedMailMessage.formattedMessageDate }}
                         </td>
-                        <td class="message-date col-xs-6">
+                        <td class="message-date col-xs-8">
                             {{ message.formattedIndexedMailMessage.formattedSize }}
                         </td>
                     </tr>

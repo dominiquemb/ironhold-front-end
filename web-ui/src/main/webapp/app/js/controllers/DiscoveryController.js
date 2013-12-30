@@ -27,7 +27,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $timeout(function() {
                 $(selector).jScrollPane({
                         verticalArrowPositions: 'split',
-                        horizontalArrowPositions: 'split'
+                        horizontalArrowPositions: 'split',
+			showArrows: true
                 });
         }, 0);
     }

@@ -26,8 +26,9 @@ body .text-primary {
 
 /* filter-tag */
 .filter-tag-container {
-	margin: 0px 0px 10px 0px;
+	margin: 0px 0px 10px -3px;
 	position: relative;
+	line-height: 18px;
 	width: 100%;
 	float: left;
 	clear: left;
@@ -59,7 +60,8 @@ body .text-primary {
 .filter-tag-close {
 	color: #999;
 	float: left;
-	margin-top: 2px;
+	margin-top: 1px;
+	margin-bottom: 1px;
 }
 
 /* clear-form */
@@ -238,6 +240,7 @@ body .text-primary {
 	overflow: hidden;
 	font-size: 11px;
 	min-height: 19px;
+	padding-left: 10px;
 	height: 19px;
 	margin-bottom: 5px;
 	margin-top: 2px;
@@ -1102,7 +1105,7 @@ body ul {
 }
 
 .sidebar-left .filter-list .widget-header {
-	padding-left: 10px !important;
+	padding-left: 13px !important;
 }
 
 .sidebar-left .filter-list > li {
@@ -1197,7 +1200,7 @@ body ul {
 	width: 10px;
 	height: 13px;
 	min-height: 13px;
-	margin: 2px 2px 0px 6px;
+	margin: 2px 7px 0px 7px;
 	padding: 0px;
 	line-height: 1px;
 	font-size: 11px;
