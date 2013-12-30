@@ -11,8 +11,14 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.selectedFacets = [];
     $scope.currentPage = 1;
     $scope.pageSize = 10;
+    $scope.searchHistory = [];
     searchResultsService.prepForBroadcast("-", "- ");
-    var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
+    var messagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
+    var usersService = Restangular.setBaseUrl('http://localhost:8080/users');
+
+    messagesService.one("demo", "demo").one("searchHistory").get().then(function(result) {
+       $scope.searchHistory = result.payload;
+    });
 
     $scope.switchMode = function(newMode) {
         $scope.mode = newMode;
@@ -56,7 +62,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.updateSearch = function() {
-        restMessagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage, pageSize: $scope.pageSize}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
+        messagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage, pageSize: $scope.pageSize}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
                 $scope.searchMatches = result.payload.matches;
                 $scope.searchTime = result.payload.timeTaken;
                 $scope.messages = result.payload.messages;
@@ -100,7 +106,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.selectMessage = function(message) {
         $scope.unselectAllMessages();
         message.selected = true;
-        restMessagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
+        messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
             $scope.currentMessage = result.payload.messages[0];
             $scope.showMessage = true;
             $scope.mode = 'text';
@@ -157,7 +163,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     $scope.searchPreview = function () {
         $scope.reset();
-        restMessagesService.one("demo","count").get({criteria: $scope.inputSearch}).then(function(result) {
+        messagesService.one("demo","count").get({criteria: $scope.inputSearch}).then(function(result) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
@@ -173,7 +179,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.search = function () {
-        restMessagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", pageSize: $scope.pageSize}).then(function(result) {
+        messagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", pageSize: $scope.pageSize}).then(function(result) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.facets = result.payload.facets;

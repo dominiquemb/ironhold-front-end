@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * User: ilya
@@ -34,9 +35,10 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Inject
-    public UserController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService) {
+    public UserController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService, IMetaDataIndexService metaDataIndexService) {
         this.messageIndexService = messageIndexService;
         this.miscIndexService = miscIndexService;
+        this.metaDataIndexService = metaDataIndexService;
     }
 
 
@@ -80,7 +82,8 @@ public class UserController {
         ApiResponse<AuditLogResponse> apiResponse = new ApiResponse<>();
 
 
-        MutableList<AuditLogMessage> messages = FastList.newList(metaDataIndexService.getAuditLogMessages(clientKey, getDefaultUser(), AuditActionEnum.SEARCH));
+        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(clientKey, getDefaultUser(), AuditActionEnum.SEARCH);
+        MutableList<AuditLogMessage> messages = FastList.newList(history);
 
         AuditLogResponse result = new AuditLogResponse(messages.toSortedSetBy(AuditLogMessage.SORT_BY_CONTEXT));
         apiResponse.setPayload(result);

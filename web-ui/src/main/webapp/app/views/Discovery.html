@@ -17,11 +17,8 @@
 
                         <div class="dropdown-menu dropdown-info">
                             <ul>
-                                <li>
-                                    Result 1
-                                </li>
-                                <li>
-                                    Result 2
+                                <li data-ng-repeat="context in searchHistory">
+                                    {{ context }}
                                 </li>
                             </ul>
                         </div>
