@@ -895,19 +895,19 @@ body ul {
 }
 
 .jspArrowUp {
-	background: url(../img/sprites/scrollbar_arrows.png) 16px 0px !important;
+	background: url(../img/sprites/scrollbar_arrows_small.png) 10px 0px !important;
 }
 
 .jspArrowUp:hover {
-	background: url(../img/sprites/scrollbar_arrows.png) 16px 16px !important;
+	background: url(../img/sprites/scrollbar_arrows_small.png) 10px 10px !important;
 }
 
 .jspArrowDown {
-	background: url(../img/sprites/scrollbar_arrows.png) 0px 0px !important;
+	background: url(../img/sprites/scrollbar_arrows_small.png) 0px 0px !important;
 }
 
 .jspArrowDown:hover {
-	background: url(../img/sprites/scrollbar_arrows.png) 0px 16px !important;
+	background: url(../img/sprites/scrollbar_arrows_small.png) 0px 10px !important;
 }
 
 /* results */

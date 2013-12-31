@@ -87,12 +87,12 @@
 
 .jspVerticalBar .jspArrow
 {
-	height: 16px;
+	height: 10px;
 }
 
 .jspHorizontalBar .jspArrow
 {
-	width: 16px;
+	width: 10px;
 	float: left;
 	height: 100%;
 }
