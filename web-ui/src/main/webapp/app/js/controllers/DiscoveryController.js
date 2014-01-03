@@ -110,6 +110,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     }
 
     $scope.selectMessage = function(message) {
+console.log(message);
         $scope.unselectAllMessages();
         message.selected = true;
         messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
