@@ -178,9 +178,9 @@
 				<span class="widget-header pull-left dropdown-header">
 					<span class="widget-toolbar">
 						<a>
-                            <b data-ng-click="toggleCollapse(message.collapsedBody)"
+                            <strong data-ng-click="toggleCollapse(message, 'collapsedBody')"
                                data-ng-class="{'icon-four-thirty-up': message.collapsedBody  === false, 'icon-four-thirty-down': message.collapsedBody === true}"
-                               class="icon-on-right"></b>
+                               class="icon-on-right"></strong>
                         </a>
 					</span>
 					<strong class="dropdown-title">Body</strong>
@@ -190,7 +190,7 @@
                         <div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate"
                              trunc-text="{{ message.bodyWithHighlights }}"
                              trunc-desired-height="message.collapsedBody ? '21' : '84'"
-                             trunc-font-width="message.collapsedBody ? '6' : '5'" trunc-trailing-dots="true">
+                             trunc-font-width="message.collapsedBody ? '5' : '5'" trunc-trailing-dots="true">
                         </div>
                     </div>
 				</span>
