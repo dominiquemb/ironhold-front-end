@@ -1,6 +1,8 @@
 'use strict';
 
-ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService) {
+ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
+    $rootScope.confirmLoggedIn($state);
+
     var typingTimer;
 
     $scope.mode = 'text';

@@ -47,7 +47,32 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
         //$locationProvider.html5Mode(true);
     */ });
 
+ironholdApp.factory('logInService', function($rootScope) {
+	var loggedIn = false;
+
+	$rootScope.logIn = function() {
+		loggedIn = true;
+	}
+
+	$rootScope.logOut = function() {
+		loggedIn = false;
+	}
+
+	$rootScope.confirmLoggedIn = function($state) {
+		if (loggedIn !== true) {
+			$state.go('login');
+			return false;
+		} 
+		return true;
+	}
+
+	$rootScope.isLoggedIn = function() {
+		return loggedIn;
+	}
+});
+
 ironholdApp.factory('searchResultsService', function ($rootScope) {
+
     var sharedService = { };
 
     sharedService.searchMatches = 0;

@@ -1,8 +1,7 @@
 'use strict';
 
-ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular) {
+ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, $state, logInService) {
     $scope.currentlyVisible = 'login';
-    $scope.loggedIn = false;
     var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/users');
 
     $scope.makeVisible = function(elemName) {
@@ -18,14 +17,17 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 	    $scope.makeVisible('forgot-password-step-3');
     }
 
-    $scope.isLoggedIn = function() {
-	    return $scope.loggedIn;
-    }
-
     $scope.logIn = function() {
         restMessagesService.one($scope.clientKey).one($scope.username).post("", $scope.password, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
-            $scope.loggedIn = result.payload.success;
-            alert(result.payload.message);
+            if (result.payload.success) {
+		$rootScope.logIn();
+		$state.go('main.discovery');
+	    }
+	    /* This redirection after login should be improved later */
+	    // $rootScope.confirmLoggedIn($state);
+	    /* */
+
+            return $rootScope.isLoggedIn();
         });
     }
 

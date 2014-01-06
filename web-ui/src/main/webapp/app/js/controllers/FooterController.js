@@ -1,6 +1,7 @@
 'use strict';
 
-ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService) {
+ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService) {
+    $rootScope.confirmLoggedIn($state);
 
     var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
 
