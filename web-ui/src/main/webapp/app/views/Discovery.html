@@ -4,7 +4,7 @@
 <div class="searchbar row">
     <div class="search-query">
         <form class="form-search">
-            <div class="input-group clear-form">
+            <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
                 <div class="input-container">
                     <div class="input-history dropdown">
                         <input type="text" class="search-input clear-form-input form-control search-field"
@@ -149,7 +149,7 @@
                     <tr>
                         <td rowspan="3" class="message-icons col-xs-1">
                             <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
-                               class="pull-right img-xs envelope-img-xs"></i>
+                               class="pull-left img-xs envelope-img-xs"></i>
                         </td>
                         <td class="message-sender col-xs-3">
                             {{ message.formattedIndexedMailMessage.sender.name }}
@@ -199,7 +199,7 @@
                     </tr>
                     <tr data-ng-show="hasAttachment(message)">
                         <td rowspan="1" class="message-icons col-xs-1">
-                            <i class="img-xs attachment-img-xs pull-right"></i>
+                            <i class="img-xs attachment-img-xs pull-left"></i>
                         </td>
                         <td colspan="2" class="dropdown-toggle">
                             <div class="widget-box widget-box-simple result-attachment"

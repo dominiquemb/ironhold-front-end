@@ -107,6 +107,11 @@ body .text-primary {
 	background-color: #DFEDFA;
 }
 
+.form-search .input-group.active .icon-search,
+.form-search .input-group.active .icon-caret-down {
+	color: #2e69b3;
+}
+
 .main-area,
 .main-area > .navigation,
 .main-area > .navigation > .tabbable,
@@ -233,7 +238,7 @@ body .text-primary {
 	font-size: 11px;
 	padding: 3px 2px;
 	width: 37px;
-	text-align: left;
+	text-align: center;
 	background-color: #b1b1b1 !important;
 }
 
@@ -520,7 +525,7 @@ body .text-primary {
 }
 
 .table tbody > tr > td {
-	padding: 0px 4px 4px 4px;
+	padding: 5px 10px;
 }
 
 /* navbar */
@@ -860,6 +865,10 @@ body ul {
 /* jScrollPane */
 .jspScrollable:focus {
 	outline-color: transparent !important;
+}
+
+.jspPane {
+	padding-top: 0px !important;
 }
 
 .jspTrack {

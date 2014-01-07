@@ -9,6 +9,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.showSearchResults = false;
     $scope.showSearchPreviewResults = false;
     $scope.showSuggestions = false;
+    $scope.searchFieldHilite = false;
     $scope.showMessage = false;
     $scope.selectedFacets = [];
     $scope.currentPage = 1;
@@ -159,6 +160,7 @@ console.log(message);
 
     $scope.searchKeyUp = function($event) {
         $scope.reset();
+	$scope.searchFieldHilite = true;
         if ($event.keyCode == 13) { // ENTER
             $timeout.cancel(typingTimer);
             $scope.search();
