@@ -82,9 +82,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         });
     }
 
-    $scope.toggleCollapse = function(item) {
-	    item = !item;
-    }
+   $scope.toggleCollapse = function(object, item) {
+       return object[item] = !object[item];
+   }
 
     $scope.hasAttachmentHighlight = function(message) {
         return message.attachmentWithHighlights !== undefined;
