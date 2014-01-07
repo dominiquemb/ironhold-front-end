@@ -26,6 +26,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.mode = newMode;
     }
 
+    $scope.toggleSearchHilite = function() {
+	$scope.searchFieldHilite = !$scope.searchFieldHilite;
+    }
+
     $scope.initCustomScrollbars = function(selector) {
         $timeout(function() {
                 $(selector).jScrollPane({

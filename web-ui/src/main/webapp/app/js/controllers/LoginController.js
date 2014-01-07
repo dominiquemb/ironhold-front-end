@@ -1,6 +1,10 @@
 'use strict';
 
 ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, $state, logInService) {
+    if ($rootScope.confirmLoggedIn($state)) {
+	$state.go('main.discovery');
+    }
+
     $scope.currentlyVisible = 'login';
     $scope.formSubmitted = false;
     $scope.formInvalid = false;

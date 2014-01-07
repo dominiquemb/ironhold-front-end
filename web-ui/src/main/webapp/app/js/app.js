@@ -1,5 +1,5 @@
 'use strict';
-var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular','ui.router'])
+var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular','ui.router','ivpusic.cookie'])
     .config(function ($stateProvider, $urlRouterProvider) {
 	    $urlRouterProvider.otherwise('/login');	    
 	    $stateProvider
@@ -47,22 +47,26 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
         //$locationProvider.html5Mode(true);
     */ });
 
-ironholdApp.factory('logInService', function($rootScope) {
+ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 	var loggedIn = false;
 
 	$rootScope.logIn = function() {
 		loggedIn = true;
+		ipCookie('ironholdSession', null /* REPLACE THIS WITH A SESSION ID LATER */, { expires: 99 }); 
 	}
 
 	$rootScope.logOut = function() {
 		loggedIn = false;
+		ipCookie.remove('ironholdSession');
 	}
 
 	$rootScope.confirmLoggedIn = function($state) {
-		if (loggedIn !== true) {
-			$state.go('login');
-			return false;
-		} 
+		if (ipCookie('ironholdSession') === undefined) {
+			if (loggedIn !== true) {
+				$state.go('login');
+				return false;
+			} 
+		}
 		return true;
 	}
 
@@ -112,17 +116,7 @@ ironholdApp.directive('clearForm', function() {
 		}
 	}
 });
-/*
-ironholdApp.directive('splitter', function() {
-	return {
-		scope: {},
-		restrict: 'ACE',
-		link: function(scope, elem, attrs) {
-			$(elem).
-		};
-	}
-});
-*/
+
 ironholdApp.directive('truncate', function() {
 	return {	
 		scope: {
