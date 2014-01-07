@@ -1358,4 +1358,41 @@ body ul {
 	text-transform: uppercase;
 }
 
+/* forms */
 
+.formErrors {
+	margin-bottom: 20px;
+	color: #bd1a1a;
+}
+
+form input.ng-invalid:focus {
+	border-color: #F59942;
+}
+
+form input.ng-invalid:active {
+	border-color: #F59942;
+}
+
+form input.ng-invalid:hover {
+	border-color: #F59942;
+}
+
+form input.ng-invalid {
+	border-color: #d5d5d5;
+}
+
+form input.ng-valid:focus {
+	border-color: green;
+}
+
+form input.ng-valid:active {
+	border-color: green;
+}
+
+form input.ng-valid:hover {
+	border-color: green;
+}
+
+form input.ng-valid {
+	border-color: #d5d5d5;
+}
