@@ -1,7 +1,7 @@
 'use strict';
 
 ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, $state, logInService) {
-    if ($rootScope.confirmLoggedIn($state)) {
+    if (logInService.confirmLoggedIn($state)) {
 	$state.go('main.discovery');
     }
 
@@ -40,7 +40,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.logIn = function() {
         restMessagesService.one($scope.clientKey).one($scope.username).post("", $scope.password, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
             if (result.payload.success) {
-		$rootScope.logIn();
+		logInService.logIn();
 	    	/* This redirection should be improved later */
 		$state.go('main.discovery');
 	    	/* */
@@ -50,7 +50,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 		$scope.formInvalid = true;
 	    }
 
-            return $rootScope.isLoggedIn();
+            return logInService.isLoggedIn();
         });
     }
 });

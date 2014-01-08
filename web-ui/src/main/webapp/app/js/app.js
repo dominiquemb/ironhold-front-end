@@ -50,29 +50,36 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 	var loggedIn = false;
 
-	$rootScope.logIn = function() {
-		loggedIn = true;
-		ipCookie('ironholdSession', null /* REPLACE THIS WITH A SESSION ID LATER */, { expires: 99 }); 
-	}
+	var sessions = function() {
+		return this;
+	};
 
-	$rootScope.logOut = function() {
-		loggedIn = false;
-		ipCookie.remove('ironholdSession');
-	}
+	sessions.prototype = {
+		logIn: function() {
+			loggedIn = true;
+			ipCookie('ironholdSession', null /* REPLACE THIS WITH A SESSION ID LATER */, { expires: 99 }); 
+		},
 
-	$rootScope.confirmLoggedIn = function($state) {
-		if (ipCookie('ironholdSession') === undefined) {
-			if (loggedIn !== true) {
-				$state.go('login');
-				return false;
-			} 
+		logOut: function() {
+			loggedIn = false;
+			ipCookie.remove('ironholdSession');
+		},
+
+		confirmLoggedIn: function($state) {
+			if (ipCookie('ironholdSession') === undefined) {
+				if (loggedIn !== true) {
+					$state.go('login');
+					return false;
+				} 
+			}
+			return true;
+		},
+
+		isLoggedIn: function() {
+			return loggedIn;
 		}
-		return true;
-	}
-
-	$rootScope.isLoggedIn = function() {
-		return loggedIn;
-	}
+	};
+	return new sessions();
 });
 
 ironholdApp.factory('searchResultsService', function ($rootScope) {
