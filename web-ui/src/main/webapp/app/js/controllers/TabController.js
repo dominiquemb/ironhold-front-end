@@ -9,9 +9,4 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
             return false;
         }
     }
-
-    $scope.toggleCollapse = function(object, item) {
-        return object[item] = !object[item];
-    }
-
 });

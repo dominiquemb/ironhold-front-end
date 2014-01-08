@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
+ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
     logInService.confirmLoggedIn($state);
 
     var typingTimer;
@@ -14,9 +14,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.selectedFacets = [];
     $scope.currentPage = 1;
     $scope.pageSize = 10;
+
     searchResultsService.prepForBroadcast("-", "- ");
-    var messagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
-    var usersService = Restangular.setBaseUrl('http://localhost:8080/users');
 
     messagesService.one("demo", "demo").one("searchHistory").get().then(function(result) {
        $scope.searchHistory = result.payload;

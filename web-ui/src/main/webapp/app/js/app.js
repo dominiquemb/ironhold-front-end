@@ -82,6 +82,17 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 	return new sessions();
 });
 
+ironholdApp.factory('messagesService', function(Restangular) {
+	var messagesService =  Restangular.setBaseUrl('http://localhost:8080/messages');
+	return messagesService;
+});
+
+ironholdApp.factory('usersService', function(Restangular) {
+	var usersService =  Restangular.setBaseUrl('http://localhost:8080/users');
+	return usersService;
+});
+
+
 ironholdApp.factory('searchResultsService', function ($rootScope) {
 
     var sharedService = { };
