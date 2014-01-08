@@ -2,7 +2,7 @@
 	<div class="top-section">
 	    <img class="logo" src="img/logo.png"/>
 
-	    <div class="welcome_name pull-right">
+	    <div class="welcome_name pull-right" data-ng-controller="UserActionsController">
 		<div class="dropdown help pull-right">
 		    <a class="dropdown-toggle pull-right">
 			<div class="question-mark">
@@ -11,13 +11,13 @@
 		    </a>
 		    <ul class="dropdown-menu dropdown-info">
 			<li>
-			    <a data-toggle="tab" href="#">Link 1</a>
+			    <a data-toggle="tab">Link 1</a>
 			</li>
 			<li>
-			    <a data-toggle="tab" href="#">Link 2</a>
+			    <a data-toggle="tab">Link 2</a>
 			</li>
 			<li>
-			    <a data-toggle="tab" href="#">Link 3</a>
+			    <a data-toggle="tab">Link 3</a>
 			</li>
 		    </ul>
 		</div>
@@ -29,13 +29,7 @@
 		    </a>
 		    <ul class="dropdown-menu dropdown-info">
 			<li>
-			    <a data-toggle="tab" href="#">Link 1</a>
-			</li>
-			<li>
-			    <a data-toggle="tab" href="#">Link 2</a>
-			</li>
-			<li>
-			    <a data-toggle="tab" href="#">Link 3</a>
+			    <a data-toggle="tab" data-ng-click="clickLogOut()">Log Out</a>
 			</li>
 		    </ul>
 		</div>
