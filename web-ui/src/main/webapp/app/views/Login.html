@@ -12,10 +12,7 @@
             <div class="space-6"></div>
             <form name="mainLogin">
 		<div class="formErrors" data-ng-show="isFormSubmitted()">
-			<div class="formError" data-ng-show="mainLogin.username.$error.required">Please enter a username.</div>
-			<div class="formError" data-ng-show="mainLogin.password.$error.required">Please enter a password.</div>
-			<div class="formError" data-ng-show="mainLogin.clientKey.$error.required">Please enter a client key.</div>
-			<div class="formError" data-ng-show="isFormInvalid()">The username, password and client key combination you entered did not match our records.</div>
+			<div class="formError" data-ng-show="isFormInvalid()">Invalid login. Please check and try again.</div>
 		</div>
                 <fieldset>
                     <label class="block clearfix">
