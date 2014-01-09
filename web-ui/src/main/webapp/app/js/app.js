@@ -51,18 +51,33 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 	var loggedIn = false;
 
 	var sessions = function() {
-		return this;
+		this.logOutCallbacks = [];
+		this.logInCallbacks = [];
 	};
 
 	sessions.prototype = {
+		onLogOut: function(callback) {
+			this.logOutCallbacks.push(callback);
+		},
+
+		onLogIn: function(callback) {
+			this.logInCallbacks.push(callback);
+		},
+
 		logIn: function() {
 			loggedIn = true;
-			ipCookie('ironholdSession', null /* REPLACE THIS WITH A SESSION ID LATER */, { expires: 99 }); 
+			ipCookie('ironholdSession', null /* REPLACE THIS WITH A SESSION ID LATER */, { expires: 99 });
+			angular.forEach(this.logInCallbacks, function(callback, index) {
+				callback();
+			});
 		},
 
 		logOut: function() {
 			loggedIn = false;
 			ipCookie.remove('ironholdSession');
+			angular.forEach(this.logOutCallbacks, function(callback, index) {
+				callback();
+			});
 		},
 
 		confirmLoggedIn: function($state) {
