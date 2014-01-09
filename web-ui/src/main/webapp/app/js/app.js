@@ -128,6 +128,27 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
+ironholdApp.directive('collapsible', function() {
+	return {
+		scope: {
+			'collapsedArrow': '@',
+			'uncollapsedArrow': '@'
+		},
+		restrict: 'ACE',
+		link: function(scope, elem, attrs) {
+			var arrow = $(elem).find('.collapse-trigger');
+			if ($(elem).hasClass('collapsed')) {
+				arrow.addClass(scope.collapsedArrow);
+			}
+			else arrow.addClass(scope.uncollapsedArrow);
+			arrow.on('click', function() {
+				$(elem).toggleClass('collapsed');
+				arrow.toggleClass(scope.collapsedArrow + ' ' + scope.uncollapsedArrow);
+			});
+		}
+	}
+});
+
 ironholdApp.directive('clearForm', function() {
 	return {
 		scope: {
