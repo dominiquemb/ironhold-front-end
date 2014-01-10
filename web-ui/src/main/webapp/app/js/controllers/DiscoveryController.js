@@ -6,13 +6,12 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     var typingTimer;
 
     $scope.mode = 'text';
-    $scope.showSearchResults = false;
     $scope.showSearchPreviewResults = false;
     $scope.showSuggestions = false;
     $scope.searchFieldHilite = false;
-    $scope.showMessage = false;
     $scope.currentPage = 1;
     $scope.pageSize = 10;
+    $scope.msgs;
 
     searchResultsService.prepForBroadcast("-", "- ");
 
@@ -56,71 +55,18 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     $scope.updateSearch = function() {
         messagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage, pageSize: $scope.pageSize}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
-                $scope.searchMatches = result.payload.matches;
                 $scope.searchTime = result.payload.timeTaken;
-                $scope.messages = result.payload.messages;
-                angular.forEach($scope.messages, function(message) {
-                    message.collapsedBody = false;
+                $scope.msgs = result.payload.messages;
+                angular.forEach($scope.msgs, function(message) {
+                    message.collapsedBody = true;
                     message.collapsedAttachments = false;
                 });
                 searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
+		$scope.$emit('results', {
+			'matches': result.payload.matches,
+			'resultEntries': $scope.msgs
+		});
         });
-    }
-
-    $scope.hasAttachmentHighlight = function(message) {
-        return message.attachmentWithHighlights !== undefined;
-    }
-
-    $scope.hasAttachment = function(message) {
-        return message.formattedIndexedMailMessage.attachments.length > 0;
-    }
-
-    $scope.isMessageTypeEqualTo = function(message, type) {
-        return message.formattedIndexedMailMessage.messageType == type;
-    }
-
-    $scope.isImportanceEqualTo = function(message, importance) {
-        return message.formattedIndexedMailMessage.importance == importance;
-    }
-
-
-    $scope.unselectAllMessages = function() {
-        angular.forEach($scope.messages, function(message) {
-            message.selected = false;
-        });
-
-        $scope.updateSearch();
-    }
-
-    $scope.selectMessage = function(message) {
-console.log(message);
-        $scope.unselectAllMessages();
-        message.selected = true;
-        messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
-            $scope.currentMessage = result.payload.messages[0];
-            $scope.showMessage = true;
-            $scope.mode = 'text';
-        });
-    }
-
-    $scope.unhilightAllMessages = function(message) {
-        angular.forEach($scope.messages, function(entry) {
-            $scope.unhighlightMessage(entry);
-        });
-    }
-
-    $scope.highlightAllMessages = function(message) {
-        angular.forEach($scope.messages, function(entry) {
-            $scope.highlightMessage(entry);
-        });
-    }
-
-    $scope.highlightMessage = function(message) {
-	    message.highlighted = true;
-    }
-
-    $scope.unhilightMessage = function(message) {
-	    message.highlighted = false;
     }
 
     $scope.reset = function () {
@@ -169,20 +115,23 @@ console.log(message);
 
     $scope.search = function () {
         messagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", pageSize: $scope.pageSize}).then(function(result) {
-            $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
-            $scope.messages = result.payload.messages;
             $scope.suggestions = result.payload.suggestions;
             $scope.showSearchPreviewResults = true;
-            $scope.showSearchResults = $scope.searchMatches > 0;
-            angular.forEach($scope.messages, function(message) {
-                message.collapsedBody = false;
+	    $scope.msgs = result.payload.messages;
+            angular.forEach($scope.msgs, function(message) {
+                message.collapsedBody = true;
                 message.collapsedAttachments = false;
             });
             $scope.showSuggestions = $scope.suggestions.length > 0 && $scope.suggestions[0].options.length > 0;
-            searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
+            searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
     	    $scope.initCustomScrollbars('.scrollbar-hidden');
+
 	    $scope.$emit('facets', result.payload.facets);
+	    $scope.$emit('results', {
+		'matches': result.payload.matches,
+		'resultEntries': $scope.msgs
+		});
         });
     }
 });

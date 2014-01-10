@@ -5,6 +5,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 
     $scope.selectedFacets = [];
     $scope.facets = [];
+    $scope.showFacets = false;
 
     $scope.unselectAllFacets = function() {
         angular.forEach($scope.selectedFacets, function(facet) {
@@ -26,5 +27,8 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 
     $rootScope.$on('facets', function(evt, facetList) {
 	$scope.facets = facetList;
+	if (facetList.length > 0) {
+		$scope.showFacets = true;
+	}
     });
 });
