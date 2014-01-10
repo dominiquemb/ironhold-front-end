@@ -98,7 +98,7 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 });
 
 ironholdApp.factory('messagesService', function(Restangular) {
-	var messagesService =  Restangular.setBaseUrl('http://localhost:8080/messages');
+	var messagesService = Restangular.setBaseUrl('http://localhost:8080/messages');
 	return messagesService;
 });
 
@@ -109,7 +109,6 @@ ironholdApp.factory('usersService', function(Restangular) {
 
 
 ironholdApp.factory('searchResultsService', function ($rootScope) {
-
     var sharedService = { };
 
     sharedService.searchMatches = 0;
@@ -128,12 +127,28 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
+ironholdApp.directive('facetCollection', function() {
+	return {
+		scope: true,
+		restrict: 'ACE',
+		controller: 'FacetController',
+		link: function(scope, elem, attrs) {
+// To be updated later
+/*			$(elem).find('.facet-toggle').on('click', function() {
+				toggleFacet(facetValue, facet.name.value);
+			});
+*/		}
+	}
+});
+
 ironholdApp.directive('collapsible', function() {
 	return {
-		scope: {
+/*		scope: {
 			'collapsedArrow': '@',
 			'uncollapsedArrow': '@'
 		},
+*/
+		scope: true,
 		restrict: 'ACE',
 		link: function(scope, elem, attrs) {
 			var arrow = $(elem).find('.collapse-trigger');

@@ -96,7 +96,7 @@
 								</span>
 </div>
 <div class="row msglist" data-ng-show="showSearchResults">
-    <div class="pull-left toshrink sidebar-left">
+    <div class="pull-left toshrink sidebar-left facet-collection">
         <div class="toggle pull-right">
             <i class="fa icon-angle-left"></i>
         </div>
@@ -109,15 +109,14 @@
                                 <i class="collapse-trigger"></i>
                             </a>
                         </div>
-												<span class="filter-list-name">
+			<span class="filter-list-name">
                                                     {{ facet.name.label }}
-												</span>
+			</span>
                     </div>
                     <div class="widget-body">
                         <div class="widget-body-inner">
                             <ul class="widget-main">
-                                <li class="filter" data-ng-class="{'active': facetValue.selected === true}"
-                                    data-ng-click="toggleFacet(facetValue, facet.name.value)"
+                                <li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
                                     data-ng-repeat="facetValue in facet.valueMap">
                                     <div class="pull-left checkbox">
                                         <i class="fa icon-check"></i>

@@ -11,7 +11,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.showSuggestions = false;
     $scope.searchFieldHilite = false;
     $scope.showMessage = false;
-    $scope.selectedFacets = [];
     $scope.currentPage = 1;
     $scope.pageSize = 10;
 
@@ -39,13 +38,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         }, 0);
     }
 
-    $scope.unselectAllFacets = function() {
-        angular.forEach($scope.selectedFacets, function(facet) {
-            facet.selected = false;
-        });
-        $scope.selectedFacets = [];
-    }
-
     $scope.reinitScrollbars = function() {
     	$('.scrollbar-hidden').data('jsp').reinitialise();
     }
@@ -62,17 +54,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         $scope.search();
     }
 
-    $scope.toggleFacet = function(facet, facetGroupCode) {
-	    facet.selected = !facet.selected;
-        if (facet.selected) {
-            $scope.selectedFacets.push(facet);
-        } else {
-            $scope.selectedFacets.remove(facet);
-        }
-
-        $scope.updateSearch();
-    }
-
     $scope.updateSearch = function() {
         messagesService.one("demo").post("", $scope.selectedFacets, {criteria: $scope.inputSearch, page: $scope.currentPage, pageSize: $scope.pageSize}, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
                 $scope.searchMatches = result.payload.matches;
@@ -86,10 +67,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         });
     }
 
-/*   $scope.toggleCollapse = function(object, item) {
-       return object[item] = !object[item];
-   }
-*/
     $scope.hasAttachmentHighlight = function(message) {
         return message.attachmentWithHighlights !== undefined;
     }
@@ -153,10 +130,8 @@ console.log(message);
         $scope.showMessage = false;
         $scope.searchMessages = 0;
         $scope.searchTime = 0;
-        $scope.facets = [];
         $scope.messages = [];
         $scope.suggestions = [];
-        $scope.selectedFacets = [];
         $scope.currentPage = 1;
     }
 
@@ -196,7 +171,6 @@ console.log(message);
         messagesService.one("demo").get({criteria: $scope.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", pageSize: $scope.pageSize}).then(function(result) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
-            $scope.facets = result.payload.facets;
             $scope.messages = result.payload.messages;
             $scope.suggestions = result.payload.suggestions;
             $scope.showSearchPreviewResults = true;
@@ -208,6 +182,7 @@ console.log(message);
             $scope.showSuggestions = $scope.suggestions.length > 0 && $scope.suggestions[0].options.length > 0;
             searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
     	    $scope.initCustomScrollbars('.scrollbar-hidden');
+	    $scope.$emit('facets', result.payload.facets);
         });
     }
 });
