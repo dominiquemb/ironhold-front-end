@@ -162,6 +162,8 @@
             <properties>
                 <rest.host>localhost</rest.host>
                 <rest.port>8090</rest.port>
+                <rest.proto>http</rest.proto>
+                <rest.prefix></rest.prefix>
                 <data.host>127.0.0.1</data.host>
                 <data.port>9999</data.port>
                 <data.root>/data/dataroot</data.root>
@@ -184,8 +186,10 @@
         <profile>
             <id>650</id>
             <properties>
-                <rest.host>650.ironhold.net</rest.host>
-                <rest.port>8090</rest.port>
+                <rest.host>ih650ww001.prod.ironhold.net</rest.host>
+                <rest.port>443</rest.port>
+                <rest.proto>https</rest.proto>
+                <rest.prefix>rest-api</rest.prefix>
                 <data.host>ih650db001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
@@ -205,8 +209,10 @@
         <profile>
             <id>108</id>
             <properties>
-                <rest.host>108.ironhold.net</rest.host>
-                <rest.port>8090</rest.port>
+                <rest.host>ih108ww001.prod.ironhold.net</rest.host>
+                <rest.port>443</rest.port>
+                <rest.proto>https</rest.proto>
+                <rest.prefix>rest-api</rest.prefix>
                 <data.host>ih108db001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
@@ -227,7 +233,9 @@
             <id>trc</id>
             <properties>
                 <rest.host>trc.ironhold.net</rest.host>
-                <rest.port>8090</rest.port>
+                <rest.port>443</rest.port>
+                <rest.proto>https</rest.proto>
+                <rest.prefix>rest-api</rest.prefix>
                 <data.host>ihtrcdb001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
