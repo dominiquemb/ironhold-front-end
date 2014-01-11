@@ -19,7 +19,7 @@
 
     <!-- ES beans -->
     <bean id="indexClient" class="com.reqo.ironhold.storage.es.IndexClient" scope="singleton">
-        <constructor-arg type="java.lang.String" value="WebApp"/>
+        <constructor-arg type="java.lang.String" value="REST Service"/>
     </bean>
     <bean id="messageIndexService" class="com.reqo.ironhold.storage.MessageIndexService" scope="singleton">
         <constructor-arg type="com.reqo.ironhold.storage.es.IndexClient" ref="indexClient"/>
