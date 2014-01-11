@@ -134,7 +134,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         return result;
     }
 
-    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) throws IOException, ExecutionException, InterruptedException {
+    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByType(alias, IndexedObjectType.IMAP_BATCH_META, from, limit);
         List<IMAPBatchMeta> result = new ArrayList<>();
@@ -162,7 +162,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
     }
 
 
-    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit) throws IOException, ExecutionException, InterruptedException {
+    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit)  {
         String alias = getIndexAlias(indexPrefix);
         SearchResponse response = client.getByType(alias, IndexedObjectType.LOGIN_USER, start, limit);
         List<LoginUser> result = new ArrayList<>();
@@ -194,8 +194,12 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
 
     }
 
+    public LoginUser getLoginUser(String indexPrefix, String username) {
+        return usernameExists(indexPrefix, username.toLowerCase());
+    }
 
-    public long getLoginUserCount(String indexPrefix) throws ExecutionException, InterruptedException {
+
+    public long getLoginUserCount(String indexPrefix) {
         String alias = getIndexAlias(indexPrefix);
         return client.getCount(alias, IndexedObjectType.LOGIN_USER);
     }

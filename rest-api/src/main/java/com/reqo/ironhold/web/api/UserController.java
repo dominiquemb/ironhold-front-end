@@ -1,16 +1,16 @@
 package com.reqo.ironhold.web.api;
 
+import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.impl.utility.ArrayIterate;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
-import com.reqo.ironhold.web.domain.AuditActionEnum;
-import com.reqo.ironhold.web.domain.AuditLogMessage;
-import com.reqo.ironhold.web.domain.LoginChannelEnum;
-import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.AuditLogResponse;
 import com.reqo.ironhold.web.domain.responses.LoginResponse;
+import com.reqo.ironhold.web.domain.responses.UserDetailsResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +88,37 @@ public class UserController {
         AuditLogResponse result = new AuditLogResponse(messages.toSortedSetBy(AuditLogMessage.SORT_BY_CONTEXT));
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}")
+    public
+    @ResponseBody
+    ApiResponse<UserDetailsResponse> getUserDetails(@PathVariable("clientKey") String clientKey,
+                                                    @PathVariable("username") String username) {
+
+        ApiResponse<UserDetailsResponse> apiResponse = new ApiResponse<>();
+        final LoginUser loginUser = miscIndexService.getLoginUser(clientKey, username);
+        if (loginUser == null) {
+            apiResponse.setPayload(null);
+            apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+            apiResponse.setMessage("User not found");
+        } else {
+            List<RoleEnum> roles =
+                    ArrayIterate.select(RoleEnum.values(), new Predicate<RoleEnum>() {
+                        @Override
+                        public boolean accept(RoleEnum roleEnum) {
+                            return loginUser.hasRole(roleEnum);
+                        }
+                    });
+            loginUser.setHashedPassword("********");
+            UserDetailsResponse result = new UserDetailsResponse(loginUser, roles);
+            apiResponse.setPayload(result);
+            apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+        }
 
         return apiResponse;
 

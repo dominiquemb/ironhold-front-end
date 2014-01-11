@@ -50,7 +50,7 @@ public class MockMiscIndexService implements IMiscIndexService {
     }
 
     @Override
-    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) throws IOException, ExecutionException, InterruptedException {
+    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit)  {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -60,7 +60,7 @@ public class MockMiscIndexService implements IMiscIndexService {
     }
 
     @Override
-    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit) throws IOException, ExecutionException, InterruptedException {
+    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit)  {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -76,12 +76,17 @@ public class MockMiscIndexService implements IMiscIndexService {
     }
 
     @Override
-    public long getLoginUserCount(String indexPrefix) throws ExecutionException, InterruptedException {
+    public LoginUser getLoginUser(String indexPrefix, String username) {
+        return null;
+    }
+
+    @Override
+    public long getLoginUserCount(String indexPrefix) {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public LoginUser usernameExists(String indexPrefix, String username) throws ExecutionException, InterruptedException, IOException {
+    public LoginUser usernameExists(String indexPrefix, String username) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -28,15 +28,17 @@ public interface IMiscIndexService {
 
     List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit);
 
-    List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) throws IOException, ExecutionException, InterruptedException;
+    List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit);
 
     void store(String indexPrefix, LoginUser loginUser);
 
-    List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit) throws IOException, ExecutionException, InterruptedException;
+    List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit);
 
     LoginUser authenticate(String indexPrefix, String username, String password, LoginChannelEnum channel, String loginContext);
 
-    long getLoginUserCount(String indexPrefix) throws ExecutionException, InterruptedException;
+    LoginUser getLoginUser(String indexPrefix, String username);
 
-    LoginUser usernameExists(String indexPrefix, String username) throws ExecutionException, InterruptedException, IOException;
+    long getLoginUserCount(String indexPrefix);
+
+    LoginUser usernameExists(String indexPrefix, String username);
 }

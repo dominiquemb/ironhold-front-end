@@ -382,8 +382,12 @@ public class IndexClient {
         return esClient;
     }
 
-    public long getCount(String alias, IndexedObjectType objectType) throws ExecutionException, InterruptedException {
-        CountResponse response = esClient.prepareCount(alias).setTypes(objectType.getValue()).execute().get();
-        return response.getCount();
+    public long getCount(String alias, IndexedObjectType objectType) {
+        try {
+            CountResponse response = esClient.prepareCount(alias).setTypes(objectType.getValue()).execute().get();
+            return response.getCount();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
