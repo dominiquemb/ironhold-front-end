@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService, usersService) {
     logInService.confirmLoggedIn($state);
 
     var typingTimer;
@@ -15,7 +15,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     searchResultsService.prepForBroadcast("-", "- ");
 
-    messagesService.one("demo", "demo").one("searchHistory").get().then(function(result) {
+    usersService.one("demo", "demo").one("searchHistory").get().then(function(result) {
        $scope.searchHistory = result.payload;
     });
 
