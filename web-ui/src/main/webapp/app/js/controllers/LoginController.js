@@ -9,7 +9,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.formSubmitted = false;
     $scope.formInvalid = false;
 
-    var restMessagesService = Restangular.setBaseUrl('http://localhost:8080/users');
+    var restMessagesService = Restangular.setBaseUrl('http://${rest.host}:${rest.port}/users');
 
     $scope.makeVisible = function(elemName) {
 	    $scope.currentlyVisible = elemName;

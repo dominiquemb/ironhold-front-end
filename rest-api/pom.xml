@@ -7,21 +7,27 @@
         <groupId>com.reqo.ironhold</groupId>
         <version>0.0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>web-api</artifactId>
+    <artifactId>rest-api</artifactId>
     <name>REST API</name>
     <packaging>war</packaging>
 
     <build>
-        <finalName>web-api</finalName>
+        <finalName>rest-api</finalName>
 
         <plugins>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.0.4.v20130625</version>
+                <configuration>
+                    <httpConnector>
+                        <port>8090</port>
+                    </httpConnector>
+                </configuration>
                 <dependencies>
                 </dependencies>
             </plugin>
+
         </plugins>
 
         <resources>

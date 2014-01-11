@@ -20,7 +20,7 @@
         <module>uploadclient</module>
         <module>pstinfo</module>
         <module>pstupload</module>
-        <module>web-api</module>
+        <module>rest-api</module>
         <module>web-domain</module>
         <module>web-ui</module>
     </modules>
@@ -160,6 +160,8 @@
         <profile>
             <id>development</id>
             <properties>
+                <rest.host>localhost</rest.host>
+                <rest.port>8090</rest.port>
                 <data.host>127.0.0.1</data.host>
                 <data.port>9999</data.port>
                 <data.root>/data/dataroot</data.root>
@@ -182,6 +184,8 @@
         <profile>
             <id>650</id>
             <properties>
+                <rest.host>650.ironhold.net</rest.host>
+                <rest.port>8090</rest.port>
                 <data.host>ih650db001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
@@ -201,6 +205,8 @@
         <profile>
             <id>108</id>
             <properties>
+                <rest.host>108.ironhold.net</rest.host>
+                <rest.port>8090</rest.port>
                 <data.host>ih108db001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
@@ -220,6 +226,8 @@
         <profile>
             <id>trc</id>
             <properties>
+                <rest.host>trc.ironhold.net</rest.host>
+                <rest.port>8090</rest.port>
                 <data.host>ihtrcdb001</data.host>
                 <data.port>9090</data.port>
                 <data.root>/data/dataroot</data.root>
