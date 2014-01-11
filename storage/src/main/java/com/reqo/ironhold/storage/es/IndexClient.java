@@ -73,6 +73,9 @@ public class IndexClient {
             restHost = prop.getProperty("rest.host");
             restPort = Integer.parseInt(prop.getProperty("rest.port"));
 
+            for (String propName : prop.stringPropertyNames()) {
+                logger.info(propName + ": " + prop.getProperty(propName));
+            }
             String hostname = java.net.InetAddress.getLocalHost().getHostName();
             this.nodeName = nodeName + "@" + hostname;
             reconnect();
