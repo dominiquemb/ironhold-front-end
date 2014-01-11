@@ -111,9 +111,13 @@ public class UserController {
                     ArrayIterate.select(RoleEnum.values(), new Predicate<RoleEnum>() {
                         @Override
                         public boolean accept(RoleEnum roleEnum) {
-                            return loginUser.hasRole(roleEnum);
+                            if (loginUser.hasRole(RoleEnum.SUPER_USER)) {
+                                return roleEnum == RoleEnum.SUPER_USER;
+                            }
+                            return roleEnum != RoleEnum.NONE && loginUser.hasRole(roleEnum);
                         }
                     });
+
             loginUser.setHashedPassword("********");
             UserDetailsResponse result = new UserDetailsResponse(loginUser, roles);
             apiResponse.setPayload(result);
@@ -124,6 +128,19 @@ public class UserController {
 
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/roles")
+    public
+    @ResponseBody
+    ApiResponse<RoleEnum[]> getRoles() {
+        ApiResponse<RoleEnum[]> apiResponse = new ApiResponse<>();
+
+        apiResponse.setPayload(RoleEnum.values());
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
 
 }
 
