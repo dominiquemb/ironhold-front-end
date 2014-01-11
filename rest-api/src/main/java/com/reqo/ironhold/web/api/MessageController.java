@@ -1,9 +1,12 @@
 package com.reqo.ironhold.web.api;
 
+import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
+import com.reqo.ironhold.storage.model.log.LogMessage;
+import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,14 +35,16 @@ public class MessageController {
     private IMessageIndexService messageIndexService;
     private IMiscIndexService miscIndexService;
     private IMetaDataIndexService metaDataIndexService;
+    private IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
     @Inject
-    public MessageController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService, IMetaDataIndexService metaDataIndexService) {
+    public MessageController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService, IMetaDataIndexService metaDataIndexService, IMimeMailMessageStorageService mimeMailMessageStorageService) {
         this.messageIndexService = messageIndexService;
         this.miscIndexService = miscIndexService;
         this.metaDataIndexService = metaDataIndexService;
+        this.mimeMailMessageStorageService = mimeMailMessageStorageService;
 
         this.backgroundExecutor = Executors.newFixedThreadPool(10);
     }
@@ -153,6 +159,50 @@ public class MessageController {
         searchBuilder.withCriteria(criteria).withFullBody().withId(messageId, IndexedObjectType.MIME_MESSAGE);
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{messageId:.+}/sources")
+    public
+    @ResponseBody
+    ApiResponse<List<MessageSource>> getMessageSources(@PathVariable("clientKey") String clientKey, @PathVariable("messageId") String messageId) {
+        ApiResponse<List<MessageSource>> apiResponse = new ApiResponse<>();
+
+        List<MessageSource> result = metaDataIndexService.getSources(clientKey, messageId);
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{year}/{month}/{day}/{messageId:.+}/download")
+    public
+    @ResponseBody
+    String getRawMessage(@PathVariable("clientKey") String clientKey,
+                         @PathVariable("year") int year,
+                         @PathVariable("month") int month,
+                         @PathVariable("day") int day,
+                         @PathVariable("messageId") String messageId) throws Exception {
+        String partition = String.format("%4d", year);
+        String subPartition = String.format("%02d%02d", month, day);
+        return mimeMailMessageStorageService.get(clientKey, partition, subPartition, messageId);
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{messageId:.+}/audit")
+    public
+    @ResponseBody
+    ApiResponse<List<AuditLogMessage>> getMessageAudit(@PathVariable("clientKey") String clientKey, @PathVariable("messageId") String messageId) {
+        ApiResponse<List<AuditLogMessage>> apiResponse = new ApiResponse<>();
+
+        List<AuditLogMessage> result = metaDataIndexService.getAuditLogMessages(clientKey, messageId);
 
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
