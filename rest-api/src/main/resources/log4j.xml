@@ -24,7 +24,10 @@
 	<logger name="com.reqo.ironhold">
 		<level value="debug" />
 	</logger>
-	
+
+    <logger name="org.elasticsearch">
+        <level value="debug" />
+    </logger>
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="debug" />
