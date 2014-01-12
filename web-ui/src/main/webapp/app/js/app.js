@@ -98,12 +98,12 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 });
 
 ironholdApp.factory('messagesService', function(Restangular) {
-	var messagesService = Restangular.setBaseUrl('${rest.proto}://${rest.host}:${rest.port}/${rest.prefix}/messages');
+	var messagesService = Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages');
 	return messagesService;
 });
 
 ironholdApp.factory('usersService', function(Restangular) {
-	var usersService =  Restangular.setBaseUrl('${rest.proto}://${rest.host}:${rest.port}/${rest.prefix}/users');
+	var usersService =  Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/users');
 	return usersService;
 });
 
