@@ -127,6 +127,16 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
+ironholdApp.directive('searchbar', function() {
+	return {
+		scope: true,
+		restrict: 'ACE',
+		controller: 'SearchbarController',
+		link: function(scope, elem, attrs) {
+		}
+	}
+});
+
 ironholdApp.directive('resultsFeed', function() {
 	return {
 		scope: true,

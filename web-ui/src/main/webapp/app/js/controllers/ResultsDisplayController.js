@@ -4,11 +4,7 @@ ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $
     logInService.confirmLoggedIn($state);
 
     $scope.mode = 'text';
-    $scope.showSearchResults = false;
-    $scope.showMessage = false;
     $scope.currentPage = 1;
-    $scope.pageSize = 10;
-    $scope.showMessage = false;
     $scope.messages = [];
     $scope.matches;
 
@@ -16,7 +12,7 @@ ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $
 	$scope.messages = args.resultEntries;
         $scope.matches = args.matches;
 	if ($scope.matches > 0) {
-		$scope.showSearchResults = true;
+		$rootScope.$emit('showSearchResults', true);
 	}
     });
 
@@ -54,7 +50,7 @@ ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $
         message.selected = true;
         messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
             $scope.currentMessage = result.payload.messages[0];
-            $scope.showMessage = true;
+	    $scope.$emit('showMessage', true);
             $scope.mode = 'text';
         });
     }
@@ -80,20 +76,18 @@ ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $
     }
 
     $scope.reset = function () {
-        $scope.showSearchResults = false;
-        $scope.showMessage = false;
+	$scope.$emit('showSearchResults', false);
+	$scope.$emit('showMessage', false);
         $scope.searchMessages = 0;
-        $scope.searchTime = 0;
 	$scope.matches = [];
         $scope.messages = [];
-        $scope.suggestions = [];
         $scope.currentPage = 1;
     }
 
     $scope.goTo = function(page) {
         if (page > 0) {
             $scope.currentPage = page;
-            $scope.updateSearch();
+	    $scope.$emit('pageChange', page);
         }
     }
 });
