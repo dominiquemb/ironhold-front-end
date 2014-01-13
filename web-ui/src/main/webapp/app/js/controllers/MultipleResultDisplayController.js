@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('MultipleResultDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
     logInService.confirmLoggedIn($state);
 
     $scope.mode = 'text';
@@ -50,7 +50,7 @@ ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $
         message.selected = true;
         messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
             $scope.currentMessage = result.payload.messages[0];
-	    $scope.$emit('showMessage', true);
+	    $rootScope.$emit('currentMessage', $scope.currentMessage);
             $scope.mode = 'text';
         });
     }
@@ -76,8 +76,7 @@ ironholdApp.controller('ResultsDisplayController', function ($http, $resource, $
     }
 
     $scope.reset = function () {
-	$scope.$emit('showSearchResults', false);
-	$scope.$emit('showMessage', false);
+	$scope.showSearchResults = true;
         $scope.searchMessages = 0;
 	$scope.matches = [];
         $scope.messages = [];

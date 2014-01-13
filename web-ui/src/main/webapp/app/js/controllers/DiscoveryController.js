@@ -5,8 +5,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     $scope.msgs;
     $scope.pageSize = 10;
-    $scope.showSearchResults = false;
-    $scope.showMessage = false;
     $scope.currentPage = 1;
 
     searchResultsService.prepForBroadcast("-", "- ");
@@ -30,14 +28,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 	$scope.$emit('updateSearch', {
 		inputSearch: $scope.inputSearch
 	});
-    });
-
-    $rootScope.$on('showSearchResults', function(evt, state) {
-	$scope.showSearchResults = state;
-    });
-
-    $rootScope.$on('showMessage', function(evt, state) {
-	$scope.showMessage = state;
     });
 
     $rootScope.$on('updateSearch', function(evt, args) {

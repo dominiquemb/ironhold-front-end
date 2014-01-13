@@ -137,11 +137,21 @@ ironholdApp.directive('searchbar', function() {
 	}
 });
 
+ironholdApp.directive('resultDetail', function() {
+	return {
+		scope: true,
+		restrict: 'ACE',
+		controller: 'SingleResultDisplayController',
+		link: function(scope, elem, attrs) {
+		}
+	}
+});
+
 ironholdApp.directive('resultsFeed', function() {
 	return {
 		scope: true,
 		restrict: 'ACE',
-		controller: 'ResultsDisplayController',
+		controller: 'MultipleResultDisplayController',
 		link: function(scope, elem, attrs) {
 		}
 	}

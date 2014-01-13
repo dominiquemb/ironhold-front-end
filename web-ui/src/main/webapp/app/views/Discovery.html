@@ -231,7 +231,7 @@
     </div>
 </div>
 </div>
-<div class="col-xs-5 msgview" data-ng-show="showSearchResults">
+<div class="col-xs-5 msgview result-detail" data-ng-show="showContainer">
 <div class="tabbable">
 <ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
     <li data-ng-class="{'active': mode=='text'}">
@@ -349,10 +349,10 @@
 									<div class="vert-div"></div>
 									</span>
 </div>
-<div class="placeholder_text" data-ng-hide="showMessage">
+<div class="placeholder_text" data-ng-hide="currentMessage">
     Please select a message on the left.
 </div>
-<div class="msgview_main" data-ng-show="showMessage" in-view="console.log('test')">
+<div class="msgview_main" data-ng-show="currentMessage">
     <div class="row msgview_top">
         <div class="pull-left from-picture-container">
             <div class="from-picture empty-photo msgview_img-xl"></div>
