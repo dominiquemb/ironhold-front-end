@@ -26,6 +26,7 @@
 .login-layout .login-container .btn-primary {
 	background-color: #2E69B3 !important;
 	border-color: #2E69B3;
+	font-size: 16px;
 }
 
 .login-layout .login-container .header {
@@ -33,7 +34,7 @@
 }
 
 .login-layout .login-container .toolbar {
-	background-color: #2E69B3;
+	background-color: #58595b;
 	border: none;
 }
 

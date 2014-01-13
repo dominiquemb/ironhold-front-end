@@ -1375,33 +1375,33 @@ body ul {
 }
 
 form input.ng-invalid:focus {
-	border-color: #F59942;
+	border-color: #bd1a1a;
 }
 
 form input.ng-invalid:active {
-	border-color: #F59942;
+	border-color: #bd1a1a;
 }
 
 form input.ng-invalid:hover {
-	border-color: #F59942;
+	border-color: #58595b;
 }
 
 form input.ng-invalid {
-	border-color: #d5d5d5;
+	border-color: #58595b;
 }
 
 form input.ng-valid:focus {
-	border-color: green;
+	border-color: #58595b;
 }
 
 form input.ng-valid:active {
-	border-color: green;
+	border-color: #58595b;
 }
 
 form input.ng-valid:hover {
-	border-color: green;
+	border-color: #58595b;
 }
 
 form input.ng-valid {
-	border-color: #d5d5d5;
+	border-color: #58595b;
 }
