@@ -5,16 +5,16 @@
     <div class="widget-body">
         <div class="widget-main background-white">
             <img class="logo" src="img/login-logo.png"/>
-            <h4 class="header lighter bigger">
-                Login
-            </h4>
-
-            <div class="space-6"></div>
             <form name="mainLogin">
-		<div class="formErrors" data-ng-show="isFormSubmitted()">
+		<div class="formErrors">
 			<div class="formError" data-ng-show="isFormInvalid()">Invalid login. Please check and try again.</div>
 		</div>
-                <fieldset>
+		    <h4 class="header lighter bigger">
+			Login
+		    </h4>
+
+		    <div class="space-6"></div>
+                <fieldset data-ng-class="{'invalid': isFormInvalid()}">
                     <label class="block clearfix">
 									<span class="block input-icon input-icon-right">
 										<input type="text" class="form-control username" name="username" placeholder="Username" required
@@ -48,7 +48,6 @@
                         </label>
                             <button type="button" data-ng-click="submit()" 
                                     class="width-35 pull-right btn btn-sm btn-primary">
-                                <i class="fa icon-key"></i>
                                 Login
                             </button>
                     </div>

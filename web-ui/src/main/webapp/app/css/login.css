@@ -15,8 +15,29 @@
 	background-color: #F8F8F8;
 }
 
+.login-layout.login-layout-white .widget-box .widget-main {
+	padding-top: 38px;
+}
+
 .login-layout.login-layout-white .widget-body {
 	border: 1px solid #ccc;
+}
+
+.login-layout.login-layout-white .widget-body .header {
+	border-bottom: 1px solid #58595B;
+}
+
+.login-layout.login-layout-white .widget-body .lbl:hover:before {
+	border-color: #2E69B3; 
+}
+
+.login-layout.login-layout-white .widget-body .lbl:before{
+	margin-top: -6px;
+}
+
+.login-layout.login-layout-white .widget-body .lbl {
+	margin-top: 7px;
+	line-height: 50px;
 }
 
 .login-layout.login-layout-white .background-white {
