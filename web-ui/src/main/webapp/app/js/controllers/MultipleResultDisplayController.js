@@ -7,17 +7,20 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.currentPage = 1;
     $scope.messages = [];
     $scope.matches;
+    $scope.showSearchResults;
 
     $rootScope.$on('results', function(evt, args) {
 	$scope.messages = args.resultEntries;
         $scope.matches = args.matches;
 	if ($scope.matches > 0) {
-		$rootScope.$emit('showSearchResults', true);
+		$scope.showSearchResults = true;
+		$scope.$emit('showSearchResults', true);
 	}
     });
 
     $scope.switchMode = function(newMode) {
         $scope.mode = newMode;
+	$scope.$emit('mode', newMode);
     }
 
     $scope.hasAttachmentHighlight = function(message) {
