@@ -8,6 +8,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.messages = [];
     $scope.matches;
     $scope.showSearchResults;
+    $scope.inputSearch;
 
     $rootScope.$on('results', function(evt, args) {
 	$scope.messages = args.resultEntries;
@@ -18,10 +19,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	}
     });
 
-    $scope.switchMode = function(newMode) {
-        $scope.mode = newMode;
-	$scope.$emit('mode', newMode);
-    }
+    $rootScope.$on('search', function(evt, args) {
+	$scope.inputSearch = args.inputSearch;
+    });
 
     $scope.hasAttachmentHighlight = function(message) {
         return message.attachmentWithHighlights !== undefined;
@@ -44,16 +44,18 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         angular.forEach($scope.messages, function(message) {
             message.selected = false;
         });
-
-        $scope.updateSearch();
-    }
+/*
+	$scope.$emit('updateSearch', {
+		inputSearch: $scope.inputSearch
+	});
+*/    }
 
     $scope.selectMessage = function(message) {
         $scope.unselectAllMessages();
         message.selected = true;
         messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
             $scope.currentMessage = result.payload.messages[0];
-	    $rootScope.$emit('currentMessage', $scope.currentMessage);
+	    $scope.$emit('selectMessage', $scope.currentMessage);
             $scope.mode = 'text';
         });
     }

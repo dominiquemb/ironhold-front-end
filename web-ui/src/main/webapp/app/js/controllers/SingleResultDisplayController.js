@@ -11,6 +11,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	$scope.$mode = mode;
     });
 
+    $scope.switchMode = function(newMode) {
+        $scope.mode = newMode;
+        $scope.$emit('mode', newMode);
+    }
+
     $rootScope.$on('selectMessage', function(evt, message) {
 	$scope.currentMessage = message;
     });
