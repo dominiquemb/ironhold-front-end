@@ -6,6 +6,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     var typingTimer;
 
     $scope.showSearchPreviewResults = false;
+    $scope.searchMatches;
     $scope.showSuggestions = false;
     $scope.searchFieldHilite = false;
     $scope.searchTime;

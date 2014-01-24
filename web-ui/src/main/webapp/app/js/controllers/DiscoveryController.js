@@ -64,8 +64,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 	    $scope.$emit('updateSearchbar', {
 		searchTime: result.payload.timeTaken,
 		suggestions: result.payload.suggestions,
-		showSearchPreviewResults: result.payload.showSearchPreviewResults,
-		showSuggestions: result.payload.showSuggestions
+		showSearchPreviewResults: true,
+		showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
 	    });
 
 	    $scope.msgs = result.payload.messages;

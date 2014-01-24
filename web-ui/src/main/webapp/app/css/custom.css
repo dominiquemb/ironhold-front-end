@@ -597,8 +597,9 @@ body .text-primary {
 }
 
 .searchbar {
+	position: relative;
 	margin-left: -1px;
-	height: 37px;
+	min-height: 37px;
 }
 
 .searchbar .input-group {
@@ -614,8 +615,8 @@ body .text-primary {
 
 .searchbar .search-query {
 	position: absolute;
-	right: 0px;
-	left: 12px;
+	right: 15px;
+	left: 0px;
 	width: auto;
 	padding-left: 0px;
 }
@@ -654,6 +655,8 @@ body .text-primary {
 	padding-bottom: 7px;
 	margin-left: 0px;
 	margin-right: 1px;
+	position: relative;
+	margin-top: 30px;
 }
 
 .middlebar .btn-group .btn {
