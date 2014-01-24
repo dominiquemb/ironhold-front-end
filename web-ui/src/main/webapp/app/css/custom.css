@@ -26,7 +26,7 @@ body .text-primary {
 
 /* filter-tag */
 .filter-tag-container {
-	margin: 0px 0px 10px -3px;
+	margin: 0px 0px 0px -3px;
 	position: relative;
 	line-height: 18px;
 	width: 100%;
@@ -37,6 +37,7 @@ body .text-primary {
 
 .filter-tag-reset {
 	color: #2e69b3;
+	cursor: pointer;
 }
 
 .filter-tag {
@@ -696,6 +697,7 @@ body .text-primary {
 */	margin-left: 2px;
 	width: 100%;
 	clear: left;
+	min-height: 22px;
 }
 
 .middlebar .pagination-container {

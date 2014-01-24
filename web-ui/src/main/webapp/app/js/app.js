@@ -163,11 +163,17 @@ ironholdApp.directive('facetCollection', function() {
 		restrict: 'ACE',
 		controller: 'FacetController',
 		link: function(scope, elem, attrs) {
-// To be updated later
-/*			$(elem).find('.facet-toggle').on('click', function() {
-				toggleFacet(facetValue, facet.name.value);
-			});
-*/		}
+		}
+	}
+});
+
+ironholdApp.directive('filterCollection', function() {
+	return {
+		scope: true,
+		restrict: 'ACE',
+		controller: 'FilterController',
+		link: function(scope, elem, attrs) {
+		}
 	}
 });
 

@@ -77,17 +77,17 @@
 		<strong>{{ searchMatches }}</strong> matched messages
 	    </div>
 									<span class="pull-left middlebar_center">
-										<div class="middlebar_center_top">
-						<div class="filter-tag-container" ng-show="selectedFacets.length > 0">
-			<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
-				<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10"
+										<div class="middlebar_center_top filter-collection">
+						<div class="filter-tag-container" ng-show="selectedFilters.length > 0">
+			<span class="filter-tag" data-ng-repeat="filterValue in selectedFilters">
+				<div class="filter-tag-text truncate" data-trunc-text="{{ filterValue.label }}" data-trunc-font-width="10"
 			 data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
 		    </div>
 				<i class="fa icon-times filter-tag-close"
-		       data-ng-click="toggleFacet(facetValue, facetValue.facetGroupCode)"></i>
+		       data-ng-click="disableFilter(filterValue, filterValue.facetGroupCode)"></i>
 			</span>
 						    <span class="filter-tag filter-tag-reset"
-							  data-ng-click="unselectAllFacets()">Reset All</span>
+							  data-ng-click="unselectAllFilters()">Reset All</span>
 						</div>
 					    </div>
 										<div class="middlebar_center_bottom">
@@ -117,7 +117,7 @@
                         <div class="widget-body-inner">
                             <ul class="widget-main">
                                 <li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
-                                    data-ng-repeat="facetValue in facet.valueMap">
+                                    data-ng-repeat="facetValue in facet.valueMap" data-ng-click="toggleFacet(facetValue)">
                                     <div class="pull-left checkbox">
                                         <i class="fa icon-check"></i>
                                     </div>
