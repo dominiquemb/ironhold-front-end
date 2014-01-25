@@ -24,7 +24,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
 	if (mode === 'source') {
                 messagesService
-                        .one(logInService.getClientKey())
                         .one($scope.currentMessage.formattedIndexedMailMessage.messageId)
                         .one("sources")
                         .get({criteria: $scope.inputSearch})
@@ -42,7 +41,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
 	if (mode === 'audit') {
                 messagesService
-                        .one(logInService.getClientKey())
                         .one($scope.currentMessage.formattedIndexedMailMessage.messageId)
                         .one("audit")
                         .get({criteria: $scope.inputSearch})

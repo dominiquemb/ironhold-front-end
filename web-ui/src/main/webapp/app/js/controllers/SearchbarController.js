@@ -14,7 +14,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     searchResultsService.prepForBroadcast("-", "- ");
 
-    messagesService.one("demo", "demo").one("searchHistory").get().then(function(result) {
+    messagesService.one("searchHistory").get().then(function(result) {
        $scope.searchHistory = result.payload;
     });
 
@@ -75,7 +75,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.searchPreview = function () {
         $scope.reset();
-        messagesService.one("demo","count").get({criteria: $scope.inputSearch}).then(function(result) {
+        messagesService.one("count").get({criteria: $scope.inputSearch}).then(function(result) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;

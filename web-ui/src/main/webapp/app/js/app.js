@@ -138,12 +138,12 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 	return new sessions();
 });
 
-ironholdApp.factory('messagesService', function(Restangular) {
-	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages');
+ironholdApp.factory('messagesService', function(Restangular, logInService) {
+	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages').one(logInService.getClientKey());
 });
 
-ironholdApp.factory('usersService', function(Restangular) {
-	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/users');
+ironholdApp.factory('usersService', function(Restangular, logInService) {
+	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/users').one(logInService.getClientKey());
 });
 
 
