@@ -48,17 +48,17 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         angular.forEach($scope.messages, function(message) {
             message.selected = false;
         });
-/*
+
 	$scope.$emit('updateSearch', {
 		inputSearch: $scope.inputSearch
 	});
-*/    }
+    }
 
     $scope.selectMessage = function(message) {
         $scope.unselectAllMessages();
         message.selected = true;
 	
-	messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
+	messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
 	    $scope.currentMessage = result.payload.messages[0];
 	    $scope.$emit('selectMessage', $scope.currentMessage);
 	});

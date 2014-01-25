@@ -30,8 +30,15 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 	});
     });
 
+    $rootScope.$on('facetToggled', function(evt, facet, selectedFacets) {
+	$scope.selectedFacets = selectedFacets;
+	$scope.$emit('updateSearch', {
+		inputSearch: $scope.inputSearch
+	});
+    });
+
     $rootScope.$on('updateSearch', function(evt, args) {
-        messagesService.one("demo").post("", $scope.selectedFacets, {
+        messagesService.post("", $scope.selectedFacets, {
 		criteria: args.inputSearch, 
 		page: $scope.currentPage, 
 		pageSize: $scope.pageSize
@@ -42,7 +49,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		})
 	.then(function(result) {
 	    $scope.$emit('updateSearchbar', {
-		searchTime: result.payload.timeTaken
+		searchTime: result.payload.timeTaken,
+		searchMatches: result.payload.matches
 	    });
 		
                 $scope.msgs = result.payload.messages;
@@ -60,28 +68,34 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     });
 	
     $rootScope.$on('search', function(evt, args) {
-        messagesService.one("demo").get({criteria: args.inputSearch, facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", pageSize: $scope.pageSize}).then(function(result) {
-	    $scope.$emit('updateSearchbar', {
-		searchTime: result.payload.timeTaken,
-		suggestions: result.payload.suggestions,
-		showSearchPreviewResults: true,
-		showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
-	    });
+	$scope.inputSearch = args.inputSearch;
+        messagesService.get({
+		criteria: args.inputSearch, 
+		facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", 
+		pageSize: $scope.pageSize
+	    	})
+	    .then(function(result) {
+	    	$scope.$emit('updateSearchbar', {
+			searchTime: result.payload.timeTaken,
+			suggestions: result.payload.suggestions,
+			showSearchPreviewResults: true,
+			showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
+	    	});
 
-	    $scope.msgs = result.payload.messages;
-            angular.forEach($scope.msgs, function(message) {
-                message.collapsedBody = true;
-                message.collapsedAttachments = false;
-            });
-            searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
-    	    $scope.initCustomScrollbars('.scrollbar-hidden');
+		    $scope.msgs = result.payload.messages;
+		    angular.forEach($scope.msgs, function(message) {
+			message.collapsedBody = true;
+			message.collapsedAttachments = false;
+		    });
+		    searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
+		    $scope.initCustomScrollbars('.scrollbar-hidden');
 
-	    $scope.$emit('facets', result.payload.facets);
+		    $scope.$emit('facets', result.payload.facets);
 
-	    $scope.$emit('results', {
-		'matches': result.payload.matches,
-		'resultEntries': $scope.msgs
-		});
-        });
+		    $scope.$emit('results', {
+			'matches': result.payload.matches,
+			'resultEntries': $scope.msgs
+			});
+              });
     });
 });
