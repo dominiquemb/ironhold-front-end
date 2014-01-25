@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('SearchbarController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('SearchbarController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
 
     var typingTimer;
@@ -15,7 +15,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     searchResultsService.prepForBroadcast("-", "- ");
 
-    messagesService.one("searchHistory").get().then(function(result) {
+    usersService.one("searchHistory").get().then(function(result) {
        $scope.searchHistory = result.payload;
     });
 
@@ -81,6 +81,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchPreview = function () {
         $scope.reset();
         messagesService.one("count").get({criteria: $scope.inputSearch}).then(function(result) {
+	    $scope.$emit('totalResultsChange', result);
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;

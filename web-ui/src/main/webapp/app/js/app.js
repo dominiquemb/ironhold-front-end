@@ -89,6 +89,10 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 			return ipCookie('ironholdSession').clientKey;
 		},
 
+		getUsername: function() {
+			return ipCookie('ironholdSession').username;
+		},		
+
 		onLogOut: function(callback) {
 			this.logOutCallbacks.push(callback);
 		},
@@ -97,13 +101,14 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 			this.logInCallbacks.push(callback);
 		},
 
-		logIn: function(clientKey) {
+		logIn: function(clientKey, username) {
 			loggedIn = true;
 			ipCookie(
 				'ironholdSession', 
 				JSON.stringify({
 					'session': null /* REPLACE THIS WITH A SESSION KEY LATER */,
-					'clientKey': clientKey 
+					'clientKey': clientKey,
+					'username': username 
 				}),
 				{expires: 99}
 			);
@@ -139,11 +144,17 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 });
 
 ironholdApp.factory('messagesService', function(Restangular, logInService) {
-	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages').one(logInService.getClientKey());
+	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}')
+		.one("messages")
+		.one(logInService.getClientKey())
+		.one(logInService.getUsername());
 });
 
 ironholdApp.factory('usersService', function(Restangular, logInService) {
-	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/users').one(logInService.getClientKey());
+	return Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}')
+		.one("users")
+		.one(logInService.getClientKey())
+		.one(logInService.getUsername());
 });
 
 

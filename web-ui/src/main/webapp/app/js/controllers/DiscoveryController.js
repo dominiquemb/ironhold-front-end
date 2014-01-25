@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService, usersService) {
+ironholdApp.controller('DiscoveryController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
     logInService.confirmLoggedIn($state);
 
     $scope.msgs;
@@ -48,6 +48,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		"Content-type" : "application/json"
 		})
 	.then(function(result) {
+	    $scope.$emit('updateFooter', {
+		searchTime: result.payload.timeTaken,
+		searchMatches: result.payload.matches
+	    });
 	    $scope.$emit('updateSearchbar', {
 		searchTime: result.payload.timeTaken,
 		searchMatches: result.payload.matches
@@ -75,6 +79,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		pageSize: $scope.pageSize
 	    	})
 	    .then(function(result) {
+		$scope.$emit('updateFooter', {
+			searchTime: result.payload.timeTaken,
+			searchMatches: result.payload.matches
+		});
 	    	$scope.$emit('updateSearchbar', {
 			searchTime: result.payload.timeTaken,
 			searchMatches: result.payload.matches,
