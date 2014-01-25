@@ -26,7 +26,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
             $scope.selectedFacets.remove(facet);
         }
 
-	$scope.$emit('facetToggled', facet);
+	$scope.$emit('facetToggled', facet, $scope.selectedFacets);
     }
 
     $rootScope.$on('facets', function(evt, facetList) {
