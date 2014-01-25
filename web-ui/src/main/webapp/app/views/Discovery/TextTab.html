@@ -1,0 +1,208 @@
+<div id="msgview-text" class="msgview-text tab-pane in active" data-ng-click="switchMode('text')">
+	<div class="row controlbar">
+									<span class="controlbar_left pull-left controlbar_section">
+										<span class="dropdown pull-left controlbar_item follow-up">
+											<a class="dropdown-toggle">
+                                                <div class="msgview_img flag-lg"></div>
+                                                <div class="pull-right controlbar_item-name">Follow Up</div>
+                                                <b class="fa icon-caret-down icon-on-right pull-right"></b>
+                                            </a>
+						<ul class="dropdown-menu dropdown-info">
+                            <li>
+                                <a data-toggle="tab">Link 1</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab">Link 2</a>
+                            </li>
+                        </ul>
+										</span>
+										<a class="controlbar_item pull-left forward">
+                                            <div class="msgview_img forward-lg"></div>
+                                            <div class="pull-right controlbar_item-name">Forward</div>
+                                        </a>
+										<div class="vert-div"></div>
+									</span>
+									<span class="controlbar_middle controlbar_section pull-left">
+										<span class="dropdown controlbar_item assign-policy pull-left">
+											<a class="dropdown-toggle">
+                                                <div class="msgview_img archive-lg"></div>
+                                                <div class="pull-left controlbar_item-name">Assign Policy</div>
+                                                <b class="fa icon-caret-down pull-right icon-on-right"></b>
+                                            </a>
+											<ul class="dropdown-menu dropdown-info">
+                                                <li>
+                                                    <a data-toggle="tab">Link 1</a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab">Link 2</a>
+                                                </li>
+                                            </ul>
+										</span>
+										<span class="dropdown controlbar_item categorize pull-left">
+											<a class="dropdown-toggle">
+                                                <div class="msgview_img tiles-lg"></div>
+                                                <div class="controlbar_item-name pull-right">Categorize</div>
+                                                <b class="fa icon-caret-down icon-on-right pull-right"></b>
+                                            </a>
+											<ul class="dropdown-menu dropdown-info">
+                                                <li>
+                                                    <a data-toggle="tab">Link 1</a>
+                                                </li>
+                                                <li>
+                                                    <a data-toggle="tab">Link 2</a>
+                                                </li>
+                                            </ul>
+										</span>
+										<span class="controlbar_item controlbar-group-vertical pull-left">
+											<div class="controlbar-group-row row">
+                                                <a class="controlbar-group_item meeting">
+                                                    <div class="msgview_img-sm cal-invite-sm pull-left"></div>
+                                                    <div class="pull-right controlbar_item-name">Meeting</div>
+                                                </a>
+                                            </div>
+											<div class="controlbar-group-row row">
+												<span class="dropdown controlbar-group_item im">
+													<a class="dropdown-toggle">
+                                                        <div class="msgview_img-sm im-sm pull-left"></div>
+                                                        <div class="pull-left controlbar_item-name">IM</div>
+                                                        <b class="fa icon-caret-down pull-right icon-on-right"></b>
+                                                    </a>
+													<ul class="dropdown-menu dropdown-info">
+                                                        <li>
+                                                            <a data-toggle="tab">Link 1</a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-toggle="tab">Link 2</a>
+                                                        </li>
+                                                    </ul>
+												</span>
+                                            </div>
+											<div class="controlbar-group-row row">
+												<span class="dropdown controlbar-group_item more">
+													<a class="dropdown-toggle">
+                                                        <div class="msgview_img-sm cal-phone-sm pull-left"></div>
+                                                        <div class="pull-left controlbar_item-name">More</div>
+                                                        <b class="fa icon-caret-down pull-right icon-on-right"></b>
+                                                    </a>
+													<ul class="dropdown-menu dropdown-info">
+                                                        <li>
+                                                            <a data-toggle="tab">Link 1</a>
+                                                        </li>
+                                                        <li>
+                                                            <a data-toggle="tab">Link 2</a>
+                                                        </li>
+                                                    </ul>
+												</span>
+                                            </div>
+										</span>
+									<div class="vert-div"></div>
+									</span>
+</div>
+<div class="placeholder_text" data-ng-hide="currentMessage">
+    Please select a message on the left.
+</div>
+<div class="msgview_main" data-ng-show="currentMessage">
+    <div class="row msgview_top">
+        <div class="pull-left from-picture-container">
+            <div class="from-picture empty-photo msgview_img-xl"></div>
+        </div>
+        <div class="pull-left header-container">
+            <h3 class="gray-dark msgview_subject" data-ng-bind-html="currentMessage.subjectWithHighlights"></h3>
+            <h4 class="text-primary msgview_date">{{ currentMessage.formattedIndexedMailMessage.formattedMessageDate }}
+                ({{ currentMessage.formattedIndexedMailMessage.age }})</h4>
+        </div>
+    </div>
+    <div class="row msgview_middle">
+        <div class="scrollable-content">
+            <div class="message-header">
+                <table class="pull-left header-info">
+                    <tr>
+                        <td class="label-container from">
+					<span class="label from pull-left">
+						From
+					</span>
+                        </td>
+                        <td class="label-content from gray-dark">
+                            {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{
+                            currentMessage.formattedIndexedMailMessage.sender.address }}&gt;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-container to">
+					<span class="label to pull-left">
+						To	
+					</span>
+                        </td>
+
+                        <td class="label-content to gray-dark">
+                                        <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.to">
+                                        	{{ person.name }} &lt;{{ person.address }}&gt;;
+                                	</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-container cc">
+					<span class="label cc pull-left">
+						Cc
+					</span>
+                        </td>
+                        <td class="label-content cc gray-dark">
+                                                    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.cc">
+                                                        {{ person.name }} &lt;{{ person.address }}&gt;;
+                                                    </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-container bcc">
+					<span class="label bcc pull-left">
+						Bcc
+					</span>
+                        </td>
+                        <td class="label-content bcc gray-dark">
+                                	<span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
+                                        	{{ person.name }} &lt;{{ person.address }}&gt;;
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- .message-header -->
+            <div class="pull-right message-body-container">
+                <div class="message-body-content" data-ng-bind-html="currentMessage.bodyWithHighlights">
+                </div>
+            </div>
+        </div>
+        <!-- .scrollable-content -->
+    </div>
+    <div class="row msgview_bottom expandable">
+        <div data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
+            <a data-action="collapse" class="expandable-toggle">
+                <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)"
+                   data-ng-class="{'icon-angle-up': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === true, 'icon-angle-down': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === false}"
+                   class="fa-angle-up fa icon-on-right"></i>
+            </a>
+            <ul class="attachments">
+                <li class="attachment col-xs-12 first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+					<a>
+                        {{ attachment.fileName }}
+                    </a>
+					:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- .widget-box -->
+    </div>
+</div>
+</div>
+<!-- .msgview-text -->

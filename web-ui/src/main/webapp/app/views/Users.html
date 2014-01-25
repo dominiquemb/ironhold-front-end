@@ -4,219 +4,252 @@
 <div class="searchbar row">
     <div class="search-query">
         <form class="form-search">
-            <div class="input-group clear-form">
+            <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
                 <div class="input-container">
                     <div class="input-history dropdown">
                         <input type="text" class="search-input clear-form-input form-control search-field"
-                               placeholder="Type your query" data-ng-model="inputSearch" data-ng-keyup="searchKeyUp($event)"/>
+                               placeholder="Type your query" data-ng-model="inputSearch"
+                               data-ng-keyup="searchKeyUp($event)"/>
 
-                                <a class="dropdown-toggle">
-                                    <i class="fa icon-caret-down"></i>
-                                </a>
+                        <a class="dropdown-toggle">
+                            <i class="fa icon-caret-down"></i>
+                        </a>
+
                         <div class="dropdown-menu dropdown-info">
-                                    <ul>
-                                        <li>
-                                            Result 1
-                                        </li>
-                                        <li>
-                                            Result 2
-                                        </li>
-                                    </ul>
-                        </div> <!-- .dropdown-menu -->
+                            <ul>
+                                <li data-ng-repeat="history in searchHistory.messages">
+                                    <a data-ng-click="replace(history.context)">
+                                        {{ history.context }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- .dropdown-menu -->
 
-                    </div> <!-- .dropdown -->
-                </div> <!-- .input-container -->
+                    </div>
+                    <!-- .dropdown -->
+                </div>
+                <!-- .input-container -->
 		<span class="input-group-btn">
 			<button type="button" class="btn btn-link btn-sm" data-ng-click="search()">
-                        	<i class="fa icon-search icon-on-right bigger-110"></i>
-                        </button>
-			<button type="button" class="btn btn-link btn-sm clear-form-trigger">
-                        	<i class="fa icon-times icon-on-right bigger-110"></i>
-                        </button>
+            			<i class="fa icon-search icon-on-right bigger-110"></i>
+	                </button>
+			<button type="button" class="btn btn-link btn-sm clear-form-trigger" data-ng-click="toggleSearchHilite()">
+		                <i class="fa icon-times icon-on-right bigger-110"></i>
+           	 	</button>
 		</span>
             </div>
         </form>
     </div>
 </div>
 <div class="row middlebar" data-ng-show="showSearchPreviewResults">
-								<span class="pull-right middlebar_right pagination-container" data-ng-show="showSearchResults">
+								<span class="pull-right middlebar_right pagination-container"
+                                      data-ng-show="showSearchResults">
 									<ul class="pull-right pagination-plain text-primary">
-                                        <li class="disabled">
-                                            &lt; <a class="pagination_prev">previous</a> |&nbsp; 
-                                        </li> 
-                                        <li class="active">
-                                            pages <a class="pagination_1">1</a>, 
+                                        <li data-ng-hide="currentPage==1">
+                                            &lt; <a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">previous</a>
+                                            |&nbsp;
+                                        </li>
+                                        <li class="active" data-ng-hide="currentPage==1">
+                                            pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{
+                                            currentPage - 1 }}</a>,
                                         </li>
                                         <li>
-                                            &nbsp;<a class="pagination_2">2</a>, 
+                                            &nbsp;{{ currentPage }},
                                         </li>
                                         <li>
-                                            &nbsp;<a class="pagination_3">3</a>
+                                            &nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{
+                                            currentPage + 1 }}</a>
                                         </li>
                                         <li>
-                                            &nbsp;| <a class="pagination_last">next</a> &gt;
+                                            &nbsp;| <a class="pagination_last" data-ng-click="goTo(currentPage + 1)">next</a>
+                                            &gt;
                                         </li>
                                     </ul>
 								</span>
-                                        <div class="matches_number blue-primary puill-left" data-ng-show="showSuggestions">
-                                            Did you mean: <span data-ng-repeat="suggestion in suggestions">
-                                                <span data-ng-repeat="option in suggestion.options"><a data-ng-click="replace(suggestion.text, option)">{{ option }}</a> </span>
+
+    <div class="matches_number blue-primary puill-left" data-ng-show="showSuggestions">
+        Did you mean: <span data-ng-repeat="suggestion in suggestions">
+                                                <span data-ng-repeat="option in suggestion.options"><a
+                                                        data-ng-click="replace(suggestion.text, option)">{{ option
+                                                    }}</a> </span>
                                             </span>
-                                        </div>
-										<div class="matches_number blue-primary pull-left">
-											<strong>{{ searchMatches }}</strong> matched messages
-										</div>
+    </div>
+    <div class="matches_number blue-primary pull-left">
+        <strong>{{ searchMatches }}</strong> matched messages
+    </div>
 								<span class="pull-left middlebar_center">
 									<div class="middlebar_center_top">
-	<div class="filter-tag-container" ng-show="selectedFacets.length > 0">
+                                        <div class="filter-tag-container" ng-show="selectedFacets.length > 0">
 		<span class="filter-tag" data-ng-repeat="facetValue in selectedFacets">
-			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
-			</div> 
-			<i class="fa icon-times filter-tag-close" data-ng-click="toggleFacet(facetValue, facetValue.facetGroupCode)"></i>
+			<div class="filter-tag-text truncate" data-trunc-text="{{ facetValue.label }}" data-trunc-font-width="10"
+                 data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
+            </div>
+			<i class="fa icon-times filter-tag-close"
+               data-ng-click="toggleFacet(facetValue, facetValue.facetGroupCode)"></i>
 		</span>
-		<span class="filter-tag filter-tag-reset" data-ng-click="unselectAllFacets()">Reset All</span>
-	</div>
+                                            <span class="filter-tag filter-tag-reset"
+                                                  data-ng-click="unselectAllFacets()">Reset All</span>
+                                        </div>
                                     </div>
 									<div class="middlebar_center_bottom">
                                     </div>
 								</span>
 </div>
-<div class="row msglist" data-ng-show="showSearchResults">
-<div class="pull-left toshrink sidebar-left">
-<div class="toggle pull-right">
-    <i class="fa icon-angle-left"></i>
-</div>
-<div class="scrollbar-hidden filter-list">
-<ul class="filter-list-inner">
-<li class="widget-box widget-box-simple filter-container row" data-ng-repeat="facet in facets" ng-class="{'collapsed': facet.name.collapsed === true}">
-    <div class="widget-header">
-        <div class="widget-toolbar">
-            <a>
-                <i ng-click="toggleCollapse(facet.name.collapsed)" ng-class="{'icon-four-thirty-up': facet.name.collapsed === false, 'icon-four-thirty-down': facet.name.collapsed === true}"></i>
-            </a>
+<div class="row msglist">
+    <div class="pull-left toshrink sidebar-left facet-collection" data-ng-show="showFacets">
+        <div class="toggle pull-right">
+            <i class="fa icon-angle-left"></i>
         </div>
-												<span class="filter-list-name">
+        <div class="scrollbar-hidden filter-list">
+            <ul class="filter-list-inner">
+                <li class="widget-box widget-box-simple filter-container row collapsible" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
+                    <div class="widget-header">
+                        <div class="widget-toolbar">
+                            <a>
+                                <i class="collapse-trigger"></i>
+                            </a>
+                        </div>
+			<span class="filter-list-name">
                                                     {{ facet.name.label }}
-												</span>
-    </div>
-    <div class="widget-body">
-        <div class="widget-body-inner">
-            <ul class="widget-main">
-                <li class="filter" data-ng-class="{'active': facetValue.selected === true}" data-ng-click="toggleFacet(facetValue, facet.name.value)" data-ng-repeat="facetValue in facet.valueMap">
-                    <div class="pull-left checkbox">
-                        <i class="fa icon-check"></i>
+			</span>
                     </div>
-															<span class="filter-name truncate" tooltip="{{ originalText }}" tooltip-animation="true" trunc-text="{{ facetValue.label }}" trunc-font-width="7" trunc-desired-height="21" trunc-trailing-dots="true"></span>
+                    <div class="widget-body">
+                        <div class="widget-body-inner">
+                            <ul class="widget-main">
+                                <li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
+                                    data-ng-repeat="facetValue in facet.valueMap">
+                                    <div class="pull-left checkbox">
+                                        <i class="fa icon-check"></i>
+                                    </div>
+                                        <span class="filter-name truncate" tooltip="{{ originalText }}"
+                                              tooltip-animation="true" trunc-text="{{ facetValue.label }}"
+                                              trunc-font-width="7" trunc-desired-height="21"
+                                              trunc-trailing-dots="true"></span>
 															<span class="text-primary filter-value">
 																{{ facetValue.value }}
 															</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
+        <!-- .filter-list -->
     </div>
-</li>
-</ul>
-</div>
-<!-- .filter-list -->
-</div>
-<div class="listing togrow scrollbar-hidden message-list-container">
-	<ul class="results message-list">
-	<li class="result message-item message-item-unbordered"  data-ng-repeat="message in messages" data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
-	    <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
-		<tbody>
-		<tr>
-		    <td rowspan="3" class="message-icons col-xs-1">
-			<i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"  class="pull-right img-xs envelope-img-xs"></i>
-		    </td>
-		    <td class="message-sender col-xs-6">
-			{{ message.formattedIndexedMailMessage.sender.name }}
-		    </td>
-		    <td class="message-size col-xs-6" data-ng-bind-html="message.subjectWithHighlights">
-		    </td>
-		    <td rowspan="4" class="message-flag col-xs-1">
-			<i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
-		    </td>
-		    <td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
-			<i class="fa icon-check"></i>
-		    </td>
-		</tr>
-		<tr>
-		    <td class="message-subject col-xs-6">
-			{{ message.formattedIndexedMailMessage.formattedMessageDate }}
-		    </td>
-		    <td class="message-date col-xs-6">
-			{{ message.formattedIndexedMailMessage.formattedSize }}
-		    </td>
-		</tr>
-		<tr>
-		    <td colspan="2" class="dropdown-toggle">
-			<div class="widget-box widget-box-simple" ng-class="{'collapsed': message.collapsedBody}">
+    <div class="listing togrow scrollbar-hidden message-list-container results-feed" data-ng-show="showSearchResults">
+        <ul class="results message-list">
+            <li class="result message-item message-item-unbordered" data-ng-repeat="message in messages"
+                data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
+                <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
+                    <tbody>
+                    <tr>
+                        <td rowspan="3" class="message-icons col-xs-1">
+                            <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
+                               class="pull-left img-xs envelope-img-xs"></i>
+                        </td>
+                        <td class="message-sender col-xs-3">
+                            {{ message.formattedIndexedMailMessage.sender.name }}
+                        </td>
+                        <td class="message-size col-xs-8" data-ng-bind-html="message.subjectWithHighlights">
+                        </td>
+                        <td rowspan="4" class="message-flag col-xs-1">
+                            <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
+                        </td>
+                        <td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
+                            <i class="fa icon-check"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="message-subject col-xs-3">
+                            {{ message.formattedIndexedMailMessage.formattedMessageDate }}
+                        </td>
+                        <td class="message-date col-xs-8">
+                            {{ message.formattedIndexedMailMessage.formattedSize }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="dropdown-toggle">
+                            <div class="widget-box widget-box-simple"
+                                 ng-class="{'collapsed': message.collapsedBody}">
 				<span class="widget-header pull-left dropdown-header">
 					<span class="widget-toolbar">
 						<a>
-							<b ng-click="toggleCollapse(message.collapsedBody)" ng-class="{'icon-four-thirty-up': message.collapsedBody  === false, 'icon-four-thirty-down': message.collapsedBody === true}" class="icon-on-right"></b>
-						</a>
+                            <strong data-ng-click="toggleCollapse(message, 'collapsedBody')"
+                               data-ng-class="{'icon-four-thirty-up': message.collapsedBody  === false, 'icon-four-thirty-down': message.collapsedBody === true}"
+                               class="icon-on-right"></strong>
+                        </a>
 					</span>
 					<strong class="dropdown-title">Body</strong>
 				</span>
 				<span class="widget-body">
 					<div class="widget-body-inner">
-						<div class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="message.collapsedBody ? '21' : '84'" trunc-font-width="message.collapsedBody ? '6' : '5'" trunc-trailing-dots="true">
-						</div>
-					</div>
+                        <div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate"
+                             trunc-text="{{ message.bodyWithHighlights }}"
+                             trunc-desired-height="message.collapsedBody ? '21' : '84'"
+                             trunc-font-width="message.collapsedBody ? '5' : '5'" trunc-trailing-dots="true">
+                        </div>
+                    </div>
 				</span>
-			</div>
-		    </td>
-		</tr>
-		<tr data-ng-show="hasAttachmentHighlight(message)">
-		    <td rowspan="1" class="message-icons col-xs-1">
-			<i class="img-xs attachment-img-xs pull-right"></i>	
-		    </td>
-		    <td colspan="2" class="dropdown-toggle">
-			<div class="widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments" ng-class="{'collapsed': attachment.collapsed}">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-ng-show="hasAttachment(message)">
+                        <td rowspan="1" class="message-icons col-xs-1">
+                            <i class="img-xs attachment-img-xs pull-left"></i>
+                        </td>
+                        <td colspan="2" class="dropdown-toggle">
+                            <div class="widget-box widget-box-simple result-attachment"
+                                 data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments"
+                                 ng-class="{'collapsed': attachment.collapsed}">
 				<span class="widget-header pull-left dropdown-header">
 					<span class="widget-toolbar">
 						<a>
-							<b ng-click="toggleCollapse(attachment)" ng-class="{'icon-four-thirty-up': attachment.collapsed  === false, 'icon-four-thirty-down': attachment.collapsed === true}" class="icon-on-right"></b>
-						</a>
+                            <b ng-click="toggleCollapse(attachment)"
+                               ng-class="{'icon-four-thirty-up': attachment.collapsed  === false, 'icon-four-thirty-down': attachment.collapsed === true}"
+                               class="icon-on-right"></b>
+                        </a>
 					</span>
 					<strong class="dropdown-title">{{ attachment.fileName }}</strong>
 				</span>
 				<span class="widget-body">
 					<div class="widget-body-inner">
-						<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="attachment.collapsed ? '21' : '84'" trunc-font-width="attachment.collapsed ? '7' : '6'" trunc-trailing-dots="true">
-						</div>
-					</div>
+                        <div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}"
+                             trunc-desired-height="attachment.collapsed ? '21' : '84'"
+                             trunc-font-width="attachment.collapsed ? '7' : '6'" trunc-trailing-dots="true">
+                        </div>
+                    </div>
 				</span>
-			</div>
-		    </td>
-		</tr>
-		</tbody>
-    </table>
-</li>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
 
-</ul>
+        </ul>
+    </div>
 </div>
 </div>
-</div>
-<div class="col-xs-5 msgview"  data-ng-show="showSearchResults">
+<div class="col-xs-5 msgview result-detail" data-ng-show="showContainer">
 <div class="tabbable">
 <ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
-    <li class="active">
-        <a data-toggle="tab" href="#msgview-text">Text</a>
+    <li data-ng-class="{'active': mode=='text'}">
+        <a data-toggle="tab" data-ng-click="switchMode('text')">Text</a>
     </li>
-    <li>
-        <a data-toggle="tab" href="#msgview-html">HTML</a>
+    <li data-ng-class="{'active': mode=='html'}">
+        <a data-toggle="tab" data-ng-click="switchMode('html')">HTML</a>
     </li>
-    <li>
-        <a data-toggle="tab" href="#msgview-source">Source</a>
+    <li data-ng-class="{'active': mode=='source'}">
+        <a data-toggle="tab" data-ng-click="switchMode('source')">Source</a>
     </li>
-    <li>
-        <a data-toggle="tab" href="#msgview-audit">Audit</a>
+    <li data-ng-class="{'active': mode=='audit'}">
+        <a data-toggle="tab" data-ng-click="switchMode('audit')">Audit</a>
     </li>
 </ul>
 <div class="tab-content">
-<div id="msgview-text" class="msgview-text tab-pane in active">
+<div id="msgview-text" class="msgview-text tab-pane in" data-ng-class="{'active':mode=='text'}"
+     data-ng-click="switchMode('text')">
 <div class="row controlbar">
 									<span class="controlbar_left pull-left controlbar_section">
 										<span class="dropdown pull-left controlbar_item follow-up">
@@ -226,13 +259,13 @@
                                                 <b class="fa icon-caret-down icon-on-right pull-right"></b>
                                             </a>
 						<ul class="dropdown-menu dropdown-info">
-                                                <li>
-                                                    <a data-toggle="tab">Link 1</a>
-                                                </li>
-                                                <li>
-                                                    <a data-toggle="tab">Link 2</a>
-                                                </li>
-                                            </ul>
+                            <li>
+                                <a data-toggle="tab">Link 1</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab">Link 2</a>
+                            </li>
+                        </ul>
 										</span>
 										<a class="controlbar_item pull-left forward">
                                             <div class="msgview_img forward-lg"></div>
@@ -316,74 +349,76 @@
 									<div class="vert-div"></div>
 									</span>
 </div>
-<div class="placeholder_text" data-ng-hide="showMessage">
-	Please select a message on the left.
+<div class="placeholder_text" data-ng-hide="currentMessage">
+    Please select a message on the left.
 </div>
-<div class="msgview_main" data-ng-show="showMessage" in-view="console.log('test')">
+<div class="msgview_main" data-ng-show="currentMessage">
     <div class="row msgview_top">
         <div class="pull-left from-picture-container">
             <div class="from-picture empty-photo msgview_img-xl"></div>
         </div>
         <div class="pull-left header-container">
-            <h3 class="gray-dark msgview_subject truncate" trunc-text="{{currentMessage.subjectWithHighlights}}" trunc-desired-height="21" trunc-font-width="8" trunc-trailing-dots="true"></h3>
-            <h4 class="text-primary msgview_date truncate" trunc-text="{{ currentMessage.formattedIndexedMailMessage.formattedMessageDate }} ({{ currentMessage.formattedIndexedMailMessage.age }})" trunc-desired-height="21" trunc-font-width="7" trunc-trailing-dots="true"></h4>
+            <h3 class="gray-dark msgview_subject" data-ng-bind-html="currentMessage.subjectWithHighlights"></h3>
+            <h4 class="text-primary msgview_date">{{ currentMessage.formattedIndexedMailMessage.formattedMessageDate }}
+                ({{ currentMessage.formattedIndexedMailMessage.age }})</h4>
         </div>
     </div>
     <div class="row msgview_middle">
         <div class="scrollable-content">
             <div class="message-header">
-		<table class="pull-left header-info">
-			<tr>
-				<td class="label-container from">
+                <table class="pull-left header-info">
+                    <tr>
+                        <td class="label-container from">
 					<span class="label from pull-left">
 						From
 					</span>
-				</td>
-				<td class="label-content from gray-dark">
-                                                    {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{ currentMessage.formattedIndexedMailMessage.sender.address }}&gt;
-                                </td>
-			</tr>
-			<tr>
-				<td class="label-container to">
+                        </td>
+                        <td class="label-content from gray-dark">
+                            {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{
+                            currentMessage.formattedIndexedMailMessage.sender.address }}&gt;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-container to">
 					<span class="label to pull-left">
 						To	
 					</span>
-                                </td>
-				
-				<td class="label-content to gray-dark">
+                        </td>
+
+                        <td class="label-content to gray-dark">
                                         <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.to">
                                         	{{ person.name }} &lt;{{ person.address }}&gt;;
                                 	</span>
-                                </td>
-			</tr>
-			<tr>
-				<td class="label-container cc">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-container cc">
 					<span class="label cc pull-left">
 						Cc
 					</span>
-                                </td>
-                                <td class="label-content cc gray-dark">
+                        </td>
+                        <td class="label-content cc gray-dark">
                                                     <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.cc">
                                                         {{ person.name }} &lt;{{ person.address }}&gt;;
                                                     </span>
-                                </td>
-			</tr>
-			<tr>
-				<td class="label-container bcc">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-container bcc">
 					<span class="label bcc pull-left">
 						Bcc
 					</span>
-                                </td>
-                                <td class="label-content bcc gray-dark">
+                        </td>
+                        <td class="label-content bcc gray-dark">
                                 	<span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
                                         	{{ person.name }} &lt;{{ person.address }}&gt;;
-                                </td>
-			</tr>
-	            </table>
-	    </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <!-- .message-header -->
             <div class="pull-right message-body-container">
-                <div class="message-body-content"   data-ng-bind-html="currentMessage.bodyWithHighlights.text">
+                <div class="message-body-content" data-ng-bind-html="currentMessage.bodyWithHighlights">
                 </div>
             </div>
         </div>
@@ -391,40 +426,44 @@
     </div>
     <div class="row msgview_bottom expandable">
         <div data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
-                    <a data-action="collapse" class="expandable-toggle">
-                        <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)" 
-			   data-ng-class="{'icon-angle-up': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === true, 'icon-angle-down': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === false}" class="fa-angle-up fa icon-on-right"></i>
-                    </a>
-                        <ul class="attachments">
-                            <li class="attachment col-xs-12 first" data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
-                                <div class="col-xs-2 icon-container">
-                                    <div class="msgview_img-xl attachment-img"></div>
-                                </div>
-                                <div class="col-xs-10 attachment-text">
+            <a data-action="collapse" class="expandable-toggle">
+                <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)"
+                   data-ng-class="{'icon-angle-up': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === true, 'icon-angle-down': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === false}"
+                   class="fa-angle-up fa icon-on-right"></i>
+            </a>
+            <ul class="attachments">
+                <li class="attachment col-xs-12 first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
 					<a>
-						{{ attachment.fileName }}
-					</a>
+                        {{ attachment.fileName }}
+                    </a>
 					:
 				    </span>
-                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'" trunc-font-width="5" trunc-trailing-dots="true">
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
                                     </span>
-                                </div>
-                            </li>
-                        </ul>
+                    </div>
+                </li>
+            </ul>
         </div>
         <!-- .widget-box -->
     </div>
 </div>
 </div>
 <!-- .msgview-text -->
-<div id="msgview-html" class="msgview-html tab-pane">
+<div id="msgview-html" class="msgview-html tab-pane" data-ng-class="{'active':mode=='html'}">
     HTML tab content will go here.
 </div>
-<div id="msgview-source" class="msgview-source tab-pane">
+<div id="msgview-source" class="msgview-source tab-pane" data-ng-class="{'active':mode=='source'}">
     Source tab content will go here.
 </div>
-<div id="msgview-audit" class="msgview-audit tab-pane">
+<div id="msgview-audit" class="msgview-audit tab-pane" data-ng-class="{'active':mode=='audit'}">
     Audit tab content will go here.
 </div>
 </div>
@@ -433,19 +472,4 @@
 </div>
 <!-- .row.main -->
 </div>
-<!-- #tab-discovery -->
-<div id="tab-tags" class="tab-pane">
-    Tags tab content goes here
-</div>
-<div id="tab-folders" class="tab-pane">
-    Folders tab content goes here
-</div>
-<div id="tab-logs" class="tab-pane">
-    Logs tab content goes here
-</div>
-<div id="tab-users" class="tab-pane">
-    Users tab content goes here
-</div>
-<div id="tab-settings" class="tab-pane">
-    Settings tab content goes here
-</div>
+<!-- #tab-users -->

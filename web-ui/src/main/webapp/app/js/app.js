@@ -8,23 +8,52 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/Login.html",
 		    controller: 'LoginController'
 	    })
+
 	    .state('main', {
 		    url: "/main",
 		    templateUrl: "views/Navigation.html"
 	    })
+
+	    /* Discovery tab and subtabs */
 	    .state('main.discovery', {
 		    url: "/discovery",
 		    templateUrl: "views/Discovery.html",
 		    controller: 'DiscoveryController'
 	    })
+
+	    .state('main.discovery.text', {
+		    url: "/text-mode",
+		    templateUrl: "views/Discovery/TextTab.html"
+	    })
+
+	    .state('main.discovery.html', {
+		    url: "/html-mode",
+		    templateUrl: "views/Discovery/HtmlTab.html"
+	    })
+
+	    .state('main.discovery.source', {
+		    url: "/source-mode",
+		    templateUrl: "views/Discovery/SourceTab.html"
+	    })
+
+	    .state('main.discovery.audit', {
+		    url: "/audit-mode",
+		    templateUrl: "views/Discovery/AuditTab.html"
+	    })
+
+	    /* Tags tab and subtabs */
 	    .state('main.tags', {
 		    url: "/tags",
 		    templateUrl: "views/Tags.html"
 	    })
+
+	    /* Folders tab and subtabs */
 	    .state('main.folders', {
 		    url: "/folders",
 		    templateUrl: "views/Folders.html"
 	    })
+
+	    /* Logs tabs and subtabs */
 	    .state('main.logs', {
 		    url: "/logs",
 		    templateUrl: "views/Logs.html"

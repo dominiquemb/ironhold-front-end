@@ -7,6 +7,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.currentMessage = false;
     $scope.mode = 'text';
 
+    $scope.isModeActive = function(mode) {
+	return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
+    }
+
     $rootScope.$on('mode', function(evt, mode) {
 	$scope.$mode = mode;
     });
