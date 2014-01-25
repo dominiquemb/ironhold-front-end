@@ -600,7 +600,7 @@ body .text-primary {
 .searchbar {
 	position: relative;
 	margin-left: -1px;
-	min-height: 37px;
+	min-height: 81px;
 }
 
 .searchbar .input-group {

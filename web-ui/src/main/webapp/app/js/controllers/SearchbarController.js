@@ -11,6 +11,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchFieldHilite = false;
     $scope.searchTime;
     $scope.suggestons;
+    $scope.currentlySearching = false;
 
     searchResultsService.prepForBroadcast("-", "- ");
 
@@ -19,16 +20,19 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     });
 
     $scope.search = function() {
+	$scope.currentlySearching = true;
 	$scope.$emit('search', {
 		inputSearch: $scope.inputSearch
 	});
     }
 
     $scope.updateSearch = function() {
+	$scope.currentlySearching = false;
 	$scope.$emit('updateSearch');
     }
 
     $rootScope.$on('updateSearchbar', function(evt, args) {
+	$scope.currentlySearching = false;
 	angular.forEach(args, function(settingValue, settingName) {
 		$scope[settingName] = settingValue;
 	});
@@ -38,13 +42,13 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	$scope.searchFieldHilite = !$scope.searchFieldHilite;
     }
 
-    $scope.replace = function(oldText, newText) {
+    $scope.replaceSearchInput = function(oldText, newText) {
         $scope.inputSearch = $scope.inputSearch.replace(oldText, newText);
         $scope.reset();
         $scope.search();
     }
 
-    $scope.replace = function(newText) {
+    $scope.newSearchInput = function(newText) {
         $scope.inputSearch = newText;
         $scope.reset();
         $scope.search();
@@ -56,6 +60,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
         $scope.searchMessages = 0;
         $scope.searchTime = 0;
         $scope.suggestions = [];
+	$scope.searchMatches = 0;
     }
 
 

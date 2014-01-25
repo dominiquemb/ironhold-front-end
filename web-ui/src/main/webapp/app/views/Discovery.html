@@ -9,7 +9,7 @@
                     <div class="input-history dropdown">
                         <input type="text" class="search-input clear-form-input form-control search-field"
                                placeholder="Type your query" data-ng-model="inputSearch"
-                               data-ng-keyup="searchKeyUp($event)"/>
+                               data-ng-keyup="searchKeyUp($event)">
 
                         <a class="dropdown-toggle">
                             <i class="fa icon-caret-down"></i>
@@ -18,7 +18,7 @@
                         <div class="dropdown-menu dropdown-info">
                             <ul>
                                 <li data-ng-repeat="history in searchHistory.messages">
-                                    <a data-ng-click="replace(history.context)">
+                                    <a data-ng-click="newSearchInput(history.context)">
                                         {{ history.context }}</a>
                                 </li>
                             </ul>
@@ -40,7 +40,7 @@
             </div>
         </form>
     </div>
-	<div class="row middlebar" data-ng-show="showSearchPreviewResults">
+	<div class="row middlebar">
 					<span class="pull-right middlebar_right pagination-container"
 					      data-ng-show="showSearchPreviewResults">
 										<ul class="pull-right pagination-plain text-primary">
@@ -69,12 +69,15 @@
 	    <div class="matches_number blue-primary puill-left" data-ng-show="showSuggestions">
 		Did you mean: <span data-ng-repeat="suggestion in suggestions">
 							<span data-ng-repeat="option in suggestion.options"><a
-								data-ng-click="replace(suggestion.text, option)">{{ option
+								data-ng-click="replaceSearchInput(suggestion.text, option)">{{ option
 							    }}</a> </span>
 						    </span>
 	    </div>
 	    <div class="matches_number blue-primary pull-left">
-		<strong>{{ searchMatches }}</strong> matched messages
+		<span data-ng-show="showSearchPreviewResults && !currentlySearching">
+			<strong>{{ searchMatches }}</strong> matched messages
+		</span>
+		<strong data-ng-show="currentlySearching">Searching...</strong>
 	    </div>
 		<span class="pull-left middlebar_center">
 			<div class="middlebar_center_top filter-collection">
