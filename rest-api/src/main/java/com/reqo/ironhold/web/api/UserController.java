@@ -41,9 +41,8 @@ public class UserController {
         this.metaDataIndexService = metaDataIndexService;
     }
 
-
-    private LoginUser getDefaultUser() {
-        return miscIndexService.authenticate("demo", "demo", "demo", LoginChannelEnum.WEB_APP, "127.0.0.1");
+    private LoginUser getDefaultUser(String clientKey, String username) {
+        return miscIndexService.getLoginUser(clientKey, username);
     }
 
 
@@ -82,7 +81,7 @@ public class UserController {
         ApiResponse<AuditLogResponse> apiResponse = new ApiResponse<>();
 
 
-        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(clientKey, getDefaultUser(), AuditActionEnum.SEARCH);
+        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(clientKey, getDefaultUser(clientKey, username), AuditActionEnum.SEARCH);
         MutableList<AuditLogMessage> messages = FastList.newList(history);
 
         AuditLogResponse result = new AuditLogResponse(messages.toSortedSetBy(AuditLogMessage.SORT_BY_CONTEXT));

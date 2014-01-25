@@ -39,6 +39,10 @@ public class MessageController {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
+    private LoginUser getDefaultUser(String clientKey, String username) {
+        return miscIndexService.getLoginUser(clientKey, username);
+    }
+
     @Inject
     public MessageController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService, IMetaDataIndexService metaDataIndexService, IMimeMailMessageStorageService mimeMailMessageStorageService) {
         this.messageIndexService = messageIndexService;
@@ -50,17 +54,13 @@ public class MessageController {
     }
 
 
-    private LoginUser getDefaultUser() {
-        return miscIndexService.authenticate("demo", "demo", "demo", LoginChannelEnum.WEB_APP, "127.0.0.1");
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/count")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/count")
     public
     @ResponseBody
-    ApiResponse<CountSearchResponse> getCount(@PathVariable("clientKey") String clientKey, @RequestParam(required = false, defaultValue = "*") String criteria) {
+    ApiResponse<CountSearchResponse> getCount(@PathVariable("clientKey") String clientKey, @PathVariable("username") String username, @RequestParam(required = false, defaultValue = "*") String criteria) {
         ApiResponse<CountSearchResponse> apiResponse = new ApiResponse<CountSearchResponse>();
 
-        CountSearchResponse result = messageIndexService.getMatchCount(clientKey, criteria, getDefaultUser());
+        CountSearchResponse result = messageIndexService.getMatchCount(clientKey, criteria, getDefaultUser(clientKey, username));
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
@@ -68,13 +68,13 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/suggest")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/suggest")
     public
     @ResponseBody
-    ApiResponse<SuggestSearchResponse> getSuggestions(@PathVariable("clientKey") String clientKey, @RequestParam String criteria) {
+    ApiResponse<SuggestSearchResponse> getSuggestions(@PathVariable("clientKey") String clientKey, @PathVariable("username") String username, @RequestParam String criteria) {
         ApiResponse<SuggestSearchResponse> apiResponse = new ApiResponse<SuggestSearchResponse>();
 
-        SuggestSearchResponse result = messageIndexService.getSuggestions(clientKey, criteria, getDefaultUser());
+        SuggestSearchResponse result = messageIndexService.getSuggestions(clientKey, criteria, getDefaultUser(clientKey, username));
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
@@ -82,17 +82,18 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{clientKey}")
+    @RequestMapping(method = RequestMethod.POST, value = "/{clientKey}/{username}")
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessages(@PathVariable("clientKey") String clientKey,
+                                                   @PathVariable("username") String username,
                                                    @RequestParam String criteria,
                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
                                                    @RequestParam(required = false, defaultValue = "0") int page,
                                                    @RequestBody FacetValue[] facetValues) {
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
-        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser());
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser(clientKey, username));
 
         searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
 
@@ -112,17 +113,19 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}")
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessages(@PathVariable("clientKey") final String clientKey,
+                                                   @PathVariable("username") String username,
                                                    @RequestParam final String criteria,
                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
                                                    @RequestParam(required = false, defaultValue = "0") int page,
                                                    @RequestParam(required = false, defaultValue = "") String[] facets) {
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
-        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser());
+        final LoginUser loginUser = getDefaultUser(clientKey, username);
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, loginUser);
 
         searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
 
@@ -137,7 +140,7 @@ public class MessageController {
         backgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                metaDataIndexService.store(clientKey, new AuditLogMessage(getDefaultUser(), AuditActionEnum.SEARCH, null, criteria));
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
 
             }
         });
@@ -149,13 +152,13 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{messageId:.+}")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/{messageId:.+}")
     public
     @ResponseBody
-    ApiResponse<MessageSearchResponse> getMessage(@PathVariable("clientKey") String clientKey, @PathVariable("messageId") String messageId, @RequestParam String criteria) {
+    ApiResponse<MessageSearchResponse> getMessage(@PathVariable("clientKey") String clientKey, @PathVariable("username") String username, @PathVariable("messageId") String messageId, @RequestParam String criteria) {
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
-        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser());
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(clientKey, getDefaultUser(clientKey, username));
         searchBuilder.withCriteria(criteria).withFullBody().withId(messageId, IndexedObjectType.MIME_MESSAGE);
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
@@ -167,10 +170,10 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{messageId:.+}/sources")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/{messageId:.+}/sources")
     public
     @ResponseBody
-    ApiResponse<List<MessageSource>> getMessageSources(@PathVariable("clientKey") String clientKey, @PathVariable("messageId") String messageId) {
+    ApiResponse<List<MessageSource>> getMessageSources(@PathVariable("clientKey") String clientKey, @PathVariable("username") String username, @PathVariable("messageId") String messageId) {
         ApiResponse<List<MessageSource>> apiResponse = new ApiResponse<>();
 
         List<MessageSource> result = metaDataIndexService.getSources(clientKey, messageId);
@@ -182,10 +185,11 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{year}/{month}/{day}/{messageId:.+}/download")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/{year}/{month}/{day}/{messageId:.+}/download")
     public
     @ResponseBody
     String getRawMessage(@PathVariable("clientKey") String clientKey,
+                         @PathVariable("username") String username,
                          @PathVariable("year") int year,
                          @PathVariable("month") int month,
                          @PathVariable("day") int day,
