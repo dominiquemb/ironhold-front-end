@@ -17,7 +17,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 
     $scope.submit = function() {
 	$scope.formSubmitted = true;
-	$scope.logIn();
+	$scope.logIn($scope.clientKey);
     }
 
     $scope.isFormSubmitted = function() {
@@ -40,9 +40,9 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.logIn = function() {
         restMessagesService.one($scope.clientKey).one($scope.username).post("", $scope.password, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
             if (result.payload.success) {
-		logInService.logIn();
+		logInService.logIn($scope.clientKey);
 	    	/* This redirection should be improved later */
-		$state.go('main.discovery');
+		$state.go('main.discovery.text');
 	    	/* */
 		$scope.formInvalid = false;
 	    }

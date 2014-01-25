@@ -1,4 +1,4 @@
-<div id="msgview-source" class="msgview-source tab-pane in active" data-ng-click="switchMode('text')">
+<div id="msgview-source" class="msgview-source tab-pane in active" data-ng-click="switchMode('source')">
 	<div class="row controlbar">
 									<span class="controlbar_left pull-left controlbar_section">
 										<span class="dropdown pull-left controlbar_item follow-up">
@@ -102,6 +102,7 @@
     Please select a message on the left.
 </div>
 <div class="msgview_main" data-ng-show="currentMessage">
+<!--
     <div class="row msgview_top">
         <div class="pull-left from-picture-container">
             <div class="from-picture empty-photo msgview_img-xl"></div>
@@ -112,8 +113,10 @@
                 ({{ currentMessage.formattedIndexedMailMessage.age }})</h4>
         </div>
     </div>
+-->
     <div class="row msgview_middle">
         <div class="scrollable-content">
+<!--
             <div class="message-header">
                 <table class="pull-left header-info">
                     <tr>
@@ -165,9 +168,25 @@
                     </tr>
                 </table>
             </div>
+-->
             <!-- .message-header -->
+
             <div class="pull-right message-body-container">
-                <div class="message-body-content" data-ng-bind-html="currentMessage.bodyWithHighlights">
+                <div class="message-body-content" data-ng-bind-html="description">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="folder">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="hostname">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="imapPort">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="imapSource">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="loadTimestamp">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="protocol">
+                </div>
+                <div class="message-body-content" data-ng-bind-html="username">
                 </div>
             </div>
         </div>

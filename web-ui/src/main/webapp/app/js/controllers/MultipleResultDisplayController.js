@@ -10,6 +10,10 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.showSearchResults;
     $scope.inputSearch;
 
+    $rootScope.$on('mode', function(evt, mode) {
+	$scope.mode = mode;
+    });
+
     $rootScope.$on('results', function(evt, args) {
 	$scope.messages = args.resultEntries;
         $scope.matches = args.matches;
@@ -53,11 +57,11 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.selectMessage = function(message) {
         $scope.unselectAllMessages();
         message.selected = true;
-        messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
-            $scope.currentMessage = result.payload.messages[0];
+	
+	messagesService.one("demo").one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
+	    $scope.currentMessage = result.payload.messages[0];
 	    $scope.$emit('selectMessage', $scope.currentMessage);
-            $scope.mode = 'text';
-        });
+	});
     }
 
     $scope.unhilightAllMessages = function(message) {
