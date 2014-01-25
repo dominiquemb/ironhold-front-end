@@ -39,6 +39,16 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 				$scope.description = result.payload[0].description;
                         });
 	}
+
+	if (mode === 'audit') {
+                messagesService
+                        .one(logInService.getClientKey())
+                        .one($scope.currentMessage.formattedIndexedMailMessage.messageId)
+                        .one("audit")
+                        .get({criteria: $scope.inputSearch})
+                        .then(function(result) {
+                        });
+	}
     });
 
     $scope.switchMode = function(newMode) {
