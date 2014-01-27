@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
     $rootScope.$on('totalResultsChange', function(evt, result) {

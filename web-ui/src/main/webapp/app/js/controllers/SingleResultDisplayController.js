@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('SingleResultDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('SingleResultDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 	
     $scope.showContainer = false;
@@ -19,34 +19,21 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
     }
 
+    $rootScope.$on('modeData', function(evt, results) {
+	var resultEntry;
+	for (resultEntry in results) {
+		$scope[resultEntry] = results[resultEntry];
+	}
+    });
+
     $rootScope.$on('mode', function(evt, mode) {
 	$scope.$mode = mode;
 
-	if (mode === 'source') {
-                messagesService
-                        .one($scope.currentMessage.formattedIndexedMailMessage.messageId)
-                        .one("sources")
-                        .get({criteria: $scope.inputSearch})
-                        .then(function(result) {
-                        	$scope.loadTimestamp = result.payload[0].loadTimestamp;
-				$scope.hostname = result.payload[0].hostname;
-			  	$scope.imapSource = result.payload[0].imapSource;
-				$scope.username = result.payload[0].username;
-				$scope.imapPort = result.payload[0].port;
-				$scope.protocol = result.payload[0].protocol;
-				$scope.folder = result.payload[0].folder;
-				$scope.description = result.payload[0].description;
-                        });
-	}
-
-	if (mode === 'audit') {
-                messagesService
-                        .one($scope.currentMessage.formattedIndexedMailMessage.messageId)
-                        .one("audit")
-                        .get({criteria: $scope.inputSearch})
-                        .then(function(result) {
-                        });
-	}
+	$scope.$emit('modeRequest', {
+		mode: mode,
+		messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
+		inputSearch: $scope.inputSearch
+	});
     });
 
     $scope.switchMode = function(newMode) {

@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('FacetController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('FacetController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
     $scope.selectedFacets = [];
@@ -19,6 +19,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     });
 
     $scope.toggleFacet = function(facet, facetGroupCode) {
+console.log(facet.selected);
 	facet.selected = !facet.selected;
         if (facet.selected) {
             $scope.selectedFacets.push(facet);

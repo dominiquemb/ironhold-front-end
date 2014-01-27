@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('MultipleResultDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, messagesService) {
+ironholdApp.controller('MultipleResultDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
     $scope.mode = 'text';
@@ -58,11 +58,12 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         $scope.unselectAllMessages();
         message.selected = true;
 	
-	messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: $scope.inputSearch}).then(function(result) {
-	    $scope.currentMessage = result.payload.messages[0];
-	    $scope.$emit('selectMessage', $scope.currentMessage);
-	});
+	$scope.$emit('selectResultRequest', message, $scope.inputSearch);
     }
+
+    $rootScope.$on('selectResultData', function(evt, result) {
+	    $scope.currentMessage = result.payload.messages[0];
+    });
 
     $scope.unhilightAllMessages = function(message) {
         angular.forEach($scope.messages, function(entry) {
