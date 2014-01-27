@@ -19,7 +19,6 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     });
 
     $scope.toggleFacet = function(facet, facetGroupCode) {
-console.log(facet.selected);
 	facet.selected = !facet.selected;
         if (facet.selected) {
             $scope.selectedFacets.push(facet);
