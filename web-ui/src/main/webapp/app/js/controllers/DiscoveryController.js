@@ -19,9 +19,11 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
         }, 0);
     }
 
-    usersService.one("searchHistory").get().then(function(result) {
-	$scope.$emit('searchHistoryData', result);
-    });
+    if (usersService) {
+	    usersService.one("searchHistory").get().then(function(result) {
+		$scope.$emit('searchHistoryData', result);
+	    });
+    }
 
     $rootScope.$on('modeRequest', function(evt, data) {
 	messagesService
