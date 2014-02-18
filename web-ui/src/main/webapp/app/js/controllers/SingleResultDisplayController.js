@@ -6,24 +6,14 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.showContainer = false;
     $scope.currentMessage = false;
     $scope.mode = 'text';
-    $scope.loadTimestamp;
-    $scope.hostname;
-    $scope.imapSource;
-    $scope.username;
-    $scope.imapPort;
-    $scope.protocol;
-    $scope.folder;
-    $scope.description;
+    $scope.modeData = {};
 
     $scope.isModeActive = function(mode) {
 	return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
     }
 
     $rootScope.$on('modeData', function(evt, results) {
-	var resultEntry;
-	for (resultEntry in results) {
-		$scope[resultEntry] = results[resultEntry];
-	}
+	$scope.modeData[results.mode] = results.payload;
     });
 
     $rootScope.$on('mode', function(evt, mode) {

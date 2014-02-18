@@ -6,6 +6,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.msgs;
     $scope.pageSize = 10;
     $scope.currentPage = 1;
+    $scope.selectedFacets = [];
 
     searchResultsService.prepForBroadcast("-", "- ");
 
@@ -31,22 +32,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		.one(data.mode)
 		.get({criteria: data.inputSearch})
 		.then(function(result) {
-			if (mode == 'sources') {
-				$scope.$emit('modeData', {
-					loadTimestamp: result.payload[0].loadTimestamp,
-					hostname: result.payload[0].hostname,
-					imapSource: result.payload[0].imapSource,
-					username: result.payload[0].username,
-					imapPort: result.payload[0].port,
-					protocol: result.payload[0].protocol,
-					folder: result.payload[0].folder,
-					description: result.payload[0].description
-				});
-			}
-
-			if (mode == 'audit') {
-				// edit this later
-			}
+			$scope.$emit('modeData', {
+				mode: data.mode,
+				payload: result.payload
+			});
 		});
     });
 
