@@ -24,6 +24,15 @@ body .text-primary {
 	color: #2e69b3;
 }
 
+.main-ui-view {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	overflow: auto;
+	left: 0px;
+	right: 0px;
+}
+
 /* filter-tag */
 .filter-tag-container {
 	margin: 0px 0px 0px -3px;
