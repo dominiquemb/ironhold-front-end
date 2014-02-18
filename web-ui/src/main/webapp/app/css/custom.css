@@ -862,7 +862,7 @@ body ul {
 	padding-top: 10px;
 	min-height: 220px;
 	top: 0px;
-	bottom: 0px;
+	bottom: 81px;
 	overflow: scroll;
 	left: 0px;
 }
@@ -1123,7 +1123,7 @@ body ul {
 	left: -15px;
 	position: absolute;
 	width: 240px;
-	bottom: 0px;
+	bottom: 81px;
 	top: 18px;
 /*	background-color: #f3f3f3; */
 }
