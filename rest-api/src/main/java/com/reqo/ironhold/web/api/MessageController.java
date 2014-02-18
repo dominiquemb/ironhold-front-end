@@ -5,7 +5,6 @@ import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
-import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.web.domain.*;
@@ -200,10 +199,12 @@ public class MessageController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{messageId:.+}/audit")
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/{messageId:.+}/audit")
     public
     @ResponseBody
-    ApiResponse<List<AuditLogMessage>> getMessageAudit(@PathVariable("clientKey") String clientKey, @PathVariable("messageId") String messageId) {
+    ApiResponse<List<AuditLogMessage>> getMessageAudit(@PathVariable("clientKey") String clientKey,
+                                                       @PathVariable("username") String username,
+                                                       @PathVariable("messageId") String messageId) {
         ApiResponse<List<AuditLogMessage>> apiResponse = new ApiResponse<>();
 
         List<AuditLogMessage> result = metaDataIndexService.getAuditLogMessages(clientKey, messageId);
