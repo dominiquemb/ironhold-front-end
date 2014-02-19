@@ -8,6 +8,11 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.currentPage = 1;
     $scope.selectedFacets = [];
 
+    window.onresize = function(){
+	$scope.reinitScrollbars();
+        $scope.$apply();
+    }
+
     searchResultsService.prepForBroadcast("-", "- ");
 
     $scope.initCustomScrollbars = function(selector) {
@@ -54,7 +59,9 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     });
 
     $scope.reinitScrollbars = function() {
-    	$('.scrollbar-hidden').data('jsp').reinitialise();
+	angular.forEach($('.scrollbar-hidden'), function(container, key) {
+		$('.scrollbar-hidden').eq(key).data('jsp').reinitialise();
+	});
     }
 
     $rootScope.$on('pageChange', function(evt, page) {

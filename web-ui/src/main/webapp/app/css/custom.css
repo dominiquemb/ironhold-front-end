@@ -149,20 +149,28 @@ body .text-primary {
 .wrapper {
 	min-width: 1230px;
 	width: 100%;
-	min-height: 768px;
+	min-height: 400px;
 }
 
 .main-area {
 	position: absolute;
+	bottom: 0px;
 	width: 100%;
+	top: 40px;
+	height: auto;
 }
 
 .wrapper {
-	position: relative;
-	min-height: 100%;
+	position: absolute;
+	bottom: 0px;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+/*	min-height: 100%;
 	height: auto !important;
 	height: 100%;
-	margin: 0 auto -19px;
+*/
+	margin: 0px auto 0px;
 }
 
 .push {
@@ -896,6 +904,11 @@ body ul {
 }
 
 .jspTrack {
+	position: absolute;
+	height: auto !important;
+	top: 0px;
+	bottom: 16px;
+	width: 100%;
 	background: transparent !important;
 }
 
@@ -943,6 +956,9 @@ body ul {
 }
 
 .jspArrowDown {
+	bottom: 0px;
+	position: absolute;
+	width: 100%;
 	background: url(../img/sprites/scrollbar_arrows.png) -1px 16px !important;
 }
 
@@ -1162,6 +1178,10 @@ body ul {
 	bottom: 81px;
 	top: 18px;
 /*	background-color: #f3f3f3; */
+}
+
+.sidebar-left .filter-list .jspContainer {
+	height: 100% !important;
 }
 
 .sidebar-left .filter-list .jspPane {
