@@ -110,13 +110,13 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		message.formattedIndexedMailMessage.bccLine = '';
 	    message.formattedIndexedMailMessage.dayName = new Date(message.formattedIndexedMailMessage.messageDate).getDayName();
 	    angular.forEach(message.formattedIndexedMailMessage.to, function(to) {
-		message.formattedIndexedMailMessage.toLine += to.name + ' &lt;' + to.address + '&gt;; ';
+		message.formattedIndexedMailMessage.toLine += to.name + ' <' + to.address + '>; ';
 	    });
 	    angular.forEach(message.formattedIndexedMailMessage.cc, function(cc) {
-		message.formattedIndexedMailMessage.ccLine += cc.name + ' &lt;' + cc.address + '&gt;; ';
+		message.formattedIndexedMailMessage.ccLine += cc.name + ' <' + cc.address + '>; ';
 	    });
 	    angular.forEach(message.formattedIndexedMailMessage.bcc, function(bcc) {
-		message.formattedIndexedMailMessage.bccLine += bcc.name + ' &lt;' + bcc.address + '&gt;; ';
+		message.formattedIndexedMailMessage.bccLine += bcc.name + ' <' + bcc.address + '>; ';
 	    });
 	});
 	return messages;
