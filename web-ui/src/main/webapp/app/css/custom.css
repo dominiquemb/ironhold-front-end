@@ -33,6 +33,11 @@ body .text-primary {
 	right: 0px;
 }
 
+/* messages */
+.message-recipients-line {
+	position: relative;
+}
+
 /* filter-tag */
 .filter-tag-container {
 	margin: 0px 0px 0px -3px;
@@ -873,7 +878,9 @@ body ul {
 }
 
 .msglist .message-list-container .jspPane {
-	width: 100% !important;
+	left: 2px;
+	right: 0px;
+/*	width: 100% !important; */
 }
 
 /* jScrollPane */
@@ -946,6 +953,7 @@ body ul {
 	position: relative;
 	float: left;
 	font-size: 11px;
+	width: 100%;
 }
 
 .results .result {
@@ -972,6 +980,19 @@ body ul {
 	color: rgb(155, 155, 155);
 	font-size: 16px;
 	text-align: right;
+	width: 50px;
+}
+
+.result .message-sender {
+	min-width: 150px;
+}
+
+.result .message-age {
+	width: 210px;
+}
+
+.result .message-date {
+	width: 100px;
 }
 
 .result .message-sender,

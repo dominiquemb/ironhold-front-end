@@ -144,14 +144,15 @@
                 <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
                     <tbody>
                     <tr>
-                        <td rowspan="3" class="message-icons col-xs-1">
+                        <td rowspan="3" class="message-icons">
+                            <i class="img-xs attachment-img-xs pull-right"></i>
                             <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
-                               class="pull-left img-xs envelope-img-xs"></i>
+                               class="pull-right img-xs envelope-img-xs"></i>
                         </td>
-                        <td class="message-sender col-xs-3">
-                            {{ message.formattedIndexedMailMessage.sender.name }}
+                        <td colspan="2" class="message-subject col-xs-6" data-ng-bind-html="message.subjectWithHighlights">
                         </td>
-                        <td class="message-size col-xs-8" data-ng-bind-html="message.subjectWithHighlights">
+                        <td class="message-size pull-right">
+                            {{ message.formattedIndexedMailMessage.formattedSize }}
                         </td>
                         <td rowspan="4" class="message-flag col-xs-1">
                             <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
@@ -161,14 +162,46 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="message-subject col-xs-3">
-                            {{ message.formattedIndexedMailMessage.formattedMessageDate }}
+                        <td class="message-sender col-xs-3">
+                            <strong>From:</strong> {{ message.formattedIndexedMailMessage.sender.name }}
                         </td>
-                        <td class="message-date col-xs-8">
-                            {{ message.formattedIndexedMailMessage.formattedSize }}
+			<td class="message-age">
+				{{ message.formattedIndexedMailMessage.age }}
+			</td>
+                        <td class="message-date">
+                            <span class="message-date pull-right">{{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}</span>
                         </td>
                     </tr>
+		    <tr>
+			<td colspan="2" class="message-recipients">
+				<div class="message-recipients-line">
+					<strong>To:</strong> 
+					<span style="position:absolute;top:0px;right:0px;left:20px;word-wrap:break-word;height:13px;" class="truncate"
+					     trunc-text="{{ message.formattedIndexedMailMessage.toLine }}"
+					     trunc-desired-height="13"
+					     trunc-font-width="6" trunc-trailing-dots="true">
+					</span>
+				</div>
+				<div class="message-recipients-line">
+					<strong>CC:</strong> 
+					<span style="position:absolute;top:0px;right:0px;left:23px;word-wrap:break-word;height:13px;" class="truncate"
+					     trunc-text="{{ message.formattedIndexedMailMessage.ccLine }}"
+					     trunc-desired-height="13"
+					     trunc-font-width="6" trunc-trailing-dots="true">
+					</span>
+				</div>
+				<div class="message-recipients-line">
+					<strong>BCC/DL:</strong> 
+					<span style="position:absolute;top:0px;right:0px;left:50px;word-wrap:break-word;height:13px;" class="truncate"
+					     trunc-text="{{ message.formattedIndexedMailMessage.bccLine }}"
+					     trunc-desired-height="13"
+					     trunc-font-width="8" trunc-trailing-dots="true">
+					</span>
+				</div>
+			</td>
+		    </tr>
                     <tr>
+			<td></td>
                         <td colspan="2" class="dropdown-toggle">
                             <div class="widget-box widget-box-simple"
                                  ng-class="{'collapsed': message.collapsedBody}">
@@ -196,7 +229,6 @@
                     </tr>
                     <tr data-ng-show="hasAttachment(message)">
                         <td rowspan="1" class="message-icons col-xs-1">
-                            <i class="img-xs attachment-img-xs pull-left"></i>
                         </td>
                         <td colspan="2" class="dropdown-toggle">
                             <div class="widget-box widget-box-simple result-attachment"

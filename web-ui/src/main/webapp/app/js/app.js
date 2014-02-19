@@ -318,6 +318,11 @@ ironholdApp.directive('truncate', function() {
 	}
 });
 
+Date.prototype.getDayName = function() {
+	var d = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+	return d[this.getDay()];
+}
+
 String.prototype.endsWith = function(suffix) {
     return this.toLowerCase().indexOf(suffix.toLowerCase(), this.length - suffix.length) !== -1;
 };

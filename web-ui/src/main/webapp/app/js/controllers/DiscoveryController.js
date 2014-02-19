@@ -91,11 +91,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		searchMatches: result.payload.matches
 	    });
 		
-                $scope.msgs = result.payload.messages;
-                angular.forEach($scope.msgs, function(message) {
-                    message.collapsedBody = true;
-                    message.collapsedAttachments = false;
-                });
+                $scope.msgs = $scope.formatMessages(result.payload.messages);
  
                 searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
 		$scope.$emit('results', {
@@ -104,6 +100,27 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		});
         });
     });
+
+    $scope.formatMessages = function(messages) {
+	angular.forEach(messages, function(message) {
+	    message.collapsedBody = true;
+	    message.collapsedAttachments = false;
+		message.formattedIndexedMailMessage.toLine = '';
+		message.formattedIndexedMailMessage.ccLine = '';
+		message.formattedIndexedMailMessage.bccLine = '';
+	    message.formattedIndexedMailMessage.dayName = new Date(message.formattedIndexedMailMessage.messageDate).getDayName();
+	    angular.forEach(message.formattedIndexedMailMessage.to, function(to) {
+		message.formattedIndexedMailMessage.toLine += to.name + ' &lt;' + to.address + '&gt;; ';
+	    });
+	    angular.forEach(message.formattedIndexedMailMessage.cc, function(cc) {
+		message.formattedIndexedMailMessage.ccLine += cc.name + ' &lt;' + cc.address + '&gt;; ';
+	    });
+	    angular.forEach(message.formattedIndexedMailMessage.bcc, function(bcc) {
+		message.formattedIndexedMailMessage.bccLine += bcc.name + ' &lt;' + bcc.address + '&gt;; ';
+	    });
+	});
+	return messages;
+    }
 	
     $rootScope.$on('search', function(evt, args) {
 	$scope.inputSearch = args.inputSearch;
@@ -125,11 +142,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 			showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
 	    	});
 
-		    $scope.msgs = result.payload.messages;
-		    angular.forEach($scope.msgs, function(message) {
-			message.collapsedBody = true;
-			message.collapsedAttachments = false;
-		    });
+                    $scope.msgs = $scope.formatMessages(result.payload.messages);
+
 		    searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
 		    $scope.initCustomScrollbars('.scrollbar-hidden');
 
