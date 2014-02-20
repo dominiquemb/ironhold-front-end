@@ -15,6 +15,15 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     searchResultsService.prepForBroadcast("-", "- ");
 
+    $scope.$watch(function() {
+	return $('.msgview_middle .jspPane').height();
+	},
+	function() {
+		if ($('.msgview_middle .jspPane').length > 0) {
+			$scope.reinitScrollbars();
+		}
+     });
+
     $scope.initCustomScrollbars = function(selector) {
         $timeout(function() {
                 $(selector).jScrollPane({

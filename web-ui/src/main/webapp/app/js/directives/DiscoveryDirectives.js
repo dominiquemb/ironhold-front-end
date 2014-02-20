@@ -1,4 +1,5 @@
 'use strict';
+/*
 ironholdApp.directive('msgviewMain', function() {
 	return {
 		restrict: 'C',
@@ -14,4 +15,4 @@ ironholdApp.directive('msgviewMain', function() {
 			});
 		}
 	}
-});
+});*/

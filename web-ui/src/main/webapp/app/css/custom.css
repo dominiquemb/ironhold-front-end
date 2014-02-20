@@ -235,14 +235,15 @@ body .text-primary {
 .msgview .placeholder_text {
 	float: left;
 }
-
+/*
 .msgview .scrollbar-hidden,
 .msgview .scrollbar-hidden .jspContainer,
 .msgview .scrollbar-hidden .jspPane {
 	width: 100% !important;
 }
-
+*/
 .msgview .scrollbar-hidden > .jspContainer > .jspPane {
+	width: 100% !important;
 	padding-top: 0px !important;
 }
 
@@ -347,12 +348,16 @@ body .text-primary {
 
 .msgview_middle {
 	position: absolute;
-	height: auto;
+	bottom: 0px;
+	left: 12px;
+	right: 12px;
 	top: 120px;
 	margin: 0px 0px;
+	width: auto !important;
 }
 
 .msgview_middle .jspContainer {
+	width: 100% !important;
 	height: 100% !important;
 }
 
