@@ -6,6 +6,10 @@ html, body {
 	font-family: arial !important;
 }
 
+* {
+	outline: 0px !important;
+}
+
 body a {
 	color: #2e69b3;
 }
