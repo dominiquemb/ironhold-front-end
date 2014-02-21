@@ -1,13 +1,20 @@
-<div id="msgview-source" class="msgview-source tab-pane in active" data-ng-click="switchMode('source')">
+<div id="msgview-source" class="msgview-source tab-pane in active" data-ng-click="switchMode('sources')">
 	<span data-ng-hide="currentMessage">
 		Please select a message on the left.
 	</span>
-        <span data-ng-show="modeData.source.length === 0">
+        <span data-ng-show="!modeData.sources">
                 No Source data available.
         </span>
-        <table class="table table-striped table-hover">
-                <tr data-ng-repeat="row in modeData.source">
-                        <td></td>
-                </tr>
+        <table class="table table-striped table-hover" data-ng-show="modeData.sources">
+		<thead>
+			<th>Key</th>
+			<th>Value</th>
+		</thead>
+		<tbody>
+			<tr data-ng-repeat="(rowKey, rowValue) in modeData.sources">
+				<td> {{ rowKey }} </td>
+				<td> {{ rowValue }} </td>
+			</tr>
+		</tbody>
         </table>
 </div>

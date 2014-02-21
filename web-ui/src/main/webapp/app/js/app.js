@@ -31,8 +31,8 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/Discovery/HtmlTab.html"
 	    })
 
-	    .state('main.discovery.source', {
-		    url: "/source-mode",
+	    .state('main.discovery.sources', {
+		    url: "/sources-mode",
 		    templateUrl: "views/Discovery/SourceTab.html"
 	    })
 

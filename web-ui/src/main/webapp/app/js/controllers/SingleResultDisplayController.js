@@ -13,7 +13,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     }
 
     $rootScope.$on('modeData', function(evt, results) {
-	$scope.modeData[results.mode] = results.payload;
+	$scope.modeData[results.mode] = results.payload[0];
     });
 
     $rootScope.$on('mode', function(evt, mode) {
