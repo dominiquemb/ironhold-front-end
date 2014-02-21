@@ -984,7 +984,7 @@ body ul {
 	background-color: #fff;
 	padding: 0px;
 	cursor: pointer;
-/*	border-bottom: 1px solid #c5d0dc;*/ 
+	border-bottom: 1px solid #c5d0dc; 
 }
 
 .results .result.active-multi {
