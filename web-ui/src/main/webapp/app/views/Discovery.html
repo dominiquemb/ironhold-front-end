@@ -149,11 +149,28 @@
                             <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
                                class="pull-right img-xs envelope-img-xs"></i>
                         </td>
-                        <td colspan="2" class="message-subject" data-ng-bind-html="message.subjectWithHighlights">
-                        </td>
-                        <td class="message-size pull-right">
-                            {{ message.formattedIndexedMailMessage.formattedSize }}
-                        </td>
+			<td colspan="2">
+				<div>
+					<span class="message-subject" data-ng-bind-html="message.subjectWithHighlights">
+					</span>
+					<span class="message-size pull-right">
+						<strong> {{ message.formattedIndexedMailMessage.formattedSize }} </strong>
+					</span>
+				</div>
+				<div>
+					<span class="message-sender">
+					    <strong>From:</strong> {{ message.formattedIndexedMailMessage.sender.name }}
+					</span>
+					<span class="pull-right">
+						<span class="message-age">
+							<i>({{ message.formattedIndexedMailMessage.age }})</i>
+						</span>
+						<span class="message-date">
+						    <strong><span class="message-date">{{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}</span></strong>
+						</span>
+					</span>
+				</div>
+			</td>
                         <td rowspan="4" class="message-flag">
                             <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
                         </td>
@@ -162,15 +179,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="message-sender">
-                            <strong>From:</strong> {{ message.formattedIndexedMailMessage.sender.name }}
-                        </td>
-			<td class="message-age">
-				<i>({{ message.formattedIndexedMailMessage.age }})</i>
-			</td>
-                        <td class="message-date">
-                            <span class="message-date">{{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}</span>
-                        </td>
                     </tr>
 		    <tr>
 			<td colspan="3" class="message-recipients">

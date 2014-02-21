@@ -1025,6 +1025,7 @@ body ul {
 }
 
 .result .message-subject {
+	font-weight: bold;
 	width: auto;
 }
 
