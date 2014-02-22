@@ -48,10 +48,11 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         angular.forEach($scope.messages, function(message) {
             message.selected = false;
         });
-
+/*
 	$scope.$emit('updateSearch', {
 		inputSearch: $scope.inputSearch
 	});
+*/
     }
 
     $scope.selectMessage = function(message) {

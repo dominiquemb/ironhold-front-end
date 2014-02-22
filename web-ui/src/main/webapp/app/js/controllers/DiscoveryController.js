@@ -108,7 +108,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 	    });
 		
                 $scope.msgs = $scope.formatMessages(result.payload.messages);
- 
                 searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
 		$scope.$emit('results', {
 			'matches': result.payload.matches,
