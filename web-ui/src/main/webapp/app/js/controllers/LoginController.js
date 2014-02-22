@@ -9,7 +9,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.formSubmitted = false;
     $scope.formInvalid = false;
 
-    var restMessagesService = Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/users');
+    var restMessagesService = Restangular.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}');
 
     $scope.makeVisible = function(elemName) {
 	    $scope.currentlyVisible = elemName;
@@ -38,7 +38,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     }
 
     $scope.logIn = function() {
-        restMessagesService.one($scope.clientKey).one($scope.username).post("", $scope.password, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
+        restMessagesService.one('users').one($scope.clientKey).one($scope.username).post("", $scope.password, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
             if (result.payload.success) {
 		logInService.logIn($scope.clientKey, $scope.username);
 	    	/* This redirection should be improved later */
