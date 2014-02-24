@@ -37,13 +37,6 @@ body .text-primary {
 	right: 0px;
 }
 
-/* messages */
-.message-recipients-line {
-	position: relative;
-	height: 13px;
-	overflow: hidden;
-}
-
 /* filter-tag */
 .filter-tag-container {
 	margin: 0px 0px 0px -3px;
@@ -489,6 +482,14 @@ body .text-primary {
 
 .attachment-img {
 	background: url(../img/sprites/msgview_icons.png) -64px -46px;
+}
+
+.checkmark-white {
+	background: url(../img/sprites/email_icons.png) -30px 0px;
+}
+
+.dots-icon {
+	background: url(../img/sprites/email_icons.png) -30px -15px;
 }
 
 .img-xs {
@@ -989,6 +990,7 @@ body ul {
 	padding: 0px;
 	cursor: pointer;
 	border-bottom: 1px solid #c5d0dc; 
+	color: #333;
 }
 
 .results .result.active-multi {
@@ -1008,8 +1010,24 @@ body ul {
 	color: rgb(155, 155, 155);
 	font-size: 16px;
 	text-align: right;
-	width: 45px;
-	max-width: 45px;
+	width: 50px;
+	padding-right: 5px;
+	max-width: 50px;
+}
+
+.result .message-recipients-line {
+	padding-left: 48px;
+	position: relative;
+	height: 13px;
+	overflow: hidden;
+}
+
+.result .message-second-line {
+	color: #666;
+}
+
+.result .dropdown-toggle {
+	padding-left: 48px;
 }
 
 .result .message-sender {
@@ -1033,33 +1051,40 @@ body ul {
 	width: auto;
 }
 
+.result .message-size {
+	color: #666;
+	width: 50px;
+	font-size: 10px;
+	padding-top: 3px;
+	padding-right: 8px;
+}
+
 .result .message-sender,
 .result .message-subject,
-.result .message-date, 
-.result .message-size {
+.result .message-date { 
 	font-size: 12px;
 }
 
 .result .message-flag {
-	width: 20px;
-	max-width: 20px;
+	width: 40px;
+	padding-left: 16px;
+	max-width: 40px;
 	font-size: 16px;
 	color: rgb(155, 155, 155);
 }
 
 .result .checkmark {
-	width: 24px;
-	max-width: 24px;
+	width: 20px;
+	max-width: 20px;
 	padding-left: 3px;
 	padding-right: 3px;
-	visibility: hidden;
 	vertical-align: middle;
 	background-color: transparent;
 	color: rgb(158, 157, 157);
 }
 
 .result .checkmark:hover {
-	background-color: #4f99c6;
+	background-color: #3068b1;
 	visibility: visible;
 	color: #fff;
 }

@@ -144,20 +144,22 @@
                 <table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
                     <tbody>
                     <tr>
-                        <td rowspan="3" class="message-icons">
-                            <i class="img-xs attachment-img-xs pull-right"></i>
-                            <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
-                               class="pull-right img-xs envelope-img-xs"></i>
-                        </td>
-			<td colspan="2">
-				<div>
-					<span class="message-subject" data-ng-bind-html="message.subjectWithHighlights">
+                        <td colspan="5">
+			    <div class="message-first-line">
+				    <span class="message-icons pull-left">
+					    <i class="img-xs attachment-img-xs pull-right"></i>
+					    <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
+					       class="pull-right img-xs envelope-img-xs"></i>
+				    </span>
+				    <span class="message-subject" data-ng-bind-html="message.subjectWithHighlights">
+				    </span>
+			    </div>
+			    <div class="message-second-line">
+					<span class="message-size pull-left">
+						<span class="pull-right">
+							{{ message.formattedIndexedMailMessage.formattedSize }}
+						</span>
 					</span>
-					<span class="message-size pull-right">
-						<strong> {{ message.formattedIndexedMailMessage.formattedSize }} </strong>
-					</span>
-				</div>
-				<div>
 					<span class="message-sender">
 					    <strong>From:</strong> {{ message.formattedIndexedMailMessage.sender.name }}
 					</span>
@@ -169,16 +171,15 @@
 						    <strong><span class="message-date">{{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}</span></strong>
 						</span>
 					</span>
-				</div>
-			</td>
+			    </div>
+                        </td>
                         <td rowspan="4" class="message-flag">
                             <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
+                            <i class="img-xs dots-icon"></i>
                         </td>
                         <td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
-                            <i class="fa icon-check"></i>
+                            <i class="img-xs checkmark-white"></i>
                         </td>
-                    </tr>
-                    <tr>
                     </tr>
 		    <tr>
 			<td colspan="3" class="message-recipients">
@@ -218,7 +219,6 @@
 			</td>
 		    </tr>
                     <tr>
-			<td></td>
                         <td colspan="3" class="dropdown-toggle">
                             <div class="widget-box widget-box-simple"
                                  ng-class="{'collapsed': message.collapsedBody}">
