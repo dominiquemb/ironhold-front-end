@@ -19,10 +19,14 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $rootScope.$on('mode', function(evt, mode) {
 	$scope.$mode = mode;
 
+	if (mode === 'text') {
+		mode = '';
+	}
+
 	$scope.$emit('modeRequest', {
 		mode: mode,
 		messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
-		inputSearch: $scope.inputSearch
+		criteria: {'criteria': $scope.inputSearch}
 	});
     });
 

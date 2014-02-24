@@ -44,7 +44,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 	messagesService
 		.one(data.messageId)
 		.one(data.mode)
-		.get({criteria: data.inputSearch})
+		.get(data.criteria)
 		.then(function(result) {
 			$scope.$emit('modeData', {
 				mode: data.mode,
