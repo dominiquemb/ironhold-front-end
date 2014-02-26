@@ -17,7 +17,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 	    /* Discovery tab and subtabs */
 	    .state('main.discovery', {
 		    url: "/discovery",
-		    templateUrl: "views/Discovery.html",
+		    templateUrl: "views/TabContainers.html",
 		    controller: 'DiscoveryController'
 	    })
 

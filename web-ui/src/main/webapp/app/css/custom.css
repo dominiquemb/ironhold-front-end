@@ -37,6 +37,15 @@ body .text-primary {
 	right: 0px;
 }
 
+.tab-container {
+	background-color: #fff;
+	position: absolute;
+	top: 10px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
 /* filter-tag */
 .filter-tag-container {
 	margin: 0px 0px 0px -3px;

@@ -37,34 +37,33 @@
 	</div>
 	<div class="main-area">
 	<div class="navigation">
-	<div class="tabbable">
-	<ul class="top-nav upper nav nav-tabs padding-12 inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white" data-ng-controller="TabController">
-	    <li data-ng-class="{'active':getClass('discovery')}" data-ui-sref="main.discovery.text">
-		<a data-toggle="tab">Discovery</a>
-	    </li>
-	    <li data-ng-class="{'active':getClass('tags')}" data-ui-sref="main.tags">
-		<a data-toggle="tab">Tags</a>
-	    </li>
-	    <li data-ng-class="{'active':getClass('folders')}" data-ui-sref="main.folders">
-		<a data-toggle="tab">Folders</a>
-	    </li>
-	    <li data-ng-class="{'active':getClass('logs')}" data-ui-sref="main.logs">
-		<a data-toggle="tab">Logs</a>
-	    </li>
-	    <li data-ng-class="{'active':getClass('users')}" data-ui-sref="main.users">
-		<a data-toggle="tab">Users</a>
-	    </li>
-	    <li data-ng-class="{'active':getClass('settings')}" data-ui-sref="main.settings">
-		<a data-toggle="tab">Settings</a>
-	    </li>
-	</ul>
+		<div class="tabbable" data-ng-controller="TabController">
+			<ul class="top-nav upper nav nav-tabs padding-12 inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
+			    <li data-ng-class="{'active':getClass('discovery')}" data-ng-click="setActiveTab('discovery')">
+				<a data-toggle="tab">Discovery</a>
+			    </li>
+			    <li data-ng-class="{'active':getClass('tags')}" data-ng-click="setActiveTab('tags')">
+				<a data-toggle="tab">Tags</a>
+			    </li>
+			    <li data-ng-class="{'active':getClass('folders')}" data-ng-click="setActiveTab('folders')">
+				<a data-toggle="tab">Folders</a>
+			    </li>
+			    <li data-ng-class="{'active':getClass('logs')}" data-ng-click="setActiveTab('logs')">
+				<a data-toggle="tab">Logs</a>
+			    </li>
+			    <li data-ng-class="{'active':getClass('users')}" data-ng-cick="setActiveTab('users')">
+				<a data-toggle="tab">Users</a>
+			    </li>
+			    <li data-ng-class="{'active':getClass('settings')}" data-ng-click="setActiveTab('settings')">
+				<a data-toggle="tab">Settings</a>
+			    </li>
+			</ul>
 
-	<div class="tab-content top-nav" data-ui-view>
-
-	</div>
-	<!-- .tab-content -->
-	</div>
-	<!-- .tabbable -->
+			<div class="tab-content top-nav" data-ui-view>
+			</div>
+			<!-- .tab-content -->
+		</div>
+		<!-- .tabbable -->
 	</div>
 	<!-- .navigation -->
 	</div>
