@@ -5,11 +5,19 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     $scope.activeTab = 'discovery';
 
     $scope.getClass = function (path) {
+/*
         if ($location.path().endsWith(path) || $location.path().indexOf(path) > 0) {
             return true
         } else {
             return false;
         }
+*/
+	if ($scope.isActiveTab(path)) {
+	    return true;
+	}
+	else {
+	    return false;
+	}
     }
 
     $scope.setActiveTab = function(tab) {

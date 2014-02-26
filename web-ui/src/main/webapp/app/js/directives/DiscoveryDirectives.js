@@ -3,7 +3,8 @@
 ironholdApp.directive('discoveryTabContainer', function() {
 	return {
 		restrict: 'ACE',
-		templateUrl: 'views/Discovery.html'
+		templateUrl: 'views/Discovery.html',
+		controller: 'DiscoveryController'
 	}
 });
 
