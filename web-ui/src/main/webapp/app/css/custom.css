@@ -994,6 +994,10 @@ body ul {
 	width: 100%;
 }
 
+.results .jspContainer {
+	right: -1px;
+}
+
 .results .result {
 	background-color: #fff;
 	padding: 0px;
@@ -1222,6 +1226,24 @@ body ul {
 	bottom: 81px;
 	top: 18px;
 /*	background-color: #f3f3f3; */
+}
+
+.filter-list .jspVerticalBar,
+.filter-list .jspHorizontalBar {
+	  /* IE 8 */
+	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
+	  /* IE 5-7 */
+	  filter: alpha(opacity=0);
+
+	  /* Netscape */
+	  -moz-opacity: 0;
+
+	  /* Safari 1.x */
+	  -khtml-opacity: 0;
+
+	  /* Good browsers */
+	  opacity: 0;
 }
 
 .sidebar-left .filter-list .jspContainer {

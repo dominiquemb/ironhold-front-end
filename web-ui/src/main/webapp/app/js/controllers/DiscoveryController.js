@@ -31,6 +31,14 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
                         horizontalArrowPositions: 'split',
 			showArrows: true
                 });
+
+		$('.filter-list .jspContainer').mouseenter(function(){
+		    $(this).find('.jspVerticalBar, .jspHorizontalBar').animate({opacity:1}, 400);
+		});
+
+		$('.filter-list .jspContainer').mouseleave(function(){
+		    $(this).find('.jspVerticalBar, .jspHorizontalbar').animate({opacity:0}, 400);
+		});
         }, 0);
     }
 
