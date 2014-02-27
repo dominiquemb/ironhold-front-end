@@ -493,8 +493,24 @@ body .text-primary {
 	background: url(../img/sprites/msgview_icons.png) -64px -46px;
 }
 
-.checkmark-white {
+.result.active-single .checkmark .checkmark-icon,
+.result.active-multi .checkmark .checkmark-icon {
 	background: url(../img/sprites/email_icons.png) -30px 0px;
+}
+
+.result.active-single .checkmark:hover .checkmark-icon,
+.result.active-multi .checkmark:hover .checkmark-icon {
+	background: url(../img/sprites/email_icons.png) -30px 0px;
+}
+
+.result:hover .checkmark .checkmark-icon,
+.result:hover .checkmark .checkmark-icon {
+	background: url(../img/sprites/email_icons.png) -30px 0px;
+}
+
+.result .checkmark:hover .checkmark-icon,
+.result .checkmark:hover .checkmark-icon {
+	background: url(../img/sprites/email_icons.png) 0px -30px;
 }
 
 .dots-icon {
