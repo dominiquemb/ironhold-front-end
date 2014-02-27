@@ -41,29 +41,8 @@
         </form>
     </div>
 	<div class="row middlebar">
-					<span class="pull-right middlebar_right pagination-container"
+					<span class="pull-right middlebar_right pagination pagination-container"
 					      data-ng-show="showSearchPreviewResults">
-										<ul class="pull-right pagination-plain text-primary">
-						<li data-ng-hide="currentPage==1">
-						    &lt; <a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">previous</a>
-						    |&nbsp;
-						</li>
-						<li class="active" data-ng-hide="currentPage==1">
-						    pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{
-						    currentPage - 1 }}</a>,
-						</li>
-						<li>
-						    &nbsp;{{ currentPage }},
-						</li>
-						<li>
-						    &nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{
-						    currentPage + 1 }}</a>
-						</li>
-						<li>
-						    &nbsp;| <a class="pagination_last" data-ng-click="goTo(currentPage + 1)">next</a>
-						    &gt;
-						</li>
-					    </ul>
 					</span>
 
 	    <div class="matches_number blue-primary puill-left" data-ng-show="showSuggestions">

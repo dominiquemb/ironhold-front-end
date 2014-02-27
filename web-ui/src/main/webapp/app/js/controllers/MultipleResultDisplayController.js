@@ -94,10 +94,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         $scope.currentPage = 1;
     }
 
-    $scope.goTo = function(page) {
-        if (page > 0) {
-            $scope.currentPage = page;
-	    $scope.$emit('pageChange', page);
-        }
-    }
+    $rootScope.$on('pageChange', function(evt, page) {
+	$scope.currentPage = page;
+    });
 });

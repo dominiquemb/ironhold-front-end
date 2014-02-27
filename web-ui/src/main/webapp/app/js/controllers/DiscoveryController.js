@@ -5,7 +5,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 
     $scope.msgs;
     $scope.pageSize = 10;
-    $scope.currentPage = 1;
     $scope.selectedFacets = [];
 
     window.onresize = function(){
@@ -23,6 +22,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 			$scope.reinitScrollbars();
 		}
      });
+
+    $rootScope.$on('pageChange', function() {
+	$scope.reinitScrollbars();
+    });
 
     $scope.initCustomScrollbars = function(selector) {
         $timeout(function() {

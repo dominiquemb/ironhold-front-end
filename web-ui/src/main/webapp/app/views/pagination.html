@@ -1,0 +1,18 @@
+<ul class="pull-right pagination-plain text-primary">
+	<li data-ng-hide="currentPage==1">
+		<a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">&lt; previous</a> |&nbsp;
+	</li>
+	<li class="active" data-ng-hide="currentPage==1">
+		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
+	</li>
+	<li>
+		&nbsp;{{ currentPage }},
+	</li>
+	<li>
+		&nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{currentPage + 1 }}</a>
+	</li>
+	<li>
+		&nbsp;| <a class="pagination_last" data-ng-click="goTo(currentPage + 1)">next &gt;</a>
+	</li>
+</ul>
+

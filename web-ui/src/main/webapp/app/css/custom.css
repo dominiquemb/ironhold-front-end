@@ -660,6 +660,7 @@ body .text-primary {
 	position: relative;
 	margin-left: -1px;
 	min-height: 81px;
+	padding-right: 15px;
 }
 
 .searchbar .input-group {
@@ -692,11 +693,11 @@ body .text-primary {
 .pagination {
 	margin: 0px;
 }
-
+/*
 .pagination li a {
 	padding: 2px 7px;
 }
-
+*/
 .pagination-plain li {
 	float: left;
 	color: #666;

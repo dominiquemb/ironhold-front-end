@@ -1,5 +1,14 @@
 'use strict';
 
+ironholdApp.directive('pagination', function() {
+	return {
+		restrict: 'ACE',
+		scope: true,
+		templateUrl: 'views/pagination.html',
+		controller: 'PaginationController'
+	}
+});
+
 ironholdApp.directive('discoveryTabContainer', function() {
 	return {
 		restrict: 'ACE',
