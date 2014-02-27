@@ -64,7 +64,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
         messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: inputSearch}).then(function(result) {
 	    $scope.$emit('selectResultData', result);
-            $scope.$emit('selectMessage', message);
+            $scope.$emit('selectMessage', result.payload.messages[0]);
         });
     });
 
