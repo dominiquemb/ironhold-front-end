@@ -15,13 +15,30 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     searchResultsService.prepForBroadcast("-", "- ");
 
     $scope.$watch(function() {
-	return $('.msgview_middle .jspPane').height();
-	},
-	function() {
 		if ($('.msgview_middle .jspPane').length > 0) {
-			$scope.reinitScrollbars();
+			return $('.msgview_middle .jspPane').height();
+		}
+		else return 0;
+	},
+	function(newval, oldval) {
+		if (newval !== oldval) {
+			if ($('.msgview_middle .jspPane').length > 0) {
+				$scope.reinitScrollbars();
+			}
 		}
      });
+
+    $scope.$watch(function() {
+	return $('.dashboard').width();
+	},
+	function(newval, oldval) {
+		if (newval >= 1430) {
+			$('.msgview').addClass('expandable');
+		}
+		if (newval < 1430) {
+			$('.msgview').removeClass('expandable');
+		}
+	});
 
     $rootScope.$on('pageChange', function() {
 	$scope.reinitScrollbars();

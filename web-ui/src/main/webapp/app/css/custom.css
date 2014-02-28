@@ -152,7 +152,7 @@ body .text-primary {
 .main-area > .navigation > .tabbable, 
 .main-area > .navigation, 
 .wrapper {
-	min-width: 1230px;
+	min-width: 1550px;
 	width: 100%;
 	min-height: 250px;
 }
@@ -224,6 +224,11 @@ body .text-primary {
 	overflow: hidden !important;
 	padding-left: 0px;
 	width: 717px;
+}
+
+.msgview.expandable {
+	left: 1419px;
+	width: auto;
 }
 
 .msgview .placeholder_text {
@@ -1201,8 +1206,18 @@ body ul {
 	width: auto;
 	left: 0px;
 	right: 706px;
-	max-width: 1200px;
-	min-width: 600px;
+	max-width: 1430px;
+	min-width: 830px;
+}
+
+.facets-dropdown {
+	border-right: 1px solid #c5d0dc;
+	border-top: 1px solid #c5d0dc;
+	left: -230px;
+	padding: 10px 15px;
+	position: absolute;
+	top: 51px;
+	width: 230px;
 }
 
 /* sidebar-left (facet panel) */
