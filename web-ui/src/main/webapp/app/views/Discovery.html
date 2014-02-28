@@ -1,6 +1,6 @@
 <div id="tab-discovery" class="tab-discovery tab-pane in active">
 <div class="main">
-<div class="dashboard col-xs-7">
+<div class="dashboard">
 <div class="searchbar row">
     <div class="search-query">
         <form class="form-search">
@@ -41,11 +41,10 @@
         </form>
     </div>
 	<div class="row middlebar">
-					<span class="pull-right middlebar_right pagination pagination-container"
-					      data-ng-show="showSearchPreviewResults">
-					</span>
+		<span class="pull-right middlebar_right pagination pagination-container">
+		</span>
 
-	    <div class="matches_number blue-primary puill-left" data-ng-show="showSuggestions">
+	    <div class="matches_number blue-primary pull-left">
 		Did you mean: <span data-ng-repeat="suggestion in suggestions">
 							<span data-ng-repeat="option in suggestion.options"><a
 								data-ng-click="replaceSearchInput(suggestion.text, option)">{{ option
@@ -75,10 +74,7 @@
 	</div>
 </div>
 <div class="row msglist">
-    <div class="pull-left toshrink sidebar-left facet-collection" data-ng-show="showFacets">
-        <div class="toggle pull-right">
-            <i class="fa icon-angle-left"></i>
-        </div>
+    <div class="pull-left sidebar-left facet-collection">
         <div class="scrollbar-hidden filter-list">
             <ul class="filter-list-inner">
                 <li class="widget-box widget-box-simple filter-container row collapsible" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
@@ -116,7 +112,7 @@
         </div>
         <!-- .filter-list -->
     </div>
-    <div class="listing togrow scrollbar-hidden message-list-container results-feed" data-ng-show="showSearchResults">
+    <div class="listing togrow scrollbar-hidden message-list-container results-feed">
         <ul class="results message-list">
             <li class="result message-item message-item-unbordered" data-ng-repeat="message in messages"
                 data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
@@ -135,7 +131,7 @@
 			    </div>
 			    <div class="message-second-line">
 					<span class="message-size pull-left">
-						<span class="pull-right">
+						<span class="pull-left">
 							{{ message.formattedIndexedMailMessage.formattedSize }}
 						</span>
 					</span>
@@ -259,7 +255,7 @@
     </div>
 </div>
 </div>
-	<div class="col-xs-5 msgview result-detail" data-ng-show="showContainer">
+	<div class="msgview result-detail">
 		<div class="tabbable">
 			<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
 			    <li data-ng-class="{'active': isModeActive('text')}">
