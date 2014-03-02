@@ -8,8 +8,10 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.selectedFacets = [];
 
     window.onresize = function(){
-	$scope.reinitScrollbars();
-        $scope.$apply();
+	if ($scope.scrollbars) {
+		$scope.reinitScrollbars();
+		$scope.$apply();
+	}
     }
 
     searchResultsService.prepForBroadcast("-", "- ");
@@ -45,6 +47,7 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     });
 
     $scope.initCustomScrollbars = function(selector) {
+	$scope.scrollbars = true;
         $timeout(function() {
                 $(selector).jScrollPane({
                         verticalArrowPositions: 'split',

@@ -219,8 +219,8 @@ body .text-primary {
 .msgview {
 	position: absolute;
 	right: 0px;
-	bottom: 0px;
-	top: -5px;
+	bottom: -9px;
+	top: -6px;
 	overflow: hidden !important;
 	padding-left: 0px;
 	width: 717px;
@@ -236,11 +236,11 @@ body .text-primary {
 }
 
 .msgview .tabbable {
-	top: 0px;
+	top: 2px;
 	position: absolute;
 	right: 0px;	
 	left: 10px;
-	bottom:0px;
+	bottom: -9px;
 }
 
 .msgview .placeholder_text {
@@ -259,13 +259,16 @@ body .text-primary {
 }
 
 .msgview > .tabbable > .tab-content {
+	background-color: #fff;
 	right: 0px;
 	left: 0px;
+	padding: 0px 14px;
 	position: absolute;
 	bottom: 0px;
 	overflow: hidden;
-	top: 32px;
+	top: 24px;
 	padding-top: 0px;
+	border-bottom: 0px;
 }
 
 .msgview .label {
@@ -280,10 +283,10 @@ body .text-primary {
 }
 
 .msgview .label-content {
+	padding: 6px 17px;
 	overflow: hidden;
 	font-size: 11px;
 	min-height: 19px;
-	padding-left: 10px;
 	height: 19px;
 	margin-bottom: 5px;
 	margin-top: 2px;
@@ -302,7 +305,7 @@ body .text-primary {
 	height: 36px;
 	margin-bottom: 11px;
 	width: 100%;
-	padding-left: 48px;
+	padding-left: 53px;
 	word-wrap: break-word;
 }
 
@@ -334,7 +337,7 @@ body .text-primary {
 }
 
 .msgview_main {
-	margin-top: 10px;
+	margin-top: 12px;
 }
 
 .msgview_bottom {
@@ -359,10 +362,10 @@ body .text-primary {
 
 .msgview_middle {
 	position: absolute;
-	bottom: 0px;
+	bottom: 12px;
 	left: 12px;
-	right: 12px;
-	top: 120px;
+	right: 11px;
+	top: 127px;
 	margin: 0px 0px;
 	width: auto !important;
 }
@@ -385,7 +388,7 @@ body .text-primary {
 .msgview_middle .message-body-container {
 	margin-top: 30px;
 	width: 100%;
-	padding-left: 48px;
+	padding-left: 57px;
 	word-wrap: break-word;
 }
 
@@ -618,6 +621,7 @@ body .text-primary {
 }
 
 .navigation .top-nav.nav-tabs {
+	border-bottom: 0px;
 	line-height: 14px;
 	margin-top: -27px;
 	margin-left: 230px;
@@ -664,6 +668,8 @@ body .text-primary {
 .searchbar {
 	position: relative;
 	margin-left: 230px;
+	border-top: 1px solid #C5D0DC;
+	padding-top: 9px;
 	margin-right: 0px;
 	min-height: 81px;
 	padding-right: 0px;
@@ -683,7 +689,7 @@ body .text-primary {
 
 .searchbar .search-query {
 	position: absolute;
-	right: 15px;
+	right: 7px;
 	left: 0px;
 	padding-left: 0px;
 }
@@ -721,7 +727,7 @@ body .text-primary {
 .middlebar {
 	padding-bottom: 0px;
 	margin-left: 0px;
-	margin-right: 1px;
+	margin-right: 0px;
 	position: relative;
 	margin-top: 29px;
 }
@@ -757,15 +763,16 @@ body .text-primary {
 .middlebar_center {
 	margin-left: 0px;
 	border-top: 1px solid #C5D0DC;
+	border-bottom: 1px solid #C5D0DC;
 	width: 100%;
-	height: 42px;
+	height: 43px;
 	clear: left;
 	min-height: 42px;
 	background-color: #f3f3f3;
 }
 
 .middlebar .pagination-container {
-	margin-right: 15px;
+	margin-right: 9px;
 	margin-top: 2px;
 }
 
@@ -786,8 +793,10 @@ body .text-primary {
 
 /* msgview controlbar */
 .controlbar {
+	margin-left: -14px;
+	margin-right: -14px;
 	border-bottom: 1px solid #c5d0dc;
-	height: 66px;
+	height: 79px;
 	width: auto;
 }
 
@@ -807,7 +816,7 @@ body .text-primary {
 }
 
 .controlbar_item {
-	margin: 5px 5px;
+	margin: 9px 5px 5px;
 	width: auto;
 	text-align: center;
 }
@@ -912,14 +921,13 @@ body ul {
 
 .msglist .message-list-container {
 	position: absolute;
-	right: 0px;
+	right: 3px;
 	width: auto !important;
-	margin-left: 230px;
-	border-top: 1px solid #c5d0dc;
+	margin-left: 240px;
 	padding-top: 10px;
 	min-height: 220px;
-	top: 0px;
-	bottom: 98px;
+	top: 3px;
+	bottom: 107px;
 	left: 0px;
 }
 
@@ -930,7 +938,7 @@ body ul {
 
 .msglist .message-list-container .jspPane {
 	left: 0px !important;
-	right: 15px !important;
+	right: 27px !important;
 	width: auto !important;
 /*	width: 100% !important; */
 }
@@ -1200,23 +1208,25 @@ body ul {
 .dashboard {
 	overflow: hidden !important;
 	position: absolute;
-	bottom: 0px;
-	top: 0px;
+	bottom: -9px;
+	top: -4px;
 	padding-right: 0px;
 	width: auto;
 	left: 0px;
 	right: 706px;
 	max-width: 1430px;
 	min-width: 830px;
+	border-right: 1px solid #c5d0dc;
 }
 
 .facets-dropdown {
+	height: 42px;
 	border-right: 1px solid #c5d0dc;
 	border-top: 1px solid #c5d0dc;
 	left: -230px;
 	padding: 10px 15px;
 	position: absolute;
-	top: 51px;
+	top: 60px;
 	width: 230px;
 }
 
@@ -1226,6 +1236,7 @@ body ul {
 	min-width: 230px;
 	border-right: 1px solid #c5d0dc;
 	height: 100%;
+	margin-top: -1px;
 	padding-left: 0px;
 	margin-left: 0px;
 	width: 230px;
@@ -1264,7 +1275,7 @@ body ul {
 	left: -3px;
 	position: absolute;
 	width: 230px;
-	bottom: 98px;
+	bottom: 107px;
 	top: 3px;
 /*	background-color: #f3f3f3; */
 }
@@ -1496,10 +1507,18 @@ body ul {
 /* nav-tabs */
 .nav-tabs {
 	font-weight: normal;
+	background-color: transparent !important;
 }
 
 .nav-tabs.nav > li > a {
-	padding: 8px 14px;
+	padding: 4px 24px;
+	font-size: 12px	
+	line-height: 6px !important;
+	background-color: transparent !important;
+}
+
+.nav-tabs.nav > li.active > a {
+	background-color: #fff !important;
 }
 
 .nav-tabs[class*="tab-color"].inactive-text-gray > li > a {
@@ -1516,10 +1535,11 @@ body ul {
 
 .nav-tabs[class*="tab-color"].hover-active-text-blue > li.active:hover > a {
 	color: #2e69b3;
+	background-color: #fff !important;
 }
 
 .nav-tabs[class*="tab-color"].hover-inactive-tab-color-blue > li:hover > a {
-	background-color: #2e69b3;
+	background-color: #2e69b3 !important;
 }
 
 .nav-tabs[class*="tab-color"].active-border-gray > li.active > a {
