@@ -15,6 +15,8 @@ body a {
 }
 
 body {
+	border-left: 1px solid #3068b1 !important;
+	border-right: 1px solid #3068b1 !important;
 	position: absolute;
 	bottom: 19px;
 	width: 100%;
@@ -106,6 +108,7 @@ body .text-primary {
 }
 
 .form-search .input-group .search-input {
+	font-size: 11px;
 	height: 18px;
 	padding: 0px;
 	margin: 4px 0px;
@@ -152,9 +155,9 @@ body .text-primary {
 .main-area > .navigation > .tabbable, 
 .main-area > .navigation, 
 .wrapper {
-	min-width: 1550px;
+	min-width: 1547px;
 	width: 100%;
-	min-height: 250px;
+	min-height: 400px;
 }
 
 .main-area {
@@ -223,7 +226,7 @@ body .text-primary {
 	top: -6px;
 	overflow: hidden !important;
 	padding-left: 0px;
-	width: 717px;
+	width: 718px;
 }
 
 .msgview .placeholder_text {
@@ -234,7 +237,7 @@ body .text-primary {
 	top: 2px;
 	position: absolute;
 	right: 0px;	
-	left: 10px;
+	left: 0px;
 	bottom: -9px;
 }
 
@@ -314,7 +317,7 @@ body .text-primary {
 .msgview_date {
 	height: 22px;
 	overflow: hidden;
-	font-size: 15px;
+	font-size: 16px;
 	line-height: 10px;
 	margin: 2px 0px 0px 0px;
 }
@@ -381,7 +384,7 @@ body .text-primary {
 }
 
 .msgview_middle .message-body-container {
-	margin-top: 30px;
+	margin-top: 24px;
 	width: 100%;
 	padding-left: 57px;
 	word-wrap: break-word;
@@ -630,6 +633,7 @@ body .text-primary {
 
 .navigation .nav-tabs > li > a {
 	line-height: 14px;
+	font-size: 10px;
 }
 
 /* searchbar */
@@ -725,6 +729,7 @@ body .text-primary {
 	margin-right: 0px;
 	position: relative;
 	margin-top: 29px;
+	font-size: 11px;
 }
 
 .middlebar .btn-group .btn {
@@ -772,8 +777,9 @@ body .text-primary {
 }
 
 .middlebar .matches_number {
+	height: 22px;
 	margin-left: 2px;
-	line-height: 22px;
+	line-height: 12px;
 }
 
 /*
@@ -811,7 +817,7 @@ body .text-primary {
 }
 
 .controlbar_item {
-	margin: 9px 5px 5px;
+	margin: 8px 0px;
 	width: auto;
 	text-align: center;
 }
@@ -833,7 +839,7 @@ body .text-primary {
 }
 
 .controlbar_item-name {
-	margin: 0px 13px;
+	margin: 0px 11px;
 }
 
 .controlbar-group-row .controlbar_item-name {
@@ -901,6 +907,12 @@ body ul {
 	margin: 0px;
 }
 
+.msglist .jspVerticalBar {
+	bottom: 0px;
+	height: auto;
+	top: 3px;
+}
+
 .msglist.docked .sidebar-left {
 	min-width: 0px;
 	width: 25px !important;
@@ -921,7 +933,7 @@ body ul {
 	margin-left: 240px;
 	padding-top: 10px;
 	min-height: 220px;
-	top: 3px;
+	top: 0px;
 	bottom: 107px;
 	left: 0px;
 }
@@ -1027,7 +1039,6 @@ body ul {
 	background-color: #fff;
 	padding: 0px;
 	cursor: pointer;
-	border-bottom: 1px solid #c5d0dc; 
 	color: #333;
 }
 
@@ -1049,31 +1060,36 @@ body ul {
 	font-size: 16px;
 	text-align: right;
 	width: 59px;
-	padding-right: 5px;
+	padding-right: 15px;
 	max-width: 59px;
 }
 
 .result .message-recipients-line {
-	padding-left: 60px;
+	padding-left: 67px;
 	position: relative;
 	height: 13px;
 	overflow: hidden;
+	font-size: 10px;
 }
 
 .result .message-first-line {
 	line-height: 17px;
+	padding-right: 7px;
 }
 
 .result .message-second-line {
 	color: #666;
+	padding-right: 7px;
 }
 
 .result .dropdown-toggle {
-	padding-left: 48px;
+	padding-left: 59px;
+	font-size: 11px;
 }
 
 .result .message-sender {
 	min-width: 150px;
+	padding-left: 6px;
 }
 
 .result .message-age {
@@ -1091,6 +1107,7 @@ body ul {
 .result .message-subject {
 	font-weight: bold;
 	width: auto;
+	padding-left: 6px;
 }
 
 .result .message-size {
@@ -1109,7 +1126,7 @@ body ul {
 
 .result .message-flag {
 	width: 40px;
-	padding-left: 16px;
+	padding-left: 18px;
 	max-width: 40px;
 	font-size: 16px;
 	color: rgb(155, 155, 155);
@@ -1208,7 +1225,7 @@ body ul {
 	padding-right: 0px;
 	width: auto;
 	left: 0px;
-	right: 706px;
+	right: 724px;
 	max-width: 1430px;
 	min-width: 830px;
 	border-right: 1px solid #c5d0dc;
