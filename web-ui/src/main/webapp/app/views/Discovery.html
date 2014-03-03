@@ -48,11 +48,12 @@
 		</span>
 
 	    <div class="matches_number blue-primary pull-left">
-		Did you mean: <span data-ng-repeat="suggestion in suggestions">
+		<span data-ng-show="showSuggestions">Did you mean: <span data-ng-repeat="suggestion in suggestions">
 							<span data-ng-repeat="option in suggestion.options"><a
 								data-ng-click="replaceSearchInput(suggestion.text, option)">{{ option
 							    }}</a> </span>
 						    </span>
+		</span>
 	    </div>
 	    <div class="matches_number blue-primary pull-left">
 		<span data-ng-show="showSearchPreviewResults && !currentlySearching">

@@ -226,11 +226,6 @@ body .text-primary {
 	width: 717px;
 }
 
-.msgview.expandable {
-	left: 1419px;
-	width: auto;
-}
-
 .msgview .placeholder_text {
 	position: absolute;
 }

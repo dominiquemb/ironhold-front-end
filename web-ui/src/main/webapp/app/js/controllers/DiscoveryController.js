@@ -30,18 +30,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
 		}
      });
 
-    $scope.$watch(function() {
-	return $('.dashboard').width();
-	},
-	function(newval, oldval) {
-		if (newval >= 1430) {
-			$('.msgview').addClass('expandable');
-		}
-		if (newval < 1430) {
-			$('.msgview').removeClass('expandable');
-		}
-	});
-
     $rootScope.$on('pageChange', function() {
 	$scope.reinitScrollbars();
     });
