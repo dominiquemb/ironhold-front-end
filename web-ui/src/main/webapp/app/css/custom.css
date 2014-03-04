@@ -662,8 +662,7 @@ body .text-primary {
 .searchbar {
 	position: relative;
 	margin-left: 230px;
-	border-top: 1px solid #C5D0DC;
-	padding-top: 9px;
+	padding-top: 10px;
 	margin-right: 0px;
 	min-height: 81px;
 	padding-right: 0px;
@@ -1219,7 +1218,7 @@ body ul {
 	overflow: hidden !important;
 	position: absolute;
 	bottom: -9px;
-	top: -4px;
+	top: -5px;
 	padding-right: 0px;
 	width: auto;
 	left: 0px;
