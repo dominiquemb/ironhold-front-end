@@ -621,7 +621,7 @@ body .text-primary {
 .navigation .top-nav.nav-tabs {
 	border-bottom: 0px;
 	line-height: 14px;
-	margin-top: -27px;
+	margin-top: -26px;
 	margin-left: 230px;
 }
 
@@ -716,6 +716,7 @@ body .text-primary {
 
 .pagination-plain li a {
 	color: #2e69b3;
+	cursor: pointer;
 }
 
 .pagination.pagination-background-white > li > a {
@@ -818,6 +819,7 @@ body .text-primary {
 
 .controlbar_item {
 	margin: 8px 0px;
+	cursor: pointer;
 	width: auto;
 	text-align: center;
 }
@@ -840,6 +842,7 @@ body .text-primary {
 
 .controlbar_item-name {
 	margin: 0px 11px;
+	cursor: pointer;
 }
 
 .controlbar-group-row .controlbar_item-name {
@@ -1523,6 +1526,7 @@ body ul {
 }
 
 .nav-tabs.nav > li > a {
+	cursor: pointer;
 	padding: 4px 24px;
 	font-size: 12px	
 	line-height: 6px !important;
