@@ -1085,8 +1085,8 @@ body ul {
 	padding-right: 7px;
 }
 
-.result .dropdown-toggle {
-	padding-left: 59px;
+.result .preview {
+	padding-left: 11px;
 	font-size: 11px;
 }
 
@@ -1486,6 +1486,7 @@ body ul {
 
 /* widget-box */
 .widget-box.widget-box-simple .widget-header > :first-child {
+	line-height: 13px;
 	padding-right: 3px;
 }
 

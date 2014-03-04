@@ -198,17 +198,12 @@
 			</td>
 		    </tr>
                     <tr>
-                        <td colspan="3" class="dropdown-toggle">
+			<td class="message-icons col-xs-1" rowspan="1">
+                        </td>
+                        <td colspan="3" class="body-preview preview">
                             <div class="widget-box widget-box-simple"
                                  ng-class="{'collapsed': message.collapsedBody}">
 				<span class="widget-header pull-left dropdown-header">
-					<span class="widget-toolbar">
-						<a>
-                            <strong data-ng-click="toggleCollapse(message, 'collapsedBody')"
-                               data-ng-class="{'icon-four-thirty-up': message.collapsedBody  === false, 'icon-four-thirty-down': message.collapsedBody === true}"
-                               class="icon-on-right"></strong>
-                        </a>
-					</span>
 					<strong class="dropdown-title">Body</strong>
 				</span>
 				<span class="widget-body">
@@ -226,18 +221,11 @@
                     <tr data-ng-show="hasAttachment(message)">
                         <td rowspan="1" class="message-icons col-xs-1">
                         </td>
-                        <td colspan="2" class="dropdown-toggle">
+                        <td colspan="2" class="attachment-preview preview">
                             <div class="widget-box widget-box-simple result-attachment"
                                  data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments"
                                  ng-class="{'collapsed': attachment.collapsed}">
 				<span class="widget-header pull-left dropdown-header">
-					<span class="widget-toolbar">
-						<a>
-                            <b ng-click="toggleCollapse(attachment)"
-                               ng-class="{'icon-four-thirty-up': attachment.collapsed  === false, 'icon-four-thirty-down': attachment.collapsed === true}"
-                               class="icon-on-right"></b>
-                        </a>
-					</span>
 					<strong class="dropdown-title">{{ attachment.fileName }}</strong>
 				</span>
 				<span class="widget-body">
