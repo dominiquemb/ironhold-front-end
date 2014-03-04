@@ -631,12 +631,6 @@ body .text-primary {
 	padding: 12px 0px 0px 0px;
 }
 
-.navigation .nav-tabs > li > a {
-	height: 25px;
-	line-height: 14px;
-	font-size: 10px;
-}
-
 /* searchbar */
 .searchbar .input-history {
 	position: absolute;
@@ -1530,9 +1524,10 @@ body ul {
 .nav-tabs.nav > li > a {
 	cursor: pointer;
 	padding: 4px 24px;
-	font-size: 12px	
-	line-height: 6px !important;
+	font-size: 10px;
+	line-height: 16px !important;
 	background-color: transparent !important;
+	height: 25px;
 }
 
 .nav-tabs.nav > li.active > a {
