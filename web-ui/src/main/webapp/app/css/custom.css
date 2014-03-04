@@ -47,6 +47,14 @@ body .text-primary {
 	bottom: 0px;
 }
 
+.tags-tab-container,
+.folders-tab-container,
+.logs-tab-container,
+.users-tab-container,
+.settings-tab-container {
+	top: 55px;
+}
+
 /* filter-tag */
 .filter-tag-container {
 	margin: 0px 0px 0px -3px;
@@ -775,7 +783,7 @@ body .text-primary {
 .middlebar .matches_number {
 	height: 22px;
 	margin-left: 2px;
-	line-height: 12px;
+	line-height: 20px;
 }
 
 /*
@@ -905,7 +913,7 @@ body ul {
 	margin: 0px;
 }
 
-.msglist .jspVerticalBar {
+.msglist .listing .jspVerticalBar {
 	bottom: 0px;
 	height: auto;
 	top: 3px;
@@ -926,7 +934,7 @@ body ul {
 
 .msglist .message-list-container {
 	position: absolute;
-	right: 3px;
+	right: 4px;
 	width: auto !important;
 	margin-left: 240px;
 	padding-top: 10px;
@@ -1219,7 +1227,7 @@ body ul {
 	overflow: hidden !important;
 	position: absolute;
 	bottom: -9px;
-	top: -5px;
+	top: -4px;
 	padding-right: 0px;
 	width: auto;
 	left: 0px;
