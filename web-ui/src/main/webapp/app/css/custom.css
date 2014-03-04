@@ -632,6 +632,7 @@ body .text-primary {
 }
 
 .navigation .nav-tabs > li > a {
+	height: 25px;
 	line-height: 14px;
 	font-size: 10px;
 }
