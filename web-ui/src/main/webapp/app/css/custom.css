@@ -264,7 +264,7 @@ body .text-primary {
 	position: absolute;
 	bottom: 0px;
 	overflow: hidden;
-	top: 24px;
+	top: 25px;
 	padding-top: 0px;
 	border-bottom: 0px;
 }
@@ -660,6 +660,7 @@ body .text-primary {
 }
 
 .searchbar {
+	border-top: 1px solid #c5d0dc;
 	position: relative;
 	margin-left: 230px;
 	padding-top: 10px;
@@ -723,7 +724,7 @@ body .text-primary {
 	margin-left: 0px;
 	margin-right: 0px;
 	position: relative;
-	margin-top: 29px;
+	margin-top: 28px;
 	font-size: 11px;
 }
 
@@ -792,7 +793,7 @@ body .text-primary {
 	margin-left: -14px;
 	margin-right: -14px;
 	border-bottom: 1px solid #c5d0dc;
-	height: 79px;
+	height: 78px;
 	width: auto;
 }
 
@@ -1531,6 +1532,7 @@ body ul {
 
 .nav-tabs.nav > li.active > a {
 	background-color: #fff !important;
+	height: 26px;
 }
 
 .nav-tabs[class*="tab-color"].inactive-text-gray > li > a {
