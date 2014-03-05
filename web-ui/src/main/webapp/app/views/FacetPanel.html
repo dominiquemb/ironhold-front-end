@@ -1,0 +1,36 @@
+<div class="scrollbar-hidden filter-list">
+    <ul class="filter-list-inner">
+	<li class="widget-box widget-box-simple filter-container row collapsible" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
+	    <div class="widget-header">
+		<div class="widget-toolbar">
+		    <a>
+			<i class="collapse-trigger"></i>
+		    </a>
+		</div>
+		<span class="filter-list-name">
+					    {{ facet.name.label }}
+		</span>
+	    </div>
+	    <div class="widget-body">
+		<div class="widget-body-inner">
+		    <ul class="widget-main">
+			<li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
+			    data-ng-repeat="facetValue in facet.valueMap" data-ng-click="toggleFacet(facetValue)">
+			    <div class="pull-left checkbox">
+				<i class="fa icon-check"></i>
+			    </div>
+				<span class="filter-name truncate" tooltip="{{ originalText }}"
+				      tooltip-animation="true" trunc-text="{{ facetValue.label }}"
+				      trunc-font-width="7" trunc-desired-height="21"
+				      trunc-trailing-dots="true"></span>
+														<span class="text-primary filter-value">
+															{{ facetValue.value }}
+														</span>
+			</li>
+		    </ul>
+		</div>
+	    </div>
+	</li>
+    </ul>
+</div>
+<!-- .filter-list -->

@@ -14,30 +14,36 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/Navigation.html"
 	    })
 
-	    /* Discovery tab and subtabs */
-	    .state('main.discovery', {
-		    url: "/discovery",
+	    /* Search tab and subtabs */
+	    .state('main.search', {
+		    url: "/search",
 		    templateUrl: "views/TabContainers.html"
 	    })
 
-	    .state('main.discovery.text', {
+	    .state('main.search.text', {
 		    url: "/text-mode",
-		    templateUrl: "views/Discovery/TextTab.html"
+		    templateUrl: "views/Search/TextTab.html"
 	    })
 
-	    .state('main.discovery.html', {
+	    .state('main.search.html', {
 		    url: "/html-mode",
-		    templateUrl: "views/Discovery/HtmlTab.html"
+		    templateUrl: "views/Search/HtmlTab.html"
 	    })
 
-	    .state('main.discovery.sources', {
+	    .state('main.search.sources', {
 		    url: "/sources-mode",
-		    templateUrl: "views/Discovery/SourceTab.html"
+		    templateUrl: "views/Search/SourceTab.html"
 	    })
 
-	    .state('main.discovery.audit', {
+	    .state('main.search.audit', {
 		    url: "/audit-mode",
-		    templateUrl: "views/Discovery/AuditTab.html"
+		    templateUrl: "views/Search/AuditTab.html"
+	    })
+
+	    /* Discovery tab */
+	    .state('main.discovery', {
+		   url: "/discovery",
+		   templateUrl: "views/Discovery.html"
 	    })
 
 	    /* Tags tab and subtabs */
@@ -65,15 +71,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    url: "/settings",
 		    templateUrl: "views/Settings.html"
 	    });
-    /*
-        $routeProvider.when('/discovery',
-            {
-                templateUrl:'views/Discovery.html',
-                controller: 'DiscoveryController'
-            });
-        $routeProvider.otherwise({redirectTo: '/discovery'});
-        //$locationProvider.html5Mode(true);
-    */ });
+    });
 
 ironholdApp.factory('logInService', function($rootScope, ipCookie) {
 	var loggedIn = false;
@@ -184,13 +182,28 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
     return sharedService;
 });
 
+ironholdApp.directive('wireframe', function() {
+	return {
+		scope: true,
+		restrict: 'ACE',
+		templateUrl: 'views/Wireframe.html'
+	}
+});
+
+ironholdApp.directive('searchQuery', function() {
+	return {
+		scope: true,
+		restrict: 'ACE',
+		templateUrl: 'views/Searchbar.html'
+	}
+});
+
 ironholdApp.directive('searchbar', function() {
 	return {
 		scope: true,
 		restrict: 'ACE',
 		controller: 'SearchbarController',
-		link: function(scope, elem, attrs) {
-		}
+		templateUrl: 'views/SearchbarPanel.html'
 	}
 });
 
@@ -199,8 +212,7 @@ ironholdApp.directive('resultDetail', function() {
 		scope: true,
 		restrict: 'ACE',
 		controller: 'SingleResultDisplayController',
-		link: function(scope, elem, attrs) {
-		}
+		templateUrl: 'views/SingleResultPanel.html'
 	}
 });
 
@@ -209,8 +221,7 @@ ironholdApp.directive('resultsFeed', function() {
 		scope: true,
 		restrict: 'ACE',
 		controller: 'MultipleResultDisplayController',
-		link: function(scope, elem, attrs) {
-		}
+		templateUrl: 'views/MultipleResultPanel.html'
 	}
 });
 
@@ -219,8 +230,7 @@ ironholdApp.directive('facetCollection', function() {
 		scope: true,
 		restrict: 'ACE',
 		controller: 'FacetController',
-		link: function(scope, elem, attrs) {
-		}
+		templateUrl: 'views/FacetPanel.html'
 	}
 });
 
@@ -229,8 +239,7 @@ ironholdApp.directive('filterCollection', function() {
 		scope: true,
 		restrict: 'ACE',
 		controller: 'FilterController',
-		link: function(scope, elem, attrs) {
-		}
+		templateUrl: 'views/FilterPanel.html'
 	}
 });
 

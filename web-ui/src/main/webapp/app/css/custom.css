@@ -47,14 +47,6 @@ body .text-primary {
 	bottom: 0px;
 }
 
-.tags-tab-container,
-.folders-tab-container,
-.logs-tab-container,
-.users-tab-container,
-.settings-tab-container {
-	top: 55px;
-}
-
 /* filter-tag */
 .filter-tag-container {
 	margin: 0px 0px 0px -3px;

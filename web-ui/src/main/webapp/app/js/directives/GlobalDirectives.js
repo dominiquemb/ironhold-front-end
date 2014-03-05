@@ -4,16 +4,23 @@ ironholdApp.directive('pagination', function() {
 	return {
 		restrict: 'ACE',
 		scope: true,
-		templateUrl: 'views/pagination.html',
+		templateUrl: 'views/Pagination.html',
 		controller: 'PaginationController'
+	}
+});
+
+ironholdApp.directive('searchTabContainer', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/Search.html',
+		controller: 'SearchController'
 	}
 });
 
 ironholdApp.directive('discoveryTabContainer', function() {
 	return {
 		restrict: 'ACE',
-		templateUrl: 'views/Discovery.html',
-		controller: 'DiscoveryController'
+		templateUrl: 'views/Discovery.html'
 	}
 });
 

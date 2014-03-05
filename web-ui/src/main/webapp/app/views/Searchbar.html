@@ -1,0 +1,36 @@
+<form class="form-search">
+    <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
+	<div class="input-container">
+	    <div class="input-history dropdown">
+		<input type="text" class="search-input clear-form-input form-control search-field"
+		       placeholder="Type your query" data-ng-model="inputSearch"
+		       data-ng-keyup="searchKeyUp($event)">
+
+		<a class="dropdown-toggle">
+		    <i class="fa icon-caret-down"></i>
+		</a>
+
+		<div class="dropdown-menu dropdown-info">
+		    <ul>
+			<li data-ng-repeat="history in searchHistory.messages">
+			    <a data-ng-click="newSearchInput(history.context)">
+				{{ history.context }}</a>
+			</li>
+		    </ul>
+		</div>
+		<!-- .dropdown-menu -->
+
+	    </div>
+	    <!-- .dropdown -->
+	</div>
+	<!-- .input-container -->
+	<span class="input-group-btn">
+		<button type="button" class="btn btn-link btn-sm" data-ng-click="search()">
+			<i class="fa icon-search icon-on-right bigger-110"></i>
+		</button>
+		<button type="button" class="btn btn-link btn-sm clear-form-trigger" data-ng-click="toggleSearchHilite()">
+			<i class="fa icon-times icon-on-right bigger-110"></i>
+		</button>
+	</span>
+    </div>
+</form>

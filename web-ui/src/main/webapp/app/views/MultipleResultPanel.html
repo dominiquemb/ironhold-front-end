@@ -1,0 +1,126 @@
+<ul class="results message-list">
+    <li class="result message-item message-item-unbordered" data-ng-repeat="message in messages"
+	data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
+	<table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
+	    <tbody>
+	    <tr>
+		<td colspan="5">
+		    <div class="message-first-line">
+			    <span class="message-icons pull-left">
+				    <i class="img-xs attachment-img-xs pull-right"></i>
+				    <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
+				       class="pull-right img-xs envelope-img-xs"></i>
+			    </span>
+			    <span class="message-subject" data-ng-bind-html="message.subjectWithHighlights">
+			    </span>
+		    </div>
+		    <div class="message-second-line">
+				<span class="message-size pull-left">
+					<span class="pull-left">
+						{{ message.formattedIndexedMailMessage.formattedSize }}
+					</span>
+				</span>
+				<span class="message-sender">
+				    <strong>From:</strong> {{ message.formattedIndexedMailMessage.sender.name }}
+				</span>
+				<span class="pull-right">
+					<span class="message-age">
+						<i>({{ message.formattedIndexedMailMessage.age }})</i>
+					</span>
+					<span class="message-date">
+					    <strong><span class="message-date">{{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}</span></strong>
+					</span>
+				</span>
+		    </div>
+		</td>
+		<td rowspan="4" class="message-flag">
+		    <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
+		    <i class="img-xs dots-icon"></i>
+		</td>
+		<td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
+		    <i class="img-xs checkmark-icon"></i>
+		</td>
+	    </tr>
+	    <tr>
+		<td colspan="3" class="message-recipients">
+			<div class="message-recipients-line">
+				<strong>To:</strong>
+<!--                                    <span style="position:absolute;top:0px;right:0px;left:20px;word-wrap:break-word;height:13px;" class="truncate"
+				     trunc-text="{{ message.formattedIndexedMailMessage.toLine }}"
+				     trunc-desired-height="13"
+				     trunc-font-width="6" trunc-trailing-dots="true">
+-->
+				<span>
+					{{ message.formattedIndexedMailMessage.toLine }}
+				</span>
+			</div>
+			<div class="message-recipients-line">
+				<strong>CC:</strong>
+<!--                                    <span style="position:absolute;top:0px;right:0px;left:23px;word-wrap:break-word;height:13px;" class="truncate"
+				     trunc-text="{{ message.formattedIndexedMailMessage.ccLine }}"
+				     trunc-desired-height="13"
+				     trunc-font-width="6" trunc-trailing-dots="true">
+-->
+				<span>
+					{{ message.formattedIndexedMailMessage.ccLine }}
+				</span>
+			</div>
+			<div class="message-recipients-line">
+				<strong>BCC/DL:</strong>
+<!--                                    <span style="position:absolute;top:0px;right:0px;left:50px;word-wrap:break-word;height:13px;" class="truncate"
+				     trunc-text="{{ message.formattedIndexedMailMessage.bccLine }}"
+				     trunc-desired-height="13"
+				     trunc-font-width="8" trunc-trailing-dots="true">
+-->
+				<span>
+					{{ message.formattedIndexedMailMessage.bccLine }}
+				</span>
+			</div>
+		</td>
+	    </tr>
+	    <tr>
+		<td class="message-icons col-xs-1" rowspan="1">
+		</td>
+		<td colspan="3" class="body-preview preview">
+		    <div class="widget-box widget-box-simple"
+			 ng-class="{'collapsed': message.collapsedBody}">
+			<span class="widget-header pull-left dropdown-header">
+				<strong class="dropdown-title">Body</strong>
+			</span>
+			<span class="widget-body">
+				<div class="widget-body-inner">
+		<div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate"
+		     trunc-text="{{ message.bodyWithHighlights }}"
+		     trunc-desired-height="message.collapsedBody ? '21' : '84'"
+		     trunc-font-width="message.collapsedBody ? '5' : '5'" trunc-trailing-dots="true">
+		</div>
+	    </div>
+			</span>
+		    </div>
+		</td>
+	    </tr>
+	    <tr data-ng-show="hasAttachment(message)">
+		<td rowspan="1" class="message-icons col-xs-1">
+		</td>
+		<td colspan="2" class="attachment-preview preview">
+		    <div class="widget-box widget-box-simple result-attachment"
+			 data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments"
+			 ng-class="{'collapsed': attachment.collapsed}">
+			<span class="widget-header pull-left dropdown-header">
+				<strong class="dropdown-title">{{ attachment.fileName }}</strong>
+			</span>
+			<span class="widget-body">
+				<div class="widget-body-inner">
+		<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}"
+		     trunc-desired-height="attachment.collapsed ? '21' : '84'"
+		     trunc-font-width="attachment.collapsed ? '7' : '6'" trunc-trailing-dots="true">
+		</div>
+	    </div>
+			</span>
+		    </div>
+		</td>
+	    </tr>
+	    </tbody>
+	</table>
+    </li>
+</ul>

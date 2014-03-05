@@ -39,11 +39,11 @@
 	<div class="navigation">
 		<div class="tabbable" data-ng-controller="TabController">
 			<ul class="top-nav upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
+			    <li data-ng-class="{'active':getClass('search')}" data-ng-click="setActiveTab('search')">
+				<a data-toggle="tab">Search</a>
+			    </li>
 			    <li data-ng-class="{'active':getClass('discovery')}" data-ng-click="setActiveTab('discovery')">
 				<a data-toggle="tab">Discovery</a>
-			    </li>
-			    <li data-ng-class="{'active':getClass('tags')}" data-ng-click="setActiveTab('tags')">
-				<a data-toggle="tab">Tags</a>
 			    </li>
 			    <li data-ng-class="{'active':getClass('folders')}" data-ng-click="setActiveTab('folders')">
 				<a data-toggle="tab">Folders</a>

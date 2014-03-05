@@ -2,7 +2,7 @@
 
 ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $state, logInService) {
     logInService.confirmLoggedIn($state);
-    $scope.activeTab = 'discovery';
+    $scope.activeTab = 'search';
 
     $scope.getClass = function (path) {
 /*
