@@ -1,16 +1,16 @@
 <div class="tabbable">
 	<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white">
 	    <li data-ng-class="{'active': isModeActive('text')}">
-		<a data-toggle="tab" data-ui-sref="main.discovery.text" data-ng-click="switchMode('text')">Text</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.text" data-ng-click="switchMode('text')">Text</a>
 	    </li>
 	    <li data-ng-class="{'active': isModeActive('html')}">
-		<a data-toggle="tab" data-ui-sref="main.discovery.html" data-ng-click="switchMode('html')">HTML</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.html" data-ng-click="switchMode('html')">HTML</a>
 	    </li>
 	    <li data-ng-class="{'active': isModeActive('sources')}">
-		<a data-toggle="tab" data-ui-sref="main.discovery.sources" data-ng-click="switchMode('sources')">Source</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.sources" data-ng-click="switchMode('sources')">Source</a>
 	    </li>
 	    <li data-ng-class="{'active': isModeActive('audit')}">
-		<a data-toggle="tab" data-ui-sref="main.discovery.audit" data-ng-click="switchMode('audit')">Audit</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.audit" data-ng-click="switchMode('audit')">Audit</a>
 	    </li>
 	</ul>
 	<div class="tab-content" data-ui-view>

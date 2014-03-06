@@ -11,6 +11,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchFieldHilite = false;
     $scope.searchTime;
     $scope.suggestons;
+    $scope.inputSearch = '';
     $scope.currentlySearching = false;
 
     searchResultsService.prepForBroadcast("-", "- ");
@@ -19,7 +20,8 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
        $scope.searchHistory = result.payload;
     });
 
-    $scope.search = function() {
+    $scope.search = function(query) {
+	$scope.inputSearch = query;
 	$scope.currentlySearching = true;
 	$scope.$emit('search', {
 		inputSearch: $scope.inputSearch

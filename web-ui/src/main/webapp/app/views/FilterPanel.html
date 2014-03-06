@@ -1,3 +1,6 @@
+<div data-ng-hide="selectedFilters.length > 0">
+	{{activeTab}}-tab
+</div>
 <div class="filter-tag-container" ng-show="selectedFilters.length > 0">
 	<span class="filter-tag" data-ng-repeat="filterValue in selectedFilters">
 		<div class="filter-tag-text truncate" data-trunc-text="{{ filterValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">

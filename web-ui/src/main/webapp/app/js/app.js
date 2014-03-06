@@ -9,35 +9,34 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    controller: 'LoginController'
 	    })
 
-	    .state('main', {
-		    url: "/main",
+	    .state('loggedin', {
 		    templateUrl: "views/Navigation.html"
 	    })
 
 	    /* Search tab and subtabs */
-	    .state('main.search', {
-		    url: "/search",
+	    .state('loggedin.main', {
+		    url: "/main",
 		    templateUrl: "views/TabContainers.html"
 	    })
 
-	    .state('main.search.text', {
+	    .state('loggedin.main.text', {
 		    url: "/text-mode",
-		    templateUrl: "views/Search/TextTab.html"
+		    templateUrl: "views/PreviewTabs/TextTab.html"
 	    })
 
-	    .state('main.search.html', {
+	    .state('loggedin.main.html', {
 		    url: "/html-mode",
-		    templateUrl: "views/Search/HtmlTab.html"
+		    templateUrl: "views/PreviewTabs/HtmlTab.html"
 	    })
 
-	    .state('main.search.sources', {
+	    .state('loggedin.main.sources', {
 		    url: "/sources-mode",
-		    templateUrl: "views/Search/SourceTab.html"
+		    templateUrl: "views/PreviewTabs/SourceTab.html"
 	    })
 
-	    .state('main.search.audit', {
+	    .state('loggedin.main.audit', {
 		    url: "/audit-mode",
-		    templateUrl: "views/Search/AuditTab.html"
+		    templateUrl: "views/PreviewTabs/AuditTab.html"
 	    })
 
 	    /* Discovery tab */

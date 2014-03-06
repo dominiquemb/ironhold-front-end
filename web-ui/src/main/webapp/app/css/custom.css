@@ -157,7 +157,7 @@ body .text-primary {
 .wrapper {
 	min-width: 1547px;
 	width: 100%;
-	min-height: 400px;
+	min-height: 200px;
 }
 
 .main-area {
@@ -189,7 +189,7 @@ body .text-primary {
 /* splitter */
 .main {
 	position: absolute !important;
-	bottom: 0px;
+	bottom: -7px;
 	min-width: 1230px;
 	width: 100%;
 	height: auto;
@@ -222,11 +222,11 @@ body .text-primary {
 .msgview {
 	position: absolute;
 	right: 0px;
-	bottom: -9px;
+	bottom: 0px;
 	top: -6px;
 	overflow: hidden !important;
 	padding-left: 0px;
-	width: 718px;
+	width: 717px;
 }
 
 .msgview .placeholder_text {
@@ -257,6 +257,7 @@ body .text-primary {
 }
 
 .msgview > .tabbable > .tab-content {
+	border-right: 0px;
 	background-color: #fff;
 	right: 0px;
 	left: 0px;
@@ -930,7 +931,6 @@ body ul {
 	width: auto !important;
 	margin-left: 240px;
 	padding-top: 10px;
-	min-height: 220px;
 	top: 0px;
 	bottom: 107px;
 	left: 0px;
@@ -1218,7 +1218,7 @@ body ul {
 .dashboard {
 	overflow: hidden !important;
 	position: absolute;
-	bottom: -9px;
+	bottom: 0px;
 	top: -4px;
 	padding-right: 0px;
 	width: auto;

@@ -12,49 +12,42 @@ ironholdApp.directive('pagination', function() {
 ironholdApp.directive('searchTabContainer', function() {
 	return {
 		restrict: 'ACE',
-		templateUrl: 'views/Search.html',
 		controller: 'SearchController'
 	}
 });
 
 ironholdApp.directive('discoveryTabContainer', function() {
 	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Discovery.html'
+		restrict: 'ACE'
 	}
 });
 
 ironholdApp.directive('tagsTabContainer', function() {
 	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Tags.html'
+		restrict: 'ACE'
 	}
 });
 
 ironholdApp.directive('foldersTabContainer', function() {
 	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Folders.html'
+		restrict: 'ACE'
 	}
 });
 
 ironholdApp.directive('logsTabContainer', function() {
 	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Logs.html'
+		restrict: 'ACE'
 	}
 });
 
 ironholdApp.directive('usersTabContainer', function() {
 	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Users.html'
+		restrict: 'ACE'
 	}
 });
 
 ironholdApp.directive('settingsTabContainer', function() {
 	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Settings.html'
+		restrict: 'ACE'
 	}
 });

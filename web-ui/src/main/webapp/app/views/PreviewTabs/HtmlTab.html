@@ -1,7 +1,5 @@
 <div id="msgview-html" class="msgview-html tab-pane in active" data-ng-click="switchMode('html')">
-        <span data-ng-hide="currentMessage">
-                Please select a message on the left.
-        </span>
+	{{ activeTab }}-tab-html
         <span data-ng-show="modeData.html.length === 0">
 		No HTML data available.
         </span>

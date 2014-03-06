@@ -1,7 +1,5 @@
 <div id="msgview-audit" class="msgview-audit tab-pane in active" data-ng-click="switchMode('audit')">
-        <span data-ng-hide="currentMessage">
-                Please select a message on the left.
-        </span>
+	{{ activeTab }}-tab-audit
 	<span data-ng-show="modeData.audit.length === 0">
 		No Audit data available.
 	</span>
