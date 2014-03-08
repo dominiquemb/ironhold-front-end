@@ -678,6 +678,11 @@ body .text-primary {
 }
 
 .searchbar .input-group {
+	border: 1px solid #ccc;
+}
+
+.searchbar .input-group:hover,
+.searchbar .input-group.active {
 	border: 1px solid #2e68b1;
 }
 
