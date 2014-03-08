@@ -511,16 +511,19 @@ body .text-primary {
 	background: url(../img/sprites/email_icons.png) -30px 0px;
 }
 
+.filter.active .checkbox .checkmark-icon, 
 .result.active-single .checkmark:hover .checkmark-icon,
 .result.active-multi .checkmark:hover .checkmark-icon {
 	background: url(../img/sprites/email_icons.png) -30px 0px;
 }
 
+.filter.active:hover .checkbox .checkmark-icon, 
 .result:hover .checkmark .checkmark-icon,
 .result:hover .checkmark .checkmark-icon {
 	background: url(../img/sprites/email_icons.png) -30px 0px;
 }
 
+.filter:hover .checkbox .checkmark-icon, 
 .result .checkmark:hover .checkmark-icon,
 .result .checkmark:hover .checkmark-icon {
 	background: url(../img/sprites/email_icons.png) 0px -30px;
@@ -1308,7 +1311,7 @@ body ul {
 
 .filter-list .jspVerticalBar,
 .filter-list .jspHorizontalBar {
-	  background: #dedcdc !important;
+	  background: #dedede !important;
 
 	  /* IE 8 */
 	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -1432,7 +1435,6 @@ body ul {
 }
 
 .filter .checkbox {
-	visibility: hidden;
 	width: 15px;
 	height: 13px;
 	min-height: 13px;
@@ -1493,7 +1495,7 @@ body ul {
 
 .filter-container .active {
 	font-weight: bold;
-	background-color: rgb(216, 216, 216);
+	background-color: #e7eff9;
 }
 
 /* widget-box */

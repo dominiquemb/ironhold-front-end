@@ -21,15 +21,16 @@
 			<li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
 			    data-ng-repeat="facetValue in facet.valueMap" data-ng-click="toggleFacet(facetValue)">
 			    <div class="pull-left checkbox">
-				<i class="fa icon-check"></i>
+				<i class="img-xs checkmark-icon"></i>
 			    </div>
 				<span class="filter-name truncate" tooltip="{{ originalText }}"
 				      tooltip-animation="true" trunc-text="{{ facetValue.label }}"
 				      trunc-font-width="7" trunc-desired-height="21"
 				      trunc-trailing-dots="true"></span>
-														<span class="text-primary filter-value">
-															{{ facetValue.value }}
-														</span>
+					<span class="text-primary filter-value">
+						{{ facetValue.value }}
+					</span>
+				</span>
 			</li>
 		    </ul>
 		</div>
