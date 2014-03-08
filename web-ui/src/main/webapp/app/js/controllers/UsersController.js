@@ -1,13 +1,13 @@
 'use strict';
 
-ironholdApp.controller('SearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
+ironholdApp.controller('UsersController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
 
     $scope.msgs;
     $scope.pageSize = 10;
     $scope.selectedFacets = [];
     $scope.showPreviewToolbar = false;
-    $scope.tabName = 'search';
+    $scope.tabName = 'users';
 
     searchResultsService.prepForBroadcast("-", "- ");
 

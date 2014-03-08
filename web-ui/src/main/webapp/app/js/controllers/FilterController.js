@@ -8,35 +8,45 @@ ironholdApp.controller('FilterController', function ($http, $resource, $window, 
     $scope.showFilters = false;
 
     $scope.unselectAllFilters = function() {
-        angular.forEach($scope.selectedFilters, function(filter) {
-            filter.selected = false;
-	    $scope.$emit('toggleFacet', filter);
-        });
-	$scope.selectedFilters = [];
+	if ($scope.activeTab === $scope.tabName) {
+		angular.forEach($scope.selectedFilters, function(filter) {
+		    filter.selected = false;
+		    $scope.$emit('toggleFacet', filter);
+		});
+		$scope.selectedFilters = [];
+	}
     }
 
     $scope.enableFilter = function(filter, filterGroupCode) {
-	if (filter.selected) {
-	        $scope.selectedFilters.push(filter);
-        } else {
-            $scope.selectedFilters.remove(filter);
-        }
+	if ($scope.activeTab === $scope.tabName) {
+		if (filter.selected) {
+			$scope.selectedFilters.push(filter);
+		} else {
+		    $scope.selectedFilters.remove(filter);
+		}
 
-	$scope.$emit('filterToggled', filter);
+		$scope.$emit('filterToggled', filter);
+	}
     }
 
     $scope.disableFilter = function(filter) {
-	$scope.$emit('toggleFacet', filter);	
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('toggleFacet', filter);	
+	}
     }
 
     $rootScope.$on('facetToggled', function(evt, facet) {
-	$scope.enableFilter(facet);
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.enableFilter(facet);
+	}
     });
 
     $rootScope.$on('filters', function(evt, filterList) {
-	$scope.filters = filterList;
-	if (filterList.length > 0) {
-		$scope.showFilters = true;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.filters = filterList;
+		if (filterList.length > 0) {
+			$scope.showFilters = true;
+		}
 	}
     });
 });

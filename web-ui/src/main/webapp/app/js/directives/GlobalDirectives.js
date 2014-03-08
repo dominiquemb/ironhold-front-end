@@ -12,6 +12,7 @@ ironholdApp.directive('pagination', function() {
 ironholdApp.directive('searchTabContainer', function() {
 	return {
 		restrict: 'ACE',
+		scope: true,
 		controller: 'SearchController'
 	}
 });
@@ -19,43 +20,46 @@ ironholdApp.directive('searchTabContainer', function() {
 ironholdApp.directive('controlbar', function() {
 	return {
 		restrict: 'ACE',
-		scope: true,
 		templateUrl: 'views/PreviewTabs/Controlbar.html'
 	}
 });
 
 ironholdApp.directive('discoveryTabContainer', function() {
 	return {
-		restrict: 'ACE'
-	}
-});
-
-ironholdApp.directive('tagsTabContainer', function() {
-	return {
-		restrict: 'ACE'
+		restrict: 'ACE',
+		scope: true,
+		controller: 'DiscoveryController'
 	}
 });
 
 ironholdApp.directive('foldersTabContainer', function() {
 	return {
-		restrict: 'ACE'
+		restrict: 'ACE',
+		scope: true,
+		controller: 'FoldersController'
 	}
 });
 
 ironholdApp.directive('logsTabContainer', function() {
 	return {
-		restrict: 'ACE'
+		restrict: 'ACE',
+		scope: true,
+		controller: 'LogsController'
 	}
 });
 
 ironholdApp.directive('usersTabContainer', function() {
 	return {
-		restrict: 'ACE'
+		restrict: 'ACE',
+		scope: true,
+		controller: 'UsersController'
 	}
 });
 
 ironholdApp.directive('settingsTabContainer', function() {
 	return {
-		restrict: 'ACE'
+		restrict: 'ACE',
+		scope: true,
+		controller: 'SettingsController'
 	}
 });

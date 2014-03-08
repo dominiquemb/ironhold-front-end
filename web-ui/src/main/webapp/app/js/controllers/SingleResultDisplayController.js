@@ -9,37 +9,49 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
 
     $scope.isModeActive = function(mode) {
-	return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
+	if ($scope.activeTab === $scope.tabName) {
+		return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
+	}
     }
 
     $rootScope.$on('modeData', function(evt, results) {
-	$scope.modeData[results.mode] = results.payload[0];
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.modeData[results.mode] = results.payload[0];
+	}
     });
 
     $rootScope.$on('mode', function(evt, mode) {
-	$scope.$mode = mode;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$mode = mode;
 
-	if (mode === 'text') {
-		mode = '';
+		if (mode === 'text') {
+			mode = '';
+		}
+
+		$scope.$emit('modeRequest', {
+			mode: mode,
+			messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
+			criteria: {'criteria': $scope.inputSearch}
+		});
 	}
-
-	$scope.$emit('modeRequest', {
-		mode: mode,
-		messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
-		criteria: {'criteria': $scope.inputSearch}
-	});
     });
 
     $scope.switchMode = function(newMode) {
-        $scope.$emit('mode', newMode);
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('mode', newMode);
+	}
     }
 
     $rootScope.$on('selectMessage', function(evt, message) {
-	$scope.currentMessage = message;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentMessage = message;
+	}
     });
 
     $rootScope.$on('search', function() {
-	$scope.showContainer = true;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.showContainer = true;
+	}
     });
 
 });

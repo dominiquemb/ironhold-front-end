@@ -21,74 +21,94 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     });
 
     $scope.search = function(query) {
-	$scope.inputSearch = query;
-	$scope.currentlySearching = true;
-	$scope.$emit('search', {
-		inputSearch: $scope.inputSearch
-	});
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.inputSearch = query;
+		$scope.currentlySearching = true;
+		$scope.$emit('search', {
+			inputSearch: $scope.inputSearch
+		});
+	}
     }
 
     $scope.updateSearch = function() {
-	$scope.currentlySearching = false;
-	$scope.$emit('updateSearch');
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentlySearching = false;
+		$scope.$emit('updateSearch');
+	}
     }
 
     $rootScope.$on('updateSearchbar', function(evt, args) {
-	$scope.currentlySearching = false;
-	angular.forEach(args, function(settingValue, settingName) {
-		$scope[settingName] = settingValue;
-	});
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentlySearching = false;
+		angular.forEach(args, function(settingValue, settingName) {
+			$scope[settingName] = settingValue;
+		});
+	}
     });
 
     $scope.toggleSearchHilite = function() {
-	$scope.searchFieldHilite = !$scope.searchFieldHilite;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.searchFieldHilite = !$scope.searchFieldHilite;
+	}
     }
 
     $scope.replaceSearchInput = function(oldText, newText) {
-        $scope.inputSearch = $scope.inputSearch.replace(oldText, newText);
-        $scope.reset();
-        $scope.search();
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.inputSearch = $scope.inputSearch.replace(oldText, newText);
+		$scope.reset();
+		$scope.search();
+	}
     }
 
     $scope.newSearchInput = function(newText) {
-        $scope.inputSearch = newText;
-        $scope.reset();
-        $scope.search();
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.inputSearch = newText;
+		$scope.reset();
+		$scope.search();
+	}
     }
 
     $scope.reset = function () {
-        $scope.showSearchPreviewResults = false;
-        $scope.showSuggestions = false;
-        $scope.searchMessages = 0;
-        $scope.searchTime = 0;
-        $scope.suggestions = [];
-	$scope.searchMatches = 0;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.showSearchPreviewResults = false;
+		$scope.showSuggestions = false;
+		$scope.searchMessages = 0;
+		$scope.searchTime = 0;
+		$scope.suggestions = [];
+		$scope.searchMatches = 0;
+	}
     }
 
 
     $scope.searchKeyUp = function($event) {
-        $scope.reset();
-	$scope.searchFieldHilite = true;
-        if ($event.keyCode == 13) { // ENTER
-            $timeout.cancel(typingTimer);
-            $scope.search();
-        } else {
-            $timeout.cancel(typingTimer);
-            typingTimer = $timeout(function() {
-                  $scope.searchPreview();
-                }, 500);
-        }
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.reset();
+		$scope.searchFieldHilite = true;
+		if ($event.keyCode == 13) { // ENTER
+		    $timeout.cancel(typingTimer);
+		    $scope.search();
+		} else {
+		    $timeout.cancel(typingTimer);
+		    typingTimer = $timeout(function() {
+			  $scope.searchPreview();
+			}, 500);
+		}
+	}
     }
 
     $scope.searchPreview = function () {
-        $scope.reset();
-	$scope.$emit('searchPreviewRequest', $scope.inputSearch);
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.reset();
+		$scope.$emit('searchPreviewRequest', $scope.inputSearch);
+	}
     }
 
     $rootScope.$on('searchPreviewData', function(evt, result) {
+	if ($scope.activeTab === $scope.tabName) {
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
+	}
     });
 
 });

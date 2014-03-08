@@ -9,92 +9,126 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.matches;
     $scope.showSearchResults;
     $scope.inputSearch;
-
+ 
     $rootScope.$on('mode', function(evt, mode) {
-	$scope.mode = mode;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.mode = mode;
+	}
     });
 
     $rootScope.$on('results', function(evt, args) {
-	$scope.messages = args.resultEntries;
-        $scope.matches = args.matches;
-	if ($scope.matches > 0) {
-		$scope.showSearchResults = true;
-		$scope.$emit('showSearchResults', true);
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.messages = args.resultEntries;
+		$scope.matches = args.matches;
+		if ($scope.matches > 0) {
+			$scope.showSearchResults = true;
+			$scope.$emit('showSearchResults', true);
+		}
 	}
     });
 
     $rootScope.$on('search', function(evt, args) {
-	$scope.inputSearch = args.inputSearch;
+console.log($scope.activeTab);
+console.log($scope.tabName);
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.inputSearch = args.inputSearch;
+	}
     });
 
     $scope.hasAttachmentHighlight = function(message) {
-        return message.attachmentWithHighlights !== undefined;
+	if ($scope.activeTab === $scope.tabName) {
+		return message.attachmentWithHighlights !== undefined;
+	}
     }
 
     $scope.hasAttachment = function(message) {
-        return message.formattedIndexedMailMessage.attachments.length > 0;
+	if ($scope.activeTab === $scope.tabName) {
+		return message.formattedIndexedMailMessage.attachments.length > 0;
+	}
     }
 
     $scope.isMessageTypeEqualTo = function(message, type) {
-        return message.formattedIndexedMailMessage.messageType == type;
+	if ($scope.activeTab === $scope.tabName) {
+		return message.formattedIndexedMailMessage.messageType == type;
+	}
     }
 
     $scope.isImportanceEqualTo = function(message, importance) {
-        return message.formattedIndexedMailMessage.importance == importance;
+	if ($scope.activeTab === $scope.tabName) {
+		return message.formattedIndexedMailMessage.importance == importance;
+	}
     }
 
 
     $scope.unselectAllMessages = function() {
-        angular.forEach($scope.messages, function(message) {
-            message.selected = false;
-        });
-/*
-	$scope.$emit('updateSearch', {
-		inputSearch: $scope.inputSearch
-	});
-*/
+	if ($scope.activeTab === $scope.tabName) {
+		angular.forEach($scope.messages, function(message) {
+		    message.selected = false;
+		});
+	/*
+		$scope.$emit('updateSearch', {
+			inputSearch: $scope.inputSearch
+		});
+	*/
+	}
     }
 
     $scope.selectMessage = function(message) {
-        $scope.unselectAllMessages();
-        message.selected = true;
-	
-	$scope.$emit('selectResultRequest', message, $scope.inputSearch);
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.unselectAllMessages();
+		message.selected = true;
+		
+		$scope.$emit('selectResultRequest', message, $scope.inputSearch);
+	}
     }
 
     $rootScope.$on('selectResultData', function(evt, result) {
+	if ($scope.activeTab === $scope.tabName) {
 	    $scope.currentMessage = result.payload.messages[0];
+	}
     });
 
     $scope.unhilightAllMessages = function(message) {
-        angular.forEach($scope.messages, function(entry) {
-            $scope.unhighlightMessage(entry);
-        });
+	if ($scope.activeTab === $scope.tabName) {
+		angular.forEach($scope.messages, function(entry) {
+		    $scope.unhighlightMessage(entry);
+		});
+	}
     }
 
     $scope.highlightAllMessages = function(message) {
-        angular.forEach($scope.messages, function(entry) {
-            $scope.highlightMessage(entry);
-        });
+	if ($scope.activeTab === $scope.tabName) {
+		angular.forEach($scope.messages, function(entry) {
+		    $scope.highlightMessage(entry);
+		});
+	}
     }
 
     $scope.highlightMessage = function(message) {
+	if ($scope.activeTab === $scope.tabName) {
 	    message.highlighted = true;
+	}
     }
 
     $scope.unhilightMessage = function(message) {
+	if ($scope.activeTab === $scope.tabName) {
 	    message.highlighted = false;
+	}
     }
 
     $scope.reset = function () {
-	$scope.showSearchResults = true;
-        $scope.searchMessages = 0;
-	$scope.matches = [];
-        $scope.messages = [];
-        $scope.currentPage = 1;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.showSearchResults = true;
+		$scope.searchMessages = 0;
+		$scope.matches = [];
+		$scope.messages = [];
+		$scope.currentPage = 1;
+	}
     }
 
     $rootScope.$on('pageChange', function(evt, page) {
-	$scope.currentPage = page;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentPage = page;
+	}
     });
 });

@@ -942,7 +942,7 @@ body ul {
 
 .msglist .message-list-container {
 	position: absolute;
-	right: 4px;
+	right: 3px;
 	width: auto !important;
 	margin-left: 240px;
 	padding-top: 10px;
