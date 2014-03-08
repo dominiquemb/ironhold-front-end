@@ -16,6 +16,14 @@ ironholdApp.directive('searchTabContainer', function() {
 	}
 });
 
+ironholdApp.directive('controlbar', function() {
+	return {
+		restrict: 'ACE',
+		scope: true,
+		templateUrl: 'views/PreviewTabs/Controlbar.html'
+	}
+});
+
 ironholdApp.directive('discoveryTabContainer', function() {
 	return {
 		restrict: 'ACE'

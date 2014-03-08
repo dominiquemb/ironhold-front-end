@@ -6,6 +6,7 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
     $scope.msgs;
     $scope.pageSize = 10;
     $scope.selectedFacets = [];
+    $scope.showPreviewToolbar = false;
 
     window.onresize = function(){
 	if ($scope.scrollbars) {

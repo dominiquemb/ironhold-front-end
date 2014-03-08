@@ -1535,8 +1535,8 @@ body ul {
 
 .nav-tabs.nav > li > a {
 	cursor: pointer;
-	padding: 4px 24px;
-	font-size: 10px;
+	padding: 4px 18px;
+	font-size: 13px;
 	line-height: 16px !important;
 	background-color: transparent !important;
 	height: 25px;
