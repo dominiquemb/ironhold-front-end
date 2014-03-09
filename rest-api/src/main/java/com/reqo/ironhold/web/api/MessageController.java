@@ -52,6 +52,7 @@ public class MessageController extends AbstractController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/count")
+    @Secured("ROLE_CAN_SEARCH")
     public
     @ResponseBody
     ApiResponse<CountSearchResponse> getCount(@RequestParam(required = false, defaultValue = "*") String criteria) {
@@ -66,6 +67,7 @@ public class MessageController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/suggest")
+    @Secured("ROLE_CAN_SEARCH")
     public
     @ResponseBody
     ApiResponse<SuggestSearchResponse> getSuggestions(@RequestParam String criteria) {
@@ -80,6 +82,7 @@ public class MessageController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
+    @Secured("ROLE_CAN_SEARCH")
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessages(@RequestParam String criteria,
@@ -109,6 +112,7 @@ public class MessageController extends AbstractController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @Secured("ROLE_CAN_SEARCH")
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessages(@RequestParam final String criteria,
