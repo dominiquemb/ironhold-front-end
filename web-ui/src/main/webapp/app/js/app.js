@@ -76,7 +76,9 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 ironholdApp.factory('httpRequestInterceptor', function (logInService) {
   return {
     request: function (config) {
-      config.headers['Authorization'] ='Basic ' + logInService.getAuthdata();
+      if (logInService.getAuthdata()) {
+            config.headers['Authorization'] ='Basic ' + logInService.getAuthdata();
+      }
       return config;
     }
   };
