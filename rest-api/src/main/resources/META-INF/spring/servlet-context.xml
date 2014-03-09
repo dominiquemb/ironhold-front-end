@@ -1,35 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+             xmlns:sec="http://www.springframework.org/schema/security"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure --> 
-	
-	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven>
-	    <message-converters>
-	        <beans:bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
-	        <beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
-	        <beans:bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-	            <beans:property name="objectMapper" ref="jacksonObjectMapper" />
-	        </beans:bean>        
-	    </message-converters>	
-	</annotation-driven>
-	<beans:bean id="jacksonObjectMapper" class="com.reqo.ironhold.web.support.DateAwareObjectMapper" />
+    <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 
-	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/static directory -->
-	<resources mapping="/resources/**" location="/static/" />
+    <!-- Enables the Spring MVC @Controller programming model -->
+    <annotation-driven>
+        <message-converters>
+            <beans:bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+            <beans:bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+                <beans:property name="objectMapper" ref="jacksonObjectMapper"/>
+            </beans:bean>
+        </message-converters>
+    </annotation-driven>
+    <beans:bean id="jacksonObjectMapper" class="com.reqo.ironhold.web.support.DateAwareObjectMapper"/>
 
-	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
-	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
-		<beans:property name="prefix" value="/WEB-INF/views/" />
-		<beans:property name="suffix" value=".jsp" />
-	</beans:bean>
-	
-	<context:component-scan base-package="com.reqo.ironhold.web.api" />
-	
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/static directory -->
+    <resources mapping="/resources/**" location="/static/"/>
+
+    <!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+    <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="prefix" value="/WEB-INF/views/"/>
+        <beans:property name="suffix" value=".jsp"/>
+    </beans:bean>
+
+    <context:component-scan base-package="com.reqo.ironhold.web.api"/>
+    <context:component-scan base-package="com.reqo.ironhold.web.security"/>
+
+    <sec:http create-session="never">
+        <sec:http-basic/>
+        <sec:logout logout-success-url="/logout" />
+    </sec:http>
+
+    <sec:authentication-manager>
+        <sec:authentication-provider ref="customAuthenticationProvider"/>
+    </sec:authentication-manager>
+
+    <sec:global-method-security pre-post-annotations="enabled" secured-annotations="enabled" proxy-target-class="true"/>
 </beans:beans>

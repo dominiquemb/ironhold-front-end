@@ -4,20 +4,28 @@ import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.utility.ArrayIterate;
+import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
-import com.reqo.ironhold.web.domain.*;
+import com.reqo.ironhold.web.domain.AuditActionEnum;
+import com.reqo.ironhold.web.domain.AuditLogMessage;
+import com.reqo.ironhold.web.domain.LoginUser;
+import com.reqo.ironhold.web.domain.RoleEnum;
 import com.reqo.ironhold.web.domain.responses.AuditLogResponse;
-import com.reqo.ironhold.web.domain.responses.LoginResponse;
 import com.reqo.ironhold.web.domain.responses.UserDetailsResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -26,51 +34,23 @@ import java.util.List;
  * Time: 9:01 AM
  */
 @Controller
+@Secured("ROLE_CAN_LOGIN")
 @RequestMapping(value = "/users")
-public class UserController {
-    private IMessageIndexService messageIndexService;
-    private IMiscIndexService miscIndexService;
-    private IMetaDataIndexService metaDataIndexService;
+public class UserController extends AbstractController {
+    @Autowired
+    protected IMessageIndexService messageIndexService;
+    @Autowired
+    protected IMiscIndexService miscIndexService;
+    @Autowired
+    protected IMetaDataIndexService metaDataIndexService;
+    @Autowired
+    protected IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Inject
-    public UserController(IMessageIndexService messageIndexService, IMiscIndexService miscIndexService, IMetaDataIndexService metaDataIndexService) {
-        this.messageIndexService = messageIndexService;
-        this.miscIndexService = miscIndexService;
-        this.metaDataIndexService = metaDataIndexService;
+    public UserController() {
+        super();
     }
-
-    private LoginUser getDefaultUser(String clientKey, String username) {
-        return miscIndexService.getLoginUser(clientKey, username);
-    }
-
-
-    @RequestMapping(method = RequestMethod.POST, value = "/{clientKey}/{username}")
-    public
-    @ResponseBody
-    ApiResponse<LoginResponse> login(@PathVariable("clientKey") String clientKey,
-                                     @PathVariable("username") String username,
-                                     @RequestBody String password) {
-
-        ApiResponse<LoginResponse> apiResponse = new ApiResponse<>();
-        LoginResponse result = null;
-        try {
-            LoginUser loginUser = miscIndexService.authenticate(clientKey, username, password, LoginChannelEnum.WEB_APP, "127.0.0.1");
-            boolean success = loginUser != null;
-            String message = success ? "Login succesful" : "Login failed";
-            result = new LoginResponse(success, message);
-        } catch (Exception e) {
-            result = new LoginResponse(false, e.getMessage());
-        }
-
-        apiResponse.setPayload(result);
-        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
-
-        return apiResponse;
-
-    }
-
 
     @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/searchHistory")
     public
@@ -81,7 +61,7 @@ public class UserController {
         ApiResponse<AuditLogResponse> apiResponse = new ApiResponse<>();
 
 
-        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(clientKey, getDefaultUser(clientKey, username), AuditActionEnum.SEARCH);
+        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(clientKey, getLoginUser(), AuditActionEnum.SEARCH);
         MutableList<AuditLogMessage> messages = FastList.newList(history);
 
         AuditLogResponse result = new AuditLogResponse(messages.toSortedSetBy(AuditLogMessage.SORT_BY_CONTEXT));
@@ -132,6 +112,7 @@ public class UserController {
     public
     @ResponseBody
     ApiResponse<RoleEnum[]> getRoles() {
+        logger.info("Current user is " + getUserName());
         ApiResponse<RoleEnum[]> apiResponse = new ApiResponse<>();
 
         apiResponse.setPayload(RoleEnum.values());
@@ -141,5 +122,19 @@ public class UserController {
 
     }
 
+
+
+
+    protected final String getUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().split("/")[1];
+    }
+
+    protected final String getClientKey() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().split("/")[0];
+    }
+
+    protected final LoginUser getLoginUser() {
+        return miscIndexService.getLoginUser(getClientKey(), getUserName());
+    }
 }
 
