@@ -7,11 +7,18 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
         $scope.tabName = tab;
     });
 
+    $scope.$on('search', function(evt, info) {
+	$scope.inputSearch = info.inputSearch;
+    });
+
     $scope.goTo = function(page) {
 	if ($scope.activeTab === $scope.tabName) {
 		if (page > 0) {
 		    $scope.currentPage = page;
-		    $scope.$emit('pageChange', page);
+		    $scope.$emit('pageChange', {
+			page: page,
+			inputSearch: $scope.inputSearch
+		    });
 		}
 	}
     }

@@ -3,6 +3,7 @@
 ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService) {
     logInService.confirmLoggedIn($state);
     $scope.activeTab = 'search';
+    $scope.pageSize = 20;
 
     $scope.$emit('activeTab', $scope.activeTab);
 
@@ -27,10 +28,10 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
                 }
      });
 
-    $rootScope.$on('pageChange', function(evt, page) {
-        $scope.currentPage = page;
+    $rootScope.$on('pageChange', function(evt, info) {
+        $scope.currentPage = info.page;
         $scope.$emit('updateSearch', {
-                inputSearch: $scope.inputSearch
+                inputSearch: info.inputSearch
         });
         $scope.reinitScrollbars();
     });
@@ -91,7 +92,6 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 
     $scope.setActiveTab = function(tab) {
 	$scope.activeTab = tab;
-console.log($scope.activeTab);
     	$scope.$emit('activeTab', $scope.activeTab);
     }
 

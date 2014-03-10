@@ -4,7 +4,6 @@ ironholdApp.controller('LogsController', function ($http, $resource, $window, $r
     logInService.confirmLoggedIn($state);
 
     $scope.msgs;
-    $scope.pageSize = 10;
     $scope.selectedFacets = [];
     $scope.showPreviewToolbar = false;
     $scope.tabName = 'logs';

@@ -4,7 +4,6 @@ ironholdApp.controller('UsersController', function ($http, $resource, $window, $
     logInService.confirmLoggedIn($state);
 
     $scope.msgs;
-    $scope.pageSize = 10;
     $scope.selectedFacets = [];
     $scope.showPreviewToolbar = false;
     $scope.tabName = 'users';

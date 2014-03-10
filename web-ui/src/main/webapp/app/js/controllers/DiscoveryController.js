@@ -4,7 +4,6 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     logInService.confirmLoggedIn($state);
 
     $scope.msgs;
-    $scope.pageSize = 10;
     $scope.selectedFacets = [];
     $scope.tabName = 'discovery';
 

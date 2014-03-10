@@ -28,8 +28,6 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     });
 
     $rootScope.$on('search', function(evt, args) {
-console.log($scope.activeTab);
-console.log($scope.tabName);
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.inputSearch = args.inputSearch;
 	}
