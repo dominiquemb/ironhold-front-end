@@ -106,7 +106,7 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 		},
 
 		getAuthdata: function() {
-            return (ipCookie('ironholdSession')) ? ipCookie('ironholdSession').authdata : false;
+	                return (ipCookie('ironholdSession')) ? ipCookie('ironholdSession').authdata : false;
         },
 
 		onLogOut: function(callback) {

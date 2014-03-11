@@ -32,6 +32,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 		}
 
 		$scope.$emit('facetToggled', facet, $scope.selectedFacets);
+		$scope.$emit('reinitScrollbars');
 	}
     }
 

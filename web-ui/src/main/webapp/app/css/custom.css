@@ -675,7 +675,7 @@ body .text-primary {
 	margin-left: 230px;
 	padding-top: 10px;
 	margin-right: 0px;
-	min-height: 81px;
+	min-height: 103px;
 	padding-right: 0px;
 	width: auto;
 }
@@ -776,8 +776,7 @@ body .text-primary {
 	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 	width: 100%;
-	height: 43px;
-	clear: left;
+	min-height: 43px;
 	min-height: 42px;
 	background-color: #f3f3f3;
 }
@@ -1252,25 +1251,34 @@ body ul {
 	height: 42px;
 	border-right: 1px solid #ccc;
 	border-top: 1px solid #ccc;
-	left: -230px;
+	left: 0px;
 	padding: 10px 15px;
 	position: absolute;
-	top: 60px;
+	top: -42px;
+	z-index: 3;
 	width: 230px;
 }
 
 /* sidebar-left (facet panel) */
 .sidebar-left {
+	position: absolute;
+	z-index: 2;
 	border-top: 1px solid #ccc;
 	min-width: 230px;
 	border-right: 1px solid #ccc;
 	height: 100%;
-	margin-top: -1px;
+	top: 61px;
 	padding-left: 0px;
 	margin-left: 0px;
 	width: 230px;
 	background-color: #f3f3f3;
 	padding-right: 0px;
+}
+
+.sidebar-left-short {
+	top: 102px;
+	bottom: 0px;
+	height: auto;
 }
 
 .sidebar-left .ironhold-tooltip {
@@ -1304,9 +1312,13 @@ body ul {
 	left: -3px;
 	position: absolute;
 	width: 230px;
-	bottom: 107px;
+	bottom: 64px;
 	top: 3px;
 /*	background-color: #f3f3f3; */
+}
+
+.sidebar-left-short .filter-list {
+	bottom: 3px;
 }
 
 .filter-list .jspVerticalBar,

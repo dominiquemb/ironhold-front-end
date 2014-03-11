@@ -7,6 +7,8 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
     $scope.selectedFacets = [];
     $scope.showPreviewToolbar = false;
     $scope.tabName = 'search';
+    $scope.facetAreaShort = true;
+    $scope.limitFacets = true;
 
     searchResultsService.prepForBroadcast("-", "- ");
 
