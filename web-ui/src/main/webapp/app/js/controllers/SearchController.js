@@ -5,7 +5,7 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
 
     $scope.msgs;
     $scope.selectedFacets = [];
-    $scope.showPreviewToolbar = false;
+    $scope.showPreviewToolbar = true;
     $scope.tabName = 'search';
     $scope.facetAreaShort = true;
     $scope.limitFacets = true;

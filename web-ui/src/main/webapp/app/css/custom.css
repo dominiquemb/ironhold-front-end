@@ -476,6 +476,30 @@ body .text-primary {
 	background: url(../img/sprites/msgview_icons.png) 0px 0px;
 }
 
+.flag-yellow-lg {
+	background: url(../img/sprites/ImageSprite.png) -260px 0px;
+}
+
+.file-new-lg {
+	background: url(../img/sprites/ImageSprite.png) -320px 0px;
+}
+
+.checkmark-circle-lg {
+	background: url(../img/sprites/ImageSprite.png) -224px 0px;
+}
+
+.folder-red-lg {
+	background: url(../img/sprites/ImageSprite.png) -128px 0px;
+}
+
+.folder-close-lg {
+	background: url(../img/sprites/ImageSprite.png) -160px 0px;
+}
+
+.folder-checkmark-lg {
+	background: url(../img/sprites/ImageSprite.png) -192px 0px;
+}
+
 .forward-lg {
 	background: url(../img/sprites/msgview_icons.png) -32px 0px;
 }
@@ -498,6 +522,18 @@ body .text-primary {
 
 .im-sm {
 	background: url(../img/sprites/msgview_icons.png) -47px -66px;
+}
+
+.lock-purple-sm {
+	background: url(../img/sprites/ImageSprite.png) -79px -1px;
+}
+
+.lock-gold-sm {
+	background: url(../img/sprites/ImageSprite.png) -95px -1px;
+}
+
+.lock-red-sm {
+	background: url(../img/sprites/ImageSprite.png) -111px -1px;
 }
 
 .empty-photo {

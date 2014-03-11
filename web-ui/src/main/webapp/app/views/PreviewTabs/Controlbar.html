@@ -1,9 +1,16 @@
 <span data-ng-show="showPreviewToolbar">
-	<span class="controlbar_left pull-left controlbar_section">
+	<span class="pull-left controlbar_section">
+
+		<a class="controlbar_item pull-left forward">
+			<div class="msgview_img flag-yellow-lg"></div>
+			<div class="pull-right controlbar_item-name">Require Action</div>
+		</a>
+
+		<div class="vert-div"></div>
 		<span class="dropdown pull-left controlbar_item follow-up">
 			<a class="dropdown-toggle">
-				<div class="msgview_img flag-lg"></div>
-				<div class="pull-right controlbar_item-name">Follow Up</div>
+				<div class="msgview_img checkmark-circle-lg"></div>
+				<div class="pull-right controlbar_item-name">Finish Review</div>
 				<b class="fa icon-caret-down icon-on-right pull-right"></b>
 			</a>
 			<ul class="dropdown-menu dropdown-info">
@@ -15,84 +22,61 @@
 				</li>
 			</ul>
 		</span>
-		<a class="controlbar_item pull-left forward">
-			<div class="msgview_img forward-lg"></div>
-			<div class="pull-right controlbar_item-name">Forward</div>
-		</a>
-		<div class="vert-div"></div>
 	</span>
-	<span class="controlbar_middle controlbar_section pull-left">
-		<span class="dropdown controlbar_item assign-policy pull-left">
-			<a class="dropdown-toggle">
-				<div class="msgview_img archive-lg"></div>
-				<div class="pull-left controlbar_item-name">Assign Policy</div>
-				<b class="fa icon-caret-down pull-right icon-on-right"></b>
-			</a>
-			<ul class="dropdown-menu dropdown-info">
-				<li>
-					<a data-toggle="tab">Link 1</a>
-				</li>
-				<li>
-					<a data-toggle="tab">Link 2</a>
-				</li>
-			 </ul>
-		</span>
-		<span class="dropdown controlbar_item categorize pull-left">
-			<a class="dropdown-toggle">
-				<div class="msgview_img tiles-lg"></div>
-				<div class="controlbar_item-name pull-right">Categorize</div>
-				<b class="fa icon-caret-down icon-on-right pull-right"></b>
-			</a>
-			<ul class="dropdown-menu dropdown-info">
-				<li>
-					<a data-toggle="tab">Link 1</a>
-				</li>
-				<li>
-					<a data-toggle="tab">Link 2</a>
-				</li>
-			</ul>
-		</span>
+
+	<span class="pull-left controlbar_section">
 		<span class="controlbar_item controlbar-group-vertical pull-left">
 			<div class="controlbar-group-row row">
 				<a class="controlbar-group_item meeting">
-					<div class="msgview_img-sm cal-invite-sm pull-left"></div>
-					<div class="pull-right controlbar_item-name">Meeting</div>
+					<div class="msgview_img-sm lock-purple-sm pull-left"></div>
+					<div class="pull-left controlbar_item-name">Personal</div>
 				</a>
 			</div>
 			<div class="controlbar-group-row row">
 				<span class="dropdown controlbar-group_item im">
 					<a class="dropdown-toggle">
-						<div class="msgview_img-sm im-sm pull-left"></div>
-						<div class="pull-left controlbar_item-name">IM</div>
-						<b class="fa icon-caret-down pull-right icon-on-right"></b>
+						<div class="msgview_img-sm lock-gold-sm pull-left"></div>
+						<div class="pull-left controlbar_item-name">Privileged</div>
 					</a>
-					<ul class="dropdown-menu dropdown-info">
-						<li>
-						    <a data-toggle="tab">Link 1</a>
-						</li>
-						<li>
-						    <a data-toggle="tab">Link 2</a>
-						</li>
-					    </ul>
 				</span>
 			</div>
 			<div class="controlbar-group-row row">
 				<span class="dropdown controlbar-group_item more">
 					<a class="dropdown-toggle">
-						<div class="msgview_img-sm cal-phone-sm pull-left"></div>
-						<div class="pull-left controlbar_item-name">More</div>
-						<b class="fa icon-caret-down pull-right icon-on-right"></b>
+						<div class="msgview_img-sm lock-red-sm pull-left"></div>
+						<div class="pull-left controlbar_item-name">Restricted</div>
 					</a>
-					<ul class="dropdown-menu dropdown-info">
-						<li>
-						    <a data-toggle="tab">Link 1</a>
-						</li>
-						<li>
-						    <a data-toggle="tab">Link 2</a>
-						</li>
-					</ul>
 				</span>
 			</div>
+		</span>
+	</span>
+
+	<span class="controlbar_section pull-left">
+		<a class="controlbar_item pull-left forward">
+			<div class="msgview_img folder-red-lg"></div>
+			<div class="pull-right controlbar_item-name">Open Case</div>
+		</a>
+
+		<a class="controlbar_item pull-left forward">
+			<div class="msgview_img folder-close-lg"></div>
+			<div class="pull-right controlbar_item-name">Dismiss Case</div>
+		</a>
+
+		<a class="controlbar_item pull-left forward">
+			<div class="msgview_img folder-checkmark-lg"></div>
+			<div class="pull-right controlbar_item-name">Close Case</div>
+		</a>
+
+		</span>
+		<div class="vert-div"></div>
+	</span>
+
+	<span class="controlbar_section pull-left">
+		<a class="controlbar_item pull-left forward">
+			<div class="msgview_img file-new-lg"></div>
+			<div class="pull-right controlbar_item-name">New Comment</div>
+		</a>
+
 		</span>
 		<div class="vert-div"></div>
 	</span>
