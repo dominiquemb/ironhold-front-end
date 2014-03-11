@@ -49,10 +49,10 @@ body .text-primary {
 
 /* filter-tag */
 .filter-tag-container {
-	margin: 0px 2px;
+	margin: 0px 6px;
 	position: relative;
 	line-height: 18px;
-	width: 100%;
+	width: auto;
 	float: left;
 	clear: left;
 	font-size: 11px;
@@ -68,7 +68,7 @@ body .text-primary {
 	border: 1px solid #dedede;
 */
 	line-height: 17px;
-	padding: 0px 4px;
+	padding: 0px 1px;
 	float: left;
 	margin: 1px 0px;
 	position: relative;
@@ -76,7 +76,7 @@ body .text-primary {
 
 .filter-tag-text {
 	float: left;
-	margin-right: 4px;
+	margin-right: 0px;
 	height: 16px;
 	overflow: hidden;
 	width: auto;
@@ -87,7 +87,7 @@ body .text-primary {
 	cursor: pointer;
 	color: #999;
 	float: left;
-	margin-top: 1px;
+	margin-top: 2px;
 	margin-bottom: 1px;
 }
 
@@ -539,6 +539,10 @@ body .text-primary {
 	width: 15px;
 	height: 15px;
 	display: block;
+}
+
+.close-button-blue {
+	background: url(../img/sprites/ImageSprite.png) -49px -16px;
 }
 
 .attachment-img-xs {
