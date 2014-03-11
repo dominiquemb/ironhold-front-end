@@ -19,6 +19,10 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $rootScope.$on('results', function(evt, args) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.messages = args.resultEntries;
+
+		// First message selected by default
+		$scope.selectMessage($scope.messages[0]);
+
 		$scope.matches = args.matches;
 		if ($scope.matches > 0) {
 			$scope.showSearchResults = true;
