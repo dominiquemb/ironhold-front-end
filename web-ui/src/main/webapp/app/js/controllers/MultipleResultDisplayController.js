@@ -9,6 +9,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.matches;
     $scope.showSearchResults;
     $scope.inputSearch;
+    $scope.highlightActive = false;
  
     $rootScope.$on('mode', function(evt, mode) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -77,8 +78,15 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.selectMessage = function(message) {
 	if ($scope.activeTab === $scope.tabName) {
+		var isSelected = message.selected;
 		$scope.unselectAllMessages();
-		message.selected = true;
+		if (!$scope.highlightActive) {
+			message.selected = !isSelected;
+		}
+		else {
+			message.selected = true;
+		}
+		$scope.unhighlightAllMessages();
 		
 		$scope.$emit('selectResultRequest', message, $scope.inputSearch);
 	}
@@ -90,11 +98,12 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	}
     });
 
-    $scope.unhilightAllMessages = function(message) {
+    $scope.unhighlightAllMessages = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		angular.forEach($scope.messages, function(entry) {
 		    $scope.unhighlightMessage(entry);
 		});
+	    	$scope.highlightActive = false;
 	}
     }
 
@@ -103,16 +112,19 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		angular.forEach($scope.messages, function(entry) {
 		    $scope.highlightMessage(entry);
 		});
+		$scope.highlightActive = true;
 	}
     }
 
-    $scope.highlightMessage = function(message) {
+    $scope.highlightMessage = function(evt, message) {
 	if ($scope.activeTab === $scope.tabName) {
+	    evt.stopPropagation();
 	    message.highlighted = true;
+	    $scope.highlightActive = true;
 	}
     }
 
-    $scope.unhilightMessage = function(message) {
+    $scope.unhighlightMessage = function(message) {
 	if ($scope.activeTab === $scope.tabName) {
 	    message.highlighted = false;
 	}

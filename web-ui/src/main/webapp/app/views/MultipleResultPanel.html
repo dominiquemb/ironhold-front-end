@@ -41,7 +41,7 @@
 		    <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
 		    <i class="img-xs dots-icon"></i>
 		</td>
-		<td rowspan="4" class="checkmark" data-ng-click="highlightMessage(message)">
+		<td rowspan="4" class="checkmark" data-ng-click="highlightMessage($event, message)">
 		    <i class="img-xs checkmark-icon"></i>
 		</td>
 	    </tr>
