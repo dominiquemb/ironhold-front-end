@@ -1,9 +1,9 @@
-<form class="form-search">
+<form class="form-search" name="searchbar" data-ng-submit="search(searchbar.inputSearch)">
     <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
 	<div class="input-container">
 	    <div class="input-history dropdown">
 		<input type="text" class="search-input clear-form-input form-control search-field"
-		       placeholder="Type your query" data-ng-model="inputSearch"
+		       placeholder="Type your query" data-ng-model="searchbar.inputSearch"
 		       data-ng-keyup="searchKeyUp($event)">
 
 		<a class="dropdown-toggle">
