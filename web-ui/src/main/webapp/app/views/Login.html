@@ -5,7 +5,7 @@
     <div class="widget-body">
         <div class="widget-main background-white">
             <img class="logo" src="img/login-logo.png"/>
-            <form name="mainLogin">
+            <form name="mainLogin" data-ng-submit="submit()">
 		<div class="formErrors">
 			<div class="formError" data-ng-show="isFormInvalid()">Invalid login. Please check and try again.</div>
 		</div>
@@ -17,7 +17,7 @@
                 <fieldset data-ng-class="{'invalid': isFormInvalid()}">
                     <label class="block clearfix">
 									<span class="block input-icon input-icon-right">
-										<input type="text" class="form-control username" name="username" placeholder="Username" required
+										<input autofocus type="text" class="form-control username" name="username" placeholder="Username" required
                                                data-ng-model="username"/>
 										<i class="icon-user"></i>
 									</span>
@@ -46,10 +46,9 @@
                             <input type="checkbox" class="ace"/>
                             <span class="lbl"> Remember Me</span>
                         </label>
-                            <button type="button" data-ng-click="submit()" 
+                            <input type="submit" value="Login" data-ng-click="submit()" 
                                     class="width-35 pull-right btn btn-sm btn-primary">
-                                Login
-                            </button>
+                            </input>
                     </div>
 
                     <div class="space-4"></div>
