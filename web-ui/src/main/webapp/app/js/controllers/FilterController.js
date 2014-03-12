@@ -13,16 +13,19 @@ ironholdApp.controller('FilterController', function ($http, $resource, $window, 
 		    filter.selected = false;
 		});
 		$scope.selectedFilters = [];
+		$scope.$emit('facetToggled', null, $scope.selectedFilters);
 	}
     }
 
     $scope.enableFilter = function(filter, filterGroupCode) {
 	if ($scope.activeTab === $scope.tabName) {
+console.log(filter);
 		if (filter.selected) {
 			$scope.selectedFilters.push(filter);
 		} else {
 		    $scope.selectedFilters.remove(filter);
 		}
+console.log($scope.selectedFilters);
 
 		$scope.$emit('filterToggled', filter);
 	}

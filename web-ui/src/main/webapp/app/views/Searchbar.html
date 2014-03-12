@@ -1,9 +1,9 @@
-<form class="form-search" name="searchbar" data-ng-submit="search(searchbar.inputSearch)">
+<form class="form-search" name="searchbar" data-ng-submit="search()">
     <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
 	<div class="input-container">
 	    <div class="input-history dropdown">
-		<input type="text" autofocus class="search-input clear-form-input form-control search-field"
-		       placeholder="Type your query" data-ng-model="searchbar.inputSearch"
+		<input type="text" autofocus="autofocus" class="search-input clear-form-input form-control search-field"
+		       placeholder="Type your query" data-ng-model="inputSearch"
 		       data-ng-keyup="searchKeyUp($event)">
 
 		<a class="dropdown-toggle">
@@ -25,7 +25,7 @@
 	</div>
 	<!-- .input-container -->
 	<span class="input-group-btn">
-		<button type="button" class="btn btn-link btn-sm" data-ng-click="search(inputSearch)">
+		<button type="button" class="btn btn-link btn-sm" data-ng-click="search()">
 			<i class="fa icon-search icon-on-right bigger-110"></i>
 		</button>
 		<button type="button" class="btn btn-link btn-sm clear-form-trigger" data-ng-click="toggleSearchHilite()">

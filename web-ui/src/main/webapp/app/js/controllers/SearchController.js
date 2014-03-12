@@ -29,6 +29,7 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
 
     $rootScope.$on('searchPreviewRequest', function(evt, inputSearch) {
         if ($scope.activeTab === $scope.tabName) {
+console.log(inputSearch);
 		messagesService.one("count").get({criteria: inputSearch}).then(function(result) {
 		    $scope.$emit('totalResultsChange', result);
 		    $scope.$emit('searchPreviewData', result);

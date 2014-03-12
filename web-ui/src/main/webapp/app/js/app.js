@@ -287,7 +287,6 @@ ironholdApp.directive('wireframe', function() {
 
 ironholdApp.directive('searchQuery', function() {
 	return {
-		scope: true,
 		restrict: 'ACE',
 		templateUrl: 'views/Searchbar.html'
 	}
