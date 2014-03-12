@@ -21,22 +21,18 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 	    })
 
 	    .state('loggedin.main.text', {
-		    url: "/text-mode",
 		    templateUrl: "views/PreviewTabs/TextTab.html"
 	    })
 
 	    .state('loggedin.main.html', {
-		    url: "/html-mode",
 		    templateUrl: "views/PreviewTabs/HtmlTab.html"
 	    })
 
 	    .state('loggedin.main.sources', {
-		    url: "/sources-mode",
 		    templateUrl: "views/PreviewTabs/SourceTab.html"
 	    })
 
 	    .state('loggedin.main.audit', {
-		    url: "/audit-mode",
 		    templateUrl: "views/PreviewTabs/AuditTab.html"
 	    })
 

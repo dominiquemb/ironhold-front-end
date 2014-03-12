@@ -2,7 +2,7 @@
 
 ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, $state, logInService) {
     if (logInService.confirmLoggedIn($state)) {
-	$state.go('loggedin.main');
+	$state.go('loggedin.main.text');
     }
 
     $scope.currentlyVisible = 'login';
@@ -41,7 +41,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 		logInService.logIn($scope.clientKey, $scope.username, $scope.password);
 
 	    	/* This redirection should be improved later */
-		$state.go('loggedin.main');
+		$state.go('loggedin.main.text');
 	    	/* */
 		$scope.formInvalid = false;
 	    }
