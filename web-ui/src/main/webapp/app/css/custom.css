@@ -546,13 +546,13 @@ body .text-primary {
 
 .result.active-single .checkmark .checkmark-icon,
 .result.active-multi .checkmark .checkmark-icon {
-	background: url(../img/sprites/ImageSprite.png) -98px -17px;
+	background: url(../img/sprites/ImageSprite.png) -82px -17px;
 }
 
 .filter.active .checkbox .checkmark-icon, 
 .result.active-single .checkmark:hover .checkmark-icon,
 .result.active-multi .checkmark:hover .checkmark-icon {
-	background: url(../img/sprites/ImageSprite.png) -98px -17px;
+	background: url(../img/sprites/ImageSprite.png) -82px -17px;
 }
 
 .filter.active:hover .checkbox .checkmark-icon, 
@@ -1210,16 +1210,16 @@ body ul {
 	visibility: visible;
 }
 
-.result.active-single .checkmark, .result.active-single:hover .checkmark {
-	background-color: transparent;
+.result.active-single .checkmark, 
+.result.active-single:hover .checkmark {
+	background-color: #2e68b1;
 	visibility: visible;
-	color: rgb(158, 157, 157);
 }
 
-.result.active-multi .checkmark, .result.active-multi:hover .checkmark {
-	background-color: transparent;
+.result.active-multi .checkmark, 
+.result.active-multi:hover .checkmark {
+	background-color: #2e68b1;
 	visibility: visible;
-	color: rgb(158, 157, 157);
 }
 
 .result .dropdown-header {

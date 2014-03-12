@@ -11,7 +11,6 @@ ironholdApp.controller('FilterController', function ($http, $resource, $window, 
 	if ($scope.activeTab === $scope.tabName) {
 		angular.forEach($scope.selectedFilters, function(filter) {
 		    filter.selected = false;
-		    $scope.$emit('toggleFacet', filter);
 		});
 		$scope.selectedFilters = [];
 	}
