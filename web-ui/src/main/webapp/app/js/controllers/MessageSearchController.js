@@ -18,6 +18,10 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	$scope.initialState = false;
     }
 
+    $rootScope.$on('reset', function() {
+	$scope.initialState = true;
+    });
+
     $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
         if ($scope.activeTab === $scope.tabName) {
 		messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: inputSearch}).then(function(result) {
