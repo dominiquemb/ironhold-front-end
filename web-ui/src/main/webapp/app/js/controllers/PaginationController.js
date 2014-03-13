@@ -2,13 +2,30 @@
 
 ironholdApp.controller('PaginationController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state) {
     $scope.currentPage = 1;
+ 
+    $rootScope.$on('reset', function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.showPaginaion = false;
+		$scope.currentPage = 1;
+	}
+    });
+
+    $rootScope.$on('results', function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.showPagination = true;
+	}
+    });
 
     $rootScope.$on('activeTab', function(evt, tab) {
-        $scope.tabName = tab;
+	if ($scope.activeTab === $scope.tabName) {
+        	$scope.tabName = tab;
+	}
     });
 
     $scope.$on('search', function(evt, info) {
-	$scope.inputSearch = info.inputSearch;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.inputSearch = info.inputSearch;
+	}
     });
 
     $scope.goTo = function(page) {

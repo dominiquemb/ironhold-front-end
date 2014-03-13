@@ -129,13 +129,17 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	}
     }
 
+    $rootScope.$on('reset', function() {
+	$scope.reset();
+    });
+
     $scope.reset = function () {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.showSearchResults = true;
 		$scope.searchMessages = 0;
 		$scope.matches = [];
 		$scope.messages = [];
 		$scope.currentPage = 1;
+		$scope.showSearchResults = false;
 	}
     }
 

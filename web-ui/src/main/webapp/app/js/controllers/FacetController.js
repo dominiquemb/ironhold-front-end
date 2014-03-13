@@ -7,6 +7,12 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     $scope.facets = [];
     $scope.showFacets = false;
 
+    $rootScope.$on('reset', function() {
+	    $scope.selectedFacets = [];
+	    $scope.facets = [];
+	    $scope.showFacets = false;
+    });	
+
     $scope.unselectAllFacets = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		angular.forEach($scope.selectedFacets, function(facet) {

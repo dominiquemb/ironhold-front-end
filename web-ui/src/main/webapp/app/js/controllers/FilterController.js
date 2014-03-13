@@ -7,6 +7,12 @@ ironholdApp.controller('FilterController', function ($http, $resource, $window, 
     $scope.filters = [];
     $scope.showFilters = false;
 
+    $rootScope.$on('reset', function() {
+	    $scope.selectedFilters = [];
+	    $scope.filters = [];
+	    $scope.showFilters = false;
+    });
+
     $scope.unselectAllFilters = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		angular.forEach($scope.selectedFilters, function(filter) {

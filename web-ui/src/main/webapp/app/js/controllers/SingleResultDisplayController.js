@@ -18,6 +18,14 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     }
 
+    $rootScope.$on('reset', function() {
+	$scope.currentMessage = false;
+	$scope.showPreviewToolbar = false;
+	$scope.mode = 'text';
+	$scope.modeData = {};
+	$scope.showContainer = false;
+    });
+
     $rootScope.$on('modeData', function(evt, results) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = results.payload[0];

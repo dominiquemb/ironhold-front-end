@@ -5,7 +5,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
     $scope.msgs;
     $scope.selectedFacets = [];
-    $scope.showPagination = false;
 
     searchResultsService.prepForBroadcast("-", "- ");
 
@@ -16,7 +15,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     }
 
     $scope.initialized = function() {
-	$scope.showPagination = true;
 	$scope.initialState = false;
     }
 

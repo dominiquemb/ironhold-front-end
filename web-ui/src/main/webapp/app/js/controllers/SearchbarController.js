@@ -22,9 +22,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.search = function(query) {
 	if ($scope.activeTab === $scope.tabName) {
-//		$scope.inputSearch = query;
 		$scope.currentlySearching = true;
-console.log($scope.inputSearch);
 		$scope.$emit('search', {
 			inputSearch: $scope.inputSearch
 		});
@@ -33,7 +31,6 @@ console.log($scope.inputSearch);
 
     $rootScope.$on('totalResultsChange', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
-console.log(result);
 		$scope.searchMatches = result.payload.matches;
 	}
     });
@@ -55,6 +52,13 @@ console.log(result);
 		});
 	}
     });
+
+    $scope.resetSearch = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('reset');
+		$scope.toggleSearchHilite();
+	}
+    }
 
     $scope.toggleSearchHilite = function() {
 	if ($scope.activeTab === $scope.tabName) {
