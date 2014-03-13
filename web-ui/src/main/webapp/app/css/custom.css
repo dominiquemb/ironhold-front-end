@@ -549,12 +549,12 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -82px -17px;
 }
 
-.filter.active .checkbox .checkmark-icon, 
 .result.active-single .checkmark:hover .checkmark-icon,
 .result.active-multi .checkmark:hover .checkmark-icon {
 	background: url(../img/sprites/ImageSprite.png) -82px -17px;
 }
 
+.filter.active .checkbox .checkmark-icon, 
 .filter.active:hover .checkbox .checkmark-icon, 
 .result:hover .checkmark .checkmark-icon,
 .result:hover .checkmark .checkmark-icon {
