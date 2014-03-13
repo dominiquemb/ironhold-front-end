@@ -4,4 +4,5 @@ ironholdApp.controller('LogsController', function ($http, $resource, $window, $r
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'logs';
+    $scope.initialState = true;
 });

@@ -4,4 +4,5 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'discovery';
+    $scope.initialState = true;
 });

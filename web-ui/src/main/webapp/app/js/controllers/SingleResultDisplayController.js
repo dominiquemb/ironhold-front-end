@@ -4,7 +4,8 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     logInService.confirmLoggedIn($state);
 	
     $scope.showContainer = false;
-    $scope.currentMessage = false;
+    $scope.currentMessage = false; 
+    $scope.showPreviewToolbar = false;
     $scope.mode = 'text';
     $scope.modeData = {};
 
@@ -48,6 +49,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $rootScope.$on('selectMessage', function(evt, message) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentMessage = message;
+		$scope.showPreviewToolbar = true;
 	}
     });
 

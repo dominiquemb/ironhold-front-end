@@ -4,4 +4,5 @@ ironholdApp.controller('FoldersController', function ($http, $resource, $window,
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'folders';
+    $scope.initialState = true;
 });

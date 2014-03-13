@@ -15,6 +15,11 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	    });
     }
 
+    $scope.initialized = function() {
+	$scope.showPagination = true;
+	$scope.initialState = false;
+    }
+
     $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
         if ($scope.activeTab === $scope.tabName) {
 		messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: inputSearch}).then(function(result) {
@@ -124,7 +129,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
 			    $scope.$emit('facets', result.payload.facets);
 	
-			    $scope.showPagination = true;
+			    $scope.initialized();
 
 			    $scope.$emit('results', {
 				'matches': result.payload.matches,

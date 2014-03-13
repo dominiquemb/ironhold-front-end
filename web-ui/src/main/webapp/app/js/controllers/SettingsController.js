@@ -4,4 +4,5 @@ ironholdApp.controller('SettingsController', function ($http, $resource, $window
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'settings';
+    $scope.initialState = true;
 });
