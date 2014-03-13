@@ -17,6 +17,14 @@ ironholdApp.directive('searchTabContainer', function() {
 	}
 });
 
+ironholdApp.directive('messageSearchTab', function() {
+	return {
+		restrict: 'ACE',
+		scope: true,
+		controller: 'MessageSearchController'
+	}
+});
+
 ironholdApp.directive('controlbar', function() {
 	return {
 		restrict: 'ACE',

@@ -4,6 +4,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     logInService.confirmLoggedIn($state);
     $scope.activeTab = 'search';
     $scope.pageSize = 20;
+    $scope.showPagination = false;
 
     $scope.$emit('activeTab', $scope.activeTab);
 
