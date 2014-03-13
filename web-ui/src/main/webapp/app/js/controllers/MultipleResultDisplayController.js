@@ -78,10 +78,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.selectMessage = function(message) {
 	if ($scope.activeTab === $scope.tabName) {
-		var isSelected = message.selected;
 		$scope.unselectAllMessages();
 		if (!$scope.highlightActive) {
-			message.selected = !isSelected;
+			message.selected = !message.selected;
 		}
 		else {
 			message.selected = true;
