@@ -16,11 +16,11 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 
 	    /* Search tab and subtabs */
 	    .state('loggedin.main', {
-		    url: "/main",
 		    templateUrl: "views/TabContainers.html"
 	    })
 
 	    .state('loggedin.main.text', {
+		    url: "/main",
 		    templateUrl: "views/PreviewTabs/TextTab.html"
 	    })
 

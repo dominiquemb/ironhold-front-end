@@ -10,7 +10,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $scope.isModeActive = function(mode) {
 	if ($scope.activeTab === $scope.tabName) {
-		return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
+		return $scope.mode === mode;
+
+// 		Commenting this out because for now, tabs are not included in the URL
+//		return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
 	}
     }
 
