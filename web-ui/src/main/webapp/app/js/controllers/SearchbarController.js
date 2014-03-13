@@ -56,7 +56,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.resetSearch = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.$emit('reset');
-		$scope.toggleSearchHilite();
+		$scope.reset();
 	}
     }
 
@@ -90,6 +90,8 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 		$scope.searchTime = 0;
 		$scope.suggestions = [];
 		$scope.searchMatches = 0;
+	    	$scope.searchFieldHilite = false;
+    		$scope.currentlySearching = false;
 	}
     }
 

@@ -587,7 +587,7 @@ body .text-primary {
 }
 
 .attachment-img-xs {
-	background: url(../img/sprites/ImageSprite.png) -64px -2px;
+	background: url(../img/sprites/ImageSprite.png) -64px -3px;
 }
 
 .envelope-img-xs {
@@ -965,6 +965,7 @@ body ul {
 	width: 100%;
 	height: 100%;
 	margin: 0px;
+	font-family: 'Varela Round', sans-serif;
 }
 
 .msglist .listing .jspVerticalBar {
@@ -1165,6 +1166,7 @@ body ul {
 	text-align: right;
 	width: 100px;
 	max-width: 100px;
+	margin-left: 1px;
 }
 
 .result .message-subject {
@@ -1177,8 +1179,8 @@ body ul {
 	color: #666;
 	width: 59px;
 	font-size: 10px;
-	padding-top: 1px;
-	padding-left: 25px;
+	padding-top: 0px;
+	padding-left: 14px;
 }
 
 .result .message-sender,
@@ -1196,8 +1198,8 @@ body ul {
 }
 
 .result .checkmark {
-	width: 20px;
-	max-width: 20px;
+	width: 18px;
+	max-width: 18px;
 	padding-left: 3px;
 	padding-right: 3px;
 	vertical-align: middle;
@@ -1255,7 +1257,9 @@ body ul {
 }
 
 .result .dropdown-title {
+	margin-right: 2px;
 	float: left;
+	line-height: 15px;
 	display: inline-block;
 }
 
@@ -1660,6 +1664,7 @@ body ul {
 .blue-hilite {
 	background-color: #fefdd4;
 	color: #58595b;
+	font-weight: bold;
 }
 
 .upper {
