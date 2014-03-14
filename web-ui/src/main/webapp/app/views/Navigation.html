@@ -73,41 +73,43 @@
 	<!-- .wrapper -->
 	<div class="row footer" data-ng-controller="FooterController">
 	    <div class="footer-inner col-xs-12">
-		    <span class="search-total col-xs-2">
-					<span class="label-title">
-						Search Total:
+		    <span data-ng-show="showFooterSearchStats">
+			    <span class="footer-item footer-search-total">
+						<span class="label-title">
+							Search Total:
+						</span>
+						<span class="label-content">
+							{{ searchMatches | number }}
+						</span>
 					</span>
-					<span class="label-content">
-						{{ searchMatches }}
+			    <span class="footer-item footer-after-filter" data-ng-show="showAfterFilter">
+						<span class="label-title">
+							| After Filter:
+						</span>
+						<span class="label-content">
+							{{ afterFilter | number }}
+						</span>
 					</span>
-				</span>
-		    <span class="search-total col-xs-2">
-					<span class="label-title">
-						After Filter:
+			    <span class="footer-item footer-search-time">
+						<span class="label-title">
+							| Search Took 
+						</span>
+						<span class="label-content">
+							{{ searchTime | number }}ms
+						</span>
 					</span>
-					<span class="label-content">
-						{{ afterFilter }}
-					</span>
-				</span>
-		    <span class="search-total col-xs-2">
-					<span class="label-title">
-						Search Took 
-					</span>
-					<span class="label-content">
-						{{ searchTime }}ms
-					</span>
-				</span>
-		    <span class="search-total col-xs-2">
+		    </span>
+		    <span class="footer-item footer-copyright">
 				<span class="label-title">
-					2014 Reqo Inc
+					&copy; 2014 Reqo Inc
 				</span>
 		    </span>
-		    <span class="search-total col-xs-2 pull-right">
+		    <span class="footer-item footer-archive-total">
 					<span class="label-title">
 						Your Archive Total:
 					</span>
 					<span class="label-content">
-						{{ totalMessages }}
+						{{ totalMessages | number }}
 					</span>
 				</span>
 	    </div>

@@ -837,6 +837,7 @@ body .text-primary {
 
 .middlebar .matches_number {
 	color: #999;
+	font-size: 12px;
 	height: 22px;
 	margin-left: 2px;
 	line-height: 20px;
@@ -1449,6 +1450,20 @@ body ul {
 	background-color: #2e68b1;
 	color: #fff;
 	text-transform: uppercase;
+}
+
+.footer-search-total {
+	margin-left: 8px;
+}
+
+.footer-copyright {
+	position: absolute;
+	right: 692px;
+}
+
+.footer-archive-total {
+	float: right;
+	margin-right: 19px;
 }
 
 /* nav-list */
