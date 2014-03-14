@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService) {
+ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
     $scope.activeTab = 'search';
     $scope.pageSize = 20;
@@ -75,7 +75,13 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
                                 mode: data.mode,
                                 payload: result.payload
                         });
-                });
+                }, function(err) {
+			$scope.$emit('modeData', {
+				mode: data.mode,
+				error: err,
+				payload: []
+			});
+		});
     });
 
     $scope.getClass = function (path) {

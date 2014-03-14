@@ -32,7 +32,7 @@ console.log('test');
 
     $rootScope.$on('totalResultsChange', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.searchMatches = addCommas(result.payload.matches);
+		$scope.searchMatches = result.payload.matches;
 	}
     });
 
@@ -123,7 +123,7 @@ console.log('test');
 
     $rootScope.$on('searchPreviewData', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
-            $scope.searchMatches = addCommas(result.payload.matches);
+            $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
 	}

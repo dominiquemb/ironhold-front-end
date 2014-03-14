@@ -28,7 +28,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $rootScope.$on('modeData', function(evt, results) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.modeData[results.mode] = results.payload[0];
+		$scope.modeData[results.mode] = [];
+		if (results.payload[0]) {
+			$scope.modeData[results.mode] = results.payload[0];
+		}
 	}
     });
 
