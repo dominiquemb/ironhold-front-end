@@ -648,7 +648,7 @@ body .text-primary {
 }
 
 .table tbody > tr > td {
-	padding: 6px 2px;
+	padding: 4px 3px 8px;
 }
 
 /* navbar */
@@ -965,7 +965,7 @@ body ul {
 	width: 100%;
 	height: 100%;
 	margin: 0px;
-	font-family: 'Varela Round', sans-serif;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 
 .msglist .listing .jspVerticalBar {
@@ -1117,23 +1117,33 @@ body ul {
 .results .result.active-single .widget-main,
 .results .result.active-multi .widget-main {
 	color: #666;
+	line-height: 14px;
 }
 
 .result .message-icons {
 	color: rgb(155, 155, 155);
 	font-size: 16px;
 	text-align: right;
+	height: 18px;
 	width: 59px;
-	padding-right: 15px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-left: 14px;
 	max-width: 59px;
 }
 
 .result .message-recipients-line {
-	padding-left: 67px;
+	padding-left: 68px;
 	position: relative;
-	height: 13px;
+	height: 14px;
+	line-height: 15px;
+	margin-bottom: 1px;
 	overflow: hidden;
-	font-size: 10px;
+	font-size: 12px;
+}
+
+.result .message-recipients {
+	margin-top: 9px;
 }
 
 .result .message-first-line {
@@ -1143,17 +1153,21 @@ body ul {
 
 .result .message-second-line {
 	color: #666;
+	line-height:13px;
 	padding-right: 7px;
+	font-size: 14px;
 }
 
 .result .preview {
-	padding-left: 11px;
+	padding-left: 68px;
 	font-size: 11px;
+	margin-top: 7px;
+	text-align: justify;
 }
 
 .result .message-sender {
 	min-width: 150px;
-	padding-left: 6px;
+	padding-left: 8px;
 }
 
 .result .message-age {
@@ -1172,13 +1186,13 @@ body ul {
 .result .message-subject {
 	font-weight: bold;
 	width: auto;
-	padding-left: 6px;
+	padding-left: 8px;
 }
 
 .result .message-size {
 	color: #666;
 	width: 59px;
-	font-size: 10px;
+	font-size: 12px;
 	padding-top: 0px;
 	padding-left: 14px;
 }
@@ -1186,7 +1200,7 @@ body ul {
 .result .message-sender,
 .result .message-subject,
 .result .message-date { 
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .result .message-flag {
@@ -1253,13 +1267,8 @@ body ul {
 .result .dropdown-title {
 	color: #58595b;
 	line-height: 13px;
-	float: right;
-}
-
-.result .dropdown-title {
 	margin-right: 2px;
 	float: left;
-	line-height: 15px;
 	display: inline-block;
 }
 
