@@ -830,7 +830,9 @@ body .text-primary {
 
 .middlebar .pagination-container {
 	margin-right: 9px;
-	margin-top: 2px;
+	margin-top: 1px;
+	font-size: 12px;
+	font-weight: 500;
 }
 
 .middlebar .matches_number {
