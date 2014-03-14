@@ -50,6 +50,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $scope.switchMode = function(newMode) {
 	if ($scope.activeTab === $scope.tabName) {
+		$scope.mode = newMode;
 		$scope.$emit('mode', newMode);
 	}
     }
