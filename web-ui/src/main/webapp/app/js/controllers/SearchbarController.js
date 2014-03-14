@@ -3,6 +3,7 @@
 ironholdApp.controller('SearchbarController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
+console.log('test');
     var typingTimer;
 
     $scope.showSearchPreviewResults = false;
@@ -31,7 +32,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $rootScope.$on('totalResultsChange', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.searchMatches = result.payload.matches;
+		$scope.searchMatches = addCommas(result.payload.matches);
 	}
     });
 
@@ -119,9 +120,10 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	}
     }
 
+
     $rootScope.$on('searchPreviewData', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
-            $scope.searchMatches = result.payload.matches;
+            $scope.searchMatches = addCommas(result.payload.matches);
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
 	}

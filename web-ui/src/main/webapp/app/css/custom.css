@@ -836,10 +836,14 @@ body .text-primary {
 }
 
 .middlebar .matches_number {
-	color: #333;
+	color: #999;
 	height: 22px;
 	margin-left: 2px;
 	line-height: 20px;
+}
+
+.middlebar .matches_number_bold {
+	color: #666;
 }
 
 /*
