@@ -3,7 +3,6 @@
 ironholdApp.controller('SearchbarController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
-console.log('test');
     var typingTimer;
 
     $scope.showSearchPreviewResults = false;

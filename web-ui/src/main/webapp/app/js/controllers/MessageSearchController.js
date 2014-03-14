@@ -63,7 +63,8 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 		.then(function(result) {
 		    $scope.$emit('updateFooter', {
 			searchTime: result.payload.timeTaken,
-			searchMatches: result.payload.matches
+			searchMatches: result.payload.matches,
+			selectedFacets: $scope.selectedFacets
 		    });
 		    $scope.$emit('updateSearchbar', {
 			searchTime: result.payload.timeTaken,
@@ -114,7 +115,8 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 		    .then(function(result) {
 			$scope.$emit('updateFooter', {
 				searchTime: result.payload.timeTaken,
-				searchMatches: result.payload.matches
+				searchMatches: result.payload.matches,
+				selectedFacets: []
 			});
 			$scope.$emit('updateSearchbar', {
 				searchTime: result.payload.timeTaken,

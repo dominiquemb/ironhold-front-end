@@ -73,9 +73,9 @@
 	<!-- .wrapper -->
 	<div class="row footer" data-ng-controller="FooterController">
 	    <div class="footer-inner col-xs-12">
-				<span class="search-total col-xs-2">
+		    <span class="search-total col-xs-2">
 					<span class="label-title">
-						Search Results:
+						Search Total:
 					</span>
 					<span class="label-content">
 						{{ searchMatches }}
@@ -83,23 +83,28 @@
 				</span>
 		    <span class="search-total col-xs-2">
 					<span class="label-title">
-						Time Took:
+						After Filter:
+					</span>
+					<span class="label-content">
+						{{ afterFilter }}
+					</span>
+				</span>
+		    <span class="search-total col-xs-2">
+					<span class="label-title">
+						Search Took 
 					</span>
 					<span class="label-content">
 						{{ searchTime }}ms
 					</span>
 				</span>
 		    <span class="search-total col-xs-2">
-					<span class="label-title">
-						Total:
-					</span>
-					<span class="label-content">
-						{{ totalMessages }}
-					</span>
+				<span class="label-title">
+					2014 Reqo Inc
 				</span>
+		    </span>
 		    <span class="search-total col-xs-2 pull-right">
 					<span class="label-title">
-						Archive Total:
+						Your Archive Total:
 					</span>
 					<span class="label-content">
 						{{ totalMessages }}
