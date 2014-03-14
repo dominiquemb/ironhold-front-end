@@ -2,7 +2,7 @@
         <div class="row controlbar">
         </div>
 
-        <div data-ng-show="!modeData.sources">
+        <div data-ng-show="modeData.sources.length === 0">
                 No Source data available.
         </div>
         <table class="table table-striped table-hover" data-ng-show="modeData.sources">

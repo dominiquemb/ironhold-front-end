@@ -35,10 +35,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
-    $rootScope.$on('mode', function(evt, mode) {
-	if ($scope.activeTab === $scope.tabName) {
-		$scope.$mode = mode;
-
+    $scope.requestSubTabData = function(mode) {
 		if (mode === 'text') {
 			mode = '';
 		}
@@ -48,6 +45,12 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
 			criteria: {'criteria': $scope.inputSearch}
 		});
+    }
+
+    $rootScope.$on('mode', function(evt, mode) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.mode = mode;
+		$scope.requestSubTabData(mode);
 	}
     });
 
@@ -62,6 +65,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentMessage = message;
 		$scope.showPreviewToolbar = true;
+		$scope.requestSubTabData($scope.mode);
 	}
     });
 
