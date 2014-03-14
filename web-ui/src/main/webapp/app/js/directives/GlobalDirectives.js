@@ -9,6 +9,15 @@ ironholdApp.directive('pagination', function() {
 	}
 });
 
+ironholdApp.directive('footer', function() {
+	return {
+		restrict: 'ACE',
+		scope: true,
+		templateUrl: 'views/Footer.html',
+		controller: 'FooterController'
+	}
+});
+
 ironholdApp.directive('searchTabContainer', function() {
 	return {
 		restrict: 'ACE',

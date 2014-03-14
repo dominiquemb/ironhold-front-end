@@ -10,33 +10,37 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
     $scope.showAfterFilter = false;
 
     $rootScope.$on('totalResultsChange', function(evt, result) {
-	$scope.totalMessages = result;
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.totalMessages = result;
+	}
     });
 
     $rootScope.$on('reset', function() {
-	$scope.showFooterSearchStats = false;
-	$scope.searchMatches = 0;
-	$scope.selectedFacets = [];
-	$scope.searchTime = 0;
-	$scope.showAfterFilter = false;
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.showFooterSearchStats = false;
+		$scope.searchMatches = 0;
+		$scope.selectedFacets = [];
+		$scope.searchTime = 0;
+		$scope.showAfterFilter = false;
+	}
     });
 
     $rootScope.$on('updateFooter', function(evt, results) {
-	var newFilters = (results.selectedFacets === $scope.selectedFacets) ? false : true;
-	
-	$scope.showFooterSearchStats = true;
+        if ($scope.activeTab === $scope.tabName) {
+		var newFilters = (results.selectedFacets === $scope.selectedFacets) ? true : false;
+		
+		$scope.showFooterSearchStats = true;
 
-	if ($scope.searchMatches > 0 && newFilters) {
-		$scope.afterFilter = results.searchMatches;
-		$scope.showAfterFilter = true;
+		if ($scope.searchMatches > 0 && newFilters && results.selectedFacets.length > 0) {
+			$scope.afterFilter = results.searchMatches;
+			$scope.showAfterFilter = true;
+		}
+		else {
+			$scope.searchMatches = results.searchMatches;
+			$scope.showAfterFilter = false;
+		}
+		$scope.searchTime = results.searchTime;
 	}
-	else {
-	        $scope.searchMatches = results.searchMatches;
-		$scope.showAfterFilter = false;
-	}
-        $scope.searchTime = results.searchTime;
     });
-
-
 
 });

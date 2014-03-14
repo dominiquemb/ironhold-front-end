@@ -71,46 +71,4 @@
 	<div class="push"></div>
 	</div>
 	<!-- .wrapper -->
-	<div class="row footer" data-ng-controller="FooterController">
-	    <div class="footer-inner col-xs-12">
-		    <span data-ng-show="showFooterSearchStats">
-			    <span class="footer-item footer-search-total">
-						<span class="label-title">
-							Search Total:
-						</span>
-						<span class="label-content">
-							{{ searchMatches | number }}
-						</span>
-					</span>
-			    <span class="footer-item footer-after-filter" data-ng-show="showAfterFilter">
-						<span class="label-title">
-							| After Filter:
-						</span>
-						<span class="label-content">
-							{{ afterFilter | number }}
-						</span>
-					</span>
-			    <span class="footer-item footer-search-time">
-						<span class="label-title">
-							| Search Took 
-						</span>
-						<span class="label-content">
-							{{ searchTime | number }}ms
-						</span>
-					</span>
-		    </span>
-		    <span class="footer-item footer-copyright">
-				<span class="label-title">
-					&copy; 2014 Reqo Inc
-				</span>
-		    </span>
-		    <span class="footer-item footer-archive-total">
-					<span class="label-title">
-						Your Archive Total:
-					</span>
-					<span class="label-content">
-						{{ totalMessages | number }}
-					</span>
-				</span>
-	    </div>
 </div>
