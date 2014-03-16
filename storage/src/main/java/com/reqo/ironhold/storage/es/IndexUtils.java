@@ -108,7 +108,6 @@ public class IndexUtils {
                 case BCC_NAME:
                     return getRecipientInfo(hit, field, subField, preview);
                 case BODY:
-                case SUBJECT:
                     if (!preview) {
                         if (hit.getHighlightFields().get(key) != null) {
                             return hit.getHighlightFields().get(key).getFragments()[0]
@@ -120,6 +119,13 @@ public class IndexUtils {
                         return StringUtils.abbreviate(
                                 (String) hit.getFields().get(key).getValue(), 300)
                                 + "...";
+                    }
+                case SUBJECT:
+                    if (hit.getHighlightFields().get(key) != null) {
+                        return hit.getHighlightFields().get(key).getFragments()[0]
+                                .string();
+                    } else {
+                        return (String) hit.getFields().get(key).getValue();
                     }
             }
 

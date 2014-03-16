@@ -59,7 +59,7 @@ public class MessageIndexService extends AbstractIndexService implements IMessag
             }
 
             if (highlightFields.containsKey(IndexFieldEnum.SUBJECT.getValue())) {
-                subjectWithHiglights = ArrayIterate.makeString(highlightFields.get(IndexFieldEnum.SUBJECT.getValue()).getFragments(), " ... ");
+                subjectWithHiglights = highlightFields.get(IndexFieldEnum.SUBJECT.getValue()).getFragments()[0].toString();
             }
 
             if (highlightFields.containsKey(IndexFieldEnum.ATTACHMENT.getValue())) {
