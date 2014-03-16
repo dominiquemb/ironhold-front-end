@@ -6,6 +6,7 @@ import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
+import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import com.reqo.ironhold.web.domain.*;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -198,6 +200,27 @@ public class MessageController extends AbstractController {
         String subPartition = String.format("%02d%02d", month, day);
         return mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/headers")
+    public
+    @ResponseBody
+    ApiResponse<Map<String, String>> getHeaders(@PathVariable("year") int year,
+                                                @PathVariable("month") int month,
+                                                @PathVariable("day") int day,
+                                                @PathVariable("messageId") String messageId) throws Exception {
+        ApiResponse<Map<String, String>> response = new ApiResponse<>();
+
+        String partition = String.format("%4d", year);
+        String subPartition = String.format("%02d%02d", month, day);
+        String source = mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
+        MimeMailMessage message = new MimeMailMessage();
+        message.loadMimeMessageFromSource(source);
+
+
+        response.setPayload(message.getHeaders());
+        response.setStatus(ApiResponse.STATUS_SUCCESS);
+        return response;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{messageId:.+}/audit")

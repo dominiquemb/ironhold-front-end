@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.model.message;
 
+import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.reqo.ironhold.storage.model.MessageSourceTestModel;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.utils.ChecksumUtils;
@@ -824,6 +825,17 @@ public class EmlLoadTest {
     @Test
     public void testMimeMessageBig() throws Exception {
         performBasicCheckout("/testMimeMessageBig.eml");
+    }
+
+    @Test
+    public void testHeaders() throws Exception {
+        MimeMailMessage message = performBasicCheckout("/testMimeMessageBig.eml");
+
+        Assert.assertEquals(13, message.getHeaders().size());
+        List<String> expected = UnifiedSet.newSetWith("MIME-Version", "Content-Type", "Subject", "To", "From", "Sender", "Message-ID", "Date", "X-MS-Journal-Report", "X-MS-Exchange-Organization-AuthSource", "X-MS-Exchange-Organization-AuthAs", "X-MS-Exchange-Organization-AuthMechanism", "Keywords").toSortedList();
+        List<String> actual = UnifiedSet.newSet(message.getHeaders().keySet()).toSortedList();
+        Assert.assertEquals(expected, actual);
+
     }
 
     @Test

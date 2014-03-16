@@ -1,12 +1,16 @@
 package com.reqo.ironhold.storage.model.message;
 
+import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.pff.PSTAttachment;
 import com.pff.PSTException;
 import com.pff.PSTMessage;
 import com.pff.PSTRecipient;
-import com.reqo.ironhold.storage.utils.TikaInstance;
-import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
+import com.reqo.ironhold.storage.utils.TikaInstance;
+import com.reqo.ironhold.web.domain.Attachment;
+import com.reqo.ironhold.web.domain.IndexedAttachment;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.Recipient;
 import com.reqo.ironhold.web.domain.interfaces.IHasMessageId;
 import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
 import com.reqo.ironhold.web.domain.interfaces.ISubPartitioned;
@@ -69,6 +73,8 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
     private String subject = StringUtils.EMPTY;
 
     private Date messageDate;
+
+    private Map<String, String> headers;
 
     private String body = StringUtils.EMPTY;
 
@@ -314,6 +320,17 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
             populateRawContents(mimeMessage);
 
+            if (this.getHeaders() == null) {
+                this.headers = UnifiedMap.newMap();
+            }
+
+            Enumeration enumeration = mimeMessage.getAllHeaders();
+
+            while (enumeration.hasMoreElements()) {
+                Header element = (Header) enumeration.nextElement();
+
+                headers.put(element.getName(), element.getValue());
+            }
             this.messageDate = mimeMessage.getSentDate();
             this.size = rawContents.getBytes().length;
             if (mimeMessage.getHeader("Importance") != null) {
@@ -776,6 +793,14 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
         return messageType;
     }
 
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
     @Override
     @JsonIgnore
     public String getPartition() {
@@ -938,4 +963,6 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
 
         return StringUtils.EMPTY;
     }
+
+
 }
