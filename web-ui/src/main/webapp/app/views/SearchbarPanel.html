@@ -20,7 +20,8 @@
 
 	<div class="matches_number blue-primary pull-left">
 		<span data-ng-show="showSearchPreviewResults && !currentlySearching">
-			<strong class="matches_number_bold">{{ searchMatches | number }}</strong> results, sorted by <a>date.</a>  <a>Save search.</a>
+			<strong class="matches_number_bold">{{ searchMatches | number
+                }}</strong> results, sorted by <a>releveance</a>.  <a>Save search.</a>
 		</span>
 
 		<strong data-ng-show="currentlySearching">Searching...</strong>

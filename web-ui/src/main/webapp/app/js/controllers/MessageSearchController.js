@@ -54,7 +54,9 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 		messagesService.post("", $scope.selectedFacets, {
 			criteria: args.inputSearch, 
 			page: $scope.currentPage, 
-			pageSize: $scope.pageSize
+			pageSize: $scope.pageSize,
+			sortField: "SCORE",
+			sortOrder: "DESC"
 			}, 
 			{
 			"Accept": "application/json", 
@@ -110,7 +112,9 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 		messagesService.get({
 			criteria: args.inputSearch, 
 			facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", 
-			pageSize: $scope.pageSize
+			pageSize: $scope.pageSize,
+			sortField: "SCORE",
+            sortOrder: "DESC"
 			})
 		    .then(function(result) {
 			$scope.$emit('updateFooter', {

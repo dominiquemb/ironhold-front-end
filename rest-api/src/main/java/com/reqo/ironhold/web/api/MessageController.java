@@ -1,6 +1,7 @@
 package com.reqo.ironhold.web.api;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
+import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
@@ -12,6 +13,7 @@ import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,6 +87,8 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessages(@RequestParam String criteria,
+                                                   @RequestParam(required = false, defaultValue = "SCORE") String sortField,
+                                                   @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
                                                    @RequestParam(required = false, defaultValue = "0") int page,
                                                    @RequestBody FacetValue[] facetValues) {
@@ -95,7 +98,7 @@ public class MessageController extends AbstractController {
 
         searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
 
-
+        searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (FacetValue facetValue : facetValues) {
             FacetGroupName facetGroupName = FacetGroupName.fromValue(facetValue.getFacetName());
             searchBuilder.withNamedFacetValue(facetGroupName, facetValue.getLabel());
@@ -118,6 +121,8 @@ public class MessageController extends AbstractController {
     ApiResponse<MessageSearchResponse> getMessages(@RequestParam final String criteria,
                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
                                                    @RequestParam(required = false, defaultValue = "0") int page,
+                                                   @RequestParam(required = false, defaultValue = "SCORE") String sortField,
+                                                   @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
                                                    @RequestParam(required = false, defaultValue = "") String[] facets) {
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
@@ -126,7 +131,7 @@ public class MessageController extends AbstractController {
 
         searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
 
-
+        searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (String facet : facets) {
             FacetGroupName facetGroupName = FacetGroupName.fromValue(facet);
             searchBuilder.withNamedFacet(facetGroupName);
@@ -209,8 +214,6 @@ public class MessageController extends AbstractController {
         return apiResponse;
 
     }
-
-
 
 
     protected final String getUserName() {
