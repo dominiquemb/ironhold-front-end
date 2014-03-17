@@ -9,6 +9,13 @@ ironholdApp.directive('pagination', function() {
 	}
 });
 
+ironholdApp.directive('sortingPanel', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/SortingPanel.html',
+	}
+});
+
 ironholdApp.directive('footer', function() {
 	return {
 		restrict: 'ACE',

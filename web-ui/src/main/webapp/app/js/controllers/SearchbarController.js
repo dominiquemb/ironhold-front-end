@@ -11,16 +11,29 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchFieldHilite = false;
     $scope.searchTime;
     $scope.suggestons;
+    $scope.showSortingPanel;
     $scope.inputSearch = '';
     $scope.currentlySearching = false;
 
     searchResultsService.prepForBroadcast("-", "- ");
 
+    $scope.toggleSortingPanel = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.showSortingPanel = !$scope.showSortingPanel;
+	}
+    };
+
     $rootScope.$on('searchHistoryData', function(evt, result) {
-       $scope.searchHistory = result.payload;
+	if ($scope.activeTab === $scope.tabName) {
+       		$scope.searchHistory = result.payload;
+	}
     });
 
-    $scope.search = function(query) {
+    $rootScope.$on('triggerSearch', function() {
+	$scope.search();
+    });
+
+    $scope.search = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentlySearching = true;
 		$scope.$emit('search', {

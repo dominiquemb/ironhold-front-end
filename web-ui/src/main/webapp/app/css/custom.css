@@ -30,6 +30,14 @@ body .text-primary {
 	color: #2e68b1;
 }
 
+.shortcut {
+	text-decoration: underline;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
 .main-ui-view {
 	position: absolute;
 	top: 0px;
@@ -46,6 +54,47 @@ body .text-primary {
 	right: 0px;
 	bottom: 0px;
 }
+
+/* sorting panel */
+.sorting-panel {
+        width: 133px;
+        border: 1px solid #ccc;
+        height: 141px;
+        background-color: #fff;
+        position: absolute;
+        z-index: 4;
+        left: 146px;
+	top: 18px;
+}
+
+.sorting-line {
+	margin-bottom: 3px;
+}
+
+.sorting-panel_upper {
+	margin-top: 0px;
+        color: #333;
+	font-size: 11px;
+	line-height: 21px;
+	margin-left: 7px;
+	
+}
+
+.sorting-panel_upper .sort-az,
+.sorting-panel_upper .sort-za {
+	margin-right: 9px;
+}
+
+.sorting-panel_lower {
+	padding-top: 4px;
+	line-height: 24px;
+        margin-left: 32px;
+        margin-right: 1px;
+        margin-top: 8px;
+        border-top: 1px solid #ccc;
+        font-weight: 600;
+        color: #666;
+} 
 
 /* filter-tag */
 .filter-tag-container {
@@ -327,10 +376,6 @@ body .text-primary {
 	margin: 2px 0px 0px 0px;
 }
 
-.sgview_main {
-	margin-top: 10px;
-}
-
 .msgview_top h3 {
 	margin: 0px;
 }
@@ -596,6 +641,18 @@ body .text-primary {
 
 .flag-img-xs {
 	background: url(../img/sprites/ImageSprite.png) -292px -33px;
+}
+
+.sort-az {
+	background: url(../img/sprites/ImageSprite.png) -414px 4px;
+	width: 17px;
+	height: 20px;
+}
+
+.sort-za {
+	background: url(../img/sprites/ImageSprite.png) -431px 4px;
+	width: 17px;
+	height: 20px;
 }
 
 /* btn */

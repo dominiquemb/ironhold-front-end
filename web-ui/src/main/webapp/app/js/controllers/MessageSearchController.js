@@ -5,6 +5,17 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
     $scope.msgs;
     $scope.selectedFacets = [];
+    $scope.sortOrder = 'ASC';
+    $scope.sortField = 'SCORE'; 
+    $scope.sortFields = {
+        'SCORE': 'relevance',
+        'DATE': 'date',
+        'SIZE': 'size'
+    };
+
+    $scope.getSortField = function() {
+        return $scope.sortFields[$scope.sortField];
+    }
 
     searchResultsService.prepForBroadcast("-", "- ");
 
@@ -12,6 +23,16 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	    usersService.one("searchHistory").get().then(function(result) {
 		$scope.$emit('searchHistoryData', result);
 	    });
+    }
+
+    $scope.changeSortOrder = function(order) {
+	$scope.sortOrder = order;
+	$scope.$emit('triggerSearch');
+    }
+
+    $scope.changeSortField = function(field) {
+	$scope.sortField = field;
+	$scope.$emit('triggerSearch');
     }
 
     $scope.initialized = function() {
@@ -55,8 +76,8 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 			criteria: args.inputSearch, 
 			page: $scope.currentPage, 
 			pageSize: $scope.pageSize,
-			sortField: "SCORE",
-			sortOrder: "DESC"
+			sortField: $scope.sortField,
+			sortOrder: $scope.sortOrder
 			}, 
 			{
 			"Accept": "application/json", 
@@ -113,8 +134,8 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 			criteria: args.inputSearch, 
 			facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", 
 			pageSize: $scope.pageSize,
-			sortField: "SCORE",
-            sortOrder: "DESC"
+			sortField: $scope.sortField,
+            		sortOrder: $scope.sortOrder
 			})
 		    .then(function(result) {
 			$scope.$emit('updateFooter', {

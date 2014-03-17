@@ -1,0 +1,18 @@
+<div class="sorting-panel_upper">
+	<div class="sorting-line" data-ng-click="changeSortOrder('ASC')">
+		<div class="sort-az pull-left clickable"></div> 
+		<span class="clickable">
+			<span class="shortcut">S</span>ort A to Z</span>
+	</div>
+	<div class="sorting-line" data-ng-click="changeSortOrder('DESC')">
+		<div class="sort-za pull-left clickable"></div> 
+		<span class="clickable">
+			S<span class="shortcut">o</span>rt Z to A
+		</span>
+	</div>
+</div>
+<div class="sorting-panel_lower">
+	<div class="clickable" data-ng-click="changeSortField('SCORE')">Relevance</div>
+	<div class="clickable" data-ng-click="changeSortField('DATE')">Date</div>
+	<div class="clickable" data-ng-click="changeSortField('SIZE')">Size</div>
+</div>
