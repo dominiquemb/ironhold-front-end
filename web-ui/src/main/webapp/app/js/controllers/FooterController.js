@@ -1,19 +1,20 @@
 'use strict';
 
-ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService) {
+ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
 
     $scope.searchMatches;
     $scope.selectedFacets;
     $scope.searchTime;
+    $scope.archiveTotal;
     $scope.showFooterSearchStats = false;
     $scope.showAfterFilter = false;
 
-    $rootScope.$on('totalResultsChange', function(evt, result) {
-        if ($scope.activeTab === $scope.tabName) {
-		$scope.totalMessages = result;
-	}
-    });
+    if ($scope.activeTab === $scope.tabName) {
+	messagesService.one("count").get({criteria: '*'}).then(function(result) {
+		$scope.archiveTotal = result.payload.matches;
+	});
+    }
 
     $rootScope.$on('reset', function() {
         if ($scope.activeTab === $scope.tabName) {
