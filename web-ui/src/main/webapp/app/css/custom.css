@@ -503,6 +503,12 @@ body .text-primary {
 	margin: 0px 5px;
 }
 
+.msgview_img-xs {
+	width: 14px;
+	height: 14px;
+	margin: 0px 5px;
+}
+
 .user-photo {
 	margin: 0px 10px;
 	width: 32px;
@@ -515,6 +521,10 @@ body .text-primary {
 	width: 16px;
 	height: 14px;
 	background: url(../img/sprites/msgview_icons.png) -4px -82px;
+}
+
+.download-sm {
+	background: url(../img/sprites/ImageSprite.png) -401px -18px;
 }
 
 .flag-lg {
@@ -977,6 +987,11 @@ body .text-primary {
 
 .controlbar .msgview_img {
 	margin: auto;
+}
+
+.controlbar .download {
+	line-height: 12px;
+	margin-left: 0px;
 }
 
 /* attachments */

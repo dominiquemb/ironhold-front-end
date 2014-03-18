@@ -12,18 +12,23 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.isModeActive = function(mode) {
 	if ($scope.activeTab === $scope.tabName) {
 		return $scope.mode === mode;
+	}
+    }
 
-// 		Commenting this out because for now, tabs are not included in the URL
-//		return ($state.current.url.indexOf(mode + "-mode") !== -1) ? true : false;
+    $scope.downloadMessage = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('downloadMessage', $scope.currentMessage);
 	}
     }
 
     $rootScope.$on('reset', function() {
-	$scope.currentMessage = false;
-	$scope.showPreviewToolbar = false;
-	$scope.mode = 'text';
-	$scope.modeData = {};
-	$scope.showContainer = false;
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentMessage = false;
+		$scope.showPreviewToolbar = false;
+		$scope.mode = 'text';
+		$scope.modeData = {};
+		$scope.showContainer = false;
+	}
     });
 
     $rootScope.$on('modeData', function(evt, results) {

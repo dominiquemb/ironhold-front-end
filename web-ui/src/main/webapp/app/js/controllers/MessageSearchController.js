@@ -14,7 +14,9 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     };
 
     $scope.getSortField = function() {
-        return $scope.sortFields[$scope.sortField];
+        if ($scope.activeTab === $scope.tabName) {
+        	return $scope.sortFields[$scope.sortField];
+	}
     }
 
     searchResultsService.prepForBroadcast("-", "- ");
@@ -25,22 +27,49 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	    });
     }
 
+    $rootScope.$on('downloadMessage', function(evt, message) { 
+        if ($scope.activeTab === $scope.tabName) { 
+		var formattedMsg = message.formattedIndexedMailMessage,
+		msgDate = new Date(formattedMsg.messageDate);
+
+                messagesService
+                        .one(msgDate.getFullYear())
+                        .one(msgDate.getMonth())
+                        .one(msgDate.getDate())
+                        .one(formattedMsg.messageId)
+                        .one('download')
+                        .get()
+                        .then(function(result) {
+                            $scope.$emit('selectResultData', result);
+                            $scope.$emit('selectMessage', result.payload.messages[0]);
+                });
+        }       
+    }); 
+
     $scope.changeSortOrder = function(order) {
-	$scope.sortOrder = order;
-	$scope.$emit('triggerSearch');
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.sortOrder = order;
+		$scope.$emit('triggerSearch');
+	}
     }
 
     $scope.changeSortField = function(field) {
-	$scope.sortField = field;
-	$scope.$emit('triggerSearch');
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.sortField = field;
+		$scope.$emit('triggerSearch');
+	}
     }
 
     $scope.initialized = function() {
-	$scope.initialState = false;
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.initialState = false;
+	}
     }
 
     $rootScope.$on('reset', function() {
-	$scope.initialState = true;
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.initialState = true;
+	}
     });
 
     $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
