@@ -986,6 +986,10 @@ body .text-primary {
 	text-align: center;
 }
 
+.controlbar_item:hover {
+	background-color: #f6faff;
+}
+
 .controlbar_item .dropdown-menu {
 	width: 100%;
 	min-width: 100%;
