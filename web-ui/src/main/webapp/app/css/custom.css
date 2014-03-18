@@ -12,6 +12,7 @@ html, body {
 
 body a {
 	color: #2e68b1;
+	cursor: pointer;
 }
 
 body {
@@ -71,13 +72,30 @@ body .text-primary {
 	margin-bottom: 3px;
 }
 
+.sorting-line:hover {
+	background-color: #f6faff;
+	font-weight: 500;
+}
+
+.sorting-line.active {
+	background-color: #e7eff9;
+	font-weight: 500;
+}
+
 .sorting-panel_upper {
 	margin-top: 0px;
         color: #333;
-	font-size: 11px;
+	font-size: 12px;
 	line-height: 21px;
-	margin-left: 7px;
-	
+}
+
+.sorting-panel_upper .sorting-line {
+	padding-left: 7px;
+}
+
+.sorting-panel_lower .sorting-line {
+	padding-left: 32px;
+	padding-right: 1px;
 }
 
 .sorting-panel_upper .sort-az,
@@ -88,11 +106,8 @@ body .text-primary {
 .sorting-panel_lower {
 	padding-top: 4px;
 	line-height: 24px;
-        margin-left: 32px;
-        margin-right: 1px;
         margin-top: 8px;
         border-top: 1px solid #ccc;
-        font-weight: 600;
         color: #666;
 } 
 

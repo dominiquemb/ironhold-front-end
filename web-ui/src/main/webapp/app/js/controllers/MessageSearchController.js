@@ -13,6 +13,12 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         'SIZE': 'size'
     };
 
+    $scope.getSortOrder = function() {
+        if ($scope.activeTab === $scope.tabName) {
+        	return $scope.sortOrder.toLowerCase();
+	}
+    }
+
     $scope.getSortField = function() {
         if ($scope.activeTab === $scope.tabName) {
         	return $scope.sortFields[$scope.sortField];
