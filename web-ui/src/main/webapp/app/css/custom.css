@@ -542,8 +542,8 @@ body .text-primary {
 	background: url(../img/sprites/msgview_icons.png) -4px -82px;
 }
 
-.download-sm {
-	background: url(../img/sprites/ImageSprite.png) -401px -18px;
+.download-lg {
+	background: url(../img/sprites/ImageSprite.png) -448px 0px;
 }
 
 .flag-lg {
@@ -1020,11 +1020,6 @@ body .text-primary {
 	margin: auto;
 }
 
-.controlbar .download .controlbar_item-name {
-	line-height: 12px;
-	margin-left: 0px;
-}
-
 /* attachments */
 .attachments .collapsed .attachment {
 	min-height: 60px;
@@ -1115,7 +1110,7 @@ body ul {
 
 .msglist .message-list-container .jspPane {
 	left: 0px !important;
-	right: 27px !important;
+	right: 22px !important;
 	width: auto !important;
 /*	width: 100% !important; */
 }
