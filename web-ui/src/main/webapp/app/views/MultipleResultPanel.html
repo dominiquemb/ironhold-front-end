@@ -7,7 +7,7 @@
 		<td colspan="5">
 		    <div class="message-first-line">
 			    <span class="message-icons pull-left">
-				    <i class="img-xs attachment-img-xs pull-right"></i>
+				    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
 				    <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
 				       class="pull-left img-xs envelope-img-xs"></i>
 			    </span>
