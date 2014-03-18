@@ -30,11 +30,14 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     });
 
     $rootScope.$on('triggerSearch', function() {
-	$scope.search();
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.search();
+	}
     });
 
     $scope.search = function() {
 	if ($scope.activeTab === $scope.tabName) {
+		$scope.showSortingPanel = false;
 		$scope.currentlySearching = true;
 		$scope.$emit('search', {
 			inputSearch: $scope.inputSearch
