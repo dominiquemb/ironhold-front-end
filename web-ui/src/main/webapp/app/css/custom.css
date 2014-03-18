@@ -160,10 +160,10 @@ body .text-primary {
 
 .form-search .input-group .search-input {
 	color: #666;
-	font-size: 11px;
+	font-size: 14px;
 	height: 18px;
 	padding: 0px;
-	margin: 4px 0px;
+	margin: 0px;
 	padding: 0px 0px 0px 10px;
 	border: 0px;
 	/*border-right: 1px solid #b5b5b5;*/
@@ -470,6 +470,10 @@ body .text-primary {
 	font-size: 16px;
 }
 
+.caret-gray-down {
+	background: url(../img/sprites/ImageSprite.png) -352px -31px;
+}
+
 .icon-four-thirty-up {
 	background: url(../img/sprites/carets.png) 0px 1px !important;
 	width:6px !important;
@@ -631,6 +635,16 @@ body .text-primary {
 	background: url(../img/sprites/email_icons.png) -30px -15px;
 }
 
+.magnifying-glass {
+	background: url(../img/sprites/ImageSprite.png) -359px -6px;
+}
+
+.img-lg {
+	width: 25px;
+	height: 25px;
+	display: block;
+}
+
 .img-xs {
 	width: 15px;
 	height: 15px;
@@ -766,8 +780,8 @@ body .text-primary {
 .searchbar .input-history .dropdown-toggle {
 	cursor: pointer;
 	position: absolute;
-	right: 7px;
-	top: 5px;
+	right: 3px;
+	top: 3px;
 }
 
 .searchbar .input-history .dropdown-menu {
@@ -796,6 +810,8 @@ body .text-primary {
 
 .searchbar .input-group {
 	border: 1px solid #ccc;
+	padding-right: 4px;
+	padding-top: 2px;
 }
 
 .searchbar .input-group:hover,
