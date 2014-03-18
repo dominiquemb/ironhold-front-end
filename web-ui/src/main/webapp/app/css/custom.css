@@ -1292,6 +1292,8 @@ body ul {
 	font-weight: bold;
 	width: auto;
 	padding-left: 8px;
+	height: 18px;
+	overflow: hidden;
 }
 
 .result .message-size {
