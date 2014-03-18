@@ -989,7 +989,7 @@ body .text-primary {
 	margin: auto;
 }
 
-.controlbar .download {
+.controlbar .download .controlbar_item-name {
 	line-height: 12px;
 	margin-left: 0px;
 }

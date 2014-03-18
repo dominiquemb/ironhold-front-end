@@ -34,14 +34,29 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
                 messagesService
                         .one(msgDate.getFullYear())
-                        .one(msgDate.getMonth())
+                        .one(msgDate.getMonth() + 1)
                         .one(msgDate.getDate())
                         .one(formattedMsg.messageId)
                         .one('download')
                         .get()
                         .then(function(result) {
-                            $scope.$emit('selectResultData', result);
-                            $scope.$emit('selectMessage', result.payload.messages[0]);
+            			var dataUrl = 'data:text/plain;utf-9,' + encodeURI(result),
+				link = document.createElement('a');
+			
+				angular.element(link)
+					.attr('href', dataUrl)
+					.attr('download', formattedMsg.messageId + '.eml');
+
+				// Firefox
+				if (document.createEvent) {
+				    var event = document.createEvent("MouseEvents");
+				    event.initEvent("click", true, true);
+				    link.dispatchEvent(event);
+				}
+				// IE
+				else if (el.click) {
+				    link.click();
+				}
                 });
         }       
     }); 
