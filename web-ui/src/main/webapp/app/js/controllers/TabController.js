@@ -14,6 +14,10 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
         }
     }
 
+    $scope.clickEvent = function() {
+	$scope.$emit('clickEvent');
+    }
+
     $scope.$watch(function() {
                 if ($('.msgview_middle .jspPane').length > 0) {
                         return $('.msgview_middle .jspPane').height();

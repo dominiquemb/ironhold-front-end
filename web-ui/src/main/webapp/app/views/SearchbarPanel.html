@@ -20,11 +20,17 @@
 
 	<div class="matches_number blue-primary pull-left">
 		<span data-ng-show="showSearchPreviewResults && !currentlySearching">
-			<strong class="matches_number_bold">{{ searchMatches | number }}</strong> results, sorted by <a data-ng-click="toggleSortingPanel()">{{ getSortField() }}</a>.  <a>Save search.</a>
+			<strong class="matches_number_bold">{{ searchMatches | number }}</strong>
+			results, sorted by 
+			<a class="sorting-panel-trigger" tooltip="Click for sorting options" tooltip-placement="bottom" toolip-animation="false" data-ng-click="toggleSortingPanel()">
+				{{ getSortField() }}
+			</a>
+			.  
+			<a>Save search.</a>
 		</span>
-		
-		<div class="sorting-panel" data-ng-show="showSortingPanel"></div>
 
+		<div class="sorting-panel" data-ng-show="showSortingPanel"></div>
+		
 		<strong data-ng-show="currentlySearching">Searching...</strong>
 	</div>
 
