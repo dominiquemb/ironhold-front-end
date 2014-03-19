@@ -22,8 +22,17 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 	}
     }
 
-    $scope.collapseFacet = function() {
-	facet.isCollapsed = !facet.isCollapsed;
+    $scope.collapseFacet = function(facet) {
+	if ($scope.activeTab === $scope.tabName) {
+		console.log(facet.isCollapsed);
+		facet.isCollapsed = !facet.isCollapsed;
+	}
+    }
+
+    $scope.isCollapsed = function(facet) {
+	if ($scope.activeTab === $scope.tabName) {
+		return facet.isCollapsed;
+	}
     }
 
     $rootScope.$on('toggleFacet', function(evt, facet) {
@@ -48,6 +57,10 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 
     $rootScope.$on('facets', function(evt, facetList) {
 	if ($scope.activeTab === $scope.tabName) {
+		var facet;
+		for (facet in facetList) {
+			facetList[facet].isCollapsed = false;
+		}
 		$scope.facets = facetList;
 		if (facetList.length > 0) {
 			$scope.showFacets = true;

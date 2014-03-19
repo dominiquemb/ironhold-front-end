@@ -500,18 +500,18 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -352px -31px;
 }
 
-.icon-four-thirty-up {
-	background: url(../img/sprites/carets.png) 0px 1px !important;
+.caret-four-thirty-up {
+	background: url(../img/sprites/ImageSprite.png) -36px -20px !important;
 	width:6px !important;
-	height:7px !important;
+	height:9px !important;
 	float:left;
 	margin-bottom: 2px;
 }
 
-.icon-four-thirty-down {
-	background: url(../img/sprites/carets.png) 1px -6px !important;
+.caret-four-thirty-down {
+	background: url(../img/sprites/ImageSprite.png) -36px -2px !important;
 	width:6px !important;
-	height:7px !important;
+	height:9px !important;
 	float:left;
 	margin-bottom: 2px;
 }
@@ -1695,6 +1695,7 @@ body ul {
 .sidebar-left .filter-list .filter-list-name {
 	text-transform: uppercase;
 	color: #2e68b1;	
+	margin-left: 4px;
 }
 
 .sidebar-left .widget-toolbar i {
@@ -1708,6 +1709,11 @@ body ul {
 .filter-container .active {
 	font-weight: bold;
 	background-color: #e7eff9;
+}
+
+.filter-container .collapse-trigger {
+	cursor: pointer;
+	margin-top: 6px !important;
 }
 
 /* widget-box */

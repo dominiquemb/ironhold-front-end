@@ -6,18 +6,16 @@
 
 <div class="scrollbar-hidden filter-list">
     <ul class="filter-list-inner">
-	<li class="widget-box widget-box-simple filter-container row collapsible dropdown" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets" data-ng-click="isCollapsed = !isCollapsed">
-	    <div class="widget-header">
-		<div class="widget-toolbar">
-		    <a>
-			<i class="collapse-trigger"></i>
-		    </a>
-		</div>
+<!--	<li class="widget-box widget-box-simple filter-container row" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
+-->
+	<li class="widget-box widget-box-simple filter-container row" data-ng-repeat="facet in facets">
+	    <div class="widget-header" data-ng-click="collapseFacet(facet)">
+		<div class="collapse-trigger" data-ng-class="{'caret-four-thirty-down': !isCollapsed(facet), 'caret-four-thirty-up': isCollapsed(facet)}"></div>
 		<span class="filter-list-name">
 					    {{ facet.name.label }}
 		</span>
 	    </div>
-	    <div class="widget-body" collapse="isCollapsed">
+	    <div class="widget-body collapse" data-ng-class="{'in': !isCollapsed(facet)}">
 		<div class="widget-body-inner">
 		    <ul class="widget-main">
 			<li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
