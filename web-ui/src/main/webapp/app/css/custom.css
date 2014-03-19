@@ -416,6 +416,7 @@ body .text-primary {
 }
 
 .msgview_bottom {
+	min-height: 1px;
 	background-color: #fff;
 	border-top: 1px solid #ccc;
 	margin-top: 25px;

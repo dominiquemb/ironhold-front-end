@@ -10,6 +10,33 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
 
+    $scope.$watch(function() {
+                if ($('.msgview_bottom').length > 0) {
+                        return $('.msgview_bottom').height();
+                }
+                else return 0;
+        },
+        function(newval, oldval) {
+		if ($scope.activeTab === $scope.tabName) {
+			if (newval > oldval) {
+				if ($scope.currentMessage) {
+					$('.msgview_middle').height(
+						$('.msgview_middle').height() - newval
+					);
+					$scope.$emit('reinitScrollbars');
+				}
+			}
+			if (oldval > newval) {
+				if ($scope.currentMessage) {
+					$('.msgview_middle').height(
+						$('.msgview_middle').height() + oldval
+					);
+					$scope.$emit('reinitScrollbars');
+				}
+			}
+		}
+     });
+
     $rootScope.$on('highlightActive', function(evt, offOrOn) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.limitedTabs = offOrOn;
