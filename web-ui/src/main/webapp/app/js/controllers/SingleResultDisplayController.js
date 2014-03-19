@@ -8,6 +8,13 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.showPreviewToolbar = false;
     $scope.mode = 'text';
     $scope.modeData = {};
+    $scope.limitedTabs = false;
+
+    $rootScope.$on('highlightActive', function(evt, offOrOn) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.limitedTabs = offOrOn;
+	}
+    });
 
     $scope.isModeActive = function(mode) {
 	if ($scope.activeTab === $scope.tabName) {

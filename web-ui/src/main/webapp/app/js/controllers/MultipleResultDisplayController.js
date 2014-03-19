@@ -10,6 +10,12 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.showSearchResults;
     $scope.inputSearch;
     $scope.highlightActive = false;
+
+    $rootScope.$on('highlightActive', function(evt, offOrOn) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.highlightActive = offOrOn;
+	}
+    });
  
     $rootScope.$on('mode', function(evt, mode) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -102,7 +108,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		angular.forEach($scope.messages, function(entry) {
 		    $scope.unhighlightMessage(entry);
 		});
-	    	$scope.highlightActive = false;
+	    	$scope.$emit('highlightActive', false);
 	}
     }
 
@@ -111,7 +117,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		angular.forEach($scope.messages, function(entry) {
 		    $scope.highlightMessage(entry);
 		});
-		$scope.highlightActive = true;
+	    	$scope.$emit('highlightActive', true);
 	}
     }
 
@@ -119,7 +125,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	if ($scope.activeTab === $scope.tabName) {
 	    evt.stopPropagation();
 	    message.highlighted = true;
-	    $scope.highlightActive = true;
+	    $scope.$emit('highlightActive', true);
 	}
     }
 
