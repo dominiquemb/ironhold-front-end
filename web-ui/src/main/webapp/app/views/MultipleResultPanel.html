@@ -67,30 +67,29 @@
 					</span>
 				</div>
 		      </div>
-		      <div class="body-preview preview">
-			    <div class="widget-box widget-box-simple">
+		      <div>
+			    <div class="body-preview preview widget-box widget-box-simple">
 				<span class="pull-left">
 					<strong class="dropdown-title">Body:</strong>
 				</span>
 				<span class="widget-body">
 					<div class="widget-body-inner">
-						<div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="84" trunc-font-width="6" trunc-trailing-dots="true"></div>
+						<div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true"></div>
+						</div>
 			    		</div>
 				</span>
 			    </div>
-			    <div data-ng-show="hasAttachment(message)">
-				    <div class="widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments">
+			    <div class="attachment-preview preview widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments" data-ng-show="hasAttachment(message)">
 					<span class="pull-left">
 						<strong class="dropdown-title">{{ attachment.fileName }}:</strong>
 					</span>
 					<span class="widget-body">
 						<div class="widget-body-inner">
-							<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="84" trunc-font-width="6" trunc-trailing-dots="true">
+							<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true">
 							</div>
 						</div>
 					</span>
-				    </div>
-			    </div>
+				</div>
 			</div>
 		</td>
 		<td rowspan="4" class="message-flag">

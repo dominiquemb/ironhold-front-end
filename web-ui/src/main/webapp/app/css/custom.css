@@ -65,7 +65,7 @@ body .text-primary {
 .sorting-panel {
         width: 133px;
         border: 1px solid #ccc;
-        height: 144px;
+        height: 160px;
         background-color: #fff;
         position: absolute;
         z-index: 4;
@@ -74,6 +74,7 @@ body .text-primary {
 }
 
 .sorting-line {
+	line-height: 26px;
 	margin-bottom: 3px;
 }
 
