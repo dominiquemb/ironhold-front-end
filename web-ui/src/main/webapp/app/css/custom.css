@@ -63,14 +63,16 @@ body .text-primary {
 
 /* sorting panel */
 .sorting-panel {
+	font-size: 12px;
+	padding-top: 0px;
         width: 133px;
         border: 1px solid #ccc;
         height: 160px;
         background-color: #fff;
         position: absolute;
         z-index: 4;
-        left: 146px;
-	top: 18px;
+        left: 5px;
+	top: 15px;
 }
 
 .sorting-line {
