@@ -88,10 +88,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a>
-                        {{ attachment.fileName }}
-                    </a>
-					:
+					<a><strong>{{ attachment.fileName }}</strong></a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"

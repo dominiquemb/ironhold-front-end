@@ -6,7 +6,7 @@
 
 <div class="scrollbar-hidden filter-list">
     <ul class="filter-list-inner">
-	<li class="widget-box widget-box-simple filter-container row collapsible" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
+	<li class="widget-box widget-box-simple filter-container row collapsible dropdown" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets" data-ng-click="isCollapsed = !isCollapsed">
 	    <div class="widget-header">
 		<div class="widget-toolbar">
 		    <a>
@@ -17,7 +17,7 @@
 					    {{ facet.name.label }}
 		</span>
 	    </div>
-	    <div class="widget-body">
+	    <div class="widget-body" collapse="isCollapsed">
 		<div class="widget-body-inner">
 		    <ul class="widget-main">
 			<li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"

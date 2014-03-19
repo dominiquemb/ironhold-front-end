@@ -22,6 +22,10 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 	}
     }
 
+    $scope.collapseFacet = function() {
+	facet.isCollapsed = !facet.isCollapsed;
+    }
+
     $rootScope.$on('toggleFacet', function(evt, facet) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.toggleFacet(facet);
