@@ -1,10 +1,10 @@
 <div class="facets-dropdown pull-left" data-ng-show="limitFacets">
-	<span data-ng-hide="initialState">
+	<span data-ng-hide="initialState && !showFacets">
 		narrow down the list
 	</span>
 </div>
 
-<div class="scrollbar-hidden filter-list">
+<div class="scrollbar-hidden filter-list" data-ng-show="showFacets">
     <ul class="filter-list-inner">
 <!--	<li class="widget-box widget-box-simple filter-container row" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
 -->

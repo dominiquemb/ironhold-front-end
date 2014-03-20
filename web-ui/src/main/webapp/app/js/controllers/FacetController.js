@@ -55,14 +55,14 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 	}
     }
 
-    $rootScope.$on('facets', function(evt, facetList) {
+    $rootScope.$on('facets', function(evt, data) {
 	if ($scope.activeTab === $scope.tabName) {
 		var facet;
-		for (facet in facetList) {
-			facetList[facet].isCollapsed = false;
+		for (facet in data.facets) {
+			data.facets[facet].isCollapsed = false;
 		}
-		$scope.facets = facetList;
-		if (facetList.length > 0) {
+		$scope.facets = data.facets;
+		if (data.facets.length > 0 && data.matches > 0) {
 			$scope.showFacets = true;
 		}
 	}

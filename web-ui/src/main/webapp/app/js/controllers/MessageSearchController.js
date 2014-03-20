@@ -206,7 +206,10 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 			    searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
 			    $scope.initCustomScrollbars('.scrollbar-hidden');
 
-			    $scope.$emit('facets', result.payload.facets);
+			    $scope.$emit('facets', {
+				facets: result.payload.facets,
+				matches: result.payload.matches
+				});
 	
 			    $scope.initialized();
 
