@@ -13,7 +13,10 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.suggestons;
     $scope.showSortingPanel;
     $scope.inputSearch = '';
-    $scope.currentlySearching = false;
+    $scope.searchProgressShow = false;
+    $scope.searchProgressTimer = false;
+    $scope.searchProgressText = 'Searching...';
+    $scope.searchProgressCount = 0;
 
     searchResultsService.prepForBroadcast("-", "- ");
 
@@ -38,12 +41,34 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.search = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.showSortingPanel = false;
-		$scope.currentlySearching = true;
+		$scope.currentlySearching(true);
 		$scope.$emit('reset');
 		$scope.$emit('search', {
 			inputSearch: $scope.inputSearch
 		});
 	}
+    }
+
+    $scope.currentlySearching = function(showhide) {
+	if (showhide && !$scope.searchProgressTimer) {
+		$scope.searchProgressTimer = setInterval(function() {
+			$('.search-progress-text').html(
+				$('.search-progress-text').html() + '...'
+			);
+			$scope.searchProgressCount++;
+			if ($scope.searchProgressCount > 2) {
+				$('.search-progress-text').html('Searching...');
+				$scope.searchProgressCount = 0;
+			}
+			$scope.$apply();
+		}, 500);
+	}
+	else if (!showhide) {
+		clearInterval($scope.searchProgressTimer);
+		$scope.searchProgressTimer = false;
+		$('.search-progress-text').html('Searching...');
+	}
+	$scope.searchProgressShow = showhide;
     }
 
     $rootScope.$on('totalResultsChange', function(evt, result) {
@@ -54,7 +79,6 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.updateSearch = function() {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.currentlySearching = false;
 		$scope.$emit('updateSearch', {
 			inputSearch: $scope.inputSearch
 		});
@@ -63,7 +87,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $rootScope.$on('updateSearchbar', function(evt, args) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.currentlySearching = false;
+		$scope.currentlySearching(false);
 		angular.forEach(args, function(settingValue, settingName) {
 			$scope[settingName] = settingValue;
 		});
@@ -108,7 +132,6 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 		$scope.suggestions = [];
 		$scope.searchMatches = 0;
 	    	$scope.searchFieldHilite = false;
-    		$scope.currentlySearching = false;
 	}
     }
 
@@ -132,6 +155,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchPreview = function () {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.reset();
+    		$scope.currentlySearching(false);
 		$scope.$emit('searchPreviewRequest', $scope.inputSearch);
 	}
     }
@@ -139,6 +163,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $rootScope.$on('searchPreviewData', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
+	    $scope.currentlySearching(false);
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
