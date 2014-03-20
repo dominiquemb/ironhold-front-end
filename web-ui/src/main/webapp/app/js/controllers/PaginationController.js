@@ -11,22 +11,23 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 	}
     });
 
-    $rootScope.$on('results', function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$scope.showPagination = true;
-	}
-    });
-
     $rootScope.$on('activeTab', function(evt, tab) {
 	if ($scope.activeTab === $scope.tabName) {
         	$scope.tabName = tab;
 	}
     });
 
-    $scope.$on('search', function(evt, info) {
+    $rootScope.$on('search', function(evt, info) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.showPagination = true;
 		$scope.inputSearch = info.inputSearch;
+	}
+    });
+
+    $rootScope.$on('updateSearchbar', function(evt, info) {
+	if ($scope.activeTab === $scope.tabName) {
+		if (info.searchMatches > 0) {
+			$scope.showPagination = true;
+		}
 	}
     });
 
