@@ -44,6 +44,12 @@ body .text-primary {
 	cursor: pointer;
 }
 
+/* suggestions */
+.suggestions {
+	margin-left: 4px;
+	font-size: 12px;
+}
+
 .main-ui-view {
 	position: absolute;
 	top: 0px;
