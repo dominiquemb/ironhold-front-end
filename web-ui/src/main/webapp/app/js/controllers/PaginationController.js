@@ -11,6 +11,12 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 	}
     });
 
+    $scope.editPageNumber = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.editingPageNumber = true;
+	}
+    };
+
     $rootScope.$on('activeTab', function(evt, tab) {
 	if ($scope.activeTab === $scope.tabName) {
         	$scope.tabName = tab;
@@ -33,12 +39,14 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 
     $scope.goTo = function(page) {
 	if ($scope.activeTab === $scope.tabName) {
+		page = parseInt(page);
 		if (page > 0) {
 		    $scope.currentPage = page;
 		    $scope.$emit('pageChange', {
 			page: page,
 			inputSearch: $scope.inputSearch
 		    });
+		    $scope.editingPageNumber = false;
 		}
 	}
     }

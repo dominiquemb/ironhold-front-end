@@ -5,8 +5,14 @@
 	<li class="active" data-ng-hide="currentPage==1">
 		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
 	</li>
-	<li>
-		&nbsp;{{ currentPage }},
+	<li data-ng-click="editPageNumber()" title="Click to change page">
+		<span data-ng-hide="editingPageNumber">
+			&nbsp;{{ currentPage }},
+		</span>
+		<form data-ng-show="editingPageNumber" data-ng-init="newPage" data-ng-submit="goTo(newPage)">
+			<input type="text" class="editable-page-number" data-ng-model="newPage">
+			</input>
+		</form>
 	</li>
 	<li>
 		&nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{currentPage + 1 }}</a>

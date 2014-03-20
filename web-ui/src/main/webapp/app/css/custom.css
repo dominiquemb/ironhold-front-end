@@ -879,6 +879,15 @@ body .text-primary {
 .pagination {
 	margin: 0px;
 }
+
+.pagination .editable-page-number {
+	width: 18px !important;
+	height: 15px !important;
+	padding: 0px !important;
+	margin-left: 5px;
+	margin-right: 2px;
+}
+
 /*
 .pagination li a {
 	padding: 2px 7px;
