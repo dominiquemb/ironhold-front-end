@@ -2,10 +2,10 @@
 	<li data-ng-hide="currentPage==1">
 		<a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">&lt; previous</a> |&nbsp;
 	</li>
-	<li class="active" data-ng-hide="currentPage==1">
+	<li class="active" data-ng-hide="currentPage==1 || editingPageNumber">
 		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
 	</li>
-	<li class="clickable" data-ng-click="editPageNumber()" title="Click to change page">
+	<li class="clickable" data-ng-click="editPageNumber()" title="Input page number">
 		<span data-ng-hide="editingPageNumber">
 			&nbsp;{{ currentPage }},
 		</span>
@@ -14,7 +14,10 @@
 			</input>
 		</form>
 	</li>
-	<li>
+	<li data-ng-show="editingPageNumber">
+		of {{ totalPages }}
+	</li>
+	<li data-ng-hide="editingPageNumber">
 		&nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{currentPage + 1 }}</a>
 	</li>
 	<li>
