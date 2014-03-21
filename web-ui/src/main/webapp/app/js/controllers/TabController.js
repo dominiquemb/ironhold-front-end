@@ -70,22 +70,45 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     }
 
     $rootScope.$on('modeRequest', function(evt, data) {
-        messagesService
-                .one(data.messageId)
-                .one(data.mode)
-                .get(data.criteria)
-                .then(function(result) {
-                        $scope.$emit('modeData', {
-                                mode: data.mode,
-                                payload: result.payload
-                        });
-                }, function(err) {
-			$scope.$emit('modeData', {
-				mode: data.mode,
-				error: err,
-				payload: []
+	if (data.mode === 'headers') {
+		messagesService
+			.one(data.date.getFullYear())
+			.one(data.date.getMonth() + 1)
+			.one(data.date.getDate())
+			.one(data.messageId)
+			.one(data.mode)
+			.get(data.criteria)
+			.then(function(result) {
+				$scope.$emit('modeData', {
+					mode: data.mode,
+					payload: result.payload
+				});
+			}, function(err) {
+				$scope.$emit('modeData', {
+					mode: data.mode,
+					error: err,
+					payload: []
+				});
 			});
-		});
+	}
+	else {
+		messagesService
+			.one(data.messageId)
+			.one(data.mode)
+			.get(data.criteria)
+			.then(function(result) {
+				$scope.$emit('modeData', {
+					mode: data.mode,
+					payload: result.payload
+				});
+			}, function(err) {
+				$scope.$emit('modeData', {
+					mode: data.mode,
+					error: err,
+					payload: []
+				});
+			});
+	}
     });
 
     $scope.getClass = function (path) {

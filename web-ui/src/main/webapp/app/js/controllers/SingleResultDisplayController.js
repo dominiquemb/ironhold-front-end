@@ -71,6 +71,9 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		if (results.payload[0]) {
 			$scope.modeData[results.mode] = results.payload[0];
 		}
+		else if (results.payload) {
+			$scope.modeData[results.mode] = results.payload;
+		}
 	}
     });
 
@@ -81,6 +84,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
 		$scope.$emit('modeRequest', {
 			mode: mode,
+			date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
 			messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
 			criteria: {'criteria': $scope.inputSearch}
 		});

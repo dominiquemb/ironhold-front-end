@@ -1,12 +1,26 @@
-<div id="msgview-audit" class="msgview-audit tab-pane in active" data-ng-click="switchMode('audit')">
+<div id="msgview-sources" class="msgview-sources tab-pane in active" data-ng-click="switchMode('sources')">
         <div class="row controlbar">
         </div>
-	<span data-ng-show="modeData.audit.length === 0">
+	<span data-ng-show="modeData.sources.length === 0">
 		No Audit data available.
 	</span>
+<!--
 	<table class="table table-striped table-hover">
 		<tr data-ng-repeat="row in modeData.audit">
 			<td></td>
 		</tr>
 	</table>
+-->
+        <table class="table table-striped table-hover" data-ng-show="modeData.sources">
+                <thead>
+                        <th>Key</th>
+                        <th>Value</th>
+                </thead>
+                <tbody>
+                        <tr data-ng-repeat="(rowKey, rowValue) in modeData.sources">
+                                <td> {{ rowKey }} </td>
+                                <td> {{ rowValue }} </td>
+                        </tr>
+                </tbody>
+        </table>
 </div>
