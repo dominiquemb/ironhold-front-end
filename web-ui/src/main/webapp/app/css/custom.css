@@ -960,6 +960,10 @@ body .text-primary {
 	cursor: pointer;
 }
 
+.pagination-plain li a:hover {
+	color: #0066FF;
+}
+
 .pagination.pagination-background-white > li > a {
 	background-color: #fff;
 }
