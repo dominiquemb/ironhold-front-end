@@ -380,13 +380,47 @@ body .text-primary {
 	height: 19px;
 	margin-bottom: 5px;
 	margin-top: 0px;
-	padding-top: 5px;
+	padding-top: 1px;
+}
+
+.msgview .label-container.from {
+	background:url(../img/sprites/ImageSprite.png) -760px -43px;
+	width: 40px;
+	height: 22px;
+	display: block;
+	float: left;
+	margin-bottom: 6px;
+}
+
+.msgview .label-container.to {
+	background:url(../img/sprites/ImageSprite.png) -760px -71px;
+	width: 40px;
+	height: 16px;
+	display: block;
+	float: left;
+}
+
+.msgview .label-container.cc {
+	background:url(../img/sprites/ImageSprite.png) -760px -90px;
+	width: 40px;
+	height: 16px;
+	display: block;
+	float: left;
+}
+
+.msgview .label-container.bcc {
+	background:url(../img/sprites/ImageSprite.png) -760px -109px;
+	width: 40px;
+	height: 16px;
+	display: block;
+	float: left;
 }
 
 .msgview .label-content.from {
 	font-size: 16px;
 	font-weight: 800;
 	color: #999;
+	padding-top: 4px;
 }
 
 .msgview_top {
@@ -432,6 +466,7 @@ body .text-primary {
 
 .message-body-content {
 	color: #333;
+	line-height: 14px;
 }
 
 .msgview_main {

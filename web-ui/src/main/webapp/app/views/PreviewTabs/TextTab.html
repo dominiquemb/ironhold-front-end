@@ -25,9 +25,6 @@
                 <table class="pull-left header-info">
                     <tr>
                         <td class="label-container from">
-					<span class="label from pull-left">
-						From
-					</span>
                         </td>
                         <td class="label-content from gray-dark">
                             {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{
@@ -36,9 +33,6 @@
                     </tr>
                     <tr>
                         <td class="label-container to">
-					<span class="label to pull-left">
-						To	
-					</span>
                         </td>
 
                         <td class="label-content to gray-dark">
@@ -49,9 +43,6 @@
                     </tr>
                     <tr>
                         <td class="label-container cc">
-					<span class="label cc pull-left">
-						Cc
-					</span>
                         </td>
                         <td class="label-content cc gray-dark">
                                                     <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.cc">
@@ -61,9 +52,6 @@
                     </tr>
                     <tr>
                         <td class="label-container bcc">
-					<span class="label bcc pull-left">
-						Bcc
-					</span>
                         </td>
                         <td class="label-content bcc gray-dark">
                                 	<span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
