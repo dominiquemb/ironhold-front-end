@@ -567,6 +567,10 @@ body .text-primary {
 	margin-bottom: 2px;
 }
 
+.widget-header:hover .caret-four-thirty-up {
+	background: url(../img/sprites/ImageSprite.png) -36px -37px !important;
+}
+
 .caret-four-thirty-down {
 	background: url(../img/sprites/ImageSprite.png) -36px -2px !important;
 	width:6px !important;
@@ -1758,6 +1762,10 @@ body ul {
 	margin-left: 0px;
 	margin-right: 5px;
 	color: #333;
+}
+
+.filter-name:hover {
+	color: #000;
 }
 
 .sidebar-left .filter-list .filter-list-name {
