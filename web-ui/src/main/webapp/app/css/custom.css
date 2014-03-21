@@ -50,6 +50,14 @@ body .text-primary {
 	font-size: 12px;
 }
 
+/* errors */
+.error-item {
+	background-color: #fdd8d5;
+	color: #880c03;
+	margin: 2px;
+	padding: 3px 5px 0px 5px;
+}
+
 .main-ui-view {
 	position: absolute;
 	top: 0px;

@@ -3,6 +3,7 @@
 ironholdApp.controller('PaginationController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state) {
     $scope.currentPage = 1;
     $scope.showPagination = false;
+    $scope.totalPages;
  
     $rootScope.$on('reset', function() {
 	if ($scope.activeTab === $scope.tabName) {
@@ -41,13 +42,20 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 	if ($scope.activeTab === $scope.tabName) {
 		page = parseInt(page);
 		if (page > 0) {
-		    $scope.currentPage = page;
-		    $scope.$emit('pageChange', {
-			page: page,
-			inputSearch: $scope.inputSearch
-		    });
-		    $scope.editingPageNumber = false;
+		    $scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
+		    if (page <= $scope.totalPages) { 
+			    $scope.currentPage = page;
+			    $scope.$emit('pageChange', {
+				page: page,
+				inputSearch: $scope.inputSearch
+			    });
+			    $scope.editingPageNumber = false;
+		    }
+		    else {
+			$scope.$emit('error', 'Specified value is out of range');
+		    }
 		}
+		$scope.newPage = null;
 	}
     }
 });

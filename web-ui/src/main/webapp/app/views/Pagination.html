@@ -5,7 +5,7 @@
 	<li class="active" data-ng-hide="currentPage==1">
 		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
 	</li>
-	<li data-ng-click="editPageNumber()" title="Click to change page">
+	<li class="clickable" data-ng-click="editPageNumber()" title="Click to change page">
 		<span data-ng-hide="editingPageNumber">
 			&nbsp;{{ currentPage }},
 		</span>

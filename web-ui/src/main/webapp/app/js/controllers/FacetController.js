@@ -24,7 +24,6 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 
     $scope.collapseFacet = function(facet) {
 	if ($scope.activeTab === $scope.tabName) {
-		console.log(facet.isCollapsed);
 		facet.isCollapsed = !facet.isCollapsed;
 	}
     }
