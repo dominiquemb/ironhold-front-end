@@ -11,7 +11,7 @@
 	<div class="matches_number blue-primary pull-left">
 		<span data-ng-show="showSearchPreviewResults && !searchProgressShow">
 			<strong class="matches_number_bold">{{ searchMatches | number }}</strong>
-			results<span data-ng-show="searchMatches > 0">, sorted by 
+			results<span data-ng-show="searchMatches > 0 && showSortingPanel">, sorted by 
 				<span class="dropdown">
 					<a title="Click for sorting options" class="dropdown-toggle sorting-panel-trigger">
 					{{ getSortField() }}</a>.  

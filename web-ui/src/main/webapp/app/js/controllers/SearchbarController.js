@@ -40,7 +40,6 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.search = function() {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.showSortingPanel = false;
 		$scope.currentlySearching(true);
 		$scope.$emit('reset');
 		$scope.$emit('search', {
@@ -67,6 +66,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 		clearInterval($scope.searchProgressTimer);
 		$scope.searchProgressTimer = false;
 		$('.search-progress-text').html('Searching...');
+		$scope.showSortingPanel = true;
 	}
 	$scope.searchProgressShow = showhide;
     }
@@ -167,6 +167,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
+	    $scope.showSortingPanel = false;
 	}
     });
 
