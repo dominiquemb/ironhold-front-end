@@ -2,22 +2,19 @@
 	<li data-ng-hide="currentPage==1">
 		<a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">&lt; previous</a> |&nbsp;
 	</li>
-	<li class="active" data-ng-hide="currentPage==1 || editingPageNumber">
+	<li class="active" data-ng-hide="currentPage==1">
 		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
 	</li>
 	<li class="clickable" data-ng-click="editPageNumber()" title="Input page number">
 		<span data-ng-hide="editingPageNumber">
 			&nbsp;{{ currentPage }},
 		</span>
-		<form data-ng-show="editingPageNumber" data-ng-init="newPage" data-ng-submit="goTo(newPage)">
+		<form data-ng-show="editingPageNumber" data-ng-init="newPage = '&nbsp;&nbsp;&nbsp;'" data-ng-submit="goTo(newPage)">
 			<input type="text" class="editable-page-number" data-ng-model="newPage">
 			</input>
 		</form>
 	</li>
-	<li data-ng-show="editingPageNumber">
-		of {{ totalPages }}
-	</li>
-	<li data-ng-hide="editingPageNumber">
+	<li>
 		&nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{currentPage + 1 }}</a>
 	</li>
 	<li>

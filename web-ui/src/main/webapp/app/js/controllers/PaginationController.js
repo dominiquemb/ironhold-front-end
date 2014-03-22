@@ -43,6 +43,7 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 	if ($scope.activeTab === $scope.tabName) {
 		page = parseInt(page);
 		if (page > 0) {
+		$scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
 		    if (page <= $scope.totalPages) { 
 			    $scope.currentPage = page;
 			    $scope.$emit('pageChange', {
