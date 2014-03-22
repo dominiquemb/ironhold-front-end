@@ -945,6 +945,7 @@ body .text-primary {
 	border: 0px;
 /*	border-bottom: 1px solid #999;*/
 	color: #999;
+	max-width: 35px;
 	text-align: right;
 }
 

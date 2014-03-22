@@ -10,7 +10,7 @@
 			&nbsp;{{ currentPage }},
 		</span>
 		<form data-ng-show="editingPageNumber" data-ng-init="newPage" data-ng-submit="goTo(newPage)">
-			<input type="text" class="editable-page-number" data-ng-model="newPage">
+			<input type="text" data-ng-blur="editingPageNumber = false" class="editable-page-number" data-ng-model="newPage">
 			</input>
 		</form>
 	</li>
