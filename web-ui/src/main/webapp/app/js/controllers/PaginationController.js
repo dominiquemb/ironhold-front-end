@@ -16,6 +16,9 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
 		$scope.editingPageNumber = true;
+		setTimeout(function() {
+			$('.editable-page-number').focus()
+		}, 10);
 	}
     };
 
