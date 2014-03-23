@@ -202,12 +202,10 @@ public class MessageSearchBuilder {
         if (id == null) {
             QueryStringQueryBuilder qb = QueryBuilders.queryString(criteria);
             qb.defaultOperator(Operator.AND);
-            if (fromFacetValues.size() > 0 || fromDomainFacetValues.size() > 0
-                    || toFacetValues.size() > 0
-                    || toDomainFacetValues.size() > 0
-                    || dateFacetValues.size() > 0
-                    || fileExtFacetValues.size() > 0
-                    || msgTypeFacetValues.size() > 0) {
+
+            if (max(fromFacetValues.size(), fromDomainFacetValues.size(), toFacetValues.size(), toDomainFacetValues.size(),
+                    dateFacetValues.size(), fileExtFacetValues.size(), msgTypeFacetValues.size()) > 0) {
+
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
                 if (fromFacetValues.size() > 0) {
                     andFilter.add(FilterBuilders.inFilter(
@@ -267,7 +265,11 @@ public class MessageSearchBuilder {
 
                 builder.setQuery(fqb);
             } else {
-                builder.setQuery(qb);
+                AndFilterBuilder andFilter = FilterBuilders.andFilter();
+                andFilter.add(FilterBuilders.matchAllFilter());
+                FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(qb,
+                        andFilter);
+                builder.setQuery(fqb);
             }
 
         } else {
@@ -342,6 +344,14 @@ public class MessageSearchBuilder {
 
         builder.addField("_source");
         return builder;
+    }
+
+    private int max(int... size) {
+        int max = 0;
+        for (int s : size) {
+            max = Math.max(max, s);
+        }
+        return max;
     }
 
     private TermsFacetBuilder applyLoginFilters(TermsFacetBuilder termsFacetBuilder, LoginUser loginUser) {

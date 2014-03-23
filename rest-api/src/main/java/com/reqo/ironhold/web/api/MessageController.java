@@ -1,5 +1,6 @@
 package com.reqo.ironhold.web.api;
 
+import com.gs.collections.impl.utility.ArrayIterate;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
@@ -59,6 +60,7 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<CountSearchResponse> getCount(@RequestParam(required = false, defaultValue = "*") String criteria) {
+        logger.info(String.format("getCount %s", criteria));
         ApiResponse<CountSearchResponse> apiResponse = new ApiResponse<CountSearchResponse>();
 
         CountSearchResponse result = messageIndexService.getMatchCount(getClientKey(), criteria, getLoginUser());
@@ -74,6 +76,8 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<SuggestSearchResponse> getSuggestions(@RequestParam String criteria) {
+        logger.info(String.format("getSuggestions %s", criteria));
+
         ApiResponse<SuggestSearchResponse> apiResponse = new ApiResponse<SuggestSearchResponse>();
 
         SuggestSearchResponse result = messageIndexService.getSuggestions(getClientKey(), criteria, getLoginUser());
@@ -88,17 +92,18 @@ public class MessageController extends AbstractController {
     @Secured("ROLE_CAN_SEARCH")
     public
     @ResponseBody
-    ApiResponse<MessageSearchResponse> getMessages(@RequestParam String criteria,
+    ApiResponse<MessageSearchResponse> getMessagesWithFacetValues(@RequestParam String criteria,
                                                    @RequestParam(required = false, defaultValue = "SCORE") String sortField,
                                                    @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
                                                    @RequestParam(required = false, defaultValue = "0") int page,
                                                    @RequestBody FacetValue[] facetValues) {
+        logger.info(String.format("getMessagesWithFacetValues %s, %s, %s, %d, %d, %s", criteria, sortField, sortOrder, pageSize, page, ArrayIterate.makeString(facetValues, ",")));
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), getLoginUser());
 
-        searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
+        searchBuilder.withCriteria(criteria).withResultsLimit(page*pageSize, pageSize);
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (FacetValue facetValue : facetValues) {
@@ -126,12 +131,14 @@ public class MessageController extends AbstractController {
                                                    @RequestParam(required = false, defaultValue = "SCORE") String sortField,
                                                    @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
                                                    @RequestParam(required = false, defaultValue = "") String[] facets) {
+        logger.info(String.format("getMessages %s, %s, %s, %d, %d, %s", criteria, sortField, sortOrder, pageSize, page, ArrayIterate.makeString(facets, ",")));
+
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
         final LoginUser loginUser = getLoginUser();
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), loginUser);
 
-        searchBuilder.withCriteria(criteria).withResultsLimit(page, pageSize);
+        searchBuilder.withCriteria(criteria).withResultsLimit(page*pageSize, pageSize);
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (String facet : facets) {
@@ -160,6 +167,8 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessage(@PathVariable("messageId") String messageId, @RequestParam String criteria) {
+        logger.info(String.format("getMessage %s %s", messageId, criteria));
+
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), getLoginUser());
@@ -178,6 +187,8 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<List<MessageSource>> getMessageSources(@PathVariable("messageId") String messageId) {
+        logger.info(String.format("getMessageSources %s", messageId));
+
         ApiResponse<List<MessageSource>> apiResponse = new ApiResponse<>();
 
         List<MessageSource> result = metaDataIndexService.getSources(getClientKey(), messageId);
@@ -196,6 +207,8 @@ public class MessageController extends AbstractController {
                          @PathVariable("month") int month,
                          @PathVariable("day") int day,
                          @PathVariable("messageId") String messageId) throws Exception {
+        logger.info(String.format("getRawMessage %d %d %d %s", year, month, day, messageId));
+
         String partition = String.format("%4d", year);
         String subPartition = String.format("%02d%02d", month, day);
         return mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
@@ -211,6 +224,8 @@ public class MessageController extends AbstractController {
                          @PathVariable("day") int day,
                          @PathVariable("messageId") String messageId,
                          @PathVariable("attachment") String attachment) throws Exception {
+        logger.info(String.format("getRawAttachment %d %d %d %s %s", year, month, day, messageId, attachment));
+
         String partition = String.format("%4d", year);
         String subPartition = String.format("%02d%02d", month, day);
         String source = mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
@@ -237,6 +252,8 @@ public class MessageController extends AbstractController {
                                                 @PathVariable("month") int month,
                                                 @PathVariable("day") int day,
                                                 @PathVariable("messageId") String messageId) throws Exception {
+        logger.info(String.format("getHeaders %d %d %d %s", year, month, day, messageId));
+
         ApiResponse<Map<String, String>> response = new ApiResponse<>();
 
         String partition = String.format("%4d", year);
@@ -260,6 +277,8 @@ public class MessageController extends AbstractController {
                                                 @PathVariable("month") int month,
                                                 @PathVariable("day") int day,
                                                 @PathVariable("messageId") String messageId) throws Exception {
+        logger.info(String.format("getBody %d %d %d %s", year, month, day, messageId));
+
         ApiResponse<String> response = new ApiResponse<>();
 
         String partition = String.format("%4d", year);
@@ -278,6 +297,8 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<List<AuditLogMessage>> getMessageAudit(@PathVariable("messageId") String messageId) {
+        logger.info(String.format("getMessageAudit %s", messageId));
+
         ApiResponse<List<AuditLogMessage>> apiResponse = new ApiResponse<>();
 
         List<AuditLogMessage> result = metaDataIndexService.getAuditLogMessages(getClientKey(), messageId);
