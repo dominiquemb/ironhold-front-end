@@ -83,7 +83,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a><strong>{{ attachment.fileName }}</strong></a>:
+					<a data-ng-click="downloadAttachment(attachment)"><strong>{{ attachment.fileName }}</strong></a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"

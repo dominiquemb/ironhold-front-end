@@ -55,6 +55,15 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     }
 
+    $scope.downloadAttachment = function(attachment) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('downloadAttachment', {
+			message: $scope.currentMessage,
+			attachment: attachment
+		});
+	}
+    };	
+
     $rootScope.$on('reset', function() {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentMessage = false;

@@ -19,6 +19,39 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	}
     }
 
+    $rootScope.$on('downloadAttachment', function(evt, info) {
+        if ($scope.activeTab === $scope.tabName) {
+                var msgDate = new Date(info.message.formattedIndexedMailMessage.messageDate);
+                        messagesService
+                                .one(msgDate.getFullYear())
+                                .one(msgDate.getMonth() + 1)
+                                .one(msgDate.getDate())
+                                .one(info.message.formattedIndexedMailMessage.messageId)
+				.one("download")
+                                .one(info.attachment.fileName)
+                        .get()
+                        .then(function(result) {
+                                var dataUrl = 'content-disposition:attachment;filename="' + info.attachment.fileName + '"; content-length:' + info.attachment.size + '; content-type:application/' + info.attachment.fileExt + ',' + encodeURI(result),
+                                link = document.createElement('a');
+
+                                angular.element(link)
+                                        .attr('href', dataUrl)
+                                        .attr('download', info.attachment.fileName);
+
+                                // Firefox
+                                if (document.createEvent) {
+                                    var event = document.createEvent("MouseEvents");
+                                    event.initEvent("click", true, true);
+                                    link.dispatchEvent(event);
+                                }
+                                // IE
+                                else if (el.click) {
+                                    link.click();
+                                }
+                        });
+	}
+    });
+
     $scope.getSortField = function() {
         if ($scope.activeTab === $scope.tabName) {
         	return $scope.sortFields[$scope.sortField];
