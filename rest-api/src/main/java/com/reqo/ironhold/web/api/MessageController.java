@@ -202,6 +202,34 @@ public class MessageController extends AbstractController {
 
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/download/{attachment:.+}")
+    public
+    @ResponseBody
+    String getRawAttachment(@PathVariable("year") int year,
+                         @PathVariable("month") int month,
+                         @PathVariable("day") int day,
+                         @PathVariable("messageId") String messageId,
+                         @PathVariable("attachment") String attachment) throws Exception {
+        String partition = String.format("%4d", year);
+        String subPartition = String.format("%02d%02d", month, day);
+        String source = mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
+        MimeMailMessage message = new MimeMailMessage();
+        message.loadMimeMessageFromSource(source);
+
+        if (message.isHasAttachments()) {
+            for (Attachment attachmentObject : message.getAttachments()) {
+                if (attachmentObject.getFileName().equals(attachment)) {
+                    return attachmentObject.getBody();
+                }
+
+            }
+        }
+
+        throw new IllegalArgumentException(attachment + " not found");
+    }
+
+
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/headers")
     public
     @ResponseBody
@@ -219,6 +247,29 @@ public class MessageController extends AbstractController {
 
 
         response.setPayload(message.getHeaders());
+        response.setStatus(ApiResponse.STATUS_SUCCESS);
+        return response;
+    }
+
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/body")
+    public
+    @ResponseBody
+    ApiResponse<String> getBody(@PathVariable("year") int year,
+                                                @PathVariable("month") int month,
+                                                @PathVariable("day") int day,
+                                                @PathVariable("messageId") String messageId) throws Exception {
+        ApiResponse<String> response = new ApiResponse<>();
+
+        String partition = String.format("%4d", year);
+        String subPartition = String.format("%02d%02d", month, day);
+        String source = mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
+        MimeMailMessage message = new MimeMailMessage();
+        message.loadMimeMessageFromSource(source);
+
+
+        response.setPayload(message.getBodyHTML() != null ? message.getBodyHTML() : message.getBody());
         response.setStatus(ApiResponse.STATUS_SUCCESS);
         return response;
     }
