@@ -1,6 +1,7 @@
 package com.reqo.ironhold.web.domain;
 
 import com.reqo.ironhold.web.domain.interfaces.IPartitioned;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -28,6 +29,7 @@ public class IndexedMailMessage implements IPartitioned {
     private Recipient[] cc;
     private Recipient[] bcc;
     private long size;
+    private String sizeDescription;
     private String body;
     private String importance;
     private IndexedAttachment[] attachments;
@@ -139,6 +141,10 @@ public class IndexedMailMessage implements IPartitioned {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public String getSizeDescription() {
+        return FileUtils.byteCountToDisplaySize(this.size);
     }
 
     public String getBody() {
