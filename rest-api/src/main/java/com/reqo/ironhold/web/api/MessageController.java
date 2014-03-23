@@ -15,6 +15,8 @@ import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -218,12 +223,12 @@ public class MessageController extends AbstractController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/download/{attachment:.+}")
     public
-    @ResponseBody
-    String getRawAttachment(@PathVariable("year") int year,
+    void getRawAttachment(@PathVariable("year") int year,
                          @PathVariable("month") int month,
                          @PathVariable("day") int day,
                          @PathVariable("messageId") String messageId,
-                         @PathVariable("attachment") String attachment) throws Exception {
+                         @PathVariable("attachment") String attachment,
+                         HttpServletResponse response) throws Exception {
         logger.info(String.format("getRawAttachment %d %d %d %s %s", year, month, day, messageId, attachment));
 
         String partition = String.format("%4d", year);
@@ -235,7 +240,15 @@ public class MessageController extends AbstractController {
         if (message.isHasAttachments()) {
             for (Attachment attachmentObject : message.getAttachments()) {
                 if (attachmentObject.getFileName().equals(attachment)) {
-                    return attachmentObject.getBody();
+                    byte[] byteArray = Base64.decodeBase64(attachmentObject.getBody().getBytes());
+                    response.setContentType(attachmentObject.getContentType());
+                    response.setContentLength(byteArray.length);
+                    response.setHeader("Content-Disposition", "attachment; filename=" + attachmentObject.getFileName());
+
+                    InputStream is = new ByteArrayInputStream(byteArray);
+                    IOUtils.copy(is, response.getOutputStream());
+                    response.flushBuffer();
+                    return;
                 }
 
             }
