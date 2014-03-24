@@ -9,6 +9,13 @@ ironholdApp.directive('pagination', function() {
 	}
 });
 
+ironholdApp.directive('body', function() {
+	return {
+		restrict: "ACE",
+		controller: 'BodyController'
+	}
+});
+
 ironholdApp.directive('errors', function() {
 	return {
 		restrict: 'ACE',
