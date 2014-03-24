@@ -44,15 +44,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	}
     });
 
-    $scope.hasAttachmentHighlight = function(message) {
-	if ($scope.activeTab === $scope.tabName) {
-		return message.attachmentWithHighlights !== undefined;
-	}
-    }
-
     $scope.hasAttachment = function(message) {
 	if ($scope.activeTab === $scope.tabName) {
-		return message.formattedIndexedMailMessage.attachments.length > 0;
+		return message.attachmentWithHighlights;
 	}
     }
 
