@@ -34,7 +34,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $rootScope.$on('triggerSearch', function() {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.search();
+		$scope.updateSearch();
 	}
     });
 
