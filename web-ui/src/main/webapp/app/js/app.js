@@ -24,7 +24,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/PreviewTabs/TextTab.html"
 	    })
 
-	    .state('loggedin.main.html', {
+	    .state('loggedin.main.body', {
 		    templateUrl: "views/PreviewTabs/HtmlTab.html"
 	    })
 
@@ -419,6 +419,12 @@ ironholdApp.directive('truncate', function() {
 		}
 	}
 });
+
+ironholdApp.filter('to_trusted', ['$sce', function($sce){
+        return function(text) {
+            return $sce.trustAsHtml(text);
+        };
+}]);
 
 Date.prototype.getDayName = function() {
 	var d = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];

@@ -70,7 +70,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     }
 
     $rootScope.$on('modeRequest', function(evt, data) {
-	if (data.mode === 'headers') {
+	if (data.mode === 'headers' || data.mode === 'body') {
 		messagesService
 			.one(data.date.getFullYear())
 			.one(data.date.getMonth() + 1)
