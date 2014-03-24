@@ -58,7 +58,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFileMetaList = miscIndexService.getPSTFileMetas(INDEX_PREFIX, 0, 10);
+        List<PSTFileMeta> pstFileMetaList = miscIndexService.getPSTFileMetas(INDEX_PREFIX, "*", 0, 10);
 
         Assert.assertEquals(1, pstFileMetaList.size());
         for (PSTFileMeta pstFileMeta : pstFileMetaList) {
@@ -81,7 +81,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<IMAPBatchMeta> imapBatchMetaList = miscIndexService.getIMAPBatchMeta(INDEX_PREFIX, 0, 10);
+        List<IMAPBatchMeta> imapBatchMetaList = miscIndexService.getIMAPBatchMeta(INDEX_PREFIX, "*", 0, 10);
 
         Assert.assertEquals(1, imapBatchMetaList.size());
         for (IMAPBatchMeta imapBatchMeta : imapBatchMetaList) {
@@ -97,7 +97,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, "*", 0, 100);
 
         Assert.assertEquals(1, loginUsers.size());
 
@@ -114,7 +114,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, "*", 0, 100);
 
         Assert.assertEquals(1, loginUsers.size());
 
@@ -132,7 +132,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, "*", 0, 100);
 
         Assert.assertEquals(1, loginUsers.size());
 
@@ -150,7 +150,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, "*", 0, 100);
 
         Assert.assertEquals(1, loginUsers.size());
 
@@ -173,7 +173,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, "*", 0, 100);
 
         Assert.assertEquals(1, loginUsers.size());
 
@@ -196,7 +196,7 @@ public class MiscIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MiscIndexService.SUFFIX);
 
-        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, 0, 100);
+        List<LoginUser> loginUsers = miscIndexService.getLoginUsers(INDEX_PREFIX, "*", 0, 100);
 
         Assert.assertEquals(1, loginUsers.size());
 

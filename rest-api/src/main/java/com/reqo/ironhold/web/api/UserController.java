@@ -1,9 +1,11 @@
 package com.reqo.ironhold.web.api;
 
+import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.utility.ArrayIterate;
+import com.gs.collections.impl.utility.ListIterate;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
@@ -21,10 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -107,6 +106,42 @@ public class UserController extends AbstractController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ApiResponse<List<UserDetailsResponse>> getMatches(@RequestParam final String criteria,
+                                                      @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                      @RequestParam(required = false, defaultValue = "0") int page) {
+
+        ApiResponse<List<UserDetailsResponse>> apiResponse = new ApiResponse<>();
+
+        List<LoginUser> matches = miscIndexService.getLoginUsers(getClientKey(), criteria, page * pageSize, pageSize);
+        MutableList<UserDetailsResponse> result = ListIterate.collect(matches, new Function<LoginUser, UserDetailsResponse>() {
+            @Override
+            public UserDetailsResponse valueOf(final LoginUser loginUser) {
+                List<RoleEnum> roles =
+                        ArrayIterate.select(RoleEnum.values(), new Predicate<RoleEnum>() {
+                            @Override
+                            public boolean accept(RoleEnum roleEnum) {
+                                if (loginUser.hasRole(RoleEnum.SUPER_USER)) {
+                                    return roleEnum == RoleEnum.SUPER_USER;
+                                }
+                                return roleEnum != RoleEnum.NONE && loginUser.hasRole(roleEnum);
+                            }
+                        });
+
+                loginUser.setHashedPassword("********");
+                return new UserDetailsResponse(loginUser, roles);
+            }
+        });
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/roles")
     public
@@ -121,8 +156,6 @@ public class UserController extends AbstractController {
         return apiResponse;
 
     }
-
-
 
 
     protected final String getUserName() {

@@ -23,9 +23,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.OrFilterBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -202,10 +200,15 @@ public class IndexClient {
         return getByField(indexName, type, criteria, null, SortOrder.DESC);
     }
 
-    public SearchResponse getByType(String indexName, IndexedObjectType type, int start, int limit) {
+    public SearchResponse getByType(String indexName, String criteria, IndexedObjectType type, int start, int limit) {
         try {
+            if (criteria == null) {
+                criteria = "*";
+            }
+            QueryStringQueryBuilder qb = QueryBuilders.queryString(criteria);
             SearchRequestBuilder request = esClient.prepareSearch(indexName)
                     .setTypes(type.getValue())
+                    .setQuery(qb)
                     .addField("_source").setFrom(start).setSize(limit);
             logger.debug(request.toString());
             return request.execute().get();

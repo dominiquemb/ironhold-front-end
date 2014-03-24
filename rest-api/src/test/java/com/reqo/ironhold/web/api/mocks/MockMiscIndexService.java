@@ -8,10 +8,8 @@ import com.reqo.ironhold.web.domain.LoginChannelEnum;
 import com.reqo.ironhold.web.domain.LoginUser;
 import com.reqo.ironhold.web.domain.RoleEnum;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * User: ilya
@@ -45,12 +43,12 @@ public class MockMiscIndexService implements IMiscIndexService {
     }
 
     @Override
-    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit) {
+    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, String criteria, int from, int limit) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit)  {
+    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, String criteria, int from, int limit) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -60,7 +58,7 @@ public class MockMiscIndexService implements IMiscIndexService {
     }
 
     @Override
-    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit)  {
+    public List<LoginUser> getLoginUsers(String indexPrefix, String criteria, int start, int limit) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -66,7 +66,7 @@ public class UserManagementWindow extends Window {
                     @Override
                     protected Collection<LoginUser> getItemsList(
                             int startIndex, int endIndex) throws Exception {
-                        return miscIndexService.getLoginUsers(indexPrefix, startIndex, startIndex + 10);
+                        return miscIndexService.getLoginUsers(indexPrefix, "*", startIndex, startIndex + 10);
                     }
 
                     @Override

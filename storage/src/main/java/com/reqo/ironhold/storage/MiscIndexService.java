@@ -19,9 +19,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.search.SearchHit;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 
 public class MiscIndexService extends AbstractIndexService implements IMiscIndexService {
@@ -119,11 +117,11 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         return null;
     }
 
-    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit) {
+    public List<PSTFileMeta> getPSTFileMetas(String indexPrefix, String criteria, int from, int limit) {
         createIndexIfMissing(indexPrefix, PARTITION);
 
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByType(alias, IndexedObjectType.PST_FILE_META, from, limit);
+        SearchResponse response = client.getByType(alias, criteria, IndexedObjectType.PST_FILE_META, from, limit);
         List<PSTFileMeta> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             PSTFileMeta pstFileMeta = new PSTFileMeta();
@@ -134,9 +132,9 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         return result;
     }
 
-    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit) {
+    public List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, String criteria, int from, int limit) {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByType(alias, IndexedObjectType.IMAP_BATCH_META, from, limit);
+        SearchResponse response = client.getByType(alias, criteria, IndexedObjectType.IMAP_BATCH_META, from, limit);
         List<IMAPBatchMeta> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             IMAPBatchMeta imapBatchMeta = new IMAPBatchMeta();
@@ -162,9 +160,9 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
     }
 
 
-    public List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit)  {
+    public List<LoginUser> getLoginUsers(String indexPrefix, String criteria, int start, int limit) {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByType(alias, IndexedObjectType.LOGIN_USER, start, limit);
+        SearchResponse response = client.getByType(alias, criteria, IndexedObjectType.LOGIN_USER, start, limit);
         List<LoginUser> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             LoginUser loginUser = new LoginUser();

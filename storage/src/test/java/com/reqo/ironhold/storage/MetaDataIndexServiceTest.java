@@ -262,7 +262,7 @@ public class MetaDataIndexServiceTest {
 
         indexClient.refresh(INDEX_PREFIX + "." + MetaDataIndexService.SUFFIX + "." + message.getPartition());
 
-        List<IndexFailure> indexFailures = metaDataIndexService.getIndexFailures(INDEX_PREFIX, 5);
+        List<IndexFailure> indexFailures = metaDataIndexService.getIndexFailures(INDEX_PREFIX, "*", 5);
 
         Assert.assertEquals(1, indexFailures.size());
 

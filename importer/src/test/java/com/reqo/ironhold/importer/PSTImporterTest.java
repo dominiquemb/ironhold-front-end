@@ -8,10 +8,10 @@ import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
-import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.IKeyStoreService;
 import com.reqo.ironhold.storage.security.LocalKeyStoreService;
 import com.reqo.ironhold.utils.MD5CheckSum;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import fr.pilato.spring.elasticsearch.ElasticsearchClientFactoryBean;
 import fr.pilato.spring.elasticsearch.ElasticsearchNodeFactoryBean;
 import org.apache.commons.io.FileUtils;
@@ -118,7 +118,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, "*", 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());
@@ -193,7 +193,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         }
         Assert.assertEquals(1, sources2.size());
 
-        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, "*", 10).size());
 
 
     }
@@ -205,7 +205,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, "*", 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());
@@ -217,7 +217,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles2 = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles2 = miscIndexService.getPSTFileMetas(TEST_CLIENT, "*", 0, 10);
 
         Assert.assertEquals(2, pstFiles2.size());
 
@@ -254,7 +254,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         }
         Assert.assertEquals(4, sources.size());
 
-        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, "*", 10).size());
 
     }
 
@@ -265,7 +265,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, "*", 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());
@@ -279,7 +279,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
                     e.getMessage());
         }
 
-        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, "*", 10).size());
 
     }
 
@@ -306,7 +306,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
         indexClient.refresh(TEST_CLIENT + "." + MiscIndexService.SUFFIX);
 
-        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, 0, 10);
+        List<PSTFileMeta> pstFiles = miscIndexService.getPSTFileMetas(TEST_CLIENT, "*", 0, 10);
 
 
         Assert.assertEquals(1, pstFiles.size());
@@ -381,7 +381,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         }
         Assert.assertEquals(1, sources2.size());
 
-        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, 10).size());
+        Assert.assertEquals(0, metaDataIndexService.getIndexFailures(TEST_CLIENT, "*", 10).size());
 
 
     }

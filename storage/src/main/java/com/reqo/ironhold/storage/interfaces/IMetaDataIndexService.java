@@ -27,6 +27,6 @@ public interface IMetaDataIndexService {
 
     List<LogMessage> getLogMessages(String indexPrefix, String messageId);
 
-    List<IndexFailure> getIndexFailures(String indexPrefix, int limit);
+    List<IndexFailure> getIndexFailures(String indexPrefix, String criteria, int limit);
 
 }

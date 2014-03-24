@@ -197,9 +197,9 @@ public class MetaDataIndexService extends AbstractIndexService implements IMetaD
         return result;
     }
 
-    public List<IndexFailure> getIndexFailures(String indexPrefix, int limit) {
+    public List<IndexFailure> getIndexFailures(String indexPrefix, String criteria, int limit) {
         String alias = getIndexAlias(indexPrefix);
-        SearchResponse response = client.getByType(alias, IndexedObjectType.INDEX_FAILURE, 0, limit);
+        SearchResponse response = client.getByType(alias, criteria, IndexedObjectType.INDEX_FAILURE, 0, limit);
         List<IndexFailure> result = new ArrayList<>();
         for (SearchHit hit : response.getHits()) {
             IndexFailure indexFailure = new IndexFailure();

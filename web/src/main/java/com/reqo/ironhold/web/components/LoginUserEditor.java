@@ -286,7 +286,7 @@ public class LoginUserEditor extends Panel {
         int limit = 1000;
         List<PSTFileMeta> sources;
         do {
-            sources = miscIndexService.getPSTFileMetas(client, start, limit);
+            sources = miscIndexService.getPSTFileMetas(client, "*", start, limit);
             Collections.sort(sources, new Comparator<PSTFileMeta>() {
                 @Override
                 public int compare(PSTFileMeta pstFileMeta, PSTFileMeta pstFileMeta2) {

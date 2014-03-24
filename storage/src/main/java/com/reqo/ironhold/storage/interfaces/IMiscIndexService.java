@@ -6,9 +6,7 @@ import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.web.domain.LoginChannelEnum;
 import com.reqo.ironhold.web.domain.LoginUser;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * User: ilya
@@ -26,13 +24,13 @@ public interface IMiscIndexService {
 
     PSTFileMeta getPSTFileMeta(String indexPrefix, String id);
 
-    List<PSTFileMeta> getPSTFileMetas(String indexPrefix, int from, int limit);
+    List<PSTFileMeta> getPSTFileMetas(String indexPrefix, String criteria, int from, int limit);
 
-    List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, int from, int limit);
+    List<IMAPBatchMeta> getIMAPBatchMeta(String indexPrefix, String criteria, int from, int limit);
 
     void store(String indexPrefix, LoginUser loginUser);
 
-    List<LoginUser> getLoginUsers(String indexPrefix, int start, int limit);
+    List<LoginUser> getLoginUsers(String indexPrefix, String criteria, int start, int limit);
 
     LoginUser authenticate(String indexPrefix, String username, String password, LoginChannelEnum channel, String loginContext);
 
