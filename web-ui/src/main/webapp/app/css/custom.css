@@ -319,6 +319,7 @@ body .text-primary {
 
 .msgview * {
 	font-family: 'Arimo', sans-serif !important;
+	font-weight: 400;
 }
 
 .msgview .placeholder_text {
@@ -421,7 +422,6 @@ body .text-primary {
 
 .msgview .label-content.from {
 	font-size: 16px;
-	font-weight: 800;
 	color: #999;
 	padding-top: 4px;
 }
@@ -455,7 +455,6 @@ body .text-primary {
 	overflow: hidden;
 	font-size: 13px;
 	line-height: 10px;
-	font-weight: 600;
 	margin: 2px 0px 0px 0px;
 }
 
