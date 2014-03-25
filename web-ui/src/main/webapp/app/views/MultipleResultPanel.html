@@ -12,11 +12,8 @@
 				       class="pull-left img-xs envelope-img-xs"></i>
 			    </span>
 				<span class="pull-left">
-					<span class="message-sender">
+					<span class="message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
 						    {{ message.formattedIndexedMailMessage.sender.name }}
-					</span>
-					<span class="message-sender-address">
-						    &lt;{{ message.formattedIndexedMailMessage.sender.address }}&gt;
 					</span>
 				</span>
 				<span class="pull-right">
@@ -81,7 +78,7 @@
 			    		</div>
 				</span>
 			    </div>
-			    <div class="attachment-preview preview widget-box widget-box-simple result-attachment" data-ng-repeat="attachment in message.formattedIndexedMailMessage.attachments" data-ng-show="hasAttachment(message)">
+			    <div class="attachment-preview preview widget-box widget-box-simple result-attachment" data-ng-show="hasAttachment(message)">
 					<span class="pull-left">
 						<span class="dropdown-title">Attachments:</span>
 					</span>

@@ -243,8 +243,7 @@ body .text-primary {
 .main-area > .navigation > .tabbable, 
 .main-area > .navigation, 
 .wrapper {
-/*	min-width: 1547px;*/
-	min-width: 1722px;
+	min-width: 1547px;
 	width: 100%;
 	min-height: 200px;
 }
@@ -318,8 +317,8 @@ body .text-primary {
 	width: 717px;
 }
 
-.msgview * {
-	font-family: 'Arimo', sans-serif !important;
+.msgview_main * {
+	font-family: 'Oswald', sans-serif !important;
 	font-weight: 400;
 }
 
@@ -484,6 +483,13 @@ body .text-primary {
 	position: absolute;
 	bottom: 0px;
 	width: 100%;
+}
+
+.msgview_bottom .jspVerticalBar {
+	right: 10px;
+	bottom: 13px;
+	height: auto;
+	top: 3px;
 }
 
 .msgview_bottom .icon-container {
@@ -1358,7 +1364,7 @@ body ul {
 	font-family: 'Oswald', sans-serif;
 	line-height: 17px;
 	padding-right: 7px;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .result .message-second-line {
@@ -1367,15 +1373,15 @@ body ul {
 	color: #666;
 	line-height:13px;
 	padding-right: 7px;
-	font-size: 16px;
+	font-size: 14px;
 	padding-left: 60px;
-	padding-top: 9px;
+	padding-top: 4px;
 }
 
 .result .preview {
 	padding-left: 68px;
 	font-size: 12px;
-	padding-top: 18px;
+	padding-top: 2px;
 	margin-top: 7px;
 	text-align: justify;
 	line-height: 14px;
@@ -1531,7 +1537,7 @@ body ul {
 	left: 0px;
 	right: 716px;
 	max-width: 1430px;
-	min-width: 1006px;
+	min-width: 831px;
 	border-right: 1px solid #ccc;
 }
 

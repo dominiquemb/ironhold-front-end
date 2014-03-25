@@ -18,6 +18,12 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
         },
         function(newval, oldval) {
 		if ($scope.activeTab === $scope.tabName) {
+			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height();
+			if (newval > (msgviewHeight/2)) {
+				$('.msgview_bottom').height(msgviewHeight/2);
+				$scope.initCustomScrollbars('.msgview_bottom');
+			}
+
 			if (newval > oldval) {
 				if ($scope.currentMessage) {
 					$('.msgview_middle').height(
