@@ -243,7 +243,8 @@ body .text-primary {
 .main-area > .navigation > .tabbable, 
 .main-area > .navigation, 
 .wrapper {
-	min-width: 1547px;
+/*	min-width: 1547px;*/
+	min-width: 1722px;
 	width: 100%;
 	min-height: 200px;
 }
@@ -1174,11 +1175,6 @@ body ul {
 	margin: 0px;
 }
 
-.msglist * {
-	font-family: 'Arimo', sans-serif;
-}
-
-
 .msglist .listing .jspVerticalBar {
 	bottom: 0px;
 	height: auto;
@@ -1327,7 +1323,7 @@ body ul {
 
 .results .result.active-single .widget-main,
 .results .result.active-multi .widget-main {
-	color: #666;
+	color: #999;
 	line-height: 14px;
 }
 
@@ -1344,11 +1340,12 @@ body ul {
 }
 
 .result .message-recipients-line {
+	clear: left;
 	padding-left: 68px;
 	position: relative;
 	height: 14px;
 	line-height: 15px;
-	margin-bottom: 1px;
+	margin-bottom: 3px;
 	overflow: hidden;
 	font-size: 12px;
 }
@@ -1358,20 +1355,27 @@ body ul {
 }
 
 .result .message-first-line {
+	font-family: 'Oswald', sans-serif;
 	line-height: 17px;
 	padding-right: 7px;
+	font-size: 16px;
 }
 
 .result .message-second-line {
+	font-family: 'Oswald', sans-serif;
+	clear: left;
 	color: #666;
 	line-height:13px;
 	padding-right: 7px;
-	font-size: 14px;
+	font-size: 16px;
+	padding-left: 60px;
+	padding-top: 9px;
 }
 
 .result .preview {
 	padding-left: 68px;
-	font-size: 11px;
+	font-size: 12px;
+	padding-top: 18px;
 	margin-top: 7px;
 	text-align: justify;
 	line-height: 14px;
@@ -1382,10 +1386,21 @@ body ul {
 	padding-left: 8px;
 }
 
+.result .message-sender-address {
+	color: #999;
+}
+
 .result .message-age {
 	text-align: right;
 	width: 142px;
 	max-width: 142px;
+	color: #999;
+}
+
+.to-content,
+.bcc-content,
+.cc-content {
+	color: #999;
 }
 
 .result .message-date {
@@ -1396,7 +1411,6 @@ body ul {
 }
 
 .result .message-subject {
-	font-weight: bold;
 	width: auto;
 	padding-left: 8px;
 	height: 18px;
@@ -1414,7 +1428,7 @@ body ul {
 .result .message-sender,
 .result .message-subject,
 .result .message-date { 
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .result .message-flag {
@@ -1479,7 +1493,7 @@ body ul {
 }
 
 .result .dropdown-title {
-	color: #58595b;
+	color: #333;
 	line-height: 13px;
 	margin-right: 2px;
 	float: left;
@@ -1517,7 +1531,7 @@ body ul {
 	left: 0px;
 	right: 716px;
 	max-width: 1430px;
-	min-width: 830px;
+	min-width: 1006px;
 	border-right: 1px solid #ccc;
 }
 
