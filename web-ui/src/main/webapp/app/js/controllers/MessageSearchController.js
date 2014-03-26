@@ -213,6 +213,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     $rootScope.$on('search', function(evt, args) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.inputSearch = args.inputSearch;
+console.log(messagesService);
 		messagesService.get({
 			criteria: args.inputSearch, 
 			facets: "from,from_domain,to,to_domain,date,msg_type,file_ext", 

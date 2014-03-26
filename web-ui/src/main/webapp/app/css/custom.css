@@ -1348,16 +1348,15 @@ body ul {
 	font-size: 16px;
 	text-align: right;
 	height: 18px;
-	width: 41px;
-	padding-right: 10px;
+	width: 43px;
+	padding-right: 2px;
 	padding-top: 5px;
 	padding-left: 5px;
-	max-width: 41px;
 }
 
 .result .message-recipients-line {
 	clear: left;
-	padding-left: 50px;
+	padding-left: 47px;
 	position: relative;
 	height: 14px;
 	line-height: 15px;
@@ -1390,7 +1389,7 @@ body ul {
 }
 
 .result .preview {
-	padding-left: 50px;
+	padding-left: 47px;
 	font-size: 12px;
 	padding-top: 2px;
 	margin-top: 7px;
@@ -1400,7 +1399,7 @@ body ul {
 
 .result .message-sender {
 	min-width: 150px;
-	padding-left: 8px;
+	padding-left: 3px;
 	color: #666;
 }
 
@@ -1432,7 +1431,7 @@ body ul {
 
 .result .message-subject {
 	width: auto;
-	padding-left: 8px;
+	padding-left: 5px;
 	height: 18px;
 	overflow: hidden;
 }
