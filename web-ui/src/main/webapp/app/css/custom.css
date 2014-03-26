@@ -505,6 +505,16 @@ body .text-primary {
 	padding-right: 2px;
 	margin-left: 50px;
 	overflow: hidden;
+	margin-bottom: 13px;
+}
+
+.msgview_bottom .attachment-line-break {
+	height: 1px;
+	background-color: #ccc;
+	clear: left;
+	margin-left: 62px;
+	margin-right: 55px;
+	width: auto;
 }
 
 .msgview_middle {
@@ -1144,8 +1154,7 @@ body .text-primary {
 .attachments .attachment {
 	background-color: #fff;
 	min-height: 60px;
-	padding: 7px 0px 23px;
-	border-bottom: 1px solid #ccc;
+	padding: 7px 0px 10px;
 }
 
 .attachments-minimal .attachments .attachment {
@@ -1339,16 +1348,16 @@ body ul {
 	font-size: 16px;
 	text-align: right;
 	height: 18px;
-	width: 59px;
+	width: 41px;
 	padding-right: 10px;
 	padding-top: 5px;
-	padding-left: 14px;
-	max-width: 59px;
+	padding-left: 5px;
+	max-width: 41px;
 }
 
 .result .message-recipients-line {
 	clear: left;
-	padding-left: 68px;
+	padding-left: 50px;
 	position: relative;
 	height: 14px;
 	line-height: 15px;
@@ -1377,12 +1386,11 @@ body ul {
 	line-height:13px;
 	padding-right: 7px;
 	font-size: 14px;
-	padding-left: 60px;
 	padding-top: 4px;
 }
 
 .result .preview {
-	padding-left: 68px;
+	padding-left: 50px;
 	font-size: 12px;
 	padding-top: 2px;
 	margin-top: 7px;
@@ -1431,10 +1439,11 @@ body ul {
 
 .result .message-size {
 	color: #666;
-	width: 59px;
-	font-size: 12px;
+	width: 41px;
+	font-size: 16px;
 	padding-top: 0px;
-	padding-left: 14px;
+	font-weight: 300;
+	padding-left: 5px;
 }
 
 .result .message-sender,

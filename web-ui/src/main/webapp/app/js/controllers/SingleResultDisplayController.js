@@ -21,7 +21,9 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height();
 			if (newval > (msgviewHeight/2)) {
 				$('.msgview_bottom').height(msgviewHeight/2);
-				$scope.initCustomScrollbars('.msgview_bottom');
+				$scope.$emit('initCustomScrollbars', '.msgview_bottom');
+				$scope.$emit('reinitScrollbars');
+				newval = msgviewHeight/2;
 			}
 
 			if (newval > oldval) {

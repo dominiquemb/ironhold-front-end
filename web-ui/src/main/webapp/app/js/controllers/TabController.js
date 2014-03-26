@@ -50,6 +50,10 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
         });
     }
 
+    $rootScope.$on('initCustomScrollbars', function(evt, selector) {
+	$scope.initCustomScrollbars(selector);
+    });
+
     $scope.initCustomScrollbars = function(selector) {
         $scope.scrollbars = true;
         $timeout(function() {
