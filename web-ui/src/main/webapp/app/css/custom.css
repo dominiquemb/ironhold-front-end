@@ -1355,6 +1355,7 @@ body ul {
 }
 
 .result .message-recipients-line {
+	word-break: break-all;
 	clear: left;
 	padding-left: 47px;
 	position: relative;
@@ -1371,13 +1372,15 @@ body ul {
 
 .result .message-first-line {
 	font-family: 'Open Sans Condensed', sans-serif;
-	line-height: 17px;
+	line-height: 21px;
 	padding-right: 7px;
 	font-size: 14px;
 	font-weight: 700;
+	word-break: break-all;
 }
 
 .result .message-second-line {
+	word-break: break-all;
 	font-weight: 700;
 	font-family: 'Open Sans Condensed', sans-serif;
 	clear: left;
@@ -1385,7 +1388,7 @@ body ul {
 	line-height:13px;
 	padding-right: 7px;
 	font-size: 14px;
-	padding-top: 4px;
+	padding-top: 1px;
 }
 
 .result .preview {
@@ -1398,9 +1401,17 @@ body ul {
 }
 
 .result .message-sender {
+	max-width: 42%;
+	height: 21px;
+	overflow: hidden;
+	word-break: break-all;
 	min-width: 150px;
 	padding-left: 3px;
 	color: #666;
+}
+
+.result .message-stats {
+	max-width: 50%;
 }
 
 .result .message-sender-address {
@@ -1411,7 +1422,9 @@ body ul {
 	font-weight: 300;
 	text-align: right;
 	width: 142px;
-	max-width: 142px;
+	max-width: 60%;
+	height: 20px;
+	overflow: hidden;
 	color: #999;
 }
 
@@ -1424,7 +1437,9 @@ body ul {
 .result .message-date {
 	text-align: right;
 	width: 100px;
-	max-width: 100px;
+	max-width: 55%;
+	overflow: hidden;
+	height: 21px;
 	margin-left: 1px;
 	color: #666;
 }
@@ -1433,10 +1448,9 @@ body ul {
 	width: auto;
 	padding-left: 5px;
 	height: 19px;
-	line-height: 16px;
+	line-height: 17px;
 	overflow: hidden;
 	max-width: 90%;
-	word-break: break-all;
 }
 
 .result .message-size {

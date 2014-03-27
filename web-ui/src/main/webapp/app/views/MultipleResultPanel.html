@@ -11,17 +11,15 @@
 				    <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
 				       class="pull-left img-xs envelope-img-xs"></i>
 			    </span>
-				<span class="pull-left">
-					<span class="message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
-						    {{ message.formattedIndexedMailMessage.sender.name }}
-					</span>
+				<span class="pull-left message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
+					{{ message.formattedIndexedMailMessage.sender.name }}
 				</span>
-				<span class="pull-right">
-					<span class="message-age">
+				<span class="pull-right message-stats">
+					<span class="pull-left message-age">
 						{{ message.formattedIndexedMailMessage.age }} - 
 					</span>
-					<span class="message-date">
-					    <span class="message-date">{{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}</span>
+					<span class="pull-right message-date">
+					    {{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}
 					</span>
 				</span>
 		    </div>
