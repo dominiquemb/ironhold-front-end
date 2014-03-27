@@ -91,8 +91,40 @@ console.log(newval);
 	}
     });
 
+    $scope.textTab = function() {
+		$scope.$emit('modeRequest', {
+			mode: '',
+			date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
+			messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
+			criteria: {'criteria': $scope.inputSearch}
+		});
+    }
+
+    $scope.auditTab = function() {
+		var curDate = new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
+		msgId = $scope.currentMessage.formattedIndexedMailMessage.messageId;
+
+		$scope.$emit('modeRequest', {
+			mode: 'sources',
+			date: curDate,
+			messageId: msgId,
+			criteria: {'criteria': $scope.inputSearch}
+		});
+
+		$scope.$emit('modeRequest', {
+			mode: 'audit',
+			date: curDate,
+			messageId: msgId,
+			criteria: {'criteria': $scope.inputSearch}
+		});
+    }
+	
+
     $scope.requestSubTabData = function(mode) {
-		if (mode !== 'text') {
+		if (typeof $scope[mode + 'Tab'] === 'function') {
+			$scope[mode + 'Tab']();
+		}
+		else {
 			$scope.$emit('modeRequest', {
 				mode: mode,
 				date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),

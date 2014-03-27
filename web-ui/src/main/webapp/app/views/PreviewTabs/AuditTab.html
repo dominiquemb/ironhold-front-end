@@ -1,28 +1,44 @@
-<div id="msgview-sources" class="msgview-sources tab-pane in active" data-ng-click="switchMode('sources')">
+<div id="msgview-audit" class="msgview-audit tab-pane in active" data-ng-click="switchMode('audit')">
         <div class="row controlbar">
         </div>
-	<span data-ng-show="modeData.sources.length === 0">
-		No Audit data available.
-	</span>
-<!--
+	<div>
+		<p>Message ID: {{ currentMessage.formattedIndexedMailMessage.messageId }}</p>
+	</div>
+	<div>
+		Message Source
+	</div>
 	<table class="table table-striped table-hover">
-		<tr data-ng-repeat="row in modeData.audit">
-			<td></td>
-		</tr>
+		<thead>
+			<th>Timestamp</th>
+			<th>Hostname</th>
+			<th>PST File</th>
+			<th>Folder</th>
+			<th>PST File Size</th>
+		</thead>
+		<tbody>
+			<tr data-ng-repeat="source in modeData.sources">
+				<td> {{ source.loadTimestamp }} </td>
+				<td> {{ source.hostname }} </td>
+				<td> </td>
+				<td> {{ source.folder }} </td>
+				<td> </td>
+			</tr>
+		</tbody>
 	</table>
--->
-	<span data-ng-repeat="source in modeData.sources" data-ng-show="modeData.sources">
-		<table class="table table-striped table-hover" data-ng-repeat="sourceEntry in source">
-			<thead>
-				<th>Key</th>
-				<th>Value</th>
-			</thead>
-			<tbody>
-				<tr data-ng-repeat="(rowKey, rowValue) in source">
-					<td> {{ rowKey }} </td>
-					<td> {{ rowValue }} </td>
-				</tr>
-			</tbody>
-		</table>
-	</span>
+
+	<div>
+		Audit Log
+	</div>
+	<table class="table table-striped table-hover" daa-ng-repeat="audit in modeData.audit">
+		<thead>
+			<th>Timestamp</th>
+			<th>Entry</th>
+		</thead>
+		<tbody>
+			<tr>
+				<th> </th>
+				<th> </th>
+			</tr>
+		</tbody>
+	</table>
 </div>

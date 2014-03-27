@@ -13,6 +13,17 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         'SIZE': 'size'
     };
 
+    if ($scope.activeTab === $scope.tabName) {
+	    searchResultsService.prepForBroadcast("-", "- ");
+
+	    if (usersService) {
+		    usersService.one("searchHistory").get().then(function(result) {
+			$scope.$emit('searchHistoryData', result);
+		    });
+	    }
+    }
+
+
     $scope.getSortOrder = function() {
         if ($scope.activeTab === $scope.tabName) {
         	return $scope.sortOrder.toLowerCase();
@@ -56,14 +67,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         if ($scope.activeTab === $scope.tabName) {
         	return $scope.sortFields[$scope.sortField];
 	}
-    }
-
-    searchResultsService.prepForBroadcast("-", "- ");
-
-    if (usersService) {
-	    usersService.one("searchHistory").get().then(function(result) {
-		$scope.$emit('searchHistoryData', result);
-	    });
     }
 
     $rootScope.$on('downloadMessage', function(evt, message) { 
