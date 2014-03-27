@@ -52,6 +52,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.isMessageTypeEqualTo = function(message, type) {
 	if ($scope.activeTab === $scope.tabName) {
+		if (!msgType) {
+			message.formattedIndexedMailMessage.messageType = 'EMAIL';
+		}
 		return message.formattedIndexedMailMessage.messageType == type;
 	}
     }
