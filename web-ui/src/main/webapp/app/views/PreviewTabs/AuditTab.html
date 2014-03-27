@@ -11,16 +11,18 @@
 		</tr>
 	</table>
 -->
-        <table class="table table-striped table-hover" data-ng-show="modeData.sources">
-                <thead>
-                        <th>Key</th>
-                        <th>Value</th>
-                </thead>
-                <tbody>
-                        <tr data-ng-repeat="(rowKey, rowValue) in modeData.sources">
-                                <td> {{ rowKey }} </td>
-                                <td> {{ rowValue }} </td>
-                        </tr>
-                </tbody>
-        </table>
+	<span data-ng-repeat="source in modeData.sources" data-ng-show="modeData.sources">
+		<table class="table table-striped table-hover" data-ng-repeat="sourceEntry in source">
+			<thead>
+				<th>Key</th>
+				<th>Value</th>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="(rowKey, rowValue) in source">
+					<td> {{ rowKey }} </td>
+					<td> {{ rowValue }} </td>
+				</tr>
+			</tbody>
+		</table>
+	</span>
 </div>
