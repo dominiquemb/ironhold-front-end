@@ -1432,11 +1432,15 @@ body ul {
 .result .message-subject {
 	width: auto;
 	padding-left: 5px;
-	height: 18px;
+	height: 19px;
+	line-height: 16px;
 	overflow: hidden;
+	max-width: 90%;
+	word-break: break-all;
 }
 
 .result .message-size {
+	line-height: 18px;
 	color: #333;
 	width: 41px;
 	font-size: 16px;
