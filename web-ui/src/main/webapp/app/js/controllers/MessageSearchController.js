@@ -14,12 +14,24 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     };
 
     if ($scope.activeTab === $scope.tabName) {
-	    searchResultsService.prepForBroadcast("-", "- ");
+	$scope.onTabActivation();
+    }
 
-	    if (usersService) {
-		    usersService.one("searchHistory").get().then(function(result) {
-			$scope.$emit('searchHistoryData', result);
-		    });
+    $rootScope.$on('activeTab', function(evt, tab) {
+	    if (tab === $scope.tabName) {
+		$scope.onTabActivation();
+	    }
+    });
+
+    $scope.onTabActivation = function() {
+	    if ($scope.activeTab === $scope.tabName) {
+		    searchResultsService.prepForBroadcast("-", "- ");
+
+		    if (usersService) {
+			    usersService.one("searchHistory").get().then(function(result) {
+				$scope.$emit('searchHistoryData', result);
+			    });
+		    }
 	    }
     }
 

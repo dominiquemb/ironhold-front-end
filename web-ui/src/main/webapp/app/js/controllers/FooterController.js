@@ -10,15 +10,23 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
     $scope.showFooterSearchStats = false;
     $scope.showAfterFilter = false;
 
-    $scope.$watch(messagesService, function(newval, oldval) {
-	if (newval) {
-	    if ($scope.activeTab === $scope.tabName) {
-		messagesService.one("count").get({criteria: '*'}).then(function(result) {
-			$scope.archiveTotal = result.payload.matches;
-		});
+    if ($scope.activeTab === $scope.tabName) {
+	messagesService.one("count").get({criteria: '*'}).then(function(result) {
+		$scope.archiveTotal = result.payload.matches;
+	});
+    }
+
+    $rootScope.$on('activeTab', function(evt, tab) {
+	    if (tab === $scope.tabName) {
+		$scope.onTabActivation();
 	    }
-	}
     });
+
+    $scope.onTabActivation = function() {
+	messagesService.one("count").get({criteria: '*'}).then(function(result) {
+		$scope.archiveTotal = result.payload.matches;
+	});
+    }
 
     $rootScope.$on('reset', function() {
         if ($scope.activeTab === $scope.tabName) {
