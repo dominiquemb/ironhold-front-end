@@ -92,16 +92,14 @@ console.log(newval);
     });
 
     $scope.requestSubTabData = function(mode) {
-		if (mode === 'text') {
-			mode = '';
+		if (mode !== 'text') {
+			$scope.$emit('modeRequest', {
+				mode: mode,
+				date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
+				messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
+				criteria: {'criteria': $scope.inputSearch}
+			});
 		}
-
-		$scope.$emit('modeRequest', {
-			mode: mode,
-			date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
-			messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
-			criteria: {'criteria': $scope.inputSearch}
-		});
     }
 
     $rootScope.$on('mode', function(evt, mode) {
