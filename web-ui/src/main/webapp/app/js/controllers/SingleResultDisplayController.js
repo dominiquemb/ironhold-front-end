@@ -9,6 +9,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.mode = 'text';
     $scope.modeData = {};
     $scope.limitedTabs = false;
+
 /*
     $scope.$watch(function() {
                 if ($('.msgview_bottom').length > 0) {
@@ -88,6 +89,9 @@ console.log(newval);
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
+		setTimeout(function() {
+			$scope.$emit('initCustomScrollbars', '.msgview .sub-tab-content');
+		}, 100);
 	}
     });
 

@@ -321,6 +321,30 @@ body .text-primary {
 	position: absolute;
 }
 
+.msgview .sub-tab-content {
+	bottom: 12px;
+	position: absolute;
+	top: 80px;
+	left: 3px;
+	right: 3px;
+	width: auto !important;
+	height: auto !important;
+}
+
+.msgview .sub-tab-content .jspContainer {
+	bottom: 0px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+.msgview .sub-tab-content.scrollbar-hidden > .jspContainer > .jspPane {
+	right: 20px;
+	width: auto !important;
+	left: 0px;
+}
+
 .msgview .tabbable {
 	top: 2px;
 	position: absolute;
