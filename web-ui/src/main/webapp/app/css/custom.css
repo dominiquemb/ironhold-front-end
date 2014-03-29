@@ -499,13 +499,15 @@ body .text-primary {
 	margin-top: 9px;
 }
 
-.msgview_bottom {
+.msgview_bottom {	
+	max-height: 45%;
 	min-height: 1px;
 	background-color: #fff;
 	border-top: 1px solid #ccc;
 	margin-top: 25px;
 	position: absolute;
-	bottom: 0px;
+	height: auto;
+	bottom: 12px;
 	width: 100%;
 }
 
@@ -514,6 +516,21 @@ body .text-primary {
 	bottom: 13px;
 	height: auto;
 	top: 3px;
+}
+
+.msgview_bottom .jspContainer {
+	bottom: 8px;
+	top: 0px;
+	height: auto !important;
+}
+
+.msgview_bottom .jspPane {
+	position: relative !important;
+}
+
+.msgview_bottom .jspContainer.active {
+	position: absolute;
+	height: auto !important;
 }
 
 .msgview_bottom .icon-container {

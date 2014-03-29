@@ -10,7 +10,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
 
-/*
     $scope.$watch(function() {
                 if ($('.msgview_bottom').length > 0) {
                         return $('.msgview_bottom').height();
@@ -19,35 +18,21 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
         },
         function(newval, oldval) {
 		if ($scope.activeTab === $scope.tabName) {
-			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height();
-			if (newval > (msgviewHeight/2)) {
-				$('.msgview_bottom').height(msgviewHeight/2);
-				$scope.$emit('initCustomScrollbars', '.msgview_bottom');
-				$scope.$emit('reinitScrollbars');
-				newval = msgviewHeight/2;
-console.log(newval);
-			}
+			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').height();
 
-			if (newval > oldval) {
-console.log(newval);
-				if ($scope.currentMessage) {
-					$('.msgview_middle').height(
-						$('.msgview_middle').height() - newval
-					);
-					$scope.$emit('reinitScrollbars');
+				$('.msgview_middle').height(
+					msgviewHeight - $('.msgview_bottom').height()
+				);
+
+				if (newval > 0) {
+					$scope.$emit('initCustomScrollbars', '.msgview_bottom');
 				}
-			}
-			if (oldval > newval) {
-				if ($scope.currentMessage) {
-					$('.msgview_middle').height(
-						$('.msgview_middle').height() + oldval
-					);
-					$scope.$emit('reinitScrollbars');
-				}
-			}
+
+				$scope.$emit('reinitScrollbars');
 		}
+
      });
-*/
+
     $rootScope.$on('highlightActive', function(evt, offOrOn) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.limitedTabs = offOrOn;
@@ -91,6 +76,7 @@ console.log(newval);
 		$scope.modeData[results.mode] = results.payload;
 		setTimeout(function() {
 			$scope.$emit('initCustomScrollbars', '.msgview .sub-tab-content');
+			$('.msgview_bottom .jspContainer').removeClass('active');
 		}, 100);
 	}
     });
