@@ -120,6 +120,9 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
+        for (MessageMatch match : result.getMessages()) {
+            match.optimize();
+        }
 
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
