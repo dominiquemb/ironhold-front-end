@@ -51,7 +51,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 */
 
 
-				var dataUrl = '/messages/' + msgDate.getFullYear() + '/' + (msgDate.getMonth()+1) + '/' + msgDate.getDate()  + '/' + escape(info.message.formattedIndexedMailMessage.messageId) + '/download/' + info.attachment.fileName,
+				var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages/' + msgDate.getFullYear() + '/' + (msgDate.getMonth()+1) + '/' + msgDate.getDate()  + '/' + escape(info.message.formattedIndexedMailMessage.messageId) + '/download/' + info.attachment.fileName,
 
                                 link = document.createElement('a');
 
