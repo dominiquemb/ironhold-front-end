@@ -155,20 +155,8 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
-        // This is done for optimization purposes
         for (MessageMatch match : result.getMessages()) {
-            if (match.getBodyWithHighlights().length()>0) {
-                match.getFormattedIndexedMailMessage().setBody(null);
-            }
-
-            if (match.getAttachmentWithHighlights().length()>0) {
-                for (Attachment attachment : match.getFormattedIndexedMailMessage().getAttachments()) {
-                    if (attachment.getBody().length() > 100) {
-                        attachment.setBody(StringUtils.abbreviate(attachment.getBody(), 100) + "...");
-                    }
-                }
-            }
-
+            match.optimize();
         }
 
         backgroundExecutor.execute(new Runnable() {
@@ -199,15 +187,11 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
-        if (result.getMessages().getFirst() != null && result.getMessages().getFirst().getBodyWithHighlights() != null) {
-            result.getMessages().getFirst().getFormattedIndexedMailMessage().setBody(null); // This is done to optimize performance, the body is already present in the bodyWithHihglights field
+        for (MessageMatch match : result.getMessages()) {
+            match.optimize();
 
-            for (Attachment attachment : result.getMessages().getFirst().getFormattedIndexedMailMessage().getAttachments()) {
-                if (attachment.getBody().length() > 100) {
-                    attachment.setBody(StringUtils.abbreviate(attachment.getBody(), 100) + "...");
-                }
-            }
         }
+
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
