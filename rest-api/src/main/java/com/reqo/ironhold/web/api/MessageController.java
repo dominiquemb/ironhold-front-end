@@ -7,6 +7,7 @@ import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
+import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
@@ -315,6 +316,23 @@ public class MessageController extends AbstractController {
         ApiResponse<List<AuditLogMessage>> apiResponse = new ApiResponse<>();
 
         List<AuditLogMessage> result = metaDataIndexService.getAuditLogMessages(getClientKey(), messageId);
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{messageId:.+}/logs")
+    public
+    @ResponseBody
+    ApiResponse<List<LogMessage>> getMessageLogs(@PathVariable("messageId") String messageId) {
+        logger.info(String.format("getMessageLogs %s", messageId));
+
+        ApiResponse<List<LogMessage>> apiResponse = new ApiResponse<>();
+
+        List<LogMessage> result = metaDataIndexService.getLogMessages(getClientKey(), messageId);
 
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
