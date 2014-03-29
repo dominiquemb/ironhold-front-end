@@ -18,6 +18,7 @@ import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,17 +100,17 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessagesWithFacetValues(@RequestParam String criteria,
-                                                   @RequestParam(required = false, defaultValue = "SCORE") String sortField,
-                                                   @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
-                                                   @RequestParam(required = false, defaultValue = "10") int pageSize,
-                                                   @RequestParam(required = false, defaultValue = "0") int page,
-                                                   @RequestBody FacetValue[] facetValues) {
+                                                                  @RequestParam(required = false, defaultValue = "SCORE") String sortField,
+                                                                  @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
+                                                                  @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                                  @RequestParam(required = false, defaultValue = "0") int page,
+                                                                  @RequestBody FacetValue[] facetValues) {
         logger.info(String.format("getMessagesWithFacetValues %s, %s, %s, %d, %d, %s", criteria, sortField, sortOrder, pageSize, page, ArrayIterate.makeString(facetValues, ",")));
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), getLoginUser());
 
-        searchBuilder.withCriteria(criteria).withResultsLimit(page*pageSize, pageSize);
+        searchBuilder.withCriteria(criteria).withResultsLimit(page * pageSize, pageSize);
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (FacetValue facetValue : facetValues) {
@@ -144,7 +145,7 @@ public class MessageController extends AbstractController {
         final LoginUser loginUser = getLoginUser();
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), loginUser);
 
-        searchBuilder.withCriteria(criteria).withResultsLimit(page*pageSize, pageSize);
+        searchBuilder.withCriteria(criteria).withResultsLimit(page * pageSize, pageSize);
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (String facet : facets) {
@@ -153,6 +154,22 @@ public class MessageController extends AbstractController {
         }
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
+
+        // This is done for optimization purposes
+        for (MessageMatch match : result.getMessages()) {
+            if (match.getBodyWithHighlights().length()>0) {
+                match.getFormattedIndexedMailMessage().setBody(null);
+            }
+
+            if (match.getAttachmentWithHighlights().length()>0) {
+                for (Attachment attachment : match.getFormattedIndexedMailMessage().getAttachments()) {
+                    if (attachment.getBody().length() > 100) {
+                        attachment.setBody(StringUtils.abbreviate(attachment.getBody(), 100) + "...");
+                    }
+                }
+            }
+
+        }
 
         backgroundExecutor.execute(new Runnable() {
             @Override
@@ -182,6 +199,15 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
+        if (result.getMessages().getFirst() != null && result.getMessages().getFirst().getBodyWithHighlights() != null) {
+            result.getMessages().getFirst().getFormattedIndexedMailMessage().setBody(null); // This is done to optimize performance, the body is already present in the bodyWithHihglights field
+
+            for (Attachment attachment : result.getMessages().getFirst().getFormattedIndexedMailMessage().getAttachments()) {
+                if (attachment.getBody().length() > 100) {
+                    attachment.setBody(StringUtils.abbreviate(attachment.getBody(), 100) + "...");
+                }
+            }
+        }
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
@@ -223,13 +249,12 @@ public class MessageController extends AbstractController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/download/{attachment:.+}")
-    public
-    void getRawAttachment(@PathVariable("year") int year,
-                         @PathVariable("month") int month,
-                         @PathVariable("day") int day,
-                         @PathVariable("messageId") String messageId,
-                         @PathVariable("attachment") String attachment,
-                         HttpServletResponse response) throws Exception {
+    public void getRawAttachment(@PathVariable("year") int year,
+                                 @PathVariable("month") int month,
+                                 @PathVariable("day") int day,
+                                 @PathVariable("messageId") String messageId,
+                                 @PathVariable("attachment") String attachment,
+                                 HttpServletResponse response) throws Exception {
         logger.info(String.format("getRawAttachment %d %d %d %s %s", year, month, day, messageId, attachment));
 
         String partition = String.format("%4d", year);
@@ -283,14 +308,13 @@ public class MessageController extends AbstractController {
     }
 
 
-
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/body")
     public
     @ResponseBody
     ApiResponse<String> getBody(@PathVariable("year") int year,
-                                                @PathVariable("month") int month,
-                                                @PathVariable("day") int day,
-                                                @PathVariable("messageId") String messageId) throws Exception {
+                                @PathVariable("month") int month,
+                                @PathVariable("day") int day,
+                                @PathVariable("messageId") String messageId) throws Exception {
         logger.info(String.format("getBody %d %d %d %s", year, month, day, messageId));
 
         ApiResponse<String> response = new ApiResponse<>();

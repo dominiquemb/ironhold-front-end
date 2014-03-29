@@ -20,7 +20,7 @@ public class FormattedIndexedMailMessage extends IndexedMailMessage {
 
     private static final PeriodFormatter yearsAndMonthsFormatter = new PeriodFormatterBuilder()
             .appendYears().appendSuffix(" year", " years")
-            .appendSeparator(" and ").appendMonths()
+            .appendSeparator(" ").appendMonths()
             .appendSuffix(" month", " months").appendLiteral(" ago")
             .toFormatter();
 
