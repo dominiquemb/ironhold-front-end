@@ -45,16 +45,14 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     $rootScope.$on('downloadAttachment', function(evt, info) {
         if ($scope.activeTab === $scope.tabName) {
                 var msgDate = new Date(info.message.formattedIndexedMailMessage.messageDate);
-                        messagesService
-                                .one(msgDate.getFullYear())
-                                .one(msgDate.getMonth() + 1)
-                                .one(msgDate.getDate())
-                                .one(info.message.formattedIndexedMailMessage.messageId)
-				.one("download")
-                                .one(info.attachment.fileName)
-                        .get()
-                        .then(function(result) {
-                                var dataUrl = 'content-disposition:attachment;filename="' + info.attachment.fileName + '"; content-length:' + info.attachment.size + '; content-type:application/' + info.attachment.fileExt + ',' + encodeURI(result),
+/*
+//                                var dataUrl = 'content-disposition:attachment;filename="' + info.attachment.fileName + '"; content-length:' + info.attachment.size + '; content-type:application/' + info.attachment.fileExt + ',' + encodeURI(result),
+//				var dataUrl = 'data:application/' + info.attachment.fileExt + ';base-64,' + encodeURI(result),
+*/
+
+
+				var dataUrl = '/messages/' + msgDate.getFullYear() + '/' + (msgDate.getMonth()+1) + '/' + msgDate.getDate()  + '/' + escape(info.message.formattedIndexedMailMessage.messageId) + '/download/' + info.attachment.fileName,
+
                                 link = document.createElement('a');
 
                                 angular.element(link)
@@ -71,7 +69,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
                                 else if (el.click) {
                                     link.click();
                                 }
-                        });
 	}
     });
 
