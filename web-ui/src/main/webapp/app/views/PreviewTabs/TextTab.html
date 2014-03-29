@@ -83,7 +83,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+                    <a target="_self" href="{{ downloadUrl(currentMessage, attachment.fileName) }}" download="{{ attachment.fileName}}">{{ attachment.fileName }}</a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
@@ -99,7 +99,8 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+					                    <a target="_self" href="{{ downloadUrl(currentMessage, attachment.fileName) }}" download="{{ attachment.fileName}}">{{ attachment.fileName }}</a>:
+                    <a target="_self" href="{{ downloadUrl(currentMessage, attachment.fileName) }}" download="{{ attachment.fileName}}">{{ attachment.fileName }}</a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
@@ -115,7 +116,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+                    <a target="_self" href="{{ downloadUrl(currentMessage, attachment.fileName) }}" download="{{ attachment.fileName}}">{{ attachment.fileName }}</a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
@@ -131,7 +132,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+                    <a target="_self" href="{{ downloadUrl(currentMessage, attachment.fileName) }}" download="{{ attachment.fileName}}">{{ attachment.fileName }}</a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
@@ -147,7 +148,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-					<a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+                    <a target="_self" href="{{ downloadUrl(currentMessage, attachment.fileName) }}" download="{{ attachment.fileName}}">{{ attachment.fileName }}</a>:
 				    </span>
                                     <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"

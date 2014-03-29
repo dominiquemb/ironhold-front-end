@@ -42,35 +42,16 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	}
     }
 
-    $rootScope.$on('downloadAttachment', function(evt, info) {
-        if ($scope.activeTab === $scope.tabName) {
-                var msgDate = new Date(info.message.formattedIndexedMailMessage.messageDate);
-/*
-//                                var dataUrl = 'content-disposition:attachment;filename="' + info.attachment.fileName + '"; content-length:' + info.attachment.size + '; content-type:application/' + info.attachment.fileExt + ',' + encodeURI(result),
-//				var dataUrl = 'data:application/' + info.attachment.fileExt + ';base-64,' + encodeURI(result),
-*/
-
-
-				var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages/' + msgDate.getFullYear() + '/' + (msgDate.getMonth()+1) + '/' + msgDate.getDate()  + '/' + escape(info.message.formattedIndexedMailMessage.messageId) + '/download/' + info.attachment.fileName,
-
-                                link = document.createElement('a');
-
-                                angular.element(link)
-                                        .attr('href', dataUrl)
-                                        .attr('download', info.attachment.fileName);
-
-                                // Firefox
-                                if (document.createEvent) {
-                                    var event = document.createEvent("MouseEvents");
-                                    event.initEvent("click", true, true);
-                                    link.dispatchEvent(event);
-                                }
-                                // IE
-                                else if (el.click) {
-                                    link.click();
-                                }
-	}
-    });
+    $scope.downloadUrl = function(message, attachment) {
+        var msgDate = new Date(message.formattedIndexedMailMessage.messageDate);
+        var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages/';
+        dataUrl = dataUrl + msgDate.getFullYear()+'/';
+        dataUrl = dataUrl + (msgDate.getMonth()+1) + '/';
+        dataUrl = dataUrl + msgDate.getDate() + '/';
+        dataUrl = dataUrl + escape(message.formattedIndexedMailMessage.messageId) + '/download/';
+        dataUrl = dataUrl + escape(attachment);
+        return dataUrl;
+    }
 
     $scope.getSortField = function() {
         if ($scope.activeTab === $scope.tabName) {
