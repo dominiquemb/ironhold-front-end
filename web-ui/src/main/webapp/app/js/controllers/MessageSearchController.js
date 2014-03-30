@@ -54,24 +54,24 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
                     .one(info.attachment.fileName)
                     .post()
                     .then(function(result) {
-                        var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/download/' + result,
+                        var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/download/attachment/' + result;
 
-                                link = document.createElement('a');
+                        var link = document.createElement('a');
 
-                                angular.element(link)
-                                        .attr('href', dataUrl)
-                                        .attr('download', info.attachment.fileName);
+                        angular.element(link)
+                                .attr('href', dataUrl)
+                                .attr('download', info.attachment.fileName);
 
-                                // Firefox
-                                if (document.createEvent) {
-                                    var event = document.createEvent("MouseEvents");
-                                    event.initEvent("click", true, true);
-                                    link.dispatchEvent(event);
-                                }
-                                // IE
-                                else if (el.click) {
-                                    link.click();
-                                }
+                        // Firefox
+                        if (document.createEvent) {
+                            var event = document.createEvent("MouseEvents");
+                            event.initEvent("click", true, true);
+                            link.dispatchEvent(event);
+                        }
+                        // IE
+                        else if (el.click) {
+                            link.click();
+                        }
                     });
 
         }
@@ -88,34 +88,33 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 		var formattedMsg = message.formattedIndexedMailMessage,
 		msgDate = new Date(formattedMsg.messageDate);
 
-                messagesService
+                downloadService
                         .one(msgDate.getFullYear())
                         .one(msgDate.getMonth() + 1)
                         .one(msgDate.getDate())
                         .one(formattedMsg.messageId)
-                        .one('download')
-                        .get()
+                        .post()
                         .then(function(result) {
-            			var dataUrl = 'data:text/plain;utf-9,' + encodeURI(result),
-				link = document.createElement('a');
-			
-				angular.element(link)
-					.attr('href', dataUrl)
-					.attr('download', formattedMsg.messageId + '.eml');
+            			var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/download/full/' + result;
 
-				// Firefox
-				if (document.createEvent) {
-				    var event = document.createEvent("MouseEvents");
-				    event.initEvent("click", true, true);
-				    link.dispatchEvent(event);
-				}
-				// IE
-				else if (el.click) {
-				    link.click();
-				}
-                });
-        }       
-    }); 
+                        var link = document.createElement('a');
+
+                        angular.element(link)
+                                .attr('href', dataUrl)
+                                .attr('download', formattedMsg.messageId + '.eml');
+
+                        // Firefox
+                        if (document.createEvent) {
+                            var event = document.createEvent("MouseEvents");
+                            event.initEvent("click", true, true);
+                            link.dispatchEvent(event);
+                        }
+                        // IE
+                        else if (el.click) {
+                            link.click();
+                        }
+        })
+    }});
 
     $scope.changeSortOrder = function(order) {
         if ($scope.activeTab === $scope.tabName) {

@@ -10,6 +10,7 @@ import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.web.domain.Attachment;
 import com.reqo.ironhold.web.domain.LoginUser;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,48 +51,93 @@ public class DownloadController extends AbstractController {
     private final ExecutorService backgroundExecutor;
     private static final Logger logger = LoggerFactory.getLogger(DownloadController.class);
 
-    private class AttachmentRequest {
-        private final String clientKey;
-        private final String user;
-        private final int year;
-        private final int month;
-        private final int day;
-        private final String messageId;
+    private class AttachmentRequest extends FullDownloadRequest {
         private final String attachment;
 
         private AttachmentRequest(String clientKey, String user, int year, int month, int day, String messageId, String attachment) {
+            super(clientKey, user, year, month, day, messageId);
+            this.attachment = attachment;
+        }
+    }
+
+    private class FullDownloadRequest {
+        protected final String clientKey;
+        protected final String user;
+        protected final int year;
+        protected final int month;
+        protected final int day;
+        protected final String messageId;
+
+        private FullDownloadRequest(String clientKey, String user, int year, int month, int day, String messageId) {
             this.clientKey = clientKey;
             this.user = user;
             this.year = year;
             this.month = month;
             this.day = day;
             this.messageId = messageId;
-            this.attachment = attachment;
         }
-
-
     }
 
     private MutableMap<String, AttachmentRequest> attachmentRequests = UnifiedMap.newMap();
+    private MutableMap<String, FullDownloadRequest> fullDownloadRequests = UnifiedMap.newMap();
 
     public DownloadController() {
         this.backgroundExecutor = Executors.newFixedThreadPool(10);
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}")
+    @RequestMapping(method = RequestMethod.POST, value = "/{year}/{month}/{day}/{messageId:.+}")
+    @Secured("ROLE_CAN_SEARCH")
     public synchronized
     @ResponseBody
-    String getRawMessage(@PathVariable("year") int year,
-                         @PathVariable("month") int month,
-                         @PathVariable("day") int day,
-                         @PathVariable("messageId") String messageId) throws Exception {
-        logger.info(String.format("getRawMessage %d %d %d %s", year, month, day, messageId));
+    String getRawMessageRequest(@PathVariable("year") int year,
+                                @PathVariable("month") int month,
+                                @PathVariable("day") int day,
+                                @PathVariable("messageId") String messageId) throws Exception {
 
-        String partition = String.format("%4d", year);
-        String subPartition = String.format("%02d%02d", month, day);
-        return mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
+        FullDownloadRequest fullDownloadRequest = new FullDownloadRequest(getClientKey(), getUserName(), year, month, day, messageId);
 
+        String id = UUID.randomUUID().toString();
+
+        fullDownloadRequests.put(id, fullDownloadRequest);
+
+        return id;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/full/{id}")
+    public synchronized void getRawMessage(@PathVariable("id") String id,
+                         HttpServletResponse response) throws Exception {
+        if (!fullDownloadRequests.containsKey(id)) {
+            throw new IllegalArgumentException("Unknown request id " + id);
+        }
+        try {
+            FullDownloadRequest fullDownloadRequest = fullDownloadRequests.get(id);
+
+            int year = fullDownloadRequest.year;
+            int month = fullDownloadRequest.month;
+            int day = fullDownloadRequest.day;
+            String messageId = fullDownloadRequest.messageId;
+            String clientKey = fullDownloadRequest.clientKey;
+
+            logger.info(String.format("getRawMessage %d %d %d %s", year, month, day, messageId));
+
+            String partition = String.format("%4d", year);
+            String subPartition = String.format("%02d%02d", month, day);
+            String result = mimeMailMessageStorageService.get(clientKey, partition, subPartition, messageId);
+
+            byte[] byteArray = Base64.decodeBase64(result.getBytes());
+            response.setContentType("text/plain");
+            response.setContentLength(byteArray.length);
+            response.setHeader("Content-Disposition", "attachment; filename=" + FilenameUtils.normalize(messageId) + ".eml");
+
+            InputStream is = new ByteArrayInputStream(byteArray);
+            IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } finally {
+            if (fullDownloadRequests.containsKey(id)) {
+                fullDownloadRequests.removeKey(id);
+            }
+        }
     }
 
 
@@ -115,7 +161,7 @@ public class DownloadController extends AbstractController {
     }
 
     // This is public on purpose
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/attachment/{id}")
     public synchronized void getRawAttachment(@PathVariable("id") String id,
                                               HttpServletResponse response) throws Exception {
 
