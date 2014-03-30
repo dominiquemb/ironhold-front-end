@@ -313,7 +313,12 @@ public class MessageController extends AbstractController {
         message.loadMimeMessageFromSource(source);
 
 
-        response.setPayload(message.getBodyHTML() != null ? message.getBodyHTML() : message.getBody());
+        if (message.getBodyHTML() == null || message.getBodyHTML().trim().length() == 0) {
+            response.setPayload(message.getBody());
+        } else {
+            response.setPayload(message.getBodyHTML());
+        }
+
         response.setStatus(ApiResponse.STATUS_SUCCESS);
         return response;
     }
