@@ -46,7 +46,9 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 
     $scope.reinitScrollbars = function() {
         angular.forEach($('.scrollbar-hidden'), function(container, key) {
+            try {
                 $('.scrollbar-hidden').eq(key).data('jsp').reinitialise();
+            } catch(err) {}
         });
     }
 
