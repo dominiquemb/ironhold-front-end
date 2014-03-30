@@ -6,7 +6,7 @@
 		No HTML data available.
         </span>
 	<div class="sub-tab-content scrollbar-hidden">
-		<div class="sub-tab-content-inner" data-ng-bind-html-unsafe="modeData.body">
+		<div class="sub-tab-content-inner" data-ng-bind-html="modeData.body | to_trusted">
 		</div>
 	</div>
 </div>
