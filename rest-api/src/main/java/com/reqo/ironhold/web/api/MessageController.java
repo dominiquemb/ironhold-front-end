@@ -352,7 +352,6 @@ public class MessageController extends AbstractController {
 
     }
 
-
     protected final String getUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().split("/")[1];
     }

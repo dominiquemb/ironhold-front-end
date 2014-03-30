@@ -1,6 +1,6 @@
 'use strict';
 
-ironholdApp.controller('MessageSearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
+ironholdApp.controller('MessageSearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService, downloadService) {
     logInService.confirmLoggedIn($state);
 
     $scope.msgs;
@@ -42,21 +42,45 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	}
     }
 
-    $scope.downloadUrl = function(message, attachment) {
-        var msgDate = new Date(message.formattedIndexedMailMessage.messageDate);
-        var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/messages/';
-        dataUrl = dataUrl + msgDate.getFullYear()+'/';
-        dataUrl = dataUrl + (msgDate.getMonth()+1) + '/';
-        dataUrl = dataUrl + msgDate.getDate() + '/';
-        dataUrl = dataUrl + escape(message.formattedIndexedMailMessage.messageId) + '/download/';
-        dataUrl = dataUrl + escape(attachment);
-        return dataUrl;
-    }
+    $rootScope.$on('downloadAttachment', function(evt, info) {
+        if ($scope.activeTab === $scope.tabName) {
+                var msgDate = new Date(info.message.formattedIndexedMailMessage.messageDate);
+
+                 downloadService
+                    .one(msgDate.getFullYear())
+                    .one(msgDate.getMonth() + 1)
+                    .one(msgDate.getDate())
+                    .one(info.message.formattedIndexedMailMessage.messageId)
+                    .one(info.attachment.fileName)
+                    .post()
+                    .then(function(result) {
+                        var dataUrl = '${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}/download/' + result,
+
+                                link = document.createElement('a');
+
+                                angular.element(link)
+                                        .attr('href', dataUrl)
+                                        .attr('download', info.attachment.fileName);
+
+                                // Firefox
+                                if (document.createEvent) {
+                                    var event = document.createEvent("MouseEvents");
+                                    event.initEvent("click", true, true);
+                                    link.dispatchEvent(event);
+                                }
+                                // IE
+                                else if (el.click) {
+                                    link.click();
+                                }
+                    });
+
+        }
+    });
 
     $scope.getSortField = function() {
         if ($scope.activeTab === $scope.tabName) {
         	return $scope.sortFields[$scope.sortField];
-	}
+	    }
     }
 
     $rootScope.$on('downloadMessage', function(evt, message) { 

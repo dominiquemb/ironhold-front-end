@@ -164,6 +164,14 @@ ironholdApp.factory('messagesService', function(Restangular, logInService) {
 	return (results) ? results : false;
 });
 
+ironholdApp.factory('downloadService', function(Restangular, logInService) {
+	var results = false;
+	if (logInService.getAuthdata()) {
+		results = Restangular.one("download");
+	}
+	return (results) ? results : false;
+});
+
 ironholdApp.factory('usersService', function(Restangular, logInService) {
 	var results = false;
 	if (logInService.getAuthdata()) {
