@@ -6,17 +6,19 @@
                 No Headers data available.
         </div>
 	<div class="sub-tab-content scrollbar-hidden">
-		<table class="table table-striped table-hover" data-ng-show="modeData.headers">
-			<thead>
-				<th>Key</th>
-				<th>Value</th>
-			</thead>
-			<tbody>
-				<tr data-ng-repeat="(rowKey, rowValue) in modeData.headers">
-					<td> {{ rowKey }} </td>
-					<td> {{ rowValue }} </td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="sub-tab-content-inner">
+			<table class="table table-striped table-hover" data-ng-show="modeData.headers">
+				<thead>
+					<th>Key</th>
+					<th>Value</th>
+				</thead>
+				<tbody>
+					<tr data-ng-repeat="(rowKey, rowValue) in modeData.headers">
+						<td> {{ rowKey }} </td>
+						<td> {{ rowValue }} </td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

@@ -5,6 +5,8 @@
         <span data-ng-show="modeData.body.length === 0">
 		No HTML data available.
         </span>
-	<div class="sub-tab-content scrollbar-hidden" ng-bind-html-unsafe="modeData.body">
+	<div class="sub-tab-content scrollbar-hidden">
+		<div class="sub-tab-content-inner" data-ng-bind-html="modeData.body">
+		</div>
 	</div>
 </div>
