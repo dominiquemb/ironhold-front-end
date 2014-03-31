@@ -26,15 +26,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
         },
         function(newval, oldval) {
 		if ($scope.activeTab === $scope.tabName) {
-			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').height();
+			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_main').outerHeight(true);
 
 				$('.msgview_middle').height(
-					msgviewHeight - $('.msgview_bottom').height()
+					msgviewHeight - $('.msgview_bottom').outerHeight(true)
 				);
-
-				if (newval > 0) {
-					$scope.$emit('initCustomScrollbars', '.msgview_bottom');
-				}
 
 				$scope.$emit('reinitScrollbars');
 		}
@@ -82,10 +78,19 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
+		setTimeout(function() {
+					$('.msgview_bottom').height( $('.msgview_bottom').height() + 'px' );
+					$('.msgview_bottom .jspVerticalBar').css('visibility', 'visible');
+					$scope.$emit('initCustomScrollbars', '.msgview_bottom');
+				}, 200);
+
 	}
     });
 
     $scope.textTab = function() {
+		$('.msgview_bottom .jspVerticalBar').css('visibility', 'hidden');
+		$('.msgview_bottom').height('');
+		$('.msgview_bottom').height('auto !important');
 		$scope.$emit('modeRequest', {
 			mode: '',
 			date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),

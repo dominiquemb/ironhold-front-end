@@ -19,8 +19,8 @@
 	    </h4>
         </div>
     </div>
-    <div class="row msgview_middle scrollbar-hidden">
-        <div class="scrollable-content">
+    <div class="row msgview_middle sub-tab-content scrollbar-hidden">
+        <div class="scrollable-content sub-tab-content-inner">
             <div class="message-header">
                 <table class="pull-left header-info">
                     <tr>
@@ -69,14 +69,110 @@
         <!-- .scrollable-content -->
     </div>
     <div class="row msgview_bottom expandable">
-        <div data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
+        <div class="msgview_bottom_inner" data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
             <a data-action="collapse" class="expandable-toggle">
                 <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)"
                    data-ng-class="{'icon-angle-up': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === true, 'icon-angle-down': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === false}"
                    class="fa-angle-up fa icon-on-right"></i>
             </a>
             <ul class="attachments">
-                <li class="attachment col-xs-12 first"
+                <li class="attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+        		    <div class="attachment-line-break"/>
+                </li>
+                <li class="attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+        		    <div class="attachment-line-break"/>
+                </li>
+                <li class="attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+        		    <div class="attachment-line-break"/>
+                </li>
+                <li class="attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+        		    <div class="attachment-line-break"/>
+                </li>
+                <li class="attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+        		    <div class="attachment-line-break"/>
+                </li>
+                <li class="attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
+                    <div class="col-xs-2 icon-container">
+                        <div class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a data-ng-click="downloadAttachment(attachment)">{{ attachment.fileName }}</a>:
+				    </span>
+                                    <span class="attachment-body gray-dark truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+                                    </span>
+                    </div>
+        		    <div class="attachment-line-break"/>
+                </li>
+                <li class="attachment first"
                     data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments">
                     <div class="col-xs-2 icon-container">
                         <div class="msgview_img-xl attachment-img"></div>
