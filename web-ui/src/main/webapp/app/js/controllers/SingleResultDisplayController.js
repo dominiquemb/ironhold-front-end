@@ -92,9 +92,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
     $scope.textTab = function() {
-		$('.msgview_bottom .jspVerticalBar').css('visibility', 'hidden');
-		$('.msgview_bottom').height('');
-		$('.msgview_bottom').height('auto !important');
 		$scope.$emit('modeRequest', {
 			mode: '',
 			date: new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
@@ -124,6 +121,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	
 
     $scope.requestSubTabData = function(mode) {
+		$('.msgview_bottom .jspVerticalBar').css('visibility', 'hidden');
+		$('.msgview_bottom').height('');
+		$('.msgview_bottom').height('auto !important');
+
 		if (typeof $scope[mode + 'Tab'] === 'function') {
 			$scope[mode + 'Tab']();
 		}
