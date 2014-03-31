@@ -104,6 +104,7 @@ public class DownloadController extends AbstractController {
         return id;
     }
 
+    // This is public on purpose
     @RequestMapping(method = RequestMethod.GET, value = "/full/{id}")
     public synchronized void getRawMessage(@PathVariable("id") String id,
                          HttpServletResponse response) throws Exception {
@@ -125,10 +126,10 @@ public class DownloadController extends AbstractController {
             String subPartition = String.format("%02d%02d", month, day);
             String result = mimeMailMessageStorageService.get(clientKey, partition, subPartition, messageId);
 
-            byte[] byteArray = Base64.decodeBase64(result.getBytes());
+            byte[] byteArray = result.getBytes();
             response.setContentType("text/plain");
             response.setContentLength(byteArray.length);
-            response.setHeader("Content-Disposition", "attachment; filename=" + FilenameUtils.normalize(messageId) + ".eml");
+            response.setHeader("Content-Disposition", "attachment; filename=" + FilenameUtils.normalize(messageId.replaceAll("<","").replaceAll(">","").replaceAll("-","").replaceAll("\\\\","").replaceAll("/","")) + ".eml");
 
             InputStream is = new ByteArrayInputStream(byteArray);
             IOUtils.copy(is, response.getOutputStream());
