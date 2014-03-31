@@ -10,6 +10,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
 
+console.log('test');
     $scope.$watch(function() {
 		return $('.sub-tab-content-inner').height();
 	}, function(newval, oldval) {
