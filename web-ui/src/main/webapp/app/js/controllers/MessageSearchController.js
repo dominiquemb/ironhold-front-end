@@ -192,7 +192,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 			searchTime: result.payload.timeTaken,
 			searchMatches: result.payload.matches
 		    });
-			
+
 			$scope.msgs = $scope.formatMessages(result.payload.messages);
 			searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
 			$scope.$emit('results', {
@@ -247,7 +247,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 				searchMatches: result.payload.matches,
 				suggestions: result.payload.suggestions,
 				showSearchPreviewResults: true,
-				showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
+			    	showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
 			});
 
 			    $scope.msgs = $scope.formatMessages(result.payload.messages);

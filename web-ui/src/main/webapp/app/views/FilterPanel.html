@@ -1,4 +1,4 @@
-<div data-ng-show="showSuggestions" class="suggestions">
+<div data-ng-show="showSuggestions && (selectedFilters.length == 0)" class="suggestions">
 	Did you mean:
 	<span data-ng-repeat="suggestion in suggestions">
 		<span data-ng-repeat="option in suggestion.options">

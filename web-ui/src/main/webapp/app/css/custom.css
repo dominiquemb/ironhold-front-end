@@ -500,7 +500,7 @@ body .text-primary {
 }
 
 .msgview_bottom {	
-	max-height: 40%;
+	max-height: 30%;
 	margin-top: 11px;
 	min-height: 1px;
 	background-color: #fff;
@@ -1885,6 +1885,7 @@ body ul {
 	text-transform: uppercase;
 	color: #2e68b1;	
 	margin-left: 4px;
+	font-weight: 800;
 }
 
 .sidebar-left .widget-toolbar i {
