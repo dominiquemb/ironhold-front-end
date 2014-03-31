@@ -10,12 +10,13 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
 
-console.log('test');
     $scope.$watch(function() {
-		return $('.sub-tab-content-inner').height();
+		return $('.sub-tab-content-inner').text();
 	}, function(newval, oldval) {
-		if ($scope.activeTab === $scope.tabName) {
-			$scope.$emit('initCustomScrollbars', '.sub-tab-content');
+		if (newval != oldval) {
+			if ($scope.activeTab === $scope.tabName) {
+				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
+			}
 		}
      });
 
@@ -23,17 +24,19 @@ console.log('test');
                 if ($('.msgview_bottom').length > 0) {
                         return $('.msgview_bottom').height();
                 }
-                else return 0;
+                else return null;
         },
         function(newval, oldval) {
 		if ($scope.activeTab === $scope.tabName) {
-			var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_main').outerHeight(true);
+			if (newval != null) {
+				var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_main').outerHeight(true);
 
 				$('.msgview_middle').height(
 					msgviewHeight - $('.msgview_bottom').outerHeight(true)
 				);
 
 				$scope.$emit('reinitScrollbars');
+			}
 		}
 
      });

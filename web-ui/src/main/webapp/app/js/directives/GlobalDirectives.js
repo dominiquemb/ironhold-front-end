@@ -9,6 +9,20 @@ ironholdApp.directive('pagination', function() {
 	}
 });
 
+ironholdApp.directive('attachmentsView', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/PreviewTabs/AttachmentsView.html'
+	}
+});
+
+ironholdApp.directive('messageHeader', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/PreviewTabs/MessageHeader.html'
+	}
+});
+
 ironholdApp.directive('body', function() {
 	return {
 		restrict: "ACE",

@@ -1,0 +1,37 @@
+<table class="pull-left header-info">
+    <tr>
+	<td class="label-container from">
+	</td>
+	<td class="label-content from gray-dark">
+	    {{ currentMessage.formattedIndexedMailMessage.sender.name }} &lt;{{
+	    currentMessage.formattedIndexedMailMessage.sender.address }}&gt;
+	</td>
+    </tr>
+    <tr>
+	<td class="label-container to">
+	</td>
+
+	<td class="label-content to gray-dark">
+			<span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.to">
+				{{ person.name }} &lt;{{ person.address }}&gt;;
+			</span>
+	</td>
+    </tr>
+    <tr>
+	<td class="label-container cc">
+	</td>
+	<td class="label-content cc gray-dark">
+				    <span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.cc">
+					{{ person.name }} &lt;{{ person.address }}&gt;;
+				    </span>
+	</td>
+    </tr>
+    <tr>
+	<td class="label-container bcc">
+	</td>
+	<td class="label-content bcc gray-dark">
+			<span data-ng-repeat="person in currentMessage.formattedIndexedMailMessage.bcc">
+				{{ person.name }} &lt;{{ person.address }}&gt;;
+	</td>
+    </tr>
+</table>

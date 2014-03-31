@@ -1,12 +1,15 @@
-<div id="msgview-body" class="msgview-body tab-pane in active" data-ng-click="switchMode('body')">
-        <div class="row controlbar">
-        </div>
+<div class="row msgview_middle sub-tab-content scrollbar-hidden">
+        <div class="scrollable-content sub-tab-content-inner">
+            <div class="message-header">
+            </div>
 
-        <span data-ng-show="modeData.body.length === 0">
-		No HTML data available.
-        </span>
-	<div class="sub-tab-content-styled sub-tab-content scrollbar-hidden">
-		<div class="sub-tab-content-inner" data-ng-bind-html="modeData.body | to_trusted">
-		</div>
-	</div>
+            <div class="pull-right message-body-container">
+                <div class="message-body-content" data-ng-bind-html="modeData.body | to_trusted">
+                </div>
+            </div>
+        </div>
+        <!-- .scrollable-content -->
 </div>
+<div class="row msgview_bottom expandable attachments-view">
+</div>
+
