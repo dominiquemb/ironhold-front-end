@@ -44,6 +44,10 @@ body .text-primary {
 	cursor: pointer;
 }
 
+.clickable:hover {
+	color: #0066FF;
+}
+
 /* suggestions */
 .suggestions {
 	margin-left: 4px;
@@ -55,7 +59,7 @@ body .text-primary {
 	background-color: #fdd8d5;
 	color: #880c03;
 	margin: 2px;
-	padding: 3px 5px 0px 5px;
+	padding: 0px 5px 3px 5px;
 }
 
 .main-ui-view {
@@ -172,7 +176,7 @@ body .text-primary {
 	cursor: pointer;
 	color: #999;
 	float: left;
-	margin-top: 1px;
+	margin-top: 2px;
 	margin-bottom: 1px;
 }
 
@@ -444,7 +448,7 @@ body .text-primary {
 	color: #999;
 	padding-top: 4px;
 	font-weight: 700;
-	font-family: 'Open Sans Condensed';
+	font-family: 'Roboto Condensed';
 }
 
 .msgview_top {
@@ -465,7 +469,7 @@ body .text-primary {
 }
 
 .msgview_subject {
-	font-family: 'Open Sans Condensed';
+	font-family: 'Roboto Condensed';
 	font-size: 16px;
 	line-height: 12px;
 	height: 19px;
@@ -474,7 +478,7 @@ body .text-primary {
 }
 
 .msgview_date {
-	font-family: 'Open Sans Condensed';
+	font-family: 'Roboto Condensed';
 	overflow: hidden;
 	font-weight: 700;
 	font-size: 16px;
@@ -1412,7 +1416,7 @@ body ul {
 }
 
 .result .message-first-line {
-	font-family: 'Open Sans Condensed', sans-serif;
+	font-family: 'Roboto Condensed', sans-serif;
 	line-height: 21px;
 	padding-right: 7px;
 	font-size: 14px;
@@ -1423,7 +1427,7 @@ body ul {
 .result .message-second-line {
 	word-break: break-all;
 	font-weight: 700;
-	font-family: 'Open Sans Condensed', sans-serif;
+	font-family: 'Roboto Condensed', sans-serif;
 	clear: left;
 	color: #666;
 	line-height:13px;

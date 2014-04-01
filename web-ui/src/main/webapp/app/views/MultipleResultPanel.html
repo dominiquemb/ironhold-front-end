@@ -27,7 +27,9 @@
 			    <div class="message-size pull-left">
                         		{{ message.formattedIndexedMailMessage.formattedSize.substr(0, message.formattedIndexedMailMessage.formattedSize.length-1).replace(' ','') }}
 			    </div>
-			    <div class="message-subject pull-left" data-ng-bind-html="message.subjectWithHighlights">
+			    <div class="message-subject pull-left">
+				<span data-ng-show="message.subjectWithHighlights.length > 0" data-ng-bind-html="message.subjectWithHighlights"></span>
+				<span data-ng-show="(message.subjectWithHighlights.length == 0) || !(message.subjectWithHighlights)">(no subject)</span>
 			    </div>
 		    </div>
 		    <div class="message-recipients">
