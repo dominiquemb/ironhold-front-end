@@ -625,6 +625,10 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -352px -31px;
 }
 
+.caret-blue-down {
+	background: url(../img/sprites/ImageSprite.png) -352px -53px;
+}
+
 .caret-four-thirty-up {
 	background: url(../img/sprites/ImageSprite.png) -36px -20px !important;
 	width:6px !important;
@@ -682,8 +686,16 @@ body .text-primary {
 	background: url(../img/sprites/msgview_icons.png) -4px -82px;
 }
 
+.user-photo {
+	background: url(../img/sprites/ImageSprite.png) -702px 0px;
+}
+
 .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px 0px;
+}
+
+.download-lg:hover {
+	background: url(../img/sprites/ImageSprite.png) -448px -32px;
 }
 
 .flag-lg {
@@ -756,7 +768,7 @@ body .text-primary {
 }
 
 .attachment-img {
-	background: url(../img/sprites/msgview_icons.png) -64px -46px;
+	background: url(../img/sprites/ImageSprite.png) -760px -128px;
 }
 
 .result.active-single .checkmark .checkmark-icon,
@@ -913,6 +925,10 @@ body .text-primary {
 
 .navigation .welcome_name {
 	margin-top: 12px;
+}
+
+.name .caret-blue-down {
+	margin-top: 14px;
 }
 
 .navigation .top-nav.nav-tabs {
@@ -1193,7 +1209,7 @@ body .text-primary {
 
 .attachments .attachment-img-xs {
 	width: 14px;
-	height: 14px;
+	height: 16px;
 }
 
 .attachments .attachment {
@@ -1332,22 +1348,22 @@ body ul {
 }
 
 .jspArrowUp {
-	background: url(../img/sprites/scrollbar_arrows.png) 15px 16px !important;
+	background: url(../img/sprites/ImageSprite.png) -81px -32px !important;
 }
 
 .jspArrowUp:hover {
-	background: url(../img/sprites/scrollbar_arrows.png) 15px 16px !important;
+	background: url(../img/sprites/ImageSprite.png) -81px -48px !important;
 }
 
 .jspArrowDown {
 	bottom: 0px;
 	position: absolute;
 	width: 100%;
-	background: url(../img/sprites/scrollbar_arrows.png) -1px 16px !important;
+	background: url(../img/sprites/ImageSprite.png) -65px -32px !important;
 }
 
 .jspArrowDown:hover {
-	background: url(../img/sprites/scrollbar_arrows.png) -1px 16px !important;
+	background: url(../img/sprites/ImageSprite.png) -65px -48px !important;
 }
 
 /* results */

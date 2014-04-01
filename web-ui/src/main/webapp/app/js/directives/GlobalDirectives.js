@@ -9,6 +9,14 @@ ironholdApp.directive('pagination', function() {
 	}
 });
 
+ironholdApp.directive('userActionsPanel', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/UserActionsPanel.html',
+		controller: 'UserActionsController'
+	}
+});
+
 ironholdApp.directive('attachmentsView', function() {
 	return {
 		restrict: 'ACE',
