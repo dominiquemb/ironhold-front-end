@@ -195,6 +195,8 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
 			$scope.msgs = $scope.formatMessages(result.payload.messages);
 			searchResultsService.prepForBroadcast($scope.searchMatches, $scope.searchTime);
+			$scope.$emit('reinitScrollbars');
+
 			$scope.$emit('results', {
 				'matches': result.payload.matches,
 				'resultEntries': $scope.msgs

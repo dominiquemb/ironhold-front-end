@@ -11,6 +11,12 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.inputSearch;
     $scope.highlightActive = false;
 
+/*
+    $rootScope.$on('scrollToTop', function() {
+	$('.listing .jspPane').css('top','0px');
+	$('.listing .jspDrag').css('top','0px');
+    });
+*/
     $rootScope.$on('highlightActive', function(evt, offOrOn) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.highlightActive = offOrOn;
