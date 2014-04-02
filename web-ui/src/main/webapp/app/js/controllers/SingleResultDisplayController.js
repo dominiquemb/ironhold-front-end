@@ -10,7 +10,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
 
-console.log('test');
+    $scope.getFileType = function(name) {
+	var ext = name.split('.');
+	return ext[ext.length-1];
+    }
+
     $scope.$watch(function() {
 		return $('.sub-tab-content-inner').text();
 	}, function(newval, oldval) {

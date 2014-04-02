@@ -546,11 +546,12 @@ body .text-primary {
 
 .msgview_bottom .attachment-text {
 	max-height: 77px;
-	line-height: 15px;
+	line-height: 12px;
 	padding-right: 2px;
 	margin-left: 50px;
+	font-size: 11px;
 	overflow: hidden;
-	margin-bottom: 13px;
+	margin-bottom: 7px;
 }
 
 .msgview_bottom .attachment-line-break {
@@ -1226,10 +1227,28 @@ body .text-primary {
 	height: 16px;
 }
 
+.attachment-filename {
+	font-weight: 800;
+}
+
+.attachment.pdf .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -205px;
+}
+
+.attachment.xls .attachment-img,
+.attachment.xlsx .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -167px;
+}
+
+.attachment.doc .attachment-img,
+.attachment.docx .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -243px;
+}
+
 .attachments .attachment {
 	background-color: #fff;
-	min-height: 60px;
-	padding: 7px 0px 10px;
+	min-height: 53px;
+	padding: 7px 0px 2px;
 }
 
 .attachments-minimal .attachments .attachment {
