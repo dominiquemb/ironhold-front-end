@@ -826,6 +826,14 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -49px -16px;
 }
 
+.close-button-gray {
+	background: url(../img/sprites/ImageSprite.png) -384px -18px;
+}
+
+.btn:hover .close-button-gray {
+	background: url(../img/sprites/ImageSprite.png) -384px -34px;
+}
+
 .attachment-img-xs {
 	background: url(../img/sprites/ImageSprite.png) -64px -3px;
 }
