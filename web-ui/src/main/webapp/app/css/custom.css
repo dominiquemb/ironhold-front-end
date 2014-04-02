@@ -927,7 +927,13 @@ body .text-primary {
 	margin-top: 12px;
 }
 
+.name {
+	font-family: 'Roboto Condensed';
+	font-size: 16px;
+}
+
 .name .caret-blue-down {
+	margin-right: 6px;
 	margin-top: 14px;
 }
 
@@ -1348,23 +1354,25 @@ body ul {
 }
 
 .jspArrowUp {
+	background: url(../img/sprites/ImageSprite.png) -81px -48px !important;
+}
+
+.jspArrowUp.disabled {
 	background: url(../img/sprites/ImageSprite.png) -81px -32px !important;
 }
 
-.jspArrowUp:hover {
-	background: url(../img/sprites/ImageSprite.png) -81px -48px !important;
-}
 
 .jspArrowDown {
 	bottom: 0px;
 	position: absolute;
 	width: 100%;
+	background: url(../img/sprites/ImageSprite.png) -65px -48px !important;
+}
+
+.jspArrowDown.disabled {
 	background: url(../img/sprites/ImageSprite.png) -65px -32px !important;
 }
 
-.jspArrowDown:hover {
-	background: url(../img/sprites/ImageSprite.png) -65px -48px !important;
-}
 
 /* results */
 .results {
@@ -1516,7 +1524,7 @@ body ul {
 
 .result .message-size {
 	line-height: 18px;
-	color: #333;
+	color: #666;
 	width: 41px;
 	font-size: 16px;
 	padding-top: 0px;
@@ -1710,22 +1718,13 @@ body ul {
 
 .filter-list .jspVerticalBar,
 .filter-list .jspHorizontalBar {
+	  visibility: hidden;
 	  background: #dedede !important;
+}
 
-	  /* IE 8 */
-	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-
-	  /* IE 5-7 */
-	  filter: alpha(opacity=0);
-
-	  /* Netscape */
-	  -moz-opacity: 0;
-
-	  /* Safari 1.x */
-	  -khtml-opacity: 0;
-
-	  /* Good browsers */
-	  opacity: 0;
+.filter-list:hover .jspVerticalBar,
+.filter-list:hover .jspHorizontalBar {
+	visibility: visible;
 }
 
 .filter-list .jspContainer {
@@ -2023,7 +2022,7 @@ body ul {
 }
 
 .gray-dark {
-	color: #666;
+	color: #333;
 }
 
 .blue-hilite {
