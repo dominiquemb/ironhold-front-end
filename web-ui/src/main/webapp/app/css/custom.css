@@ -694,7 +694,7 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -448px 0px;
 }
 
-.download-lg:hover {
+.controlbar_item:hover .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px -32px;
 }
 
