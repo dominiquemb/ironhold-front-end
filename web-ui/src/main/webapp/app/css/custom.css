@@ -36,6 +36,14 @@ body .text-primary {
 	color: #2e68b1;
 }
 
+body pre {
+	background-color: transparent;
+	border: 0px;
+	border-radius: 0px;
+	margin: 0px;
+	padding: 0px;
+}	
+
 .shortcut {
 	text-decoration: underline;
 }
@@ -201,7 +209,7 @@ body .text-primary {
 .form-search .input-group .search-input {
 	color: #2e68b1;
 	font-size: 14px;
-	height: 18px;
+	height: 20px;
 	padding: 0px;
 	margin: 0px;
 	padding: 1px 0px 0px 10px;
