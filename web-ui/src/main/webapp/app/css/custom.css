@@ -1208,12 +1208,122 @@ body pre {
 	background:url(../img/sprites/ImageSprite.png) -760px -205px;
 }
 
+.attachment.ppt .attachment-img,
+.attachment.pot .attachment-img,
+.attachment.pps .attachment-img,
+.attachment.pptx .attachment-img,
+.attachment.pptm .attachment-img,
+.attachment.potx .attachment-img,
+.attachment.potm .attachment-img,
+.attachment.ppam .attachment-img,
+.attachment.ppsx .attachment-img,
+.attachment.ppsm .attachment-img,
+.attachment.sldx .attachment-img,
+.attachment.sldm .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -281px;
+}
+
+.attachment.vdx .attachment-img,
+.attachment.vsd .attachment-img,
+.attachment.vsl .attachment-img,
+.attachment.vss .attachment-img,
+.attachment.vst .attachment-img,
+.attachment.vsu .attachment-img,
+.attachment.vsw .attachment-img,
+.attachment.vsx .attachment-img,
+.attachment.vtx .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -319px;
+}
+
+.attachment.pub .attachment-img,
+.attachment.mpp .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -357px;
+}
+
+.attachment.adn .attachment-img,
+.attachment.accdb .attachment-img,
+.attachment.accdr .attachment-img,
+.attachment.accdt .attachment-img,
+.attachment.mdb .attachment-img,
+.attachment.mdn .attachment-img,
+.attachment.mdf .attachment-img,
+.attachment.accde .attachment-img,
+.attachment.ldb .attachment-img,
+.attachment.laccdb .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -395px;
+}
+
+.attachment.png .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -563px;
+}
+
+.attachment.jpg .attachment-img,
+.attachment.jpeg .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -471px;
+}
+
+.attachment.gif .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -509px;
+}
+
+.attachment.gsm .attachment-img,
+.attachment.wav .attachment-img,
+.attachment.mp3 .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -623px;
+}
+
+.attachment.eml .attachment-img,
+.attachment.msg .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -661px;
+}
+
+.attachment.mov .attachment-img,
+.attachment.mp4 .attachment-img,
+.attachment.mpeg .attachment-img,
+.attachment.avi .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -699px;
+}
+
+.attachment.zip .attachment-img,
+.attachment.rar .attachment-img,
+.attachment.cab .attachment-img,
+.attachment.arj .attachment-img,
+.attachment.lzh .attachment-img,
+.attachment.tar .attachment-img,
+.attachment.gz .attachment-img,
+.attachment.bz2 .attachment-img,
+.attachment.ace .attachment-img,
+.attachment.jar .attachment-img,
+.attachment.ext-7z .attachment-img,
+.attachment.xz .attachment-img,
+.attachment.ext-z .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -433px;
+}
+
+.attachment.tif .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -777px -585px;
+}
+
 .attachment.xls .attachment-img,
+.attachment.xlt .attachment-img,
+.attachment.xlm .attachment-img,
+.attachment.xlsm .attachment-img,
+.attachment.xltx .attachment-img,
+.attachment.xltm .attachment-img,
+.attachment.xlsb .attachment-img,
+.attachment.xla .attachment-img,
+.attachment.xlam .attachment-img,
+.attachment.xll .attachment-img,
+.attachment.xlw .attachment-img,
 .attachment.xlsx .attachment-img {
 	background:url(../img/sprites/ImageSprite.png) -760px -167px;
 }
 
 .attachment.doc .attachment-img,
+.attachment.dot .attachment-img,
+.attachment.docm .attachment-img,
+.attachment.dotx .attachment-img,
+.attachment.dotm .attachment-img,
 .attachment.docx .attachment-img {
 	background:url(../img/sprites/ImageSprite.png) -760px -243px;
 }
