@@ -12,7 +12,7 @@
                     </div>
                     <div class="col-xs-10 attachment-text">
                                     <span class="text-primary attachment-title">
-                    <a data-ng-click="downloadAttachment(attachment)" title="{{ attachment.size | number }} bytes"><span class="attachment-filename">{{ attachment.fileName }}</span> <span class="attachment-size">({{ attachment.size | bytes }})</span></a> - 
+                    <a data-ng-click="downloadAttachment(attachment)"><span title="{{ attachment.size | number }} bytes" class="attachment-filename">{{ attachment.fileName }}</span> <span class="attachment-size">({{ attachment.size | bytes }})</span></a> - 
                                     </span>
                                     <span class="attachment-body gray-medium truncate" trunc-text="{{ attachment.body }}"
                                           trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
