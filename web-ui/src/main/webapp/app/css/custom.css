@@ -697,13 +697,6 @@ body pre {
 	background-color: gray;
 }
 
-.question-mark {
-	margin-top: 10px;
-	width: 16px;
-	height: 14px;
-	background: url(../img/sprites/msgview_icons.png) -4px -82px;
-}
-
 .user-photo {
 	background: url(../img/sprites/ImageSprite.png) -702px 0px;
 }
@@ -714,10 +707,6 @@ body pre {
 
 .controlbar_item:hover .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px -32px;
-}
-
-.flag-lg {
-	background: url(../img/sprites/msgview_icons.png) 0px 0px;
 }
 
 .flag-yellow-lg {
@@ -742,30 +731,6 @@ body pre {
 
 .folder-checkmark-lg {
 	background: url(../img/sprites/ImageSprite.png) -192px 0px;
-}
-
-.forward-lg {
-	background: url(../img/sprites/msgview_icons.png) -32px 0px;
-}
-
-.archive-lg {
-	background: url(../img/sprites/msgview_icons.png) 0px -32px;
-}
-
-.tiles-lg {
-	background: url(../img/sprites/msgview_icons.png) -30px -32px;
-}
-
-.cal-invite-sm {
-	background: url(../img/sprites/msgview_icons.png) -27px -66px;
-}
-
-.cal-phone-sm {
-	background: url(../img/sprites/msgview_icons.png) -2px -66px;
-}
-
-.im-sm {
-	background: url(../img/sprites/msgview_icons.png) -47px -66px;
 }
 
 .lock-purple-sm {
@@ -818,10 +783,6 @@ body pre {
 .result .checkmark:hover .checkmark-icon,
 .result .checkmark:hover .checkmark-icon {
 	background: url(../img/sprites/ImageSprite.png) -113px -17px;
-}
-
-.dots-icon {
-	background: url(../img/sprites/email_icons.png) -30px -15px;
 }
 
 .magnifying-glass {
@@ -883,25 +844,6 @@ body pre {
 	background: url(../img/sprites/ImageSprite.png) -431px 4px;
 	width: 17px;
 	height: 20px;
-}
-
-/* btn */
-.btn-group-ironhold .btn-left {
-	background: url(../img/sprites/btn-group.png) 0px 0px;
-	width: 75px;
-	height: 34px;
-}
-
-.btn-group-ironhold .btn-middle {
-	background: url(../img/sprites/btn-group.png) -74px 0px;
-	width: 74px;
-	height: 34px;
-}
-
-.btn-group-ironhold .btn-right {
-	background: url(../img/sprites/btn-group.png) -147px 0px;
-	width: 75px;
-	height: 34px;
 }
 
 /* table */
@@ -1388,22 +1330,6 @@ body ul {
 
 .jspArrow {
 	border: 1px solid #cbcbcb;
-}
-
-.jspArrowLeft {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 0px 0px !important;
-}
-
-.jspArrowLeft:hover {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 16px 0px !important;
-}
-
-.jspArrowRight {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 0px 16px !important;
-}
-
-.jspArrowRight:hover {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 16px 16px !important;
 }
 
 .jspArrowUp {
