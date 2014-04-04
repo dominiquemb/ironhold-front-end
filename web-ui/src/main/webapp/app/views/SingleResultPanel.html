@@ -20,6 +20,9 @@
 		<div data-ng-hide="limitedTabs" id="msgview" class="tab-pane in active">
 			<div class="row controlbar">
 			</div>
+			<div class="msgview_main" data-ng-show="!currentMessage && showContainer">
+				Please select a message on the left.
+			</div>
 			<div class="msgview_main" data-ng-show="currentMessage">
 			    <div class="row msgview_top">
 				<div class="pull-left from-picture-container">
