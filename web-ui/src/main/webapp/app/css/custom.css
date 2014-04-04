@@ -67,7 +67,10 @@ body pre {
 	background-color: #fdd8d5;
 	color: #880c03;
 	margin: 2px;
-	padding: 0px 5px 3px 5px;
+	padding: 3px 5px 3px 5px;
+	position: absolute;
+	left: 0px;
+	right: 0px;
 }
 
 .main-ui-view {
@@ -634,6 +637,12 @@ body pre {
 	background: url(../img/sprites/ImageSprite.png) -352px -31px;
 }
 
+.error-xs {
+	background: url(../img/sprites/ImageSprite.png) -368px -32px;
+	height: 16px !important;
+	width: 16px !important;
+}
+
 .caret-blue-down {
 	background: url(../img/sprites/ImageSprite.png) -352px -53px;
 }
@@ -829,6 +838,15 @@ body pre {
 	width: 15px;
 	height: 15px;
 	display: block;
+}
+
+.errors .close-button-gray {
+	margin-top: 4px;
+}
+
+.errors .error-xs {
+	margin-right: 5px;
+	margin-top: 1px;
 }
 
 .close-button-blue {

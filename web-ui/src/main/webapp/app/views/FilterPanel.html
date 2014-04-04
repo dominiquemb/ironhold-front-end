@@ -10,8 +10,9 @@
 </div>
 <div class="errors">
 	<div class="error-item" data-ng-repeat="error in errors track by $index">
-		<span class="pull-left img-xs error-icon"></span>
-		<span>{{ error }}</span>
+		<div class="pull-left img-xs error-xs"></div>
+		<span>{{ error.message }}</span>
+		<div class="pull-right img-xs close-button-gray" data-ng-click="clearError(error.id)"></div>
 	</div>
 </div>
 <div class="filter-tag-container" ng-show="selectedFilters.length > 0">

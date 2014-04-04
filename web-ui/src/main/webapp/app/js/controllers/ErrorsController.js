@@ -14,8 +14,11 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     });
 
     $rootScope.$on('error', function(evt, msg) {
-	$scope.errors.push(msg);
-	var id = $scope.errors.length - 1;
+	var id = $scope.errors.length;
+	$scope.errors.push({
+		id: id,
+		message: msg
+	});
 	
 	setTimeout(function() {
 		$scope.clearError(id);
@@ -31,7 +34,11 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     }
 
     $rootScope.$on('warning', function(evt, msg) {
-	$scope.warnings.push(msg);
+	var id = $scope.warnings.length;
+	$scope.warnings.push({
+		id: id,
+		message: msg
+	});
 
 	setTimeout(function() {
 		$scope.clearWarning(id);
