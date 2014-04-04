@@ -63,11 +63,15 @@ body pre {
 }
 
 /* errors */
+.errors {
+	height: 20px;
+}
+
 .error-item {
 	background-color: #fdd8d5;
 	color: #880c03;
 	margin: 2px;
-	padding: 3px 5px 3px 5px;
+	padding: 1px 5px 0px 5px;
 	position: absolute;
 	left: 0px;
 	right: 0px;
@@ -557,6 +561,7 @@ body pre {
 
 .msgview_bottom .attachment-text {
 	max-height: 77px;
+	min-height: 28px;
 	line-height: 12px;
 	padding-right: 2px;
 	margin-left: 50px;

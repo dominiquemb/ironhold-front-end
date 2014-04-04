@@ -1,4 +1,4 @@
-<div data-ng-show="showSuggestions && (selectedFilters.length == 0)" class="suggestions">
+<div data-ng-show="showSuggestions && (selectedFilters.length == 0) && (warnings.length == 0) && (errors.length == 0)" class="suggestions">
 	Did you mean:
 	<span data-ng-repeat="suggestion in suggestions">
 		<span data-ng-repeat="option in suggestion.options">
@@ -8,11 +8,11 @@
 		</span>
 	</span>
 </div>
-<div class="errors">
+<div class="errors" data-ng-show="errors.length > 0">
 	<div class="error-item" data-ng-repeat="error in errors track by $index">
 		<div class="pull-left img-xs error-xs"></div>
 		<span>{{ error.message }}</span>
-		<div class="pull-right img-xs close-button-gray" data-ng-click="clearError(error.id)"></div>
+		<div class="clickable pull-right img-xs close-button-gray" data-ng-click="clearError(error.id)"></div>
 	</div>
 </div>
 <div class="filter-tag-container" ng-show="selectedFilters.length > 0">
