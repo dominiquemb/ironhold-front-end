@@ -73,12 +73,11 @@
 					<span class="dropdown-title">Body:</span>
 				</span>
 				<span class="widget-body">
-					<div class="widget-body-inner">
-						<div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true"></div>
-<!--						<div class="widget-main gray-medium" data-ng-bind-html="message.bodyWithHighlights">
+					<span class="widget-body-inner">
+						<span data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true"></span>
+<!--						<div class="widget-main gray-medium" data-ng-bind-html="message.bodyWithHighlights"></div>
 -->
-						</div>
-			    		</div>
+			    		</span>
 				</span>
 			    </div>
 			    <div class="attachment-preview preview widget-box widget-box-simple result-attachment" data-ng-show="hasAttachment(message)">

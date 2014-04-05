@@ -134,15 +134,13 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.$emit('modeRequest', {
 			mode: 'sources',
 			date: curDate,
-			messageId: msgId,
-			criteria: {'criteria': $scope.inputSearch}
+			messageId: msgId
 		});
 
 		$scope.$emit('modeRequest', {
 			mode: 'audit',
 			date: curDate,
-			messageId: msgId,
-			criteria: {'criteria': $scope.inputSearch}
+			messageId: msgId
 		});
     }
 	

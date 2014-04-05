@@ -10,11 +10,13 @@
 		</div>
 		<table class="table table-striped table-hover">
 			<thead>
-				<th>Timestamp</th>
-				<th>Hostname</th>
-				<th>PST File</th>
-				<th>Folder</th>
-				<th>PST File Size</th>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Hostname</th>
+                    <th>PST File</th>
+                    <th>Folder</th>
+                    <th>PST File Size</th>
+                </tr>
 			</thead>
 			<tbody>
 				<tr data-ng-repeat="source in modeData.sources">
@@ -30,20 +32,28 @@
 		<div>
 			Audit Log
 		</div>
-		<table class="table table-striped table-hover" daa-ng-repeat="audit in modeData.audit">
+		<table class="table table-striped table-hover" data-ng-repeat="audit in modeData.audit">
 			<thead>
-				<th>Timestamp</th>
-				<th>Entry</th>
+                <tr>
+    				<th>Timestamp</th>
+    				<th>Host</th>
+    				<th>User</th>
+    				<th>Action</th>
+    				<th>Entry</th>
+                </tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th> </th>
-					<th> </th>
+					<th> {{ audit.timestamp }} </th>
+					<th> {{ audit.host }} </th>
+					<th> {{ audit.loginUser.username }} </th>
+					<th> {{ audit.action }} </th>
+					<th> {{ audit.context }} </th>
 				</tr>
 			</tbody>
 		</table>
-	
-		</div> <!-- pull-right -->
+
+            </div> <!-- pull-right -->
 
         </div>
         <!-- .scrollable-content -->
