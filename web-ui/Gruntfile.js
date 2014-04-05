@@ -51,8 +51,8 @@ module.exports = function(grunt) {
       gruntfile: {
         src: 'Gruntfile.js'
       },
-      lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
+      all: {
+        src: ['src/main/webapp/app/js/app.js','src/main/webapp/app/js/**/*.js']
       }
     },
     qunit: {
@@ -75,7 +75,7 @@ module.exports = function(grunt) {
 		],
 		reportpath: null,
 		tmplext: 'html',
-		customtags: [
+		customattrs: [
 		    'tooltip',
 		    'tooltip-animation',
 		    'trunc-text',

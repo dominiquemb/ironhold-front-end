@@ -4,7 +4,7 @@
 	<table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
 	    <tbody>
 	    <tr>
-		<td colspan="5">
+		<td>
 		    <div class="message-first-line">
 			    <span class="message-icons pull-left">
 				    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
@@ -84,21 +84,21 @@
 					<span class="pull-left">
 						<span class="dropdown-title">Attachment:</span>
 					</span>
-					<span class="widget-body">
+					<div class="widget-body">
 						<div class="widget-body-inner">
 <!--							<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true">
 -->
 							<div class="widget-main gray-medium" data-ng-bind-html="message.attachmentWithHighlights">
 							</div>
 						</div>
-					</span>
+					</div>
 				</div>
 			</div>
 		</td>
-		<td rowspan="4" class="message-flag">
+		<td class="message-flag">
 		    <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
 		</td>
-		<td rowspan="4" class="checkmark" data-ng-click="highlightMessage($event, message)">
+		<td class="checkmark" data-ng-click="highlightMessage($event, message)">
 		    <i class="img-xs checkmark-icon"></i>
 		</td>
 	    </tr>
