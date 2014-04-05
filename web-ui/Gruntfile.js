@@ -22,13 +22,34 @@ module.exports = function(grunt) {
       }
     },
     uglify: {
-      options: {
-        banner: '<%= banner %>'
-      },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
-      }
+        options: {
+          mangle: false
+        },
+        my_target: {
+          files: {
+            'src/main/webapp/app/js/app.js':['src/main/webapp/app/js/app.js'],
+            'src/main/webapp/app/js/directives/GlobalDirectives.js':['src/main/webapp/app/js/directives/GlobalDirectives.js'],
+            'src/main/webapp/app/js/controllers/BodyController.js':['src/main/webapp/app/js/controllers/BodyController.js'],
+            'src/main/webapp/app/js/controllers/DiscoveryController.js':['src/main/webapp/app/js/controllers/DiscoveryController.js'],
+            'src/main/webapp/app/js/controllers/ErrorsController.js':['src/main/webapp/app/js/controllers/ErrorsController.js'],
+            'src/main/webapp/app/js/controllers/FacetController.js':['src/main/webapp/app/js/controllers/FacetController.js'],
+            'src/main/webapp/app/js/controllers/FilterController.js':['src/main/webapp/app/js/controllers/FilterController.js'],
+            'src/main/webapp/app/js/controllers/FoldersController.js':['src/main/webapp/app/js/controllers/FoldersController.js'],
+            'src/main/webapp/app/js/controllers/FooterController.js':['src/main/webapp/app/js/controllers/FooterController.js'],
+            'src/main/webapp/app/js/controllers/LoginController.js':['src/main/webapp/app/js/controllers/LoginController.js'],
+            'src/main/webapp/app/js/controllers/LogsController.js':['src/main/webapp/app/js/controllers/LogsController.js'],
+            'src/main/webapp/app/js/controllers/MessageSearchController.js':['src/main/webapp/app/js/controllers/MessageSearchController.js'],
+            'src/main/webapp/app/js/controllers/MultipleResultDisplayController.js':['src/main/webapp/app/js/controllers/MultipleResultDisplayController.js'],
+            'src/main/webapp/app/js/controllers/PaginationController.js':['src/main/webapp/app/js/controllers/PaginationController.js'],
+            'src/main/webapp/app/js/controllers/SearchbarController.js':['src/main/webapp/app/js/controllers/SearchbarController.js'],
+            'src/main/webapp/app/js/controllers/SearchController.js':['src/main/webapp/app/js/controllers/SearchController.js'],
+            'src/main/webapp/app/js/controllers/SettingsController.js':['src/main/webapp/app/js/controllers/SettingsController.js'],
+            'src/main/webapp/app/js/controllers/SingleResultDisplayController.js':['src/main/webapp/app/js/controllers/SingleResultDisplayController.js'],
+            'src/main/webapp/app/js/controllers/TabController.js':['src/main/webapp/app/js/controllers/TabController.js'],
+            'src/main/webapp/app/js/controllers/UserActionsController.js':['src/main/webapp/app/js/controllers/UserActionsController.js'],
+            'src/main/webapp/app/js/controllers/UsersController.js':['src/main/webapp/app/js/controllers/UsersController.js']
+          }
+        }
     },
     jshint: {
       options: {
