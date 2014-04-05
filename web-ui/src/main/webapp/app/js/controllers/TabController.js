@@ -10,6 +10,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     window.onresize = function(){
         if ($scope.scrollbars) {
                 $scope.reinitScrollbars();
+		$scope.$emit('pageResized');
                 $scope.$apply();
         }
     }

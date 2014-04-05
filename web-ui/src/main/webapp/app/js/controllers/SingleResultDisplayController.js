@@ -20,6 +20,17 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     }
 
     $scope.$watch(function() {
+	return Math.round($('.msgview_middle').offset().top) + $('.msgview_bottom').height() + 185;
+	},
+	function(newval) {
+		if (newval > $('body').height()) {
+			$('.wrapper').css('min-height', newval);
+		}
+     });
+			
+		
+
+    $scope.$watch(function() {
 		return $('.sub-tab-content-inner').text();
 	}, function(newval, oldval) {
 		if (newval != oldval) {
@@ -30,25 +41,31 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
      });
 
     $scope.$watch(function() {
-                if ($('.msgview_bottom').length > 0) {
-                        return $('.msgview_bottom').height();
-                }
-                else return null;
+		return $('.msgview_bottom').height();
         },
         function(newval, oldval) {
 		if ($scope.activeTab === $scope.tabName) {
-			if (newval != null) {
-				var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_main').outerHeight(true);
+			$scope.adjustMiddleSection();
+		}
+     });
 
-				$('.msgview_middle').height(
-					msgviewHeight - $('.msgview_bottom').outerHeight(true)
-				);
+    $rootScope.$on('pageResized', function() {
+	$scope.adjustMiddleSection();
+    });
 
-				$scope.$emit('reinitScrollbars');
-			}
+    $scope.adjustMiddleSection = function() {
+		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true);
+
+		if ($('.msgview_bottom').height() == null) {
+			msgviewHeight -= 5;
 		}
 
-     });
+		$('.msgview_middle').height(
+			msgviewHeight - $('.msgview_bottom').outerHeight(true)
+		);
+
+		$scope.$emit('reinitScrollbars');
+    }
 
     $rootScope.$on('highlightActive', function(evt, offOrOn) {
 	if ($scope.activeTab === $scope.tabName) {

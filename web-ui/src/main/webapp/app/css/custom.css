@@ -369,7 +369,7 @@ body pre {
 	position: absolute;
 	right: 0px;	
 	left: 0px;
-	bottom: -9px;
+	bottom: 0px;
 }
 
 .msgview .placeholder_text {
@@ -461,13 +461,14 @@ body pre {
 .msgview .label-content.from {
 	font-size: 16px;
 	color: #999;
-	padding-top: 4px;
+	padding-top: 0px;
 	font-weight: 700;
 	font-family: 'Roboto Condensed';
 }
 
 .msgview_top {
 	margin: 0px 0px;
+	margin-bottom: 18px;
 }
 
 .msgview_top .from-picture-container {
@@ -476,7 +477,6 @@ body pre {
 }
 
 .msgview_top .header-container {
-	height: 36px;
 	margin-bottom: 11px;
 	width: 100%;
 	padding-left: 50px;
@@ -487,9 +487,7 @@ body pre {
 	font-family: 'Roboto Condensed';
 	font-size: 16px;
 	line-height: 19px;
-	height: 19px;
 	font-weight: 700;
-	overflow: hidden;
 }
 
 .msgview_date {
@@ -526,7 +524,7 @@ body pre {
 	border-top: 1px solid #ccc;
 	position: absolute;
 	height: auto;
-	bottom: 12px;
+	bottom: 3px;
 	width: 100%;
 }
 
@@ -535,7 +533,7 @@ body pre {
 }
 
 .msgview_bottom .jspVerticalBar {
-	right: 13px;
+	right: 16px;
 	bottom: 3px;
 	height: auto;
 	top: 0px;
@@ -580,11 +578,7 @@ body pre {
 }
 
 .msgview_middle {
-	position: absolute;
-	bottom: 12px;
-	left: 12px;
-	right: 11px;
-	top: 128px;
+	position: relative;
 	margin: 0px 0px;
 	width: auto !important;
 }
@@ -605,7 +599,6 @@ body pre {
 }
 
 .msgview_middle .message-body-container {
-	margin-top: 18px;
 	width: 100%;
 	padding-left: 54px;
 	padding-right: 27px;
