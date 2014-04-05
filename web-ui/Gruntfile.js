@@ -25,7 +25,7 @@ module.exports = function(grunt) {
         options: {
           mangle: false
         },
-        my_target: {
+        all: {
           files: {
             'src/main/webapp/app/js/app.js':['src/main/webapp/app/js/app.js'],
             'src/main/webapp/app/js/directives/GlobalDirectives.js':['src/main/webapp/app/js/directives/GlobalDirectives.js'],
@@ -50,6 +50,22 @@ module.exports = function(grunt) {
             'src/main/webapp/app/js/controllers/UsersController.js':['src/main/webapp/app/js/controllers/UsersController.js']
           }
         }
+    },
+    cssmin: {
+      all: {
+        files: {
+          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
+          'src/main/webapp/app/css/login.css': ['src/main/webapp/app/css/login.css'],
+          'src/main/webapp/app/css/custom.css': ['src/main/webapp/app/css/custom.css'],
+          'src/main/webapp/app/css/jquery.splitter.css': ['src/main/webapp/app/css/jquery.splitter.css'],
+          'src/main/webapp/app/css/font-awesome.css': ['src/main/webapp/app/css/font-awesome.css'],
+          'src/main/webapp/app/css/jscrollpane/jquery.jscrollpane.css': ['src/main/webapp/app/css/jscrollpane/jquery.jscrollpane.css'],
+          'src/main/webapp/app/css/ace-fonts.css': ['src/main/webapp/app/css/ace-fonts.css'],
+          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
+          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
+          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
+        }
+      }
     },
     jshint: {
       options: {
@@ -116,6 +132,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-html-angular-validate');
 
   // Default task.
