@@ -60,10 +60,7 @@ module.exports = function(grunt) {
           'src/main/webapp/app/css/jquery.splitter.css': ['src/main/webapp/app/css/jquery.splitter.css'],
           'src/main/webapp/app/css/font-awesome.css': ['src/main/webapp/app/css/font-awesome.css'],
           'src/main/webapp/app/css/jscrollpane/jquery.jscrollpane.css': ['src/main/webapp/app/css/jscrollpane/jquery.jscrollpane.css'],
-          'src/main/webapp/app/css/ace-fonts.css': ['src/main/webapp/app/css/ace-fonts.css'],
-          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
-          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
-          'src/main/webapp/app/css/roboto.css': ['src/main/webapp/app/css/roboto.css'],
+          'src/main/webapp/app/css/ace-fonts.css': ['src/main/webapp/app/css/ace-fonts.css']
         }
       }
     },
