@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+   'use strict';
 
 ironholdApp.controller('UserActionsController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
@@ -13,3 +14,6 @@ ironholdApp.controller('UserActionsController', function ($http, $resource, $win
 	logInService.logOut();
     };
 });
+
+
+}());

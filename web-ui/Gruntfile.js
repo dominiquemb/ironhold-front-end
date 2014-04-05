@@ -46,7 +46,8 @@ module.exports = function(grunt) {
         browser: true,
         globals: {
           jQuery: true
-        }
+        },
+        predef: ["angular","alert","ironholdApp","$","console"]
       },
       gruntfile: {
         src: 'Gruntfile.js'
@@ -97,6 +98,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-html-angular-validate');
 
   // Default task.
-  grunt.registerTask('default', ['htmlangular','jshint', 'qunit', 'concat', 'uglify']);
+  grunt.registerTask('default', ['htmlangular','jshint']);
 
 };

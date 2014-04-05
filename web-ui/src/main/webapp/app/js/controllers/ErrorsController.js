@@ -1,6 +1,7 @@
-'use strict';
+(function () {
+   'use strict';
 
-ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state) {
+ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope) {
     $scope.showErrors = false;
     $scope.showWarnings = false;
     $scope.errors = [];
@@ -26,12 +27,12 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     });
 
     $scope.clearError = function(id) {
-	$scope.errors.splice(id, 1);
-    }
+	    $scope.errors.splice(id, 1);
+    };
 
     $scope.clearWarning = function(id) {
-	$scope.warnings.splice(id, 1);
-    }
+	    $scope.warnings.splice(id, 1);
+    };
 
     $rootScope.$on('warning', function(evt, msg) {
 	var id = $scope.warnings.length;
@@ -45,3 +46,6 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 	}, 2000);
     });
 });
+
+
+}());

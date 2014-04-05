@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+   'use strict';
 
 ironholdApp.controller('SingleResultDisplayController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
@@ -11,13 +12,13 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.limitedTabs = false;
 
     $scope.getFileType = function(name) {
-	var ext = name.split('.');
-	ext = ext[ext.length-1];
-	if (!(parseInt(ext[0]) === "NaN" || ext.length > 1)) {
-		ext = "ext-" + ext;
-	}
-	return ext;
-    }
+	    var ext = name.split('.');
+	    ext = ext[ext.length-1];
+	    if (!(parseInt(ext[0]) === "NaN" || ext.length > 1)) {
+    		ext = "ext-" + ext;
+    	}
+       	return ext;
+    };
 
     $scope.$watch(function() {
 	return Math.round($('.msgview_middle').offset().top) + $('.msgview_bottom').height() + 185;
@@ -33,7 +34,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.$watch(function() {
 		return $('.sub-tab-content-inner').text();
 	}, function(newval, oldval) {
-		if (newval != oldval) {
+		if (newval !== oldval) {
 			if ($scope.activeTab === $scope.tabName) {
 				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
 			}
@@ -44,9 +45,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		return $('.msgview_bottom').height();
         },
         function(newval, oldval) {
-		if ($scope.activeTab === $scope.tabName) {
-			$scope.adjustMiddleSection();
-		}
+            /*jshint unused:false */
+		    if ($scope.activeTab === $scope.tabName) {
+    			$scope.adjustMiddleSection();
+    		}
      });
 
     $rootScope.$on('pageResized', function() {
@@ -65,7 +67,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		);
 
 		$scope.$emit('reinitScrollbars');
-    }
+    };
 
     $rootScope.$on('highlightActive', function(evt, offOrOn) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -74,24 +76,24 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
     $scope.isModeActive = function(mode) {
-	if ($scope.activeTab === $scope.tabName) {
-		return $scope.mode === mode;
-	}
-    }
+        if ($scope.activeTab === $scope.tabName) {
+            return $scope.mode === mode;
+        }
+    };
 
     $scope.downloadMessage = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$scope.$emit('downloadMessage', $scope.currentMessage);
-	}
-    }
+        if ($scope.activeTab === $scope.tabName) {
+            $scope.$emit('downloadMessage', $scope.currentMessage);
+        }
+    };
 
     $scope.downloadAttachment = function(attachment) {
-	if ($scope.activeTab === $scope.tabName) {
-		$scope.$emit('downloadAttachment', {
-			message: $scope.currentMessage,
-			attachment: attachment
-		});
-	}
+        if ($scope.activeTab === $scope.tabName) {
+            $scope.$emit('downloadAttachment', {
+                message: $scope.currentMessage,
+                attachment: attachment
+            });
+        }
     };	
 
     $rootScope.$on('reset', function() {
@@ -108,12 +110,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
-		console.log("Processed " + results.mode);
-	/*	setTimeout(function() {
+		setTimeout(function() {
 					$('.msgview_bottom').height( $('.msgview_bottom').height() + 'px' );
 					$('.msgview_bottom .jspVerticalBar').css('visibility', 'visible');
 					$scope.$emit('initCustomScrollbars', '.msgview_bottom');
-				}, 200);*/
+				}, 200);
 
 	}
     });
@@ -125,7 +126,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			messageId: $scope.currentMessage.formattedIndexedMailMessage.messageId,
 			criteria: {'criteria': $scope.inputSearch}
 		});
-    }
+    };
 
     $scope.auditTab = function() {
 		var curDate = new Date($scope.currentMessage.formattedIndexedMailMessage.messageDate),
@@ -142,7 +143,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			date: curDate,
 			messageId: msgId
 		});
-    }
+    };
 	
 
     $scope.requestSubTabData = function(mode) {
@@ -161,7 +162,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 				criteria: {'criteria': $scope.inputSearch}
 			});
 		}
-    }
+    };
 
     $rootScope.$on('mode', function(evt, mode) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -175,7 +176,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.mode = newMode;
 		$scope.$emit('mode', newMode);
 	}
-    }
+    };
 
     $rootScope.$on('selectMessage', function(evt, message) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -192,3 +193,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
 });
+
+
+}());

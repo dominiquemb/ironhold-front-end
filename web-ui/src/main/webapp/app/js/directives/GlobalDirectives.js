@@ -1,4 +1,6 @@
-'use strict';
+(function () {
+   'use strict';
+
 
 ironholdApp.directive('resultsFeed', function() {
         return {
@@ -6,7 +8,7 @@ ironholdApp.directive('resultsFeed', function() {
                 restrict: 'ACE',
                 controller: 'MultipleResultDisplayController',
                 templateUrl: 'views/MultipleResultPanel.html'
-        }
+        };
 });
 
 ironholdApp.directive('clearForm', function() {
@@ -15,6 +17,7 @@ ironholdApp.directive('clearForm', function() {
                },
                restrict: 'ACE',
                link: function(scope, elem, attrs) {
+                    /*jshint unused:false*/
                        scope.$watch(function() {
                                return $(elem).find('.clear-form-input').val().length;
                        }, function(length) {
@@ -28,7 +31,7 @@ ironholdApp.directive('clearForm', function() {
                                scope.$parent.$apply();
                        });
                }
-       }
+       };
 });
 
 
@@ -43,6 +46,7 @@ ironholdApp.directive('truncate', function() {
                 },
                 restrict: 'ACE',
                 link: function(scope, elem, attrs) {
+                        /*jshint unused:false*/
                         scope.$watch(
                         '[charPxlWidth, containerWidth, desiredHeight, trailingDots, text]',
                         function() {
@@ -67,7 +71,7 @@ ironholdApp.directive('truncate', function() {
                         },
                         true);
                 }
-        }
+        };
 });
 
 ironholdApp.directive('collapsible', function() {
@@ -80,17 +84,19 @@ ironholdApp.directive('collapsible', function() {
                 scope: true,
                 restrict: 'ACE',
                 link: function(scope, elem, attrs) {
+                        /*jshint unused:false*/
                         var arrow = $(elem).find('.collapse-trigger');
                         if ($(elem).hasClass('collapsed')) {
                                 arrow.addClass(scope.collapsedArrow);
+                        } else {
+                        arrow.addClass(scope.uncollapsedArrow);
                         }
-                        else arrow.addClass(scope.uncollapsedArrow);
                         arrow.on('click', function() {
                                 $(elem).toggleClass('collapsed');
                                 arrow.toggleClass(scope.collapsedArrow + ' ' + scope.uncollapsedArrow);
                         });
                 }
-        }
+        };
 });
 
 ironholdApp.directive('facetCollection', function() {
@@ -99,7 +105,7 @@ ironholdApp.directive('facetCollection', function() {
                 restrict: 'ACE',
                 controller: 'FacetController',
                 templateUrl: 'views/FacetPanel.html'
-        }
+        };
 });
 
 ironholdApp.directive('filterCollection', function() {
@@ -108,7 +114,7 @@ ironholdApp.directive('filterCollection', function() {
                 restrict: 'ACE',
                 controller: 'FilterController',
                 templateUrl: 'views/FilterPanel.html'
-        }
+        };
 });
 
 ironholdApp.directive('wireframe', function() {
@@ -116,14 +122,14 @@ ironholdApp.directive('wireframe', function() {
                 scope: true,
                 restrict: 'ACE',
                 templateUrl: 'views/Wireframe.html'
-        }
+        };
 });
 
 ironholdApp.directive('searchQuery', function() {
         return {
                 restrict: 'ACE',
                 templateUrl: 'views/Searchbar.html'
-        }
+        };
 });
 
 ironholdApp.directive('searchbar', function() {
@@ -132,7 +138,7 @@ ironholdApp.directive('searchbar', function() {
                 restrict: 'ACE',
                 controller: 'SearchbarController',
                 templateUrl: 'views/SearchbarPanel.html'
-        }
+        };
 });
 
 ironholdApp.directive('resultDetail', function() {
@@ -141,7 +147,7 @@ ironholdApp.directive('resultDetail', function() {
                 restrict: 'ACE',
                 controller: 'SingleResultDisplayController',
                 templateUrl: 'views/SingleResultPanel.html'
-        }
+        };
 });
 
 ironholdApp.directive('pagination', function() {
@@ -150,7 +156,7 @@ ironholdApp.directive('pagination', function() {
 		scope: true,
 		templateUrl: 'views/Pagination.html',
 		controller: 'PaginationController'
-	}
+	};
 });
 
 ironholdApp.directive('userActionsPanel', function() {
@@ -158,42 +164,42 @@ ironholdApp.directive('userActionsPanel', function() {
 		restrict: 'ACE',
 		templateUrl: 'views/UserActionsPanel.html',
 		controller: 'UserActionsController'
-	}
+	};
 });
 
 ironholdApp.directive('attachmentsView', function() {
 	return {
 		restrict: 'ACE',
 		templateUrl: 'views/PreviewTabs/AttachmentsView.html'
-	}
+	};
 });
 
 ironholdApp.directive('messageHeader', function() {
 	return {
 		restrict: 'ACE',
 		templateUrl: 'views/PreviewTabs/MessageHeader.html'
-	}
+	};
 });
 
 ironholdApp.directive('body', function() {
 	return {
 		restrict: "ACE",
 		controller: 'BodyController'
-	}
+	};
 });
 
 ironholdApp.directive('errors', function() {
 	return {
 		restrict: 'ACE',
 		controller: 'ErrorsController'
-	}
+	};
 });
 
 ironholdApp.directive('sortingPanel', function() {
 	return {
 		restrict: 'ACE',
 		templateUrl: 'views/SortingPanel.html',
-	}
+	};
 });
 
 ironholdApp.directive('footer', function() {
@@ -202,7 +208,7 @@ ironholdApp.directive('footer', function() {
 		scope: true,
 		templateUrl: 'views/Footer.html',
 		controller: 'FooterController'
-	}
+	};
 });
 
 ironholdApp.directive('searchTabContainer', function() {
@@ -210,7 +216,7 @@ ironholdApp.directive('searchTabContainer', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'SearchController'
-	}
+	};
 });
 
 ironholdApp.directive('messageSearchTab', function() {
@@ -218,14 +224,14 @@ ironholdApp.directive('messageSearchTab', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'MessageSearchController'
-	}
+	};
 });
 
 ironholdApp.directive('controlbar', function() {
 	return {
 		restrict: 'ACE',
 		templateUrl: 'views/PreviewTabs/Controlbar.html'
-	}
+	};
 });
 
 ironholdApp.directive('discoveryTabContainer', function() {
@@ -233,7 +239,7 @@ ironholdApp.directive('discoveryTabContainer', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'DiscoveryController'
-	}
+	};
 });
 
 ironholdApp.directive('foldersTabContainer', function() {
@@ -241,7 +247,7 @@ ironholdApp.directive('foldersTabContainer', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'FoldersController'
-	}
+	};
 });
 
 ironholdApp.directive('logsTabContainer', function() {
@@ -249,7 +255,7 @@ ironholdApp.directive('logsTabContainer', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'LogsController'
-	}
+	};
 });
 
 ironholdApp.directive('usersTabContainer', function() {
@@ -257,7 +263,7 @@ ironholdApp.directive('usersTabContainer', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'UsersController'
-	}
+	};
 });
 
 ironholdApp.directive('settingsTabContainer', function() {
@@ -265,6 +271,9 @@ ironholdApp.directive('settingsTabContainer', function() {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'SettingsController'
-	}
+	};
 });
 
+
+
+}());

@@ -1,4 +1,6 @@
-'use strict';
+(function () {
+   'use strict';
+
 var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular','ui.router','ivpusic.cookie'])
     .config(function ($stateProvider, $urlRouterProvider, RestangularProvider) {
         RestangularProvider.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}');
@@ -87,12 +89,12 @@ ironholdApp.config(function ($httpProvider) {
 ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 	var loggedIn = false;
 
-	var sessions = function() {
+	var Sessions = function() {
 		this.logOutCallbacks = [];
 		this.logInCallbacks = [];
 	};
 
-	sessions.prototype = {
+	Sessions.prototype = {
 		getClientKey: function() {
 			return (ipCookie('ironholdSession')) ? ipCookie('ironholdSession').clientKey : false;
 		},
@@ -125,8 +127,9 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 				}),
 				{expires: 99}
 			);
+
     			angular.forEach(this.logInCallbacks, function(callback, index) {
-				callback();
+    			callback(index);
 			});
 		},
 
@@ -135,7 +138,7 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 			ipCookie.remove('ironholdSession');
 			document.execCommand("ClearAuthenticationCache");
 			angular.forEach(this.logOutCallbacks, function(callback, index) {
-				callback();
+				callback(index);
 			});
 		},
 
@@ -153,7 +156,7 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 			return loggedIn;
 		}
 	};
-	return new sessions();
+	return new Sessions();
 });
 
 ironholdApp.factory('messagesService', function(Restangular, logInService) {
@@ -191,11 +194,11 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
         this.searchMatches = searchMatches;
         this.searchTime = searchTime;
         this.broadcastItem();
-    }
+    };
 
     sharedService.broadcastItem = function() {
         $rootScope.$broadcast('handleSearchResultsChange');
-    }
+    };
 
     return sharedService;
 });
@@ -268,10 +271,10 @@ ironholdApp.factory('Base64', function() {
 
                 output = output + String.fromCharCode(chr1);
 
-                if (enc3 != 64) {
+                if (enc3 !== 64) {
                     output = output + String.fromCharCode(chr2);
                 }
-                if (enc4 != 64) {
+                if (enc4 !== 64) {
                     output = output + String.fromCharCode(chr3);
                 }
 
@@ -287,12 +290,16 @@ ironholdApp.factory('Base64', function() {
 
 ironholdApp.filter('bytes', function() {
 	return function(bytes, precision) {
-		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-		if (typeof precision === 'undefined') precision = 1;
+		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
+		    return '-';
+		}
+		if (typeof precision === 'undefined') {
+		    precision = 1;
+        }
 		var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'],
 		number = Math.floor(Math.log(bytes) / Math.log(1024));
 		return Math.floor(bytes / Math.pow(1024, Math.floor(number)).toFixed(precision)) + ' ' + units[number];
-	}
+	};
 });
 
 ironholdApp.filter('to_trusted', ['$sce', function($sce){
@@ -304,7 +311,7 @@ ironholdApp.filter('to_trusted', ['$sce', function($sce){
 Date.prototype.getDayName = function() {
 	var d = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 	return d[this.getDay()];
-}
+};
 
 String.prototype.endsWith = function(suffix) {
     return this.toLowerCase().indexOf(suffix.toLowerCase(), this.length - suffix.length) !== -1;
@@ -312,10 +319,11 @@ String.prototype.endsWith = function(suffix) {
 
 
 String.prototype.plaintext = function(text) {
-	if (typeof text === "String") {
+	if (typeof text === "string") {
 		text.replace(/<(?:.|\n)*?>/gm, '');
+	} else {
+	    return false;
 	}
-	else return false;
 };
 
 Array.prototype.remove = function() {
@@ -328,3 +336,5 @@ Array.prototype.remove = function() {
     }
     return this;
 };
+
+}());

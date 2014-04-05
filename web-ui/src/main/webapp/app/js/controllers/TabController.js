@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+   'use strict';
 
 ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
@@ -13,11 +14,11 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 		$scope.$emit('pageResized');
                 $scope.$apply();
         }
-    }
+    };
 
     $scope.clickEvent = function() {
 	$scope.$emit('clickEvent');
-    }
+    };
 
     $rootScope.$on('pageChange', function(evt, info) {
         $scope.currentPage = info.page;
@@ -37,7 +38,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
                 $('.scrollbar-hidden').eq(key).data('jsp').reinitialise();
             } catch(err) {}
         });
-    }
+    };
 
     $rootScope.$on('initCustomScrollbars', function(evt, selector) {
 	$scope.initCustomScrollbars(selector);
@@ -52,7 +53,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
                         showArrows: true
                 });
         }, 0);
-    }
+    };
 
     $rootScope.$on('modeRequest', function(evt, data) {
 	if (data.mode === 'headers' || data.mode === 'body') {
@@ -110,14 +111,18 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 	else {
 	    return false;
 	}
-    }
+    };
 
     $scope.setActiveTab = function(tab) {
 	$scope.activeTab = tab;
     	$scope.$emit('activeTab', $scope.activeTab);
-    }
+    };
 
     $scope.isActiveTab = function(tab) {
-	return $scope.activeTab == tab;
-    }
+	return $scope.activeTab === tab;
+    };
 });
+
+
+
+}());
