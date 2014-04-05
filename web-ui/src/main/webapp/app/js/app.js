@@ -1,6 +1,5 @@
-(function () {
-   'use strict';
 
+/*jshint -W079 */
 var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular','ui.router','ivpusic.cookie'])
     .config(function ($stateProvider, $urlRouterProvider, RestangularProvider) {
         RestangularProvider.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}');
@@ -336,5 +335,3 @@ Array.prototype.remove = function() {
     }
     return this;
 };
-
-}());
