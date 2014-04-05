@@ -192,7 +192,6 @@ public class MessageController extends AbstractController {
 
         for (MessageMatch match : result.getMessages()) {
             match.optimize();
-
         }
 
         apiResponse.setPayload(result);
