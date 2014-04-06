@@ -1,7 +1,7 @@
 <div class="row msgview_middle sub-tab-content scrollbar-hidden">
 	<div class="scrollable-content sub-tab-content-inner">
 	    <div class="pull-right message-body-container">
-            <pre class="message-body-content" data-ng-bind-html="currentMessage.bodyWithHighlights">
+            <pre class="message-body-content" data-ng-bind-html="currentMessage.bodyWithHighlights | to_trusted">
 		    </pre>
 	    </div>
 	</div>
