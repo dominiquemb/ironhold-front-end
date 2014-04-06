@@ -18,7 +18,6 @@ import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +144,7 @@ public class MessageController extends AbstractController {
 
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
+        final String clientKey = getClientKey();
         final LoginUser loginUser = getLoginUser();
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), loginUser);
 
@@ -165,8 +165,7 @@ public class MessageController extends AbstractController {
         backgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                metaDataIndexService.store(getClientKey(), new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
-
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
             }
         });
 
