@@ -314,7 +314,7 @@ public class MessageController extends AbstractController {
         if (message.getBodyHTML() == null || message.getBodyHTML().trim().length() == 0) {
             response.setPayload("<pre>"+message.getBody()+"</pre>");
         } else {
-            response.setPayload(message.getBodyHTML());
+            response.setPayload(message.getBodyHTML().replaceAll("http://","https://"));
         }
 
         response.setStatus(ApiResponse.STATUS_SUCCESS);
