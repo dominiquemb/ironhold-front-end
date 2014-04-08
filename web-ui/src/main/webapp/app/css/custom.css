@@ -1568,7 +1568,7 @@ body ul {
 }
 
 .result .message-stats {
-	max-width: 50%;
+	max-width: 55%;
 }
 
 .result .message-sender-address {
@@ -1578,8 +1578,10 @@ body ul {
 .result .message-age {
 	font-weight: 300;
 	text-align: right;
-	width: 142px;
-	max-width: 60%;
+/*
+	width: 127px;
+	max-width: 52%;
+*/
 	height: 20px;
 	overflow: hidden;
 	color: #999;
@@ -1593,8 +1595,10 @@ body ul {
 
 .result .message-date {
 	text-align: right;
+/*
 	width: 100px;
 	max-width: 55%;
+*/
 	overflow: hidden;
 	height: 21px;
 	margin-left: 1px;
