@@ -640,6 +640,23 @@ body pre {
 	background: url(../img/sprites/ImageSprite.png) -48px -50px;
 }
 
+.img-xs.importance-xs {
+	width: 9px;
+	height: 13px;
+}
+
+.importance-high {
+	background: url(../img/sprites/ImageSprite.png) -403px -1px;
+}
+
+.importance-low {
+	background: url(../img/sprites/ImageSprite.png) -403px -18px;
+}
+
+.importance-none {
+	background: url(../img/sprites/ImageSprite.png) -313px -15px;
+}
+
 .caret-gray-down {
 	background: url(../img/sprites/ImageSprite.png) -352px -31px;
 }
@@ -833,8 +850,9 @@ body pre {
 	background: url(../img/sprites/ImageSprite.png) -384px -34px;
 }
 
-.attachment-img-xs {
+.img-xs.attachment-img-xs {
 	background: url(../img/sprites/ImageSprite.png) -64px -3px;
+	width: 11px;
 }
 
 .email {

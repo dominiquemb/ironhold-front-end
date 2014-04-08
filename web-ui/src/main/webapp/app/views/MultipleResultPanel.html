@@ -10,6 +10,7 @@
 				    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
 				    <i data-ng-class="getMessageType(message)"
 				       class="pull-left img-xs"></i>
+				    <i class="img-xs importance-xs pull-left" data-ng-class="getImportance(message)"></i>
 			    </span>
 				<span class="pull-left message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
 					{{ message.formattedIndexedMailMessage.sender.name }}
