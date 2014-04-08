@@ -788,6 +788,10 @@ body pre {
 	background: url(../img/sprites/ImageSprite.png) -359px -6px;
 }
 
+.btn:hover .magnifying-glass {
+	background: url(../img/sprites/ImageSprite.png) -421px -38px;
+}
+
 .img-lg {
 	width: 25px;
 	height: 25px;
