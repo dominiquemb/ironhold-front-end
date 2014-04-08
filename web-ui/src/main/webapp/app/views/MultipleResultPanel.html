@@ -8,8 +8,8 @@
 		    <div class="message-first-line">
 			    <span class="message-icons pull-left">
 				    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
-				    <i data-ng-show="isMessageTypeEqualTo(message, 'EMAIL')"
-				       class="pull-left img-xs envelope-img-xs"></i>
+				    <i data-ng-class="getMessageType(message)"
+				       class="pull-left img-xs"></i>
 			    </span>
 				<span class="pull-left message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
 					{{ message.formattedIndexedMailMessage.sender.name }}

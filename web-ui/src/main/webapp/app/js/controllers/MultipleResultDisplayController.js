@@ -54,12 +54,13 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         }
     };
 
-    $scope.isMessageTypeEqualTo = function(message, type) {
+    $scope.getMessageType = function(message) {
         if ($scope.activeTab === $scope.tabName) {
-            if (!message.formattedIndexedMailMessage.messageType) {
-                message.formattedIndexedMailMessage.messageType = 'EMAIL';
+	    var type = message.formattedIndexedMailMessage.messageType;
+            if (!type) {
+                type = 'email';
             }
-            return message.formattedIndexedMailMessage.messageType === type;
+            return type.toLowerCase();
         }
     };
 
