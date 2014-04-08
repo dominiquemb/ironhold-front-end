@@ -12,7 +12,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.limitedTabs = false;
 
     $scope.getFileType = function(name) {
-	    var ext = name.split('.');
+	    var ext = name.toLowerCase().split('.');
 	    ext = ext[ext.length-1];
 	    if (!(parseInt(ext[0]) === "NaN" || ext.length > 1)) {
     		ext = "ext-" + ext;

@@ -559,7 +559,7 @@ body pre {
 
 .msgview_bottom .attachment-text {
 	max-height: 77px;
-	min-height: 28px;
+	min-height: 36px;
 	line-height: 12px;
 	padding-right: 2px;
 	margin-left: 50px;
