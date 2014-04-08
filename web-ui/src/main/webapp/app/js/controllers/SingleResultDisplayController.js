@@ -62,11 +62,16 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			msgviewHeight -= 5;
 		}
 
-		$('.msgview_middle').height(
-			msgviewHeight - $('.msgview_bottom').outerHeight(true)
-		);
+		$('.msgview_middle').height(function(index, height) {
+			var newheight = msgviewHeight - $('.msgview_bottom').outerHeight(true)
+			if (newheight == 0) {
+				return height;
+			}
+			return newheight;
+		});
 
 		$scope.$emit('reinitScrollbars');
+
     };
 
     $rootScope.$on('highlightActive', function(evt, offOrOn) {

@@ -581,6 +581,7 @@ body pre {
 	position: relative;
 	margin: 0px 0px;
 	width: auto !important;
+	height: 200px;
 }
 
 .msgview_middle .jspContainer {
