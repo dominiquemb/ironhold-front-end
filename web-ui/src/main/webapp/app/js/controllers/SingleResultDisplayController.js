@@ -63,8 +63,8 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		}
 
 		$('.msgview_middle').height(function(index, height) {
-			var newheight = msgviewHeight - $('.msgview_bottom').outerHeight(true)
-			if (newheight == 0) {
+			var newheight = msgviewHeight - $('.msgview_bottom').outerHeight(true);
+			if (newheight === 0) {
 				return height;
 			}
 			return newheight;
