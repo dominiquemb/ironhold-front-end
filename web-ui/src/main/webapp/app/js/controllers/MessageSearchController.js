@@ -231,10 +231,14 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
+	    var facets;
+	    if (!args.disableFacets) {
+		facets = "from,from_domain,to,to_domain,date,msg_type,file_ext";
+	    }
             $scope.inputSearch = args.inputSearch;
             messagesService.get({
                 criteria: args.inputSearch,
-                facets: "from,from_domain,to,to_domain,date,msg_type,file_ext",
+                facets: facets,
                 pageSize: $scope.pageSize,
                 sortField: $scope.sortField,
                         sortOrder: $scope.sortOrder

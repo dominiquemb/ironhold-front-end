@@ -9,9 +9,11 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     $scope.showFacets = false;
 
     $rootScope.$on('reset', function() {
+	if ($scope.activeTab === $scope.tabName) {
 	    $scope.selectedFacets = [];
 	    $scope.facets = [];
 	    $scope.showFacets = false;
+	}
     });	
 
     $scope.unselectAllFacets = function() {

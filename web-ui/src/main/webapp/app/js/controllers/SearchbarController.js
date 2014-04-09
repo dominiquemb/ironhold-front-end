@@ -41,10 +41,18 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.search = function() {
         if ($scope.activeTab === $scope.tabName) {
+	    var disableFacets = false;
+
             $scope.currentlySearching(true);
             $scope.$emit('reset');
+
+	    if ($scope.searchMatches > 20000) {
+		disableFacets = true;
+	    }
+
             $scope.$emit('search', {
-                inputSearch: $scope.inputSearch
+                inputSearch: $scope.inputSearch,
+		disableFacets: disableFacets
             });
         }
     };
