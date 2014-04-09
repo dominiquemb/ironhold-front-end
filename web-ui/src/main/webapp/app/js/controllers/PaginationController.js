@@ -15,7 +15,7 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 
     $scope.editPageNumber = function() {
         if ($scope.activeTab === $scope.tabName) {
-            $scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
+            $scope.totalPages = Math.floor($scope.searchMatches / $scope.pageSize);
             $scope.editingPageNumber = true;
             setTimeout(function() {
                 $('.editable-page-number').focus();
@@ -38,7 +38,7 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
     $rootScope.$on('updateSearchbar', function(evt, info) {
         if ($scope.activeTab === $scope.tabName) {
             if (info.searchMatches > 0) {
-                $scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
+                $scope.totalPages = Math.floor($scope.searchMatches / $scope.pageSize);
                 $scope.showPagination = true;
             }
         }
@@ -48,7 +48,7 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
         if ($scope.activeTab === $scope.tabName) {
             page = parseInt(page);
             if (page > 0) {
-            $scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
+            $scope.totalPages = Math.floor($scope.searchMatches / $scope.pageSize);
                 if (page <= $scope.totalPages) {
                     $scope.currentPage = page;
                     $scope.$emit('pageChange', {
