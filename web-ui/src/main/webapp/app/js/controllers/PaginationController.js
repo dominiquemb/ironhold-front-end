@@ -62,7 +62,7 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
                     $scope.editingPageNumber = false;
                 }
                 else {
-                $scope.$emit('error', 'Specified value is out of range');
+                $scope.$emit('error', 'Specified value is out of range. Search results contain a total of ' + $scope.totalPages + ' pages.');
                 }
             }
             $scope.newPage = null;
