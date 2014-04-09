@@ -5,7 +5,7 @@
 	<li class="active" data-ng-hide="currentPage==1">
 		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
 	</li>
-	<li class="clickable" data-ng-click="editPageNumber()" title="Input page number">
+	<li data-ng-click="editPageNumber()" title="Input page number">
 		<span data-ng-hide="editingPageNumber">
 			&nbsp;{{ currentPage }}<span data-ng-show="(currentPage + 1) <= totalPages">,</span>
 		</span>
