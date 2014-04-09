@@ -1256,12 +1256,12 @@ body pre {
 .attachment.vsw .attachment-img,
 .attachment.vsx .attachment-img,
 .attachment.vtx .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -319px;
+	background:url(../img/sprites/ImageSprite.png) -760px -319px;
 }
 
 .attachment.pub .attachment-img,
 .attachment.mpp .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -357px;
+	background:url(../img/sprites/ImageSprite.png) -760px -357px;
 }
 
 .attachment.adn .attachment-img,
@@ -1274,38 +1274,38 @@ body pre {
 .attachment.accde .attachment-img,
 .attachment.ldb .attachment-img,
 .attachment.laccdb .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -395px;
+	background:url(../img/sprites/ImageSprite.png) -760px -395px;
 }
 
 .attachment.png .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -563px;
+	background:url(../img/sprites/ImageSprite.png) -760px -563px;
 }
 
 .attachment.jpg .attachment-img,
 .attachment.jpeg .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -471px;
+	background:url(../img/sprites/ImageSprite.png) -760px -471px;
 }
 
 .attachment.gif .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -509px;
+	background:url(../img/sprites/ImageSprite.png) -760px -509px;
 }
 
 .attachment.gsm .attachment-img,
 .attachment.wav .attachment-img,
 .attachment.mp3 .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -623px;
+	background:url(../img/sprites/ImageSprite.png) -760px -623px;
 }
 
 .attachment.eml .attachment-img,
 .attachment.msg .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -661px;
+	background:url(../img/sprites/ImageSprite.png) -760px -661px;
 }
 
 .attachment.mov .attachment-img,
 .attachment.mp4 .attachment-img,
 .attachment.mpeg .attachment-img,
 .attachment.avi .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -699px;
+	background:url(../img/sprites/ImageSprite.png) -760px -699px;
 }
 
 .attachment.zip .attachment-img,
@@ -1321,11 +1321,11 @@ body pre {
 .attachment.ext-7z .attachment-img,
 .attachment.xz .attachment-img,
 .attachment.ext-z .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -433px;
+	background:url(../img/sprites/ImageSprite.png) -760px -433px;
 }
 
 .attachment.tif .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -777px -585px;
+	background:url(../img/sprites/ImageSprite.png) -760px -585px;
 }
 
 .attachment.xls .attachment-img,
