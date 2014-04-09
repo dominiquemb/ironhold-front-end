@@ -13,6 +13,10 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
         }
     });
 
+    $rootScope.$on('facetToggled', function() {
+	$scope.goTo('1');
+    });
+
     $scope.editPageNumber = function() {
         if ($scope.activeTab === $scope.tabName) {
             $scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
