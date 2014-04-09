@@ -632,6 +632,21 @@ body pre {
 	font-size: 16px;
 }
 
+.logo {
+	float: left;
+	background: url(../img/sprites/ImageSprite.png) -300px -718px;
+	width: 212px;
+	height: 82px;
+	margin-left: 5px;
+}
+
+.login-logo {
+	float: left;
+	background: url(../img/sprites/ImageSprite.png) 0px -701px;
+	width: 300px;
+	height: 99px;
+}
+
 .bloomberg_message {
 	background: url(../img/sprites/ImageSprite.png) -48px -34px;
 }
