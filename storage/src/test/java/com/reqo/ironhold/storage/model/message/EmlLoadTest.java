@@ -4,6 +4,7 @@ import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.reqo.ironhold.storage.model.MessageSourceTestModel;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.utils.ChecksumUtils;
+import com.reqo.ironhold.web.domain.Recipient;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -755,7 +756,7 @@ public class EmlLoadTest {
                 ((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
                 mailMessage.getFrom().getAddress());
         Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
-                .getPersonal() == null ? StringUtils.EMPTY
+                .getPersonal() == null ? Recipient.getNameFromAddress(((InternetAddress) mimeMessage.getFrom()[0]).getAddress())
                 : ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
                 mailMessage.getFrom().getName());
 
@@ -864,6 +865,12 @@ public class EmlLoadTest {
     }
 
     @Test
+    public void testUnknownRecipient() throws Exception {
+        performBasicCheckout("/testUnknownRecipient.eml");
+    }
+
+
+    @Test
     public void testNoDate() throws Exception {
         performBasicCheckout("/testNoDate.eml");
     }
@@ -937,7 +944,7 @@ public class EmlLoadTest {
                     ((InternetAddress) mimeMessage.getFrom()[0]).getAddress(),
                     mailMessage.getFrom().getAddress());
             Assert.assertEquals(((InternetAddress) mimeMessage.getFrom()[0])
-                    .getPersonal() == null ? StringUtils.EMPTY
+                    .getPersonal() == null ? Recipient.getNameFromAddress(((InternetAddress) mimeMessage.getFrom()[0]).getAddress())
                     : ((InternetAddress) mimeMessage.getFrom()[0]).getPersonal(),
                     mailMessage.getFrom().getName());
 
@@ -964,6 +971,8 @@ public class EmlLoadTest {
                         .getRecipients(RecipientType.CC)[i]).getAddress(),
                         mailMessage.getCc()[i].getAddress());
                 Assert.assertEquals(((InternetAddress) mimeMessage
+                        .getRecipients(RecipientType.CC)[i]).getPersonal() == null ? Recipient.getNameFromAddress(((InternetAddress) mimeMessage
+                        .getRecipients(RecipientType.CC)[i]).getAddress()) : ((InternetAddress) mimeMessage
                         .getRecipients(RecipientType.CC)[i]).getPersonal(),
                         mailMessage.getCc()[i].getName());
             }
