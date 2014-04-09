@@ -6,9 +6,9 @@
 	    <tr>
 		<td>
 		    <div class="message-first-line">
-			    <span class="message-icons pull-left">
+			    <span class="message-icons pull-left" data-ng-init="type = getMessageType(message)">
 				    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
-				    <i data-ng-class="getMessageType(message)"
+				    <i title="{{ type.title }}" data-ng-class="type.type"
 				       class="pull-left img-xs"></i>
 				    <i class="img-xs importance-xs pull-left" data-ng-class="getImportance(message)"></i>
 			    </span>

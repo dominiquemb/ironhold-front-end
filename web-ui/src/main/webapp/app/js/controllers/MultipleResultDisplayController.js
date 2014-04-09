@@ -11,6 +11,11 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.showSearchResults = false;
     $scope.inputSearch = null;
     $scope.highlightActive = false;
+    $scope.messageTypeTable = {
+	'bloomberg_message': 'Bloomberg Message',
+	'bloomberg_chat': 'Bloomberg Chat',
+	'email': 'Email Message'
+    };
 
     $scope.getImportance = function(msg) {
 	return (msg.importance) ? 'importance-' + msg.importance : 'importance-none';
@@ -55,10 +60,18 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.getMessageType = function(message) {
         if ($scope.activeTab === $scope.tabName) {
 	    var type = message.formattedIndexedMailMessage.messageType;
+
             if (!type) {
                 type = 'email';
             }
-            return type.toLowerCase();
+	    else {
+		type = type.toLowerCase();
+	    }
+
+            return {
+		'type': type,
+		'title': $scope.messageTypeTable[type]
+	    };
         }
     };
 
