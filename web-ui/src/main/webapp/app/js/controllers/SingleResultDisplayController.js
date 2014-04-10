@@ -29,8 +29,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		}
      });
 			
-		
-
     $scope.$watch(function() {
 		return $('.sub-tab-content-inner').text();
 	}, function(newval, oldval) {
@@ -56,10 +54,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
     $scope.adjustMiddleSection = function() {
-		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true);
+		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true) + 4;
 
 		if ($('.msgview_bottom').height() == null) {
-			msgviewHeight -= 5;
+			msgviewHeight -= 4;
 		}
 
 		$('.msgview_middle').height(function(index, height) {
