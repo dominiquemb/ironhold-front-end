@@ -10,6 +10,9 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.mode = 'text';
     $scope.modeData = {};
     $scope.limitedTabs = false;
+    $scope.middleSectionHeight = 0;
+    $scope.bottomSectionHeight = 0;
+    $scope.topSectionHeight = 0;
 
     $scope.getFileType = function(name) {
 	var ext = name.toLowerCase().split('.');
@@ -54,19 +57,35 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
     $scope.adjustMiddleSection = function() {
+		console.log('Tab content height:');
+		console.log($('.msgview .tab-content').height());
+	
+		console.log('Controlbar height:');
+		console.log($('.msgview .controlbar').height());
+
+		console.log('Top section height:');
+		console.log($('.msgview_top').outerHeight(true));
+
 		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true) + 4;
 
 		if ($('.msgview_bottom').height() == null) {
 			msgviewHeight -= 4;
 		}
 
-		$('.msgview_middle').height(function(index, height) {
-			var newheight = msgviewHeight - $('.msgview_bottom').outerHeight(true);
-			if (newheight === 0) {
-				return height;
-			}
-			return newheight;
-		});
+		console.log('Height of both middle section and bottom section:');
+		console.log(msgviewHeight);
+
+		$scope.bottomSectionHeight = $('.msgview_bottom').outerHeight(true);
+
+		console.log('Botttom section height:');
+		console.log($scope.bottomSectionHeight);
+
+		$scope.middleSectionHeight = msgviewHeight - $scope.bottomSectionHeight;
+		
+		console.log('Middle section height:');
+		console.log($scope.middleSectionHeight);
+
+		$('.msgview_middle').height($scope.middleSectionHeight);
 
 		$scope.$emit('reinitScrollbars');
 
