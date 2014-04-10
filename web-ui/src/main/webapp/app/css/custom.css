@@ -871,8 +871,9 @@ body pre {
 	width: 11px;
 }
 
-.email {
+.img-xs.email {
 	background: url(../img/sprites/ImageSprite.png) -64px -18px;
+	height: 13px;
 }
 
 .flag-img-xs {
@@ -1294,7 +1295,7 @@ body pre {
 }
 
 .attachment.png .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -760px -563px;
+	background:url(../img/sprites/ImageSprite.png) -760px -585px;
 }
 
 .attachment.jpg .attachment-img,
