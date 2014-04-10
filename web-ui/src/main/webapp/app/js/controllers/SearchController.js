@@ -1,6 +1,7 @@
-'use strict';
+(function () {
+   'use strict';
 
-ironholdApp.controller('SearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
+ironholdApp.controller('SearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'search';
@@ -8,3 +9,7 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
     $scope.limitFacets = true;
     $scope.initialState = true;
 });
+
+
+
+}());

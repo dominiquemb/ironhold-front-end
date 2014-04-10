@@ -1,4 +1,4 @@
-<div data-ng-show="showSuggestions" class="suggestions">
+<div data-ng-show="showSuggestions && (selectedFilters.length == 0) && (warnings.length == 0) && (errors.length == 0)" class="suggestions">
 	Did you mean:
 	<span data-ng-repeat="suggestion in suggestions">
 		<span data-ng-repeat="option in suggestion.options">
@@ -8,20 +8,21 @@
 		</span>
 	</span>
 </div>
-<div class="errors">
+<div class="errors" data-ng-show="errors.length > 0">
 	<div class="error-item" data-ng-repeat="error in errors track by $index">
-		<span class="pull-left img-xs error-icon"></span>
-		<span>{{ error }}</span>
+		<div class="pull-left img-xs error-xs"></div>
+		<span>{{ error.message }}</span>
+		<div class="clickable pull-right img-xs close-button-gray" data-ng-click="clearError(error.id)"></div>
 	</div>
 </div>
-<div class="filter-tag-container" ng-show="selectedFilters.length > 0">
+<div class="filter-tag-container" data-ng-show="selectedFilters.length > 0">
 	<span class="filter-tag" data-ng-repeat="filterValue in selectedFilters">
-			<div class="filter-tag-text truncate" data-trunc-text="{{ filterValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
-		</div>
+			<span class="filter-tag-text truncate" data-trunc-text="{{ filterValue.label }}" data-trunc-font-width="10" data-container-width="429" data-trunc-desired-height="21" data-trunc-trailing-dots="true">
+		</span>
 			<i class="img-xs close-button-blue filter-tag-close"
 	data-ng-click="disableFilter(filterValue, filterValue.facetGroupCode)" title="Remove filter"></i>
 		</span>
-		<span class="filter-tag filter-tag-reset" data-ng-click="unselectAllFilters()" title="Remove all filters">	
+		<span class="clickable filter-tag filter-tag-reset" data-ng-click="unselectAllFilters()" title="Remove all filters">	
 			Reset All
 	</span>
 </div>

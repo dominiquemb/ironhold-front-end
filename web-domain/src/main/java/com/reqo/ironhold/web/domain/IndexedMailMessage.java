@@ -18,6 +18,20 @@ public class IndexedMailMessage implements IPartitioned {
     private static Logger logger = Logger.getLogger(IndexedMailMessage.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    /**
+     * The number of bytes in a kilobyte.
+     */
+    public static final long ONE_KB = 1000;
+
+    /**
+     * The number of bytes in a megabyte.
+     */
+    public static final long ONE_MB = ONE_KB * ONE_KB;
+
+    /**
+     * The number of bytes in a gigabyte.
+     */
+    public static final long ONE_GB = ONE_KB * ONE_MB;
 
     private String messageId;
     private String subject;
@@ -144,7 +158,18 @@ public class IndexedMailMessage implements IPartitioned {
     }
 
     public String getSizeDescription() {
-        return FileUtils.byteCountToDisplaySize(this.size);
+        String displaySize;
+
+        if (size / ONE_GB > 0) {
+            displaySize = String.valueOf(size / ONE_GB) + " GB";
+        } else if (size / ONE_MB > 0) {
+            displaySize = String.valueOf(size / ONE_MB) + " MB";
+        } else if (size / ONE_KB > 0) {
+            displaySize = String.valueOf(size / ONE_KB) + " KB";
+        } else {
+            displaySize = String.valueOf(size) + " bytes";
+        }
+        return displaySize;
     }
 
     public String getBody() {

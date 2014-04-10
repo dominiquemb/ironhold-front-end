@@ -1,0 +1,30 @@
+        <div class="msgview_bottom_inner" data-ng-class="{'collapsed': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed}">
+            <a data-action="collapse" class="expandable-toggle">
+                <i data-ng-click="toggleCollapse(currentMessage.formattedIndexedMailMessage.collapsedAttachments)"
+                   data-ng-class="{'icon-angle-up': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === true, 'icon-angle-down': currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed === false}"
+                   class="fa-angle-up fa icon-on-right"></i>
+            </a>
+            <ul class="attachments">
+                <li data-ng-click="downloadAttachment(attachment)" class="clickable attachment first"
+                    data-ng-repeat="attachment in currentMessage.formattedIndexedMailMessage.attachments" data-ng-class="getFileType(attachment.fileName)">
+                    <div class="col-xs-2 icon-container">
+                        <div title="Download attachment" class="msgview_img-xl attachment-img"></div>
+                    </div>
+                    <div class="col-xs-10 attachment-text">
+                                    <span class="text-primary attachment-title">
+                    <a><span title="Download attachment" class="attachment-filename">{{ attachment.fileName }}</span> <span title="{{ attachment.size | number }} bytes" class="attachment-size">({{ attachment.size | bytes }})</span></a> 
+                                    </span>
+                                    <span data-ng-show="attachment.body.length > 0" title="Download attachment" class="attachment-body gray-medium">
+					- 
+					<span class="truncate" trunc-text="{{ attachment.body }}"
+                                          trunc-desired-height="currentMessage.formattedIndexedMailMessage.collapsedAttachments.collapsed ? '21' : '0'"
+                                          trunc-font-width="5" trunc-trailing-dots="true">
+					</span>
+                                    </span>
+                    </div>
+                    <div class="attachment-line-break"></div>
+                </li>
+	        </ul>
+        </div>
+
+

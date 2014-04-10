@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+   'use strict';
 
 ironholdApp.controller('FacetController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
@@ -8,9 +9,11 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     $scope.showFacets = false;
 
     $rootScope.$on('reset', function() {
+	if ($scope.activeTab === $scope.tabName) {
 	    $scope.selectedFacets = [];
 	    $scope.facets = [];
 	    $scope.showFacets = false;
+	}
     });	
 
     $scope.unselectAllFacets = function() {
@@ -20,19 +23,19 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 		});
 		$scope.selectedFacets = [];
 	}
-    }
+    };
 
     $scope.collapseFacet = function(facet) {
 	if ($scope.activeTab === $scope.tabName) {
 		facet.isCollapsed = !facet.isCollapsed;
 	}
-    }
+    };
 
     $scope.isCollapsed = function(facet) {
 	if ($scope.activeTab === $scope.tabName) {
 		return facet.isCollapsed;
 	}
-    }
+    };
 
     $rootScope.$on('toggleFacet', function(evt, facet) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -40,7 +43,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 	}
     });
 
-    $scope.toggleFacet = function(facet, facetGroupCode) {
+    $scope.toggleFacet = function(facet) {
 	if ($scope.activeTab === $scope.tabName) {
 		facet.selected = !facet.selected;
 		if (facet.selected) {
@@ -52,7 +55,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 		$scope.$emit('facetToggled', facet, $scope.selectedFacets);
 		$scope.$emit('reinitScrollbars');
 	}
-    }
+    };
 
     $rootScope.$on('facets', function(evt, data) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -67,3 +70,6 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 	}
     });
 });
+
+
+}());

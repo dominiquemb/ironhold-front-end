@@ -1,6 +1,7 @@
-'use strict';
+(function () {
+   'use strict';
 
-ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state) {
+ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope) {
     $scope.showErrors = false;
     $scope.showWarnings = false;
     $scope.errors = [];
@@ -14,8 +15,11 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     });
 
     $rootScope.$on('error', function(evt, msg) {
-	$scope.errors.push(msg);
-	var id = $scope.errors.length - 1;
+	var id = $scope.errors.length;
+	$scope.errors.push({
+		id: id,
+		message: msg
+	});
 	
 	setTimeout(function() {
 		$scope.clearError(id);
@@ -23,18 +27,25 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     });
 
     $scope.clearError = function(id) {
-	$scope.errors.splice(id, 1);
-    }
+	    $scope.errors.splice(id, 1);
+    };
 
     $scope.clearWarning = function(id) {
-	$scope.warnings.splice(id, 1);
-    }
+	    $scope.warnings.splice(id, 1);
+    };
 
     $rootScope.$on('warning', function(evt, msg) {
-	$scope.warnings.push(msg);
+	var id = $scope.warnings.length;
+	$scope.warnings.push({
+		id: id,
+		message: msg
+	});
 
 	setTimeout(function() {
 		$scope.clearWarning(id);
 	}, 2000);
     });
 });
+
+
+}());

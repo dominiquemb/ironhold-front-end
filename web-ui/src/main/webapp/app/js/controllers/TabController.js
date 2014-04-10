@@ -1,4 +1,5 @@
-'use strict';
+(function () {
+   'use strict';
 
 ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
@@ -10,27 +11,14 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     window.onresize = function(){
         if ($scope.scrollbars) {
                 $scope.reinitScrollbars();
+		$scope.$emit('pageResized');
                 $scope.$apply();
         }
-    }
+    };
 
     $scope.clickEvent = function() {
 	$scope.$emit('clickEvent');
-    }
-
-    $scope.$watch(function() {
-                if ($('.msgview_middle .jspPane').length > 0) {
-                        return $('.msgview_middle .jspPane').height();
-                }
-                else return 0;
-        },
-        function(newval, oldval) {
-                if (newval !== oldval) {
-                        if ($('.msgview_middle .jspPane').length > 0) {
-                                $scope.reinitScrollbars();
-                        }
-                }
-     });
+    };
 
     $rootScope.$on('pageChange', function(evt, info) {
         $scope.currentPage = info.page;
@@ -46,9 +34,15 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 
     $scope.reinitScrollbars = function() {
         angular.forEach($('.scrollbar-hidden'), function(container, key) {
+            try {
                 $('.scrollbar-hidden').eq(key).data('jsp').reinitialise();
+            } catch(err) {}
         });
-    }
+    };
+
+    $rootScope.$on('initCustomScrollbars', function(evt, selector) {
+	$scope.initCustomScrollbars(selector);
+    });
 
     $scope.initCustomScrollbars = function(selector) {
         $scope.scrollbars = true;
@@ -58,19 +52,11 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
                         horizontalArrowPositions: 'split',
                         showArrows: true
                 });
-
-                $('.filter-list .jspContainer').mouseenter(function(){
-                    $(this).find('.jspVerticalBar, .jspHorizontalBar').animate({opacity:1}, 400);
-                });
-
-                $('.filter-list .jspContainer').mouseleave(function(){
-                    $(this).find('.jspVerticalBar, .jspHorizontalbar').animate({opacity:0}, 400);
-                });
         }, 0);
-    }
+    };
 
     $rootScope.$on('modeRequest', function(evt, data) {
-	if (data.mode === 'headers') {
+	if (data.mode === 'headers' || data.mode === 'body') {
 		messagesService
 			.one(data.date.getFullYear())
 			.one(data.date.getMonth() + 1)
@@ -125,14 +111,18 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 	else {
 	    return false;
 	}
-    }
+    };
 
     $scope.setActiveTab = function(tab) {
 	$scope.activeTab = tab;
     	$scope.$emit('activeTab', $scope.activeTab);
-    }
+    };
 
     $scope.isActiveTab = function(tab) {
-	return $scope.activeTab == tab;
-    }
+	return $scope.activeTab === tab;
+    };
 });
+
+
+
+}());

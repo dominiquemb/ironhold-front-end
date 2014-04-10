@@ -7,6 +7,7 @@ import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
+import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
@@ -98,17 +99,17 @@ public class MessageController extends AbstractController {
     public
     @ResponseBody
     ApiResponse<MessageSearchResponse> getMessagesWithFacetValues(@RequestParam String criteria,
-                                                   @RequestParam(required = false, defaultValue = "SCORE") String sortField,
-                                                   @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
-                                                   @RequestParam(required = false, defaultValue = "10") int pageSize,
-                                                   @RequestParam(required = false, defaultValue = "0") int page,
-                                                   @RequestBody FacetValue[] facetValues) {
+                                                                  @RequestParam(required = false, defaultValue = "SCORE") String sortField,
+                                                                  @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
+                                                                  @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                                  @RequestParam(required = false, defaultValue = "0") int page,
+                                                                  @RequestBody FacetValue[] facetValues) {
         logger.info(String.format("getMessagesWithFacetValues %s, %s, %s, %d, %d, %s", criteria, sortField, sortOrder, pageSize, page, ArrayIterate.makeString(facetValues, ",")));
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), getLoginUser());
 
-        searchBuilder.withCriteria(criteria).withResultsLimit(page*pageSize, pageSize);
+        searchBuilder.withCriteria(criteria).withResultsLimit(page * pageSize, pageSize);
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (FacetValue facetValue : facetValues) {
@@ -118,6 +119,9 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
+        for (MessageMatch match : result.getMessages()) {
+            match.optimize();
+        }
 
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
@@ -140,10 +144,11 @@ public class MessageController extends AbstractController {
 
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
 
+        final String clientKey = getClientKey();
         final LoginUser loginUser = getLoginUser();
         MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), loginUser);
 
-        searchBuilder.withCriteria(criteria).withResultsLimit(page*pageSize, pageSize);
+        searchBuilder.withCriteria(criteria).withResultsLimit(page * pageSize, pageSize);
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
         for (String facet : facets) {
@@ -153,11 +158,14 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
+        for (MessageMatch match : result.getMessages()) {
+            match.optimize();
+        }
+
         backgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                metaDataIndexService.store(getClientKey(), new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
-
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
             }
         });
 
@@ -180,6 +188,10 @@ public class MessageController extends AbstractController {
         searchBuilder.withCriteria(criteria).withFullBody().withId(messageId, IndexedObjectType.MIME_MESSAGE);
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
+
+        for (MessageMatch match : result.getMessages()) {
+            match.optimize();
+        }
 
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
@@ -222,13 +234,12 @@ public class MessageController extends AbstractController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/download/{attachment:.+}")
-    public
-    void getRawAttachment(@PathVariable("year") int year,
-                         @PathVariable("month") int month,
-                         @PathVariable("day") int day,
-                         @PathVariable("messageId") String messageId,
-                         @PathVariable("attachment") String attachment,
-                         HttpServletResponse response) throws Exception {
+    public void getRawAttachment(@PathVariable("year") int year,
+                                 @PathVariable("month") int month,
+                                 @PathVariable("day") int day,
+                                 @PathVariable("messageId") String messageId,
+                                 @PathVariable("attachment") String attachment,
+                                 HttpServletResponse response) throws Exception {
         logger.info(String.format("getRawAttachment %d %d %d %s %s", year, month, day, messageId, attachment));
 
         String partition = String.format("%4d", year);
@@ -282,14 +293,13 @@ public class MessageController extends AbstractController {
     }
 
 
-
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/body")
     public
     @ResponseBody
     ApiResponse<String> getBody(@PathVariable("year") int year,
-                                                @PathVariable("month") int month,
-                                                @PathVariable("day") int day,
-                                                @PathVariable("messageId") String messageId) throws Exception {
+                                @PathVariable("month") int month,
+                                @PathVariable("day") int day,
+                                @PathVariable("messageId") String messageId) throws Exception {
         logger.info(String.format("getBody %d %d %d %s", year, month, day, messageId));
 
         ApiResponse<String> response = new ApiResponse<>();
@@ -301,7 +311,12 @@ public class MessageController extends AbstractController {
         message.loadMimeMessageFromSource(source);
 
 
-        response.setPayload(message.getBodyHTML() != null ? message.getBodyHTML() : message.getBody());
+        if (message.getBodyHTML() == null || message.getBodyHTML().trim().length() == 0) {
+            response.setPayload("<pre>"+message.getBody()+"</pre>");
+        } else {
+            response.setPayload(message.getBodyHTML().replaceAll("http://","https://"));
+        }
+
         response.setStatus(ApiResponse.STATUS_SUCCESS);
         return response;
     }
@@ -323,6 +338,22 @@ public class MessageController extends AbstractController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/{messageId:.+}/logs")
+    public
+    @ResponseBody
+    ApiResponse<List<LogMessage>> getMessageLogs(@PathVariable("messageId") String messageId) {
+        logger.info(String.format("getMessageLogs %s", messageId));
+
+        ApiResponse<List<LogMessage>> apiResponse = new ApiResponse<>();
+
+        List<LogMessage> result = metaDataIndexService.getLogMessages(getClientKey(), messageId);
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
 
     protected final String getUserName() {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().split("/")[1];

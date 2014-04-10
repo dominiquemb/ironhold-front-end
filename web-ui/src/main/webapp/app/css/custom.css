@@ -36,12 +36,24 @@ body .text-primary {
 	color: #2e68b1;
 }
 
+body pre {
+	background-color: transparent;
+	border: 0px;
+	border-radius: 0px;
+	margin: 0px;
+	padding: 0px;
+}	
+
 .shortcut {
 	text-decoration: underline;
 }
 
 .clickable {
 	cursor: pointer;
+}
+
+.clickable:hover {
+	color: #0066FF;
 }
 
 /* suggestions */
@@ -51,11 +63,18 @@ body .text-primary {
 }
 
 /* errors */
+.errors {
+	height: 20px;
+}
+
 .error-item {
 	background-color: #fdd8d5;
 	color: #880c03;
 	margin: 2px;
-	padding: 3px 5px 0px 5px;
+	padding: 1px 5px 0px 5px;
+	position: absolute;
+	left: 0px;
+	right: 0px;
 }
 
 .main-ui-view {
@@ -172,7 +191,7 @@ body .text-primary {
 	cursor: pointer;
 	color: #999;
 	float: left;
-	margin-top: 1px;
+	margin-top: 2px;
 	margin-bottom: 1px;
 }
 
@@ -197,7 +216,7 @@ body .text-primary {
 .form-search .input-group .search-input {
 	color: #2e68b1;
 	font-size: 14px;
-	height: 18px;
+	height: 20px;
 	padding: 0px;
 	margin: 0px;
 	padding: 1px 0px 0px 10px;
@@ -315,11 +334,34 @@ body .text-primary {
 	overflow: hidden !important;
 	padding-left: 0px;
 	width: 717px;
-	font-family: 'Arimo', sans-serif;
 }
 
 .msgview .placeholder_text {
 	position: absolute;
+}
+
+.msgview .sub-tab-content-styled {
+	bottom: 12px;
+	position: absolute;
+	top: 80px;
+	left: 3px;
+	right: 3px;
+	width: auto !important;
+	height: auto !important;
+}
+
+.msgview .sub-tab-content .jspContainer {
+	bottom: 0px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+.msgview .sub-tab-content.scrollbar-hidden > .jspContainer > .jspPane {
+	right: 20px;
+	width: auto !important;
+	left: 0px;
 }
 
 .msgview .tabbable {
@@ -327,7 +369,7 @@ body .text-primary {
 	position: absolute;
 	right: 0px;	
 	left: 0px;
-	bottom: -9px;
+	bottom: 0px;
 }
 
 .msgview .placeholder_text {
@@ -418,13 +460,15 @@ body .text-primary {
 
 .msgview .label-content.from {
 	font-size: 16px;
-	font-weight: 800;
 	color: #999;
-	padding-top: 4px;
+	padding-top: 0px;
+	font-weight: 700;
+	font-family: 'Roboto Condensed';
 }
 
 .msgview_top {
 	margin: 0px 0px;
+	margin-bottom: 18px;
 }
 
 .msgview_top .from-picture-container {
@@ -433,7 +477,6 @@ body .text-primary {
 }
 
 .msgview_top .header-container {
-	height: 36px;
 	margin-bottom: 11px;
 	width: 100%;
 	padding-left: 50px;
@@ -441,19 +484,19 @@ body .text-primary {
 }
 
 .msgview_subject {
-	font-size: 18px;
-	line-height: 12px;
-	height: 21px;
-	overflow: hidden;
+	font-family: 'Roboto Condensed';
+	font-size: 16px;
+	line-height: 19px;
+	font-weight: 700;
 }
 
 .msgview_date {
-	height: 22px;
+	font-family: 'Roboto Condensed';
 	overflow: hidden;
-	font-size: 13px;
-	line-height: 10px;
-	font-weight: 600;
+	font-weight: 700;
+	font-size: 16px;
 	margin: 2px 0px 0px 0px;
+	color: #666;
 }
 
 .msgview_top h3 {
@@ -473,37 +516,72 @@ body .text-primary {
 	margin-top: 9px;
 }
 
-.msgview_bottom {
+.msgview_bottom {	
+	max-height: 30%;
+	margin-top: 11px;
 	min-height: 1px;
 	background-color: #fff;
 	border-top: 1px solid #ccc;
-	margin-top: 25px;
 	position: absolute;
-	bottom: 0px;
+	height: auto;
+	bottom: 3px;
 	width: 100%;
+}
+
+.msgview_bottom_inner {
+	max-height: 100%;
+}
+
+.msgview_bottom .jspVerticalBar {
+	right: 16px;
+	bottom: 3px;
+	height: auto;
+	top: 0px;
+}
+
+.msgview_bottom .jspContainer {
+	bottom: 8px;
+	top: 3px;
+	height: 100% !important;
+}
+
+.msgview_bottom .jspPane {
+	height: auto;
+	position: relative !important;
 }
 
 .msgview_bottom .icon-container {
 	width: 36px;
 	position: absolute;
 	left: 0px;
-	margin-top: 5px;
+	margin-top: 2px;
 }
 
 .msgview_bottom .attachment-text {
-	max-height: 60px;
+	max-height: 77px;
+	min-height: 36px;
+	line-height: 12px;
+	padding-right: 2px;
 	margin-left: 50px;
+	font-size: 11px;
 	overflow: hidden;
+	margin-bottom: 7px;
+}
+
+.msgview_bottom .attachment-line-break {
+	height: 1px;
+	background-color: #ccc;
+	clear: left;
+	margin-left: 62px;
+	margin-right: 55px;
+	width: auto;
 }
 
 .msgview_middle {
-	position: absolute;
-	bottom: 12px;
-	left: 12px;
-	right: 11px;
-	top: 128px;
+	position: relative;
 	margin: 0px 0px;
 	width: auto !important;
+	height: 200px;
 }
 
 .msgview_middle .jspContainer {
@@ -522,7 +600,6 @@ body .text-primary {
 }
 
 .msgview_middle .message-body-container {
-	margin-top: 18px;
 	width: 100%;
 	padding-left: 54px;
 	padding-right: 27px;
@@ -555,8 +632,58 @@ body .text-primary {
 	font-size: 16px;
 }
 
+.logo {
+	float: left;
+	background: url(../img/sprites/ImageSprite.png) -300px -718px;
+	width: 212px;
+	height: 82px;
+	margin-left: 5px;
+}
+
+.login-logo {
+	float: left;
+	background: url(../img/sprites/ImageSprite.png) 0px -701px;
+	width: 300px;
+	height: 99px;
+}
+
+.bloomberg_message {
+	background: url(../img/sprites/ImageSprite.png) -48px -34px;
+}
+
+.bloomberg_chat {
+	background: url(../img/sprites/ImageSprite.png) -48px -50px;
+}
+
+.img-xs.importance-xs {
+	width: 9px;
+	height: 13px;
+}
+
+.importance-high {
+	background: url(../img/sprites/ImageSprite.png) -403px -1px;
+}
+
+.importance-low {
+	background: url(../img/sprites/ImageSprite.png) -403px -18px;
+}
+
+.importance-none {
+	background: url(../img/sprites/ImageSprite.png) -313px -15px;
+}
+
 .caret-gray-down {
 	background: url(../img/sprites/ImageSprite.png) -352px -31px;
+}
+
+.error-xs {
+	background: url(../img/sprites/ImageSprite.png) -368px -32px;
+	height: 16px !important;
+	width: 16px !important;
+}
+
+.caret-blue-down {
+	background: url(../img/sprites/ImageSprite.png) -352px -53px;
 }
 
 .caret-four-thirty-up {
@@ -586,7 +713,7 @@ body .text-primary {
 }
 
 .msgview_img-xl {
-	width: 36px;
+	width: 40px;
 	height: 36px;
 }
 
@@ -609,19 +736,16 @@ body .text-primary {
 	background-color: gray;
 }
 
-.question-mark {
-	margin-top: 10px;
-	width: 16px;
-	height: 14px;
-	background: url(../img/sprites/msgview_icons.png) -4px -82px;
+.user-photo {
+	background: url(../img/sprites/ImageSprite.png) -702px 0px;
 }
 
 .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px 0px;
 }
 
-.flag-lg {
-	background: url(../img/sprites/msgview_icons.png) 0px 0px;
+.controlbar_item:hover .download-lg {
+	background: url(../img/sprites/ImageSprite.png) -448px -32px;
 }
 
 .flag-yellow-lg {
@@ -648,30 +772,6 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -192px 0px;
 }
 
-.forward-lg {
-	background: url(../img/sprites/msgview_icons.png) -32px 0px;
-}
-
-.archive-lg {
-	background: url(../img/sprites/msgview_icons.png) 0px -32px;
-}
-
-.tiles-lg {
-	background: url(../img/sprites/msgview_icons.png) -30px -32px;
-}
-
-.cal-invite-sm {
-	background: url(../img/sprites/msgview_icons.png) -27px -66px;
-}
-
-.cal-phone-sm {
-	background: url(../img/sprites/msgview_icons.png) -2px -66px;
-}
-
-.im-sm {
-	background: url(../img/sprites/msgview_icons.png) -47px -66px;
-}
-
 .lock-purple-sm {
 	background: url(../img/sprites/ImageSprite.png) -79px -1px;
 }
@@ -686,10 +786,11 @@ body .text-primary {
 
 .empty-photo {
 	background: url(../img/sprites/ImageSprite.png) -760px 0px;
+	margin-left: -2px;
 }
 
 .attachment-img {
-	background: url(../img/sprites/msgview_icons.png) -64px -46px;
+	background: url(../img/sprites/ImageSprite.png) -760px -128px;
 }
 
 .result.active-single .checkmark .checkmark-icon,
@@ -723,12 +824,12 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -113px -17px;
 }
 
-.dots-icon {
-	background: url(../img/sprites/email_icons.png) -30px -15px;
-}
-
 .magnifying-glass {
 	background: url(../img/sprites/ImageSprite.png) -359px -6px;
+}
+
+.btn:hover .magnifying-glass {
+	background: url(../img/sprites/ImageSprite.png) -423px -38px;
 }
 
 .img-lg {
@@ -743,15 +844,34 @@ body .text-primary {
 	display: block;
 }
 
+.errors .close-button-gray {
+	margin-top: 3px;
+	margin-bottom: 1px;
+}
+
+.errors .error-xs {
+	margin-right: 5px;
+	margin-top: 1px;
+}
+
 .close-button-blue {
 	background: url(../img/sprites/ImageSprite.png) -49px -16px;
 }
 
-.attachment-img-xs {
-	background: url(../img/sprites/ImageSprite.png) -64px -3px;
+.close-button-gray {
+	background: url(../img/sprites/ImageSprite.png) -384px -18px;
 }
 
-.envelope-img-xs {
+.btn:hover .close-button-gray {
+	background: url(../img/sprites/ImageSprite.png) -384px -34px;
+}
+
+.img-xs.attachment-img-xs {
+	background: url(../img/sprites/ImageSprite.png) -64px -3px;
+	width: 11px;
+}
+
+.email {
 	background: url(../img/sprites/ImageSprite.png) -64px -18px;
 }
 
@@ -769,25 +889,6 @@ body .text-primary {
 	background: url(../img/sprites/ImageSprite.png) -431px 4px;
 	width: 17px;
 	height: 20px;
-}
-
-/* btn */
-.btn-group-ironhold .btn-left {
-	background: url(../img/sprites/btn-group.png) 0px 0px;
-	width: 75px;
-	height: 34px;
-}
-
-.btn-group-ironhold .btn-middle {
-	background: url(../img/sprites/btn-group.png) -74px 0px;
-	width: 74px;
-	height: 34px;
-}
-
-.btn-group-ironhold .btn-right {
-	background: url(../img/sprites/btn-group.png) -147px 0px;
-	width: 75px;
-	height: 34px;
 }
 
 /* table */
@@ -846,6 +947,16 @@ body .text-primary {
 
 .navigation .welcome_name {
 	margin-top: 12px;
+}
+
+.name {
+	font-family: 'Roboto Condensed';
+	font-size: 16px;
+}
+
+.name .caret-blue-down {
+	margin-right: 6px;
+	margin-top: 14px;
 }
 
 .navigation .top-nav.nav-tabs {
@@ -938,14 +1049,14 @@ body .text-primary {
 }
 
 .pagination .editable-page-number {
-	height: 15px !important;
+	height: 18px !important;
 	padding: 0px !important;
 	margin-left: 5px;
 	margin-right: 2px;
 	border: 0px;
-/*	border-bottom: 1px solid #999;*/
+	border-bottom: 1px solid #999;
 	color: #999;
-	max-width: 35px;
+	max-width: 25px;
 	text-align: right;
 }
 
@@ -1126,14 +1237,141 @@ body .text-primary {
 
 .attachments .attachment-img-xs {
 	width: 14px;
-	height: 14px;
+	height: 16px;
+}
+
+.attachment-filename {
+	font-weight: 800;
+}
+
+.attachment.pdf .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -205px;
+}
+
+.attachment.ppt .attachment-img,
+.attachment.pot .attachment-img,
+.attachment.pps .attachment-img,
+.attachment.pptx .attachment-img,
+.attachment.pptm .attachment-img,
+.attachment.potx .attachment-img,
+.attachment.potm .attachment-img,
+.attachment.ppam .attachment-img,
+.attachment.ppsx .attachment-img,
+.attachment.ppsm .attachment-img,
+.attachment.sldx .attachment-img,
+.attachment.sldm .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -281px;
+}
+
+.attachment.vdx .attachment-img,
+.attachment.vsd .attachment-img,
+.attachment.vsl .attachment-img,
+.attachment.vss .attachment-img,
+.attachment.vst .attachment-img,
+.attachment.vsu .attachment-img,
+.attachment.vsw .attachment-img,
+.attachment.vsx .attachment-img,
+.attachment.vtx .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -319px;
+}
+
+.attachment.pub .attachment-img,
+.attachment.mpp .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -357px;
+}
+
+.attachment.adn .attachment-img,
+.attachment.accdb .attachment-img,
+.attachment.accdr .attachment-img,
+.attachment.accdt .attachment-img,
+.attachment.mdb .attachment-img,
+.attachment.mdn .attachment-img,
+.attachment.mdf .attachment-img,
+.attachment.accde .attachment-img,
+.attachment.ldb .attachment-img,
+.attachment.laccdb .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -395px;
+}
+
+.attachment.png .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -563px;
+}
+
+.attachment.jpg .attachment-img,
+.attachment.jpeg .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -471px;
+}
+
+.attachment.gif .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -509px;
+}
+
+.attachment.gsm .attachment-img,
+.attachment.wav .attachment-img,
+.attachment.mp3 .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -623px;
+}
+
+.attachment.eml .attachment-img,
+.attachment.msg .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -661px;
+}
+
+.attachment.mov .attachment-img,
+.attachment.mp4 .attachment-img,
+.attachment.mpeg .attachment-img,
+.attachment.avi .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -699px;
+}
+
+.attachment.zip .attachment-img,
+.attachment.rar .attachment-img,
+.attachment.cab .attachment-img,
+.attachment.arj .attachment-img,
+.attachment.lzh .attachment-img,
+.attachment.tar .attachment-img,
+.attachment.gz .attachment-img,
+.attachment.bz2 .attachment-img,
+.attachment.ace .attachment-img,
+.attachment.jar .attachment-img,
+.attachment.ext-7z .attachment-img,
+.attachment.xz .attachment-img,
+.attachment.ext-z .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -433px;
+}
+
+.attachment.tif .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -585px;
+}
+
+.attachment.xls .attachment-img,
+.attachment.xlt .attachment-img,
+.attachment.xlm .attachment-img,
+.attachment.xlsm .attachment-img,
+.attachment.xltx .attachment-img,
+.attachment.xltm .attachment-img,
+.attachment.xlsb .attachment-img,
+.attachment.xla .attachment-img,
+.attachment.xlam .attachment-img,
+.attachment.xll .attachment-img,
+.attachment.xlw .attachment-img,
+.attachment.xlsx .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -167px;
+}
+
+.attachment.doc .attachment-img,
+.attachment.dot .attachment-img,
+.attachment.docm .attachment-img,
+.attachment.dotx .attachment-img,
+.attachment.dotm .attachment-img,
+.attachment.docx .attachment-img {
+	background:url(../img/sprites/ImageSprite.png) -760px -243px;
 }
 
 .attachments .attachment {
 	background-color: #fff;
-	min-height: 60px;
-	padding: 10px 0px;
-	border-bottom: 1px solid #ccc;
+	min-height: 53px;
+	padding: 7px 0px 2px;
 }
 
 .attachments-minimal .attachments .attachment {
@@ -1168,7 +1406,6 @@ body ul {
 	width: 100%;
 	height: 100%;
 	margin: 0px;
-	font-family: 'Arimo', sans-serif;
 }
 
 .msglist .listing .jspVerticalBar {
@@ -1250,40 +1487,26 @@ body ul {
 	border: 1px solid #cbcbcb;
 }
 
-.jspArrowLeft {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 0px 0px !important;
-}
-
-.jspArrowLeft:hover {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 16px 0px !important;
-}
-
-.jspArrowRight {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 0px 16px !important;
-}
-
-.jspArrowRight:hover {
-	background: url(../img/sprites/scrollbar_arrows_horiz.png) 16px 16px !important;
-}
-
 .jspArrowUp {
-	background: url(../img/sprites/scrollbar_arrows.png) 15px 16px !important;
+	background: url(../img/sprites/ImageSprite.png) -81px -48px !important;
 }
 
-.jspArrowUp:hover {
-	background: url(../img/sprites/scrollbar_arrows.png) 15px 16px !important;
+.jspArrowUp.disabled {
+	background: url(../img/sprites/ImageSprite.png) -81px -32px !important;
 }
+
 
 .jspArrowDown {
 	bottom: 0px;
 	position: absolute;
 	width: 100%;
-	background: url(../img/sprites/scrollbar_arrows.png) -1px 16px !important;
+	background: url(../img/sprites/ImageSprite.png) -65px -48px !important;
 }
 
-.jspArrowDown:hover {
-	background: url(../img/sprites/scrollbar_arrows.png) -1px 16px !important;
+.jspArrowDown.disabled {
+	background: url(../img/sprites/ImageSprite.png) -65px -32px !important;
 }
+
 
 /* results */
 .results {
@@ -1319,7 +1542,7 @@ body ul {
 
 .results .result.active-single .widget-main,
 .results .result.active-multi .widget-main {
-	color: #666;
+	color: #999;
 	line-height: 14px;
 }
 
@@ -1328,19 +1551,20 @@ body ul {
 	font-size: 16px;
 	text-align: right;
 	height: 18px;
-	width: 59px;
-	padding-right: 10px;
+	width: 43px;
+	padding-right: 2px;
 	padding-top: 5px;
-	padding-left: 14px;
-	max-width: 59px;
+	padding-left: 5px;
 }
 
 .result .message-recipients-line {
-	padding-left: 68px;
+	word-break: break-all;
+	clear: left;
+	padding-left: 47px;
 	position: relative;
 	height: 14px;
 	line-height: 15px;
-	margin-bottom: 1px;
+	margin-bottom: 3px;
 	overflow: hidden;
 	font-size: 12px;
 }
@@ -1350,63 +1574,106 @@ body ul {
 }
 
 .result .message-first-line {
-	line-height: 17px;
+	font-family: 'Roboto Condensed', sans-serif;
+	line-height: 21px;
 	padding-right: 7px;
+	font-size: 14px;
+	font-weight: 700;
+	word-break: break-all;
 }
 
 .result .message-second-line {
+	word-break: break-all;
+	font-weight: 700;
+	font-family: 'Roboto Condensed', sans-serif;
+	clear: left;
 	color: #666;
 	line-height:13px;
 	padding-right: 7px;
 	font-size: 14px;
+	padding-top: 1px;
 }
 
 .result .preview {
-	padding-left: 68px;
-	font-size: 11px;
+	padding-left: 47px;
+	font-size: 12px;
+	padding-top: 2px;
 	margin-top: 7px;
 	text-align: justify;
 	line-height: 14px;
 }
 
 .result .message-sender {
+	max-width: 42%;
+	height: 21px;
+	overflow: hidden;
+	word-break: break-all;
 	min-width: 150px;
-	padding-left: 8px;
+	padding-left: 3px;
+	color: #666;
+}
+
+.result .message-stats {
+	max-width: 55%;
+}
+
+.result .message-sender-address {
+	color: #999;
 }
 
 .result .message-age {
+	font-weight: 300;
 	text-align: right;
-	width: 142px;
-	max-width: 142px;
+/*
+	width: 127px;
+	max-width: 52%;
+*/
+	height: 20px;
+	overflow: hidden;
+	color: #999;
+}
+
+.to-content,
+.bcc-content,
+.cc-content {
+	color: #999;
 }
 
 .result .message-date {
 	text-align: right;
+/*
 	width: 100px;
-	max-width: 100px;
+	max-width: 55%;
+*/
+	overflow: hidden;
+	height: 21px;
 	margin-left: 1px;
+	color: #666;
 }
 
 .result .message-subject {
-	font-weight: bold;
 	width: auto;
-	padding-left: 8px;
-	height: 18px;
+	padding-left: 5px;
+	height: 19px;
+	line-height: 17px;
 	overflow: hidden;
+	max-width: 90%;
 }
 
 .result .message-size {
+	line-height: 18px;
 	color: #666;
-	width: 59px;
-	font-size: 12px;
+	width: 41px;
+	font-size: 16px;
 	padding-top: 0px;
-	padding-left: 14px;
+	font-weight: 300;
+	padding-left: 5px;
 }
 
 .result .message-sender,
 .result .message-subject,
 .result .message-date { 
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .result .message-flag {
@@ -1471,7 +1738,7 @@ body ul {
 }
 
 .result .dropdown-title {
-	color: #58595b;
+	color: #333;
 	line-height: 13px;
 	margin-right: 2px;
 	float: left;
@@ -1509,7 +1776,7 @@ body ul {
 	left: 0px;
 	right: 716px;
 	max-width: 1430px;
-	min-width: 830px;
+	min-width: 831px;
 	border-right: 1px solid #ccc;
 }
 
@@ -1589,22 +1856,13 @@ body ul {
 
 .filter-list .jspVerticalBar,
 .filter-list .jspHorizontalBar {
+	  visibility: hidden;
 	  background: #dedede !important;
+}
 
-	  /* IE 8 */
-	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-
-	  /* IE 5-7 */
-	  filter: alpha(opacity=0);
-
-	  /* Netscape */
-	  -moz-opacity: 0;
-
-	  /* Safari 1.x */
-	  -khtml-opacity: 0;
-
-	  /* Good browsers */
-	  opacity: 0;
+.filter-list:hover .jspVerticalBar,
+.filter-list:hover .jspHorizontalBar {
+	visibility: visible;
 }
 
 .filter-list .jspContainer {
@@ -1651,8 +1909,12 @@ body ul {
 	text-transform: uppercase;
 }
 
-.footer-search-total {
-	margin-left: 8px;
+.footer-item {
+	margin-right: 8px;
+}
+
+.footer .label-title {
+	padding-left: 8px;
 }
 
 .footer-copyright {
@@ -1773,13 +2035,14 @@ body ul {
 }
 
 .filter-name:hover {
-	color: #000;
+	color: #2e68b1;
 }
 
 .sidebar-left .filter-list .filter-list-name {
 	text-transform: uppercase;
 	color: #2e68b1;	
 	margin-left: 4px;
+	font-weight: 800;
 }
 
 .sidebar-left .widget-toolbar i {
@@ -1897,13 +2160,12 @@ body ul {
 }
 
 .gray-dark {
-	color: #58595b;
+	color: #333;
 }
 
 .blue-hilite {
 	background-color: #fefdd4;
 	color: #58595b;
-	font-weight: bold;
 }
 
 .upper {

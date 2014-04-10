@@ -1,6 +1,7 @@
 package com.reqo.ironhold.web.domain;
 
 import com.gs.collections.api.block.function.Function;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * User: ilya
@@ -57,5 +58,18 @@ public class MessageMatch {
 
     public void setFormattedIndexedMailMessage(FormattedIndexedMailMessage indexedMailMessage) {
         this.indexedMailMessage = indexedMailMessage;
+    }
+
+    public void optimize() {
+        if (getBodyWithHighlights().length() > 0) {
+            getFormattedIndexedMailMessage().setBody(null);
+        }
+
+        for (Attachment attachment : getFormattedIndexedMailMessage().getAttachments()) {
+            if (attachment.getBody().length() > 200) {
+                attachment.setBody(StringUtils.abbreviate(attachment.getBody(), 200) + "...");
+            }
+        }
+
     }
 }

@@ -27,11 +27,19 @@ public class Recipient {
     }
 
     public Recipient(String name, String address) {
-        this.name = name == null ? StringUtils.EMPTY : name;
+        this.name = name == null ? getNameFromAddress(address) : name;
         this.address = address;
         this.domain = address != null && address.contains("@")
                 && address.lastIndexOf('@') < address.length() ? address
                 .substring(address.lastIndexOf('@') + 1) : null;
+    }
+
+    public static String getNameFromAddress(String address) {
+        if (address != null && address.contains("@")) {
+            return address.substring(0, address.indexOf("@"));
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     public String getName() {

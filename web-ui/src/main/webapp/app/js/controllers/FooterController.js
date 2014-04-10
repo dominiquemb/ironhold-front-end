@@ -1,12 +1,13 @@
-'use strict';
+(function () {
+   'use strict';
 
 ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
     logInService.confirmLoggedIn($state);
 
-    $scope.searchMatches;
-    $scope.selectedFacets;
-    $scope.searchTime;
-    $scope.archiveTotal;
+    $scope.searchMatches = null;
+    $scope.selectedFacets = null;
+    $scope.searchTime = null;
+    $scope.archiveTotal = null;
     $scope.showFooterSearchStats = false;
     $scope.showAfterFilter = false;
 
@@ -15,6 +16,18 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
 		$scope.archiveTotal = result.payload.matches;
 	});
     }
+
+    $rootScope.$on('activeTab', function(evt, tab) {
+	    if (tab === $scope.tabName) {
+		$scope.onTabActivation();
+	    }
+    });
+
+    $scope.onTabActivation = function() {
+	messagesService.one("count").get({criteria: '*'}).then(function(result) {
+		$scope.archiveTotal = result.payload.matches;
+	});
+    };
 
     $rootScope.$on('reset', function() {
         if ($scope.activeTab === $scope.tabName) {
@@ -45,3 +58,6 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
     });
 
 });
+
+
+}());

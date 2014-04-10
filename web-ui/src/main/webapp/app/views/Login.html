@@ -4,8 +4,8 @@
 <div class="login-box login-box-ironhold border widget-box" data-ng-class="{'visible': isVisible('login')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
-            <form name="mainLogin" data-ng-submit="submit()">
+            <div class="login-logo" title="IronHold"></div>
+            <form name="mainLogin">
 		<div class="formErrors">
 			<div class="formError" data-ng-show="isFormInvalid()">Invalid login. Please check and try again.</div>
 		</div>
@@ -47,8 +47,7 @@
                             <span class="lbl"> Remember Me</span>
                         </label>
                             <input type="submit" value="Login" data-ng-click="submit()" 
-                                    class="width-35 pull-right btn btn-sm btn-primary">
-                            </input>
+                                    class="width-35 pull-right btn btn-sm btn-primary"/>
                     </div>
 
                     <div class="space-4"></div>
@@ -76,7 +75,7 @@
 <div class="forgot-box forgot-username widget-box border" data-ng-class="{'visible': isVisible('forgot-username')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
+            <img class="logo" src="img/login-logo.png" alt="Logo"/>
             <h4 class="header lighter bigger">
                 <i class="fa icon-key"></i>
                 Retrieve Username
@@ -122,7 +121,7 @@
      data-ng-class="{'visible': isVisible('forgot-username-step-2')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
+            <img class="logo" src="img/login-logo.png" alt="Logo"/>
             <h4 class="header lighter bigger">
                 <i class="fa icon-key"></i>
                 Email Sent
@@ -148,7 +147,7 @@
 <div class="forgot-box forgot-password widget-box border" data-ng-class="{'visible': isVisible('forgot-password')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
+            <img class="logo" src="img/login-logo.png" alt="Logo"/>
             <h4 class="header lighter bigger">
                 <i class="fa icon-key"></i>
                 Retrieve Password
@@ -194,7 +193,7 @@
      data-ng-class="{'visible': isVisible('forgot-password-step-2')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
+            <img class="logo" src="img/login-logo.png" alt="Logo"/>
             <h4 class="header lighter bigger">
                 <i class="fa icon-key"></i>
                 Retrieve Password - Step 2
@@ -209,7 +208,7 @@
                 <fieldset>
                     <label class="block clearfix">
 									<span class="block input-icon input-icon-right">
-										<input type="reset-code" class="form-control" placeholder="Reset Code"/>
+										<input type="text" class="form-control" placeholder="Reset Code"/>
 									</span>
                     </label>
 
@@ -239,7 +238,7 @@
      data-ng-class="{'visible': isVisible('forgot-password-step-3')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
+            <img class="logo" src="img/login-logo.png" alt="Logo"/>
             <h4 class="header lighter bigger">
                 <i class="fa icon-key"></i>
                 Retrieve Password - Step 3
@@ -291,7 +290,7 @@
      data-ng-class="{'visible': isVisible('forgot-password-step-4')}">
     <div class="widget-body">
         <div class="widget-main background-white">
-            <img class="logo" src="img/login-logo.png"/>
+            <img class="logo" src="img/login-logo.png" alt="Logo"/>
             <h4 class="header lighter bigger">
                 <i class="fa icon-key"></i>
                 Password Reset Successful

@@ -26,7 +26,7 @@ public class IndexUtils {
 
     private static PeriodFormatter yearsAndMonthsFormatter = new PeriodFormatterBuilder()
             .appendYears().appendSuffix(" year", " years")
-            .appendSeparator(" and ").appendMonths()
+            .appendSeparator(" ").appendMonths()
             .appendSuffix(" month", " months").appendLiteral(" ago")
             .toFormatter();
 

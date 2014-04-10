@@ -51,16 +51,15 @@ public class UserController extends AbstractController {
         super();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}/searchHistory")
+    @RequestMapping(method = RequestMethod.GET, value = "/searchHistory")
     public
     @ResponseBody
-    ApiResponse<AuditLogResponse> getHistory(@PathVariable("clientKey") String clientKey,
-                                             @PathVariable("username") String username) {
+    ApiResponse<AuditLogResponse> getHistory() {
 
         ApiResponse<AuditLogResponse> apiResponse = new ApiResponse<>();
 
 
-        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(clientKey, getLoginUser(), AuditActionEnum.SEARCH);
+        List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(getClientKey(), getLoginUser(), AuditActionEnum.SEARCH);
         MutableList<AuditLogMessage> messages = FastList.newList(history);
 
         AuditLogResponse result = new AuditLogResponse(messages.toSortedSetBy(AuditLogMessage.SORT_BY_CONTEXT));

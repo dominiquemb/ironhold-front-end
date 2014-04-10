@@ -1,4 +1,5 @@
-'use strict';
+
+/*jshint -W079 */
 var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanitize','ui.bootstrap','restangular','ui.router','ivpusic.cookie'])
     .config(function ($stateProvider, $urlRouterProvider, RestangularProvider) {
         RestangularProvider.setBaseUrl('${rest-api.proto}://${rest-api.host}:${rest-api.port}/${rest-api.prefix}');
@@ -24,7 +25,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/PreviewTabs/TextTab.html"
 	    })
 
-	    .state('loggedin.main.html', {
+	    .state('loggedin.main.body', {
 		    templateUrl: "views/PreviewTabs/HtmlTab.html"
 	    })
 
@@ -32,7 +33,7 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/PreviewTabs/HeadersTab.html"
 	    })
 
-	    .state('loggedin.main.sources', {
+	    .state('loggedin.main.audit', {
 		    templateUrl: "views/PreviewTabs/AuditTab.html"
 	    })
 
@@ -87,12 +88,12 @@ ironholdApp.config(function ($httpProvider) {
 ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 	var loggedIn = false;
 
-	var sessions = function() {
+	var Sessions = function() {
 		this.logOutCallbacks = [];
 		this.logInCallbacks = [];
 	};
 
-	sessions.prototype = {
+	Sessions.prototype = {
 		getClientKey: function() {
 			return (ipCookie('ironholdSession')) ? ipCookie('ironholdSession').clientKey : false;
 		},
@@ -125,8 +126,9 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 				}),
 				{expires: 99}
 			);
+
     			angular.forEach(this.logInCallbacks, function(callback, index) {
-				callback();
+    			callback(index);
 			});
 		},
 
@@ -135,7 +137,7 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 			ipCookie.remove('ironholdSession');
 			document.execCommand("ClearAuthenticationCache");
 			angular.forEach(this.logOutCallbacks, function(callback, index) {
-				callback();
+				callback(index);
 			});
 		},
 
@@ -153,13 +155,21 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 			return loggedIn;
 		}
 	};
-	return new sessions();
+	return new Sessions();
 });
 
 ironholdApp.factory('messagesService', function(Restangular, logInService) {
 	var results = false;
 	if (logInService.getAuthdata()) {
 		results = Restangular.one("messages");
+	}
+	return (results) ? results : false;
+});
+
+ironholdApp.factory('downloadService', function(Restangular, logInService) {
+	var results = false;
+	if (logInService.getAuthdata()) {
+		results = Restangular.one("download");
 	}
 	return (results) ? results : false;
 });
@@ -183,11 +193,11 @@ ironholdApp.factory('searchResultsService', function ($rootScope) {
         this.searchMatches = searchMatches;
         this.searchTime = searchTime;
         this.broadcastItem();
-    }
+    };
 
     sharedService.broadcastItem = function() {
         $rootScope.$broadcast('handleSearchResultsChange');
-    }
+    };
 
     return sharedService;
 });
@@ -260,10 +270,10 @@ ironholdApp.factory('Base64', function() {
 
                 output = output + String.fromCharCode(chr1);
 
-                if (enc3 != 64) {
+                if (enc3 !== 64) {
                     output = output + String.fromCharCode(chr2);
                 }
-                if (enc4 != 64) {
+                if (enc4 !== 64) {
                     output = output + String.fromCharCode(chr3);
                 }
 
@@ -277,153 +287,30 @@ ironholdApp.factory('Base64', function() {
     };
 });
 
-ironholdApp.directive('wireframe', function() {
-	return {
-		scope: true,
-		restrict: 'ACE',
-		templateUrl: 'views/Wireframe.html'
-	}
-});
-
-ironholdApp.directive('searchQuery', function() {
-	return {
-		restrict: 'ACE',
-		templateUrl: 'views/Searchbar.html'
-	}
-});
-
-ironholdApp.directive('searchbar', function() {
-	return {
-		scope: true,
-		restrict: 'ACE',
-		controller: 'SearchbarController',
-		templateUrl: 'views/SearchbarPanel.html'
-	}
-});
-
-ironholdApp.directive('resultDetail', function() {
-	return {
-		scope: true,
-		restrict: 'ACE',
-		controller: 'SingleResultDisplayController',
-		templateUrl: 'views/SingleResultPanel.html'
-	}
-});
-
-ironholdApp.directive('resultsFeed', function() {
-	return {
-		scope: true,
-		restrict: 'ACE',
-		controller: 'MultipleResultDisplayController',
-		templateUrl: 'views/MultipleResultPanel.html'
-	}
-});
-
-ironholdApp.directive('facetCollection', function() {
-	return {
-		scope: true,
-		restrict: 'ACE',
-		controller: 'FacetController',
-		templateUrl: 'views/FacetPanel.html'
-	}
-});
-
-ironholdApp.directive('filterCollection', function() {
-	return {
-		scope: true,
-		restrict: 'ACE',
-		controller: 'FilterController',
-		templateUrl: 'views/FilterPanel.html'
-	}
-});
-
-ironholdApp.directive('collapsible', function() {
-	return {
-/*		scope: {
-			'collapsedArrow': '@',
-			'uncollapsedArrow': '@'
-		},
-*/
-		scope: true,
-		restrict: 'ACE',
-		link: function(scope, elem, attrs) {
-			var arrow = $(elem).find('.collapse-trigger');
-			if ($(elem).hasClass('collapsed')) {
-				arrow.addClass(scope.collapsedArrow);
-			}
-			else arrow.addClass(scope.uncollapsedArrow);
-			arrow.on('click', function() {
-				$(elem).toggleClass('collapsed');
-				arrow.toggleClass(scope.collapsedArrow + ' ' + scope.uncollapsedArrow);
-			});
+ironholdApp.filter('bytes', function() {
+	return function(bytes, precision) {
+		if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
+		    return '-';
 		}
-	}
+		if (typeof precision === 'undefined') {
+		    precision = 1;
+        }
+		var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'],
+		number = Math.floor(Math.log(bytes) / Math.log(1024));
+		return Math.floor(bytes / Math.pow(1024, Math.floor(number)).toFixed(precision)) + ' ' + units[number];
+	};
 });
 
-ironholdApp.directive('clearForm', function() {
-	return {
-		scope: {
-		},
-		restrict: 'ACE',
-		link: function(scope, elem, attrs) {
-			scope.$watch(function() {
-				return $(elem).find('.clear-form-input').val().length;
-			}, function(length) {
-				if (length > 0) {
-					$(elem).addClass('clear-form-active');
-				}
-			});
-			$(elem).find('.clear-form-trigger').on('click', function() {
-				$(elem).find('.clear-form-input').val('');
-				$(elem).removeClass('clear-form-active');
-				scope.$parent.$apply();
-			});
-		}
-	}
-});
-
-ironholdApp.directive('truncate', function() {
-	return {	
-		scope: {
-			'charPxlWidth': '=truncFontWidth',
-			'desiredHeight': '=truncDesiredHeight',
-			'trailingDots': '=truncTrailingDots',
-			'containerWidth': '=containerWidth',
-			'text': '@truncText'
-		},
-		restrict: 'ACE',
-		link: function(scope, elem, attrs) {
-			scope.$watch(
-			'[charPxlWidth, containerWidth, desiredHeight, trailingDots, text]', 
-			function() {
-					var width = ( scope.containerWidth !== undefined ) ? scope.containerWidth : $(elem).width(),
-					charsPerLine = Math.floor( width / scope.charPxlWidth ),
-					totalLines = Math.floor(scope.text.length / charsPerLine),
-					fontSize = parseInt($(elem).css('font-size')),
-					totalHeight = Math.floor( fontSize * totalLines),
-					desiredLines = Math.floor( scope.desiredHeight / fontSize ),
-					maxChars = (scope.trailingDots) ? Math.floor((charsPerLine * desiredLines)) - 3 : Math.floor((charsPerLine * desiredLines));
-					if ((totalHeight > scope.desiredHeight) && (scope.desiredHeight > 0)) {
-						if (scope.$parent.truncated !== true) {
-							scope.$parent.truncated = true;
-							scope.$parent.originalText = scope.text;
-						}
-						var result = scope.text.split("").splice(0, maxChars).join("") + ( (scope.trailingDots) ? "..." : "");
-						$(elem).html(result);
-					}
-					else {
-						$(elem).html(scope.text);
-					}
-			},
-			true);
-		}
-	}
-});
+ironholdApp.filter('to_trusted', ['$sce', function($sce){
+        return function(text) {
+            return $sce.trustAsHtml(text);
+        };
+}]);
 
 Date.prototype.getDayName = function() {
 	var d = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 	return d[this.getDay()];
-}
+};
 
 String.prototype.endsWith = function(suffix) {
     return this.toLowerCase().indexOf(suffix.toLowerCase(), this.length - suffix.length) !== -1;
@@ -431,10 +318,11 @@ String.prototype.endsWith = function(suffix) {
 
 
 String.prototype.plaintext = function(text) {
-	if (typeof text === "String") {
+	if (typeof text === "string") {
 		text.replace(/<(?:.|\n)*?>/gm, '');
+	} else {
+	    return false;
 	}
-	else return false;
 };
 
 Array.prototype.remove = function() {

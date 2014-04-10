@@ -15,6 +15,11 @@
 	background-color: #F8F8F8;
 }
 
+
+.login-layout.login-layout-white .widget-box .widget-main form {
+	margin-top: 85px;
+}
+
 .login-layout.login-layout-white .widget-box .widget-main {
 	padding-top: 38px;
 }

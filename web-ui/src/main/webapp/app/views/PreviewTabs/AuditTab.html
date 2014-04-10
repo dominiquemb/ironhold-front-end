@@ -1,26 +1,60 @@
-<div id="msgview-sources" class="msgview-sources tab-pane in active" data-ng-click="switchMode('sources')">
-        <div class="row controlbar">
+<div class="row msgview_middle sub-tab-content scrollbar-hidden">
+        <div class="scrollable-content sub-tab-content-inner">
+            <div class="pull-right message-body-container">
+		
+		<div>
+			<p>Message ID: {{ currentMessage.formattedIndexedMailMessage.messageId }}</p>
+		</div>
+		<div>
+			Message Source
+		</div>
+		<table class="table table-striped table-hover">
+			<thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Hostname</th>
+                    <th>PST File</th>
+                    <th>Folder</th>
+                    <th>PST File Size</th>
+                </tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="source in modeData.sources">
+					<td> {{ source.loadTimestamp }} </td>
+					<td> {{ source.hostname }} </td>
+					<td> {{ source.pstFileName }} </td>
+					<td> {{ source.folder }} </td>
+					<td> {{ source.size }} </td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div>
+			Audit Log
+		</div>
+		<table class="table table-striped table-hover" data-ng-repeat="audit in modeData.audit">
+			<thead>
+                <tr>
+    				<th>Timestamp</th>
+    				<th>Host</th>
+    				<th>User</th>
+    				<th>Action</th>
+    				<th>Entry</th>
+                </tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th> {{ audit.timestamp }} </th>
+					<th> {{ audit.host }} </th>
+					<th> {{ audit.loginUser.username }} </th>
+					<th> {{ audit.action }} </th>
+					<th> {{ audit.context }} </th>
+				</tr>
+			</tbody>
+		</table>
+
+            </div> <!-- pull-right -->
+
         </div>
-	<span data-ng-show="modeData.sources.length === 0">
-		No Audit data available.
-	</span>
-<!--
-	<table class="table table-striped table-hover">
-		<tr data-ng-repeat="row in modeData.audit">
-			<td></td>
-		</tr>
-	</table>
--->
-        <table class="table table-striped table-hover" data-ng-show="modeData.sources">
-                <thead>
-                        <th>Key</th>
-                        <th>Value</th>
-                </thead>
-                <tbody>
-                        <tr data-ng-repeat="(rowKey, rowValue) in modeData.sources">
-                                <td> {{ rowKey }} </td>
-                                <td> {{ rowValue }} </td>
-                        </tr>
-                </tbody>
-        </table>
+        <!-- .scrollable-content -->
 </div>

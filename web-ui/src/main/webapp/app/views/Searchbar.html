@@ -7,7 +7,7 @@
 		       data-ng-keyup="searchKeyUp($event)">
 
 		<a class="dropdown-toggle">
-		    <div class="img-xs caret-gray-down"></div>
+		    <div class="img-xs caret-gray-down" title="Search history"></div>
 		</a>
 
 		<div class="dropdown-menu dropdown-info">
@@ -25,11 +25,11 @@
 	</div>
 	<!-- .input-container -->
 	<span class="input-group-btn">
-		<button type="button" class="btn btn-link btn-sm" data-ng-click="search()">
-			<div class="img-lg magnifying-glass"></div>
+		<button title="Run search" type="button" class="btn btn-link btn-sm" data-ng-click="search()">
+			<span class="img-lg magnifying-glass"></span>
 		</button>
-		<button type="button" class="btn btn-link btn-sm clear-form-trigger" data-ng-click="resetSearch()">
-			<i class="fa icon-times icon-on-right bigger-110"></i>
+		<button title="Clear search" type="button" class="btn btn-link btn-sm clear-form-trigger" data-ng-click="resetSearch()">
+			<span class="img-xs close-button-gray"></span>
 		</button>
 	</span>
     </div>
