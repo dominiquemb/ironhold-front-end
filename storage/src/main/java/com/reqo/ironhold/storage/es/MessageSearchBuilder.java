@@ -286,7 +286,7 @@ public class MessageSearchBuilder {
         if (fullBody) {
             builder.addHighlightedField(IndexFieldEnum.BODY.getValue(), 0, 0);
         } else {
-            builder.addHighlightedField(IndexFieldEnum.BODY.getValue());
+            builder.addHighlightedField(IndexFieldEnum.BODY.getValue(), 100, 2);
         }
         builder.addHighlightedField(IndexFieldEnum.ATTACHMENT.getValue(), 100,
                 1);
