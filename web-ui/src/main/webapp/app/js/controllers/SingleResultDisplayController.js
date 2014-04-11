@@ -165,6 +165,12 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			date: curDate,
 			messageId: msgId
 		});
+
+		$scope.$emit('modeRequest', {
+			mode: 'logs',
+			date: curDate,
+			messageId: msgId
+		});
     };
 	
 

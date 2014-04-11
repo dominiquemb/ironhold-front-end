@@ -14,10 +14,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         'SIZE': 'size'
     };
 
-//    if ($scope.activeTab === $scope.tabName) {
-	    $scope.onTabActivation();
-  //  }
-
     $rootScope.$on('activeTab', function(evt, tab) {
 	    if (tab === $scope.tabName) {
 		    $scope.onTabActivation();
@@ -38,6 +34,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	    }
     };
 
+    $scope.onTabActivation();
 
     $scope.getSortOrder = function() {
         if ($scope.activeTab === $scope.tabName) {

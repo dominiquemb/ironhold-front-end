@@ -53,6 +53,28 @@
 			</tbody>
 		</table>
 
+		<div>
+			Message Log
+		</div>
+		<table class="table table-striped table-hover" data-ng-repeat="log in modeData.logs">
+			<thead>
+                <tr>
+    				<th>Timestamp</th>
+    				<th>Hostname</th>
+    				<th>Level</th>
+    				<th>Entry</th>
+                </tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th> {{ audit.timestamp }} </th>
+					<th> {{ audit.hostName }} </th>
+					<th> {{ audit.level }} </th>
+					<th> {{ audit.entry }} </th>
+				</tr>
+			</tbody>
+		</table>
+
             </div> <!-- pull-right -->
 
         </div>

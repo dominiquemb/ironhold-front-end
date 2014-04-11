@@ -10,11 +10,11 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
  
     $scope.showErrorDetails = function(err) {
 	err.showErrorPopup = true;	
-    }
+    };
 
     $scope.closeErrorDetails = function(err) {
 	err.showErrorPopup = false;
-    }
+    };
 
     $rootScope.$on('reset', function() {
 	if ($scope.activeTab === $scope.tabName) {

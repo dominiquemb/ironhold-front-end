@@ -17,9 +17,9 @@
 	<div class="error-item" data-ng-repeat="error in techErrors track by $index">
 		<div class="pull-left img-xs error-xs"></div>
 		<span>Error occurred. <a class="clickable" data-ng-click="showErrorDetails(error.message)">Technical details</a>
-			<div data-ng-show="error.showErrorMessage">
+			<span data-ng-show="error.showErrorMessage">
 				{{ error.message }}
-			</div>
+			</span>
 		</span>
 		<div class="clickable pull-right img-xs close-button-gray" data-ng-click="clearError(error.id)"></div>
 	</div>
