@@ -186,7 +186,7 @@
         <profile>
             <id>650</id>
             <properties>
-                <rest-api.host>ih650ww001.prod.ironhold.net</rest-api.host>
+                <rest-api.host>rest6.ironhold.net</rest-api.host>
                 <rest-api.port>443</rest-api.port>
                 <rest-api.proto>https</rest-api.proto>
                 <rest-api.prefix>rest-api</rest-api.prefix>
@@ -209,7 +209,7 @@
         <profile>
             <id>108</id>
             <properties>
-                <rest-api.host>ih108ww001.prod.ironhold.net</rest-api.host>
+                <rest-api.host>rest8.ironhold.net</rest-api.host>
                 <rest-api.port>443</rest-api.port>
                 <rest-api.proto>https</rest-api.proto>
                 <rest-api.prefix>rest-api</rest-api.prefix>
