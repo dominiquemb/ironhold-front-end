@@ -2,7 +2,6 @@ package com.reqo.ironhold.web.components;
 
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
-import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.BloombergSource;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
@@ -11,6 +10,7 @@ import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.web.IronholdApplication;
 import com.reqo.ironhold.web.domain.AuditLogMessage;
 import com.reqo.ironhold.web.domain.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.LogMessage;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Label;

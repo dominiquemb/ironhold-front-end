@@ -1,36 +1,37 @@
 <form class="form-search" name="searchbar" data-ng-submit="search()">
     <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
-	<div class="input-container">
-	    <div class="input-history dropdown">
-		<input type="text" autofocus="autofocus" class="search-input clear-form-input form-control search-field"
-		       placeholder="Enter your search here" data-ng-model="inputSearch"
-		       data-ng-keyup="searchKeyUp($event)">
+        <div class="input-container">
+            <div class="input-history dropdown">
+                <input type="text" autofocus="autofocus" class="search-input clear-form-input form-control search-field"
+                       placeholder="Enter your search here" data-ng-model="inputSearch"
+                       data-ng-keyup="searchKeyUp($event)">
 
-		<a class="dropdown-toggle">
-		    <div class="img-xs caret-gray-down" title="Search history"></div>
-		</a>
+                <a class="dropdown-toggle">
+                    <div class="img-xs caret-gray-down" title="Search history"></div>
+                </a>
 
-		<div class="dropdown-menu dropdown-info">
-		    <ul>
-			<li data-ng-repeat="history in searchHistory.messages">
-			    <a data-ng-click="newSearchInput(history.context)">
-				{{ history.context }}</a>
-			</li>
-		    </ul>
-		</div>
-		<!-- .dropdown-menu -->
+                <div class="dropdown-menu dropdown-info">
+                    <ul>
+                        <li data-ng-repeat="history in searchHistory">
+                            <a data-ng-click="newSearchInput(history.context)">
+                                {{ history.context }}</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- .dropdown-menu -->
 
-	    </div>
-	    <!-- .dropdown -->
-	</div>
-	<!-- .input-container -->
+            </div>
+            <!-- .dropdown -->
+        </div>
+        <!-- .input-container -->
 	<span class="input-group-btn">
 		<button title="Run search" type="button" class="btn btn-link btn-sm" data-ng-click="search()">
-			<span class="img-lg magnifying-glass"></span>
-		</button>
-		<button title="Clear search" type="button" class="btn btn-link btn-sm clear-form-trigger" data-ng-click="resetSearch()">
-			<span class="img-xs close-button-gray"></span>
-		</button>
+            <span class="img-lg magnifying-glass"></span>
+        </button>
+		<button title="Clear search" type="button" class="btn btn-link btn-sm clear-form-trigger"
+                data-ng-click="resetSearch()">
+            <span class="img-xs close-button-gray"></span>
+        </button>
 	</span>
     </div>
 </form>

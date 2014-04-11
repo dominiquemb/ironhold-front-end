@@ -8,15 +8,15 @@ import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.MessageIndexService;
 import com.reqo.ironhold.storage.MetaDataIndexService;
 import com.reqo.ironhold.storage.MiscIndexService;
-import com.reqo.ironhold.storage.model.log.LogLevel;
-import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
-import com.reqo.ironhold.web.domain.IndexedMailMessage;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.storage.thrift.MimeMailMessageStorageClient;
+import com.reqo.ironhold.web.domain.IndexedMailMessage;
+import com.reqo.ironhold.web.domain.LogLevel;
+import com.reqo.ironhold.web.domain.LogMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -163,7 +163,7 @@ public class PSTImporter {
                 try {
 
                     messageId = message.getInternetMessageId();
-                    logger.info("Starting to work on [" + messageId.trim() +"]");
+                    logger.info("Starting to work on [" + messageId.trim() + "]");
                     if (!this.getIgnoreSet().contains(messageId.trim())) {
                         MimeMailMessage mimeMailMessage = MimeMailMessage.getMimeMailMessage(message);
 

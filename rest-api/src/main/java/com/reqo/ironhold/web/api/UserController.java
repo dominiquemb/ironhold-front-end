@@ -10,11 +10,7 @@ import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
-import com.reqo.ironhold.web.domain.AuditActionEnum;
-import com.reqo.ironhold.web.domain.AuditLogMessage;
-import com.reqo.ironhold.web.domain.LoginUser;
-import com.reqo.ironhold.web.domain.RoleEnum;
-import com.reqo.ironhold.web.domain.responses.AuditLogResponse;
+import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.UserDetailsResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.slf4j.Logger;
@@ -54,15 +50,16 @@ public class UserController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, value = "/searchHistory")
     public
     @ResponseBody
-    ApiResponse<AuditLogResponse> getHistory() {
+    ApiResponse<List<ViewableAuditLogMessage>> getHistory() {
 
-        ApiResponse<AuditLogResponse> apiResponse = new ApiResponse<>();
+        ApiResponse<List<ViewableAuditLogMessage>> apiResponse = new ApiResponse<>();
 
 
         List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(getClientKey(), getLoginUser(), AuditActionEnum.SEARCH);
-        MutableList<AuditLogMessage> messages = FastList.newList(history);
+        MutableList<ViewableAuditLogMessage> messages = FastList.newList(history).collect(ViewableAuditLogMessage.FROM_AUDIT_LOG_MESSAGE);
 
-        AuditLogResponse result = new AuditLogResponse(messages.toSortedSetBy(AuditLogMessage.SORT_BY_CONTEXT));
+
+        List<ViewableAuditLogMessage> result = messages.toSortedListBy(ViewableAuditLogMessage.SORT_BY_CONTEXT);
         apiResponse.setPayload(result);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 

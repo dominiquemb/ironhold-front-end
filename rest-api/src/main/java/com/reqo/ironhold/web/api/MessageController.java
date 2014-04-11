@@ -1,13 +1,13 @@
 package com.reqo.ironhold.web.api;
 
 import com.gs.collections.impl.utility.ArrayIterate;
+import com.gs.collections.impl.utility.ListIterate;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
 import com.reqo.ironhold.storage.es.MessageSearchBuilder;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
-import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
@@ -324,14 +324,15 @@ public class MessageController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, value = "/{messageId:.+}/audit")
     public
     @ResponseBody
-    ApiResponse<List<AuditLogMessage>> getMessageAudit(@PathVariable("messageId") String messageId) {
+    ApiResponse<List<ViewableAuditLogMessage>> getMessageAudit(@PathVariable("messageId") String messageId) {
         logger.info(String.format("getMessageAudit %s", messageId));
 
-        ApiResponse<List<AuditLogMessage>> apiResponse = new ApiResponse<>();
+        ApiResponse<List<ViewableAuditLogMessage>> apiResponse = new ApiResponse<>();
 
         List<AuditLogMessage> result = metaDataIndexService.getAuditLogMessages(getClientKey(), messageId);
 
-        apiResponse.setPayload(result);
+        List<ViewableAuditLogMessage> response = ListIterate.collect(result, ViewableAuditLogMessage.FROM_AUDIT_LOG_MESSAGE);
+        apiResponse.setPayload(response);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
         return apiResponse;

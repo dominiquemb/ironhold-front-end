@@ -1,10 +1,10 @@
 package com.reqo.ironhold.storage.interfaces;
 
-import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.web.domain.AuditActionEnum;
 import com.reqo.ironhold.web.domain.AuditLogMessage;
+import com.reqo.ironhold.web.domain.LogMessage;
 import com.reqo.ironhold.web.domain.LoginUser;
 
 import java.util.List;

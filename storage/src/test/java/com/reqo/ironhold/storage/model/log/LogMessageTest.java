@@ -1,5 +1,6 @@
 package com.reqo.ironhold.storage.model.log;
 
+import com.reqo.ironhold.web.domain.LogMessage;
 import org.junit.Assert;
 import org.junit.Test;
 

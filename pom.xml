@@ -13,7 +13,7 @@
         <module>storage</module>
         <module>reader</module>
         <module>demodata</module>
-        <module>web</module>
+        <!-- <module>web</module>-->
         <module>dist</module>
         <module>libpst</module>
         <module>utils</module>

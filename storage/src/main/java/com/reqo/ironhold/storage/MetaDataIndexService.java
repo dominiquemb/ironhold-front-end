@@ -2,17 +2,13 @@ package com.reqo.ironhold.storage;
 
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
-import com.reqo.ironhold.storage.model.log.LogMessage;
 import com.reqo.ironhold.storage.model.message.source.BloombergSource;
 import com.reqo.ironhold.storage.model.message.source.IMAPMessageSource;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.message.source.PSTMessageSource;
 import com.reqo.ironhold.storage.model.search.IndexFailure;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
-import com.reqo.ironhold.web.domain.AuditActionEnum;
-import com.reqo.ironhold.web.domain.AuditLogMessage;
-import com.reqo.ironhold.web.domain.LoginUser;
-import com.reqo.ironhold.web.domain.RoleEnum;
+import com.reqo.ironhold.web.domain.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
