@@ -21,7 +21,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     });
 
     $scope.onTabActivation = function() {
-	    if ($scope.activeTab === $scope.tabName) {
 		    searchResultsService.prepForBroadcast("-", "- ");
 
 		    if (usersService) {
@@ -31,7 +30,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 				$scope.$emit('technicalError', err);
 			    });
 		    }
-	    }
     };
 
     $scope.onTabActivation();

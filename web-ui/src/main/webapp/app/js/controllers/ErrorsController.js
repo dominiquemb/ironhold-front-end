@@ -1,19 +1,25 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope) {
+ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope, $modal) {
     $scope.showErrors = false;
     $scope.showWarnings = false;
     $scope.errors = [];
     $scope.warnings = [];
     $scope.techErrors = [];
+    $scope.modalError;
+    $scope.modal;
  
     $scope.showErrorDetails = function(err) {
-	err.showErrorPopup = true;	
+	$scope.modalError = err;
+	$scope.modal = $modal.open({
+		templateUrl: 'views/Modals/TechError.html',
+		scope: $scope
+	});
     };
 
-    $scope.closeErrorDetails = function(err) {
-	err.showErrorPopup = false;
+    $scope.closeErrorDetails = function() {
+	$scope.modal.close();
     };
 
     $rootScope.$on('reset', function() {
@@ -23,7 +29,7 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 	}
     });
 
-    $rootScope.$on('technicalError', function(err) {
+    $rootScope.$on('technicalError', function(evt, err) {
 	if ($scope.activeTab === $scope.tabName) {
 		var id = $scope.techErrors.length;
 		
