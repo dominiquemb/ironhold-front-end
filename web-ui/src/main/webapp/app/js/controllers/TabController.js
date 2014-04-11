@@ -70,6 +70,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 					payload: result.payload
 				});
 			}, function(err) {
+				$scope.$emit('technicalError', err);
 				$scope.$emit('modeData', {
 					mode: data.mode,
 					error: err,
@@ -88,6 +89,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 					payload: result.payload
 				});
 			}, function(err) {
+				$scope.$emit('technicalError', err);
 				$scope.$emit('modeData', {
 					mode: data.mode,
 					error: err,

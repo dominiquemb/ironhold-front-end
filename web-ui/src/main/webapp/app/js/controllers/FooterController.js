@@ -14,6 +14,8 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
     if ($scope.activeTab === $scope.tabName) {
 	messagesService.one("count").get({criteria: '*'}).then(function(result) {
 		$scope.archiveTotal = result.payload.matches;
+	}, function(err) {
+		$scope.$emit('technicalError', err);
 	});
     }
 
@@ -26,6 +28,8 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
     $scope.onTabActivation = function() {
 	messagesService.one("count").get({criteria: '*'}).then(function(result) {
 		$scope.archiveTotal = result.payload.matches;
+	}, function(err) {
+		$scope.$emit('technicalError', err);
 	});
     };
 
