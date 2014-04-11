@@ -871,8 +871,9 @@ body pre {
 	width: 11px;
 }
 
-.email {
+.img-xs.email {
 	background: url(../img/sprites/ImageSprite.png) -64px -18px;
+	height: 13px;
 }
 
 .flag-img-xs {
@@ -880,14 +881,16 @@ body pre {
 }
 
 .sort-az {
-	background: url(../img/sprites/ImageSprite.png) -414px 4px;
+	background: url(../img/sprites/ImageSprite.png) -415px 1px;
 	width: 17px;
+	margin-top: 3px;
 	height: 20px;
 }
 
 .sort-za {
-	background: url(../img/sprites/ImageSprite.png) -431px 4px;
+	background: url(../img/sprites/ImageSprite.png) -431px 0px;
 	width: 17px;
+	margin-top: 5px;
 	height: 20px;
 }
 
@@ -1294,7 +1297,7 @@ body pre {
 }
 
 .attachment.png .attachment-img {
-	background:url(../img/sprites/ImageSprite.png) -760px -563px;
+	background:url(../img/sprites/ImageSprite.png) -760px -585px;
 }
 
 .attachment.jpg .attachment-img,
