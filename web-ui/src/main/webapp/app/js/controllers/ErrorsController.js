@@ -7,8 +7,8 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     $scope.errors = [];
     $scope.warnings = [];
     $scope.techErrors = [];
-    $scope.modalError;
-    $scope.modal;
+    $scope.modalError = false;
+    $scope.modal = false;
  
     $scope.showErrorDetails = function(err) {
 	$scope.modalError = err;
