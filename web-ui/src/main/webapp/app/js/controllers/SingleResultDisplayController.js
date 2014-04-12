@@ -38,10 +38,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		if (newval !== oldval) {
 			if ($scope.activeTab === $scope.tabName) {
 				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
+    				$scope.adjustMiddleSection();
 			}
 		}
      });
-
+/*
     $scope.$watch(function() {
 		return $('.msgview_bottom').height();
         },
@@ -51,7 +52,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     			$scope.adjustMiddleSection();
     		}
      });
-
+*/
     $rootScope.$on('pageResized', function() {
 	$scope.adjustMiddleSection();
     });
