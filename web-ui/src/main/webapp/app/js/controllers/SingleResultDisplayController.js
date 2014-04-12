@@ -80,8 +80,13 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		console.log('Botttom section height:');
 		console.log($scope.bottomSectionHeight);
 
-		$scope.middleSectionHeight = msgviewHeight - $scope.bottomSectionHeight;
-		
+		if ($scope.bottomSectionHeight == null) {
+				$scope.middleSectionHeight = msgviewHeight;
+		} else {
+                $scope.middleSectionHeight = msgviewHeight - $scope.bottomSectionHeight;
+		}
+
+
 		console.log('Middle section height:');
 		console.log($scope.middleSectionHeight);
 
