@@ -37,21 +37,22 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}, function(newval, oldval) {
 		if (newval !== oldval) {
 			if ($scope.activeTab === $scope.tabName) {
-				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
+//				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
+				$scope.adjustMiddleSection();
 			}
 		}
      });
-
+/*
     $scope.$watch(function() {
 		return $('.msgview_bottom').height();
         },
         function(newval, oldval) {
-            /*jshint unused:false */
+            //jshint unused:false
 		    if ($scope.activeTab === $scope.tabName) {
     			$scope.adjustMiddleSection();
     		}
      });
-
+*/
     $rootScope.$on('pageResized', function() {
 	$scope.adjustMiddleSection();
     });
