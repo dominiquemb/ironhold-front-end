@@ -319,7 +319,7 @@ public class MessageSearchBuilder {
 
         if (fromDomainFacet) {
             builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_FROM_DOMAIN.getValue()).exclude("unknown").field(
-                    IndexFieldEnum.FROM_DOMAIN.getValue()), loginUser));
+                    IndexFieldEnum.FROM_DOMAIN.getValue()).script("term.toLowerCase()"), loginUser));
         }
 
         if (toFacet) {
@@ -329,12 +329,11 @@ public class MessageSearchBuilder {
 
         if (toDomainFacet) {
             builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_TO_DOMAIN.getValue()).exclude("unknown").field(
-                    IndexFieldEnum.TO_DOMAIN.getValue()), loginUser));
+                    IndexFieldEnum.TO_DOMAIN.getValue()).script("term.toLowerCase()"), loginUser));
         }
-
         if (fileExtFacet) {
             builder.addFacet(applyLoginFilters(FacetBuilders.termsFacet(FacetGroupName.FACET_FILEEXT.getValue()).field(
-                    IndexFieldEnum.FILEEXT.getValue()), loginUser));
+                    IndexFieldEnum.FILEEXT.getValue()).script("term.toLowerCase()"), loginUser));
         }
 
         if (msgTypeFacet) {
