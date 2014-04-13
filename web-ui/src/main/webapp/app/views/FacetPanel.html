@@ -12,7 +12,7 @@
 	    <div class="widget-header clickable" data-ng-click="collapseFacet(facet)">
 		<div class="collapse-trigger" data-ng-class="{'caret-four-thirty-down': !isCollapsed(facet), 'caret-four-thirty-up': isCollapsed(facet)}"></div>
 		<span class="filter-list-name">
-					    {{ facet.name.label }}
+					    {{ facet.name.label | truncate: 16 }}
 		</span>
 	    </div>
 	    <div class="widget-body collapse" data-ng-class="{'in': !isCollapsed(facet)}">
@@ -23,13 +23,16 @@
 			    <div class="pull-left checkbox">
 				<i class="img-xs checkmark-icon"></i>
 			    </div>
-				<span class="filter-name truncate" tooltip="{{ originalText }}"
-				      tooltip-animation="true" trunc-text="{{ facetValue.label }}"
-				      trunc-font-width="7" trunc-desired-height="21"
-				      trunc-trailing-dots="true"></span>
-                <span class="text-primary filter-value">
-                    {{ facetValue.value }}
-                </span>
+				<span class="filter-name" title="{{ facetValue.label }}" data-ng-show="facetValue.label.length >= 16">
+					{{ facetValue.label | truncate : 16 }}
+				</span>
+				<span class="filter-name" data-ng-show="facetValue.label.length < 16">
+					{{ facetValue.label }}
+					
+				</span>
+				<span class="text-primary filter-value">
+				    {{ facetValue.value }}
+				</span>
 			</li>
 		    </ul>
 		</div>
