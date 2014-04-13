@@ -921,6 +921,12 @@ body pre {
 }
 
 /* table */
+.table {
+	border-left: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
 .table.no-margin {
 	margin: 0px;
 }
@@ -952,6 +958,20 @@ body pre {
 
 .table tbody > tr > td {
 	padding: 4px 3px 8px;
+}
+
+body .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+	padding: 3px 5px;
+	border-right: 1px solid #DDD;
+	color: #333;
+	font-size: 12px;
+}
+
+body .table thead tr th {
+	text-transform: uppercase;
+	font-size: 11px;
+	vertical-align: middle;
+	text-shadow: #fff 1px 1px 0px;
 }
 
 /* navbar */
