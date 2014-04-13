@@ -9,6 +9,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.messages = [];
     $scope.matches = 0;
     $scope.showSearchResults = false;
+    $scope.currentMessageNumber = -1;
     $scope.inputSearch = null;
     $scope.highlightActive = false;
     $scope.messageTypeTable = {
@@ -31,6 +32,24 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         if ($scope.activeTab === $scope.tabName) {
             $scope.mode = mode;
         }
+    });
+
+    $rootScope.$on('selectBelowMessage', function() {
+        if ($scope.activeTab === $scope.tabName) {
+		if (($scope.currentMessageNumber + 1) >= 0) {
+			$scope.currentMessageNumber++;
+			$scope.selectMessage($scope.messages[$scope.currentMessageNumber], $scope.currentMessageNumber);
+		}
+	}
+    });
+
+    $rootScope.$on('selectAboveMessage', function() {
+        if ($scope.activeTab === $scope.tabName) {
+		if (($scope.currentMessageNumber - 1) >= 0) {
+			$scope.currentMessageNumber--;
+			$scope.selectMessage($scope.messages[$scope.currentMessageNumber], $scope.currentMessageNumber);
+		}
+	}
     });
 
     $rootScope.$on('results', function(evt, args) {
@@ -87,6 +106,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             angular.forEach($scope.messages, function(message) {
                 message.selected = false;
             });
+	    $scope.currentMessageNumber = 0;
         /*
             $scope.$emit('updateSearch', {
                 inputSearch: $scope.inputSearch
@@ -95,15 +115,20 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         }
     };
 
-    $scope.selectMessage = function(message) {
+    $scope.selectMessage = function(message, key) {
         if ($scope.activeTab === $scope.tabName) {
             if ($scope.messages.length > 0) {
                 $scope.unselectAllMessages();
                 if (!$scope.highlightActive) {
                     message.selected = !message.selected;
+
+		    if (message.selected) {
+		    	$scope.currentMessageNumber = key;
+		    }	
                 }
                 else {
                     message.selected = true;
+		    $scope.currentMessageNumber = key;
                 }
                 $scope.unhighlightAllMessages();
 

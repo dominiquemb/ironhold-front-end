@@ -1,7 +1,7 @@
 <ul class="results message-list">
-    <li class="result message-item message-item-unbordered" data-ng-repeat="message in messages"
-	data-ng-class="{'active-single': message.selected, 'active-multi': message.highlighted}">
-	<table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message)">
+    <li class="result message-item message-item-unbordered" data-ng-repeat="(key, message) in messages"
+	data-ng-class="{'active-single': currentMessageNumber === key, 'active-multi': message.highlighted}">
+	<table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message, key)">
 	    <tbody>
 	    <tr>
 		<td>
