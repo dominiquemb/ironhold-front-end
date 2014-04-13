@@ -129,6 +129,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.mode = 'text';
 		$scope.modeData = {};
 		$scope.showContainer = false;
+		$state.go('loggedin.main.text');
 	}
     });
 
