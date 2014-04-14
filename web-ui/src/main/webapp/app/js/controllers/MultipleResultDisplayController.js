@@ -55,12 +55,13 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $rootScope.$on('results', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
-	    $scope.showLoading = false;
             $scope.messages = args.resultEntries;
 
             $scope.matches = args.matches;
             if ($scope.matches > 0) {
                 $scope.showSearchResults = true;
+		clearTimeout($scope.loadingTimeout);
+	    	$scope.showLoading = false;
                 $scope.$emit('showSearchResults', true);
             }
         }
@@ -69,7 +70,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
             $scope.inputSearch = args.inputSearch;
-	    setTimeout(function() {
+	    $scope.loadingTimeout = setTimeout(function() {
 		$scope.showLoading = true;
 	    }, 2000);
         }
