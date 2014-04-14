@@ -61,19 +61,19 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
         if (showhide && !$scope.searchProgressTimer) {
             $scope.searchProgressTimer = setInterval(function() {
                 $('.search-progress-text').html(
-                    $('.search-progress-text').html() + '...'
+                    $('.search-progress-text').html() + ' . . .'
                 );
                 $scope.searchProgressCount++;
                 if ($scope.searchProgressCount > 2) {
-                    $('.search-progress-text').html('Searching...');
+                    $('.search-progress-text').html('Searching . . .');
                     $scope.searchProgressCount = 0;
                 }
                 $scope.$apply();
-            }, 500);
+            }, 1000);
         } else if (!showhide) {
             clearInterval($scope.searchProgressTimer);
             $scope.searchProgressTimer = false;
-            $('.search-progress-text').html('Searching...');
+            $('.search-progress-text').html('Searching . . .');
             $scope.showSortingPanel = true;
         }
         $scope.searchProgressShow = showhide;

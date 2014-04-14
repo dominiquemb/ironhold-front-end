@@ -172,7 +172,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		});
 
 		$scope.$emit('modeRequest', {
-            mode: 'logs',
+            mode: 'logsfdhsfshdiu',
             date: curDate,
             messageId: msgId
         });

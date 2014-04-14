@@ -5,8 +5,8 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'search';
-    $scope.facetAreaShort = true;
-    $scope.limitFacets = true;
+    $scope.facetAreaShort = false;
+    $scope.limitFacets = false;
     $scope.initialState = true;
 });
 
