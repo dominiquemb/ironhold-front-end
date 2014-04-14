@@ -1575,6 +1575,8 @@ body ul {
 	padding: 0px;
 	cursor: pointer;
 	color: #333;
+	max-width: 100%;
+	word-wrap: break-word;
 }
 
 .results .result:hover {
@@ -1593,6 +1595,12 @@ body ul {
 .results .result.active-multi .widget-main {
 	color: #999;
 	line-height: 14px;
+}
+
+.result .result-message-inner {
+	margin-right: 26px;
+	padding-top: 4px;
+	padding-bottom: 8px;
 }
 
 .result .message-icons {
@@ -1738,9 +1746,18 @@ body ul {
 	max-width: 18px;
 	padding-left: 2px;
 	padding-right: 3px;
-	vertical-align: middle;
 	background-color: transparent;
 	color: rgb(158, 157, 157);
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+}
+
+.result .checkmark-icon {
+	margin-top: -7px;
+	position: absolute;
+	top: 50%;
 }
 
 .result .checkmark:hover {

@@ -1,109 +1,108 @@
 <ul class="results message-list">
     <li class="result message-item message-item-unbordered" data-ng-repeat="(key, message) in messages"
 	data-ng-class="{'active-single': currentMessageNumber === key, 'active-multi': message.highlighted}">
-	<table class="table table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message, key)">
-	    <tbody>
-	    <tr>
-		<td>
-		    <div class="message-first-line">
-			    <span class="message-icons pull-left" data-ng-init="type = getMessageType(message)">
-				    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
-				    <i title="{{ type.title }}" data-ng-class="type.type"
-				       class="pull-left img-xs"></i>
-				    <i class="img-xs importance-xs pull-left" data-ng-class="getImportance(message)"></i>
-			    </span>
-				<span class="pull-left message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
-					{{ message.formattedIndexedMailMessage.sender.name }}
-				</span>
-				<span class="pull-right message-stats">
-					<span class="pull-left message-age">
-						{{ message.formattedIndexedMailMessage.age }} - &nbsp;
+	<div class="table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message, key)">
+		<div class="result-message">
+			<div class="result-message-inner">
+			    <div class="message-first-line">
+				    <span class="message-icons pull-left" data-ng-init="type = getMessageType(message)">
+					    <i data-ng-show="hasAttachment(message)" class="img-xs attachment-img-xs pull-right"></i>
+					    <i title="{{ type.title }}" data-ng-class="type.type"
+					       class="pull-left img-xs"></i>
+					    <i class="img-xs importance-xs pull-left" data-ng-class="getImportance(message)"></i>
+				    </span>
+					<span class="pull-left message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
+						{{ message.formattedIndexedMailMessage.sender.name }}
 					</span>
-					<span class="pull-right message-date">
-					    {{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}
+					<span class="pull-right message-stats">
+						<span class="pull-left message-age">
+							{{ message.formattedIndexedMailMessage.age }} - &nbsp;
+						</span>
+						<span class="pull-right message-date">
+						    {{ message.formattedIndexedMailMessage.dayName }} {{ message.formattedIndexedMailMessage.messageDate }}
+						</span>
 					</span>
-				</span>
-		    </div>
-		    <div class="message-second-line">
-			    <div class="message-size pull-left">
-                        		{{ message.formattedIndexedMailMessage.formattedSize.substr(0, message.formattedIndexedMailMessage.formattedSize.length-1).replace(' ','') }}
+
 			    </div>
-			    <div class="message-subject pull-left">
-				<span data-ng-show="message.subjectWithHighlights.length > 0" data-ng-bind-html="message.subjectWithHighlights"></span>
-				<span data-ng-show="(message.subjectWithHighlights.length == 0) || !(message.subjectWithHighlights)">(no subject)</span>
+			    <div class="message-second-line">
+				    <div class="message-size pull-left">
+						{{ message.formattedIndexedMailMessage.formattedSize.substr(0, message.formattedIndexedMailMessage.formattedSize.length-1).replace(' ','') }}
+				    </div>
+				    <div class="message-subject pull-left">
+					<span data-ng-show="message.subjectWithHighlights.length > 0" data-ng-bind-html="message.subjectWithHighlights"></span>
+					<span data-ng-show="(message.subjectWithHighlights.length == 0) || !(message.subjectWithHighlights)">(no subject)</span>
+				    </div>
 			    </div>
-		    </div>
-		    <div class="message-recipients">
-				<div class="message-recipients-line" data-ng-show="message.formattedIndexedMailMessage.toLine.length > 0">
-					<span class="to-label">To:</span>
-	<!--                                    <span style="position:absolute;top:0px;right:0px;left:20px;word-wrap:break-word;height:13px;" class="truncate"
-					     trunc-text="{{ message.formattedIndexedMailMessage.toLine }}"
-					     trunc-desired-height="13"
-					     trunc-font-width="6" trunc-trailing-dots="true">
-	-->
-					<span class="to-content">
-						{{ message.formattedIndexedMailMessage.toLine }}
-					</span>
-				</div>
-				<div class="message-recipients-line" data-ng-show="message.formattedIndexedMailMessage.ccLine.length > 0">
-					<span class="cc-label">Cc:</span>
-	<!--                                    <span style="position:absolute;top:0px;right:0px;left:23px;word-wrap:break-word;height:13px;" class="truncate"
-					     trunc-text="{{ message.formattedIndexedMailMessage.ccLine }}"
-					     trunc-desired-height="13"
-					     trunc-font-width="6" trunc-trailing-dots="true">
-	-->
-					<span class="bcc-content">
-						{{ message.formattedIndexedMailMessage.ccLine }}
-					</span>
-				</div>
-				<div class="message-recipients-line" data-ng-show="message.formattedIndexedMailMessage.bccLine.length > 0">
-					<span class="bcc-label">Bcc/Dl:</span>
-	<!--                                    <span style="position:absolute;top:0px;right:0px;left:50px;word-wrap:break-word;height:13px;" class="truncate"
-					     trunc-text="{{ message.formattedIndexedMailMessage.bccLine }}"
-					     trunc-desired-height="13"
-					     trunc-font-width="8" trunc-trailing-dots="true">
-	-->
-					<span class="bcc-content">
-						{{ message.formattedIndexedMailMessage.bccLine }}
-					</span>
-				</div>
-		      </div>
-		      <div>
-			    <div class="body-preview preview widget-box widget-box-simple">
-				<span class="pull-left">
-					<span class="dropdown-title">Body:</span>
-				</span>
-				<div class="widget-body">
-					<div class="widget-body-inner">
-						<div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true"></div>
-<!--						<div class="widget-main gray-medium" data-ng-bind-html="message.bodyWithHighlights"></div>
--->
-			    		</div>
-				</div>
-			    </div>
-			    <div class="attachment-preview preview widget-box widget-box-simple result-attachment" data-ng-show="hasAttachment(message)">
+			    <div class="message-recipients">
+					<div class="message-recipients-line" data-ng-show="message.formattedIndexedMailMessage.toLine.length > 0">
+						<span class="to-label">To:</span>
+		<!--                                    <span style="position:absolute;top:0px;right:0px;left:20px;word-wrap:break-word;height:13px;" class="truncate"
+						     trunc-text="{{ message.formattedIndexedMailMessage.toLine }}"
+						     trunc-desired-height="13"
+						     trunc-font-width="6" trunc-trailing-dots="true">
+		-->
+						<span class="to-content">
+							{{ message.formattedIndexedMailMessage.toLine }}
+						</span>
+					</div>
+					<div class="message-recipients-line" data-ng-show="message.formattedIndexedMailMessage.ccLine.length > 0">
+						<span class="cc-label">Cc:</span>
+		<!--                                    <span style="position:absolute;top:0px;right:0px;left:23px;word-wrap:break-word;height:13px;" class="truncate"
+						     trunc-text="{{ message.formattedIndexedMailMessage.ccLine }}"
+						     trunc-desired-height="13"
+						     trunc-font-width="6" trunc-trailing-dots="true">
+		-->
+						<span class="bcc-content">
+							{{ message.formattedIndexedMailMessage.ccLine }}
+						</span>
+					</div>
+					<div class="message-recipients-line" data-ng-show="message.formattedIndexedMailMessage.bccLine.length > 0">
+						<span class="bcc-label">Bcc/Dl:</span>
+		<!--                                    <span style="position:absolute;top:0px;right:0px;left:50px;word-wrap:break-word;height:13px;" class="truncate"
+						     trunc-text="{{ message.formattedIndexedMailMessage.bccLine }}"
+						     trunc-desired-height="13"
+						     trunc-font-width="8" trunc-trailing-dots="true">
+		-->
+						<span class="bcc-content">
+							{{ message.formattedIndexedMailMessage.bccLine }}
+						</span>
+					</div>
+			      </div>
+			      <div>
+				    <div class="body-preview preview widget-box widget-box-simple">
 					<span class="pull-left">
-						<span class="dropdown-title">Attachment:</span>
+						<span class="dropdown-title">Body:</span>
 					</span>
 					<div class="widget-body">
 						<div class="widget-body-inner">
-<!--							<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true">
--->
-							<div class="widget-main gray-medium" data-ng-bind-html="message.attachmentWithHighlights">
+							<div data-ng-click="selectMessage(message)" class="widget-main gray-medium truncate" trunc-text="{{ message.bodyWithHighlights }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true"></div>
+	<!--						<div class="widget-main gray-medium" data-ng-bind-html="message.bodyWithHighlights"></div>
+	-->
+						</div>
+					</div>
+				    </div>
+				    <div class="attachment-preview preview widget-box widget-box-simple result-attachment" data-ng-show="hasAttachment(message)">
+						<span class="pull-left">
+							<span class="dropdown-title">Attachment:</span>
+						</span>
+						<div class="widget-body">
+							<div class="widget-body-inner">
+	<!--							<div class="widget-main gray-medium truncate" trunc-text="{{ attachment.body }}" trunc-desired-height="41" trunc-font-width="6" trunc-trailing-dots="true">
+	-->
+								<div class="widget-main gray-medium" data-ng-bind-html="message.attachmentWithHighlights">
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+				<div class="message-flag">
+				    <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
+				</div>
 			</div>
-		</td>
-		<td class="message-flag">
-		    <i data-ng-show="isImportanceEqualTo(message, 'high')" class="fa icon-flag"></i>
-		</td>
-		<td class="checkmark" data-ng-click="highlightMessage($event, message)">
-		    <i class="img-xs checkmark-icon"></i>
-		</td>
-	    </tr>
-	    </tbody>
-	</table>
+			<div class="checkmark" data-ng-click="highlightMessage($event, message)">
+			    <i class="img-xs checkmark-icon"></i>
+			</div>
+		</div>
+	</div>
     </li>
 </ul>
