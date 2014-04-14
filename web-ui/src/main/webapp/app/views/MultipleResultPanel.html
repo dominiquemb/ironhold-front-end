@@ -1,4 +1,9 @@
 <ul class="results message-list">
+    <li>
+	<div class="loading" data-ng-show="showLoading">
+		Loading...
+	</div>
+    </li>
     <li class="result message-item message-item-unbordered" data-ng-repeat="(key, message) in messages"
 	data-ng-class="{'active-single': currentMessageNumber === key, 'active-multi': message.highlighted}">
 	<div class="table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message, key)">

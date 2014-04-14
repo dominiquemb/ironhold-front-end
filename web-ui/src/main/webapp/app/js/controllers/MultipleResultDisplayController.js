@@ -11,6 +11,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.showSearchResults = false;
     $scope.currentMessageNumber = -1;
     $scope.inputSearch = null;
+    $scope.showLoading = false;
     $scope.highlightActive = false;
     $scope.messageTypeTable = {
 	'bloomberg_message': 'Bloomberg Message',
@@ -54,6 +55,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $rootScope.$on('results', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
+	    $scope.showLoading = false;
             $scope.messages = args.resultEntries;
 
             $scope.matches = args.matches;
@@ -67,6 +69,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
             $scope.inputSearch = args.inputSearch;
+	    setTimeout(function() {
+		$scope.showLoading = true;
+	    }, 2000);
         }
     });
 

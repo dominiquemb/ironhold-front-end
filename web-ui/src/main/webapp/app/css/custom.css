@@ -10,32 +10,6 @@ html, body {
 	outline: 0px !important;
 }
 
-.modal {
-	display: block;
-	background-color: #fff;
-	max-width: 70%;
-	min-width: 500px;
-	margin: auto;
-	max-height: 80%;
-	min-height: 200px;
-	overflow: hidden;	
-}
-
-.modal .modal-header {
-	background-color: #e1e1e1;
-}
-
-.modal .modal-footer {
-	position: absolute;
-	width: 100%;
-	bottom: 0px;
-}
-
-.modal-textarea {
-	min-height: 50px;
-	width: 100%;
-}
-
 body a {
 	color: #2e68b1;
 	cursor: pointer;
@@ -87,6 +61,44 @@ body pre {
 	margin-left: 4px;
 	font-size: 12px;
 }
+
+/* loading message */
+
+.loading {
+	color: #999;
+	font-size: 48px;
+	width: 100%;
+	text-align: center;
+}
+
+/* modal */ 
+
+.modal {
+	display: block;
+	background-color: #fff;
+	max-width: 70%;
+	min-width: 500px;
+	margin: auto;
+	max-height: 80%;
+	min-height: 200px;
+	overflow: hidden;	
+}
+
+.modal .modal-header {
+	background-color: #e1e1e1;
+}
+
+.modal .modal-footer {
+	position: absolute;
+	width: 100%;
+	bottom: 0px;
+}
+
+.modal-textarea {
+	min-height: 50px;
+	width: 100%;
+}
+
 
 /* errors */
 .errors {
@@ -1598,7 +1610,7 @@ body ul {
 }
 
 .result .result-message-inner {
-	margin-right: 26px;
+	margin-right: 43px;
 	padding-top: 4px;
 	padding-bottom: 8px;
 }
