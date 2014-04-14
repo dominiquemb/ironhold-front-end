@@ -45,11 +45,11 @@ ironholdApp.controller('FooterController', function ($http, $resource, $window, 
 
     $rootScope.$on('updateFooter', function(evt, results) {
         if ($scope.activeTab === $scope.tabName) {
-		var newFilters = (results.selectedFacets === $scope.selectedFacets) ? true : false;
+//		var newFilters = (results.selectedFacets === $scope.selectedFacets) ? true : false;
 		
 		$scope.showFooterSearchStats = true;
 
-		if ($scope.searchMatches > 0 && newFilters && results.selectedFacets.length > 0) {
+		if ($scope.searchMatches > 0 && results.selectedFacets.length > 0) {
 			$scope.afterFilter = results.searchMatches;
 			$scope.showAfterFilter = true;
 		}

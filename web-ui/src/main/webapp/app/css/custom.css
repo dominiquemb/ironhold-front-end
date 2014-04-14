@@ -921,6 +921,12 @@ body pre {
 }
 
 /* table */
+.table {
+	border-left: 1px solid #ddd;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
 .table.no-margin {
 	margin: 0px;
 }
@@ -952,6 +958,20 @@ body pre {
 
 .table tbody > tr > td {
 	padding: 4px 3px 8px;
+}
+
+body .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+	padding: 3px 5px;
+	border-right: 1px solid #DDD;
+	color: #333;
+	font-size: 12px;
+}
+
+body .table thead tr th {
+	text-transform: uppercase;
+	font-size: 11px;
+	vertical-align: middle;
+	text-shadow: #fff 1px 1px 0px;
 }
 
 /* navbar */
@@ -1555,6 +1575,8 @@ body ul {
 	padding: 0px;
 	cursor: pointer;
 	color: #333;
+	max-width: 100%;
+	word-wrap: break-word;
 }
 
 .results .result:hover {
@@ -1573,6 +1595,12 @@ body ul {
 .results .result.active-multi .widget-main {
 	color: #999;
 	line-height: 14px;
+}
+
+.result .result-message-inner {
+	margin-right: 26px;
+	padding-top: 4px;
+	padding-bottom: 8px;
 }
 
 .result .message-icons {
@@ -1718,9 +1746,18 @@ body ul {
 	max-width: 18px;
 	padding-left: 2px;
 	padding-right: 3px;
-	vertical-align: middle;
 	background-color: transparent;
 	color: rgb(158, 157, 157);
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+}
+
+.result .checkmark-icon {
+	margin-top: -7px;
+	position: absolute;
+	top: 50%;
 }
 
 .result .checkmark:hover {

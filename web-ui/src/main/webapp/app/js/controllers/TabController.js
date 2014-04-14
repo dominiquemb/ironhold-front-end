@@ -20,6 +20,15 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 	$scope.$emit('clickEvent');
     };
 
+    $scope.evalKey = function(evt) {
+	if (evt.which === 40) {
+		$scope.$emit('selectBelowMessage');	
+	}
+	else if (evt.which === 38) {
+		$scope.$emit('selectAboveMessage');
+	}
+    };
+
     $rootScope.$on('pageChange', function(evt, info) {
         $scope.currentPage = info.page;
         $scope.$emit('updateSearch', {
