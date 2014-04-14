@@ -123,7 +123,11 @@ public class RandomEmailGenerator {
             attachment.setPath(file.getAbsolutePath());
             attachment.setDisposition(EmailAttachment.ATTACHMENT);
             attachment.setDescription(attachmentName);
-            attachment.setName(attachmentName + ".pdf");
+            if (Math.random() * 100 < 50) {
+                attachment.setName(attachmentName + ".PDF");
+            } else {
+                attachment.setName(attachmentName + ".pdf");
+            }
             email.attach(attachment);
 
             toBeDeleted.add(file);

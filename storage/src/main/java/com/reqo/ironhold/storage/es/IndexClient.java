@@ -176,7 +176,8 @@ public class IndexClient {
 
             SearchRequestBuilder request = esClient.prepareSearch(indexName)
                     .setTypes(type.getValue())
-                    .addField("_source");
+                    .addField("_source")
+                    .setSize(1000);
 
             if (sortField != null) {
                 request.addSort(sortField, order);

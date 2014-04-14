@@ -8,6 +8,8 @@ import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.web.domain.Attachment;
+import com.reqo.ironhold.web.domain.AuditActionEnum;
+import com.reqo.ironhold.web.domain.AuditLogMessage;
 import com.reqo.ironhold.web.domain.LoginUser;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -93,11 +94,20 @@ public class DownloadController extends AbstractController {
     String getRawMessageRequest(@PathVariable("year") int year,
                                 @PathVariable("month") int month,
                                 @PathVariable("day") int day,
-                                @PathVariable("messageId") String messageId) throws Exception {
+                                @PathVariable("messageId") final String messageId) throws Exception {
 
         FullDownloadRequest fullDownloadRequest = new FullDownloadRequest(getClientKey(), getUserName(), year, month, day, messageId);
 
         String id = UUID.randomUUID().toString();
+        final LoginUser loginUser = getLoginUser();
+        final String clientKey = getClientKey();
+
+        backgroundExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.DOWNLOAD, messageId, "entire message"));
+            }
+        });
 
         fullDownloadRequests.put(id, fullDownloadRequest);
 
@@ -117,8 +127,8 @@ public class DownloadController extends AbstractController {
             int year = fullDownloadRequest.year;
             int month = fullDownloadRequest.month;
             int day = fullDownloadRequest.day;
-            String messageId = fullDownloadRequest.messageId;
-            String clientKey = fullDownloadRequest.clientKey;
+            final String messageId = fullDownloadRequest.messageId;
+            final String clientKey = fullDownloadRequest.clientKey;
 
             logger.info(String.format("getRawMessage %d %d %d %s", year, month, day, messageId));
 
@@ -149,15 +159,23 @@ public class DownloadController extends AbstractController {
     String getRawAttachmentRequest(@PathVariable("year") int year,
                                    @PathVariable("month") int month,
                                    @PathVariable("day") int day,
-                                   @PathVariable("messageId") String messageId,
-                                   @PathVariable("attachment") String attachment) throws Exception {
+                                   @PathVariable("messageId") final String messageId,
+                                   @PathVariable("attachment") final String attachment) throws Exception {
 
         AttachmentRequest attachmentRequest = new AttachmentRequest(getClientKey(), getUserName(), year, month, day, messageId, attachment);
 
         String id = UUID.randomUUID().toString();
 
         attachmentRequests.put(id, attachmentRequest);
+        final LoginUser loginUser = getLoginUser();
+        final String clientKey = getClientKey();
 
+        backgroundExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.DOWNLOAD, messageId, attachment));
+            }
+        });
         return id;
     }
 
@@ -176,9 +194,9 @@ public class DownloadController extends AbstractController {
             int year = attachmentRequest.year;
             int month = attachmentRequest.month;
             int day = attachmentRequest.day;
-            String messageId = attachmentRequest.messageId;
-            String attachment = attachmentRequest.attachment;
-            String clientKey = attachmentRequest.clientKey;
+            final String messageId = attachmentRequest.messageId;
+            final String attachment = attachmentRequest.attachment;
+            final String clientKey = attachmentRequest.clientKey;
 
             logger.info(String.format("getRawAttachment %d %d %d %s %s", year, month, day, messageId, attachment));
 
@@ -191,6 +209,8 @@ public class DownloadController extends AbstractController {
             if (message.isHasAttachments()) {
                 for (Attachment attachmentObject : message.getAttachments()) {
                     if (attachmentObject.getFileName().equals(attachment)) {
+
+
                         byte[] byteArray = Base64.decodeBase64(attachmentObject.getBody().getBytes());
                         response.setContentType(attachmentObject.getContentType());
                         response.setContentLength(byteArray.length);

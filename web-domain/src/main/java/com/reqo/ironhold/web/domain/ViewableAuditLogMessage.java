@@ -2,6 +2,8 @@ package com.reqo.ironhold.web.domain;
 
 import com.gs.collections.api.block.function.Function;
 
+import java.text.SimpleDateFormat;
+
 /**
  * User: ilya
  * Date: 4/11/14
@@ -10,6 +12,7 @@ import com.gs.collections.api.block.function.Function;
 public class ViewableAuditLogMessage {
     private final String description;
     private final AuditLogMessage auditLogMessage;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/YYYY HH:mm");
 
     public static Function<ViewableAuditLogMessage, Comparable> SORT_BY_CONTEXT = new Function<ViewableAuditLogMessage, Comparable>() {
         @Override
@@ -38,5 +41,9 @@ public class ViewableAuditLogMessage {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getTimestamp() {
+        return dateFormat.format(this.auditLogMessage.getTimestamp());
     }
 }

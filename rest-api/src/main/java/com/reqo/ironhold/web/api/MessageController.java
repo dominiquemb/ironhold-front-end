@@ -16,8 +16,6 @@ import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -98,7 +93,7 @@ public class MessageController extends AbstractController {
     @Secured("ROLE_CAN_SEARCH")
     public
     @ResponseBody
-    ApiResponse<MessageSearchResponse> getMessagesWithFacetValues(@RequestParam String criteria,
+    ApiResponse<MessageSearchResponse> getMessagesWithFacetValues(@RequestParam final String criteria,
                                                                   @RequestParam(required = false, defaultValue = "SCORE") String sortField,
                                                                   @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
                                                                   @RequestParam(required = false, defaultValue = "10") int pageSize,
@@ -119,8 +114,18 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
-        for (MessageMatch match : result.getMessages()) {
+        final String clientKey = getClientKey();
+        final LoginUser loginUser = getLoginUser();
+
+        for (final MessageMatch match : result.getMessages()) {
             match.optimize();
+            backgroundExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.PREVIEW, match.getFormattedIndexedMailMessage().getMessageId(), criteria));
+                }
+            });
+
         }
 
         apiResponse.setPayload(result);
@@ -158,8 +163,14 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
-        for (MessageMatch match : result.getMessages()) {
+        for (final MessageMatch match : result.getMessages()) {
             match.optimize();
+            backgroundExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.PREVIEW, match.getFormattedIndexedMailMessage().getMessageId(), criteria));
+                }
+            });
         }
 
         backgroundExecutor.execute(new Runnable() {
@@ -179,7 +190,7 @@ public class MessageController extends AbstractController {
     @RequestMapping(method = RequestMethod.GET, value = "/{messageId:.+}")
     public
     @ResponseBody
-    ApiResponse<MessageSearchResponse> getMessage(@PathVariable("messageId") String messageId, @RequestParam String criteria) {
+    ApiResponse<MessageSearchResponse> getMessage(@PathVariable("messageId") String messageId, @RequestParam final String criteria) {
         logger.info(String.format("getMessage %s %s", messageId, criteria));
 
         ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
@@ -189,8 +200,18 @@ public class MessageController extends AbstractController {
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
 
-        for (MessageMatch match : result.getMessages()) {
+        final String clientKey = getClientKey();
+        final LoginUser loginUser = getLoginUser();
+
+        for (final MessageMatch match : result.getMessages()) {
             match.optimize();
+            backgroundExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.VIEW, match.getFormattedIndexedMailMessage().getMessageId(), criteria));
+                }
+            });
+
         }
 
         apiResponse.setPayload(result);
@@ -217,56 +238,7 @@ public class MessageController extends AbstractController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/download")
-    public
-    @ResponseBody
-    String getRawMessage(@PathVariable("year") int year,
-                         @PathVariable("month") int month,
-                         @PathVariable("day") int day,
-                         @PathVariable("messageId") String messageId) throws Exception {
-        logger.info(String.format("getRawMessage %d %d %d %s", year, month, day, messageId));
 
-        String partition = String.format("%4d", year);
-        String subPartition = String.format("%02d%02d", month, day);
-        return mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
-
-    }
-
-
-    @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/download/{attachment:.+}")
-    public void getRawAttachment(@PathVariable("year") int year,
-                                 @PathVariable("month") int month,
-                                 @PathVariable("day") int day,
-                                 @PathVariable("messageId") String messageId,
-                                 @PathVariable("attachment") String attachment,
-                                 HttpServletResponse response) throws Exception {
-        logger.info(String.format("getRawAttachment %d %d %d %s %s", year, month, day, messageId, attachment));
-
-        String partition = String.format("%4d", year);
-        String subPartition = String.format("%02d%02d", month, day);
-        String source = mimeMailMessageStorageService.get(getClientKey(), partition, subPartition, messageId);
-        MimeMailMessage message = new MimeMailMessage();
-        message.loadMimeMessageFromSource(source);
-
-        if (message.isHasAttachments()) {
-            for (Attachment attachmentObject : message.getAttachments()) {
-                if (attachmentObject.getFileName().equals(attachment)) {
-                    byte[] byteArray = Base64.decodeBase64(attachmentObject.getBody().getBytes());
-                    response.setContentType(attachmentObject.getContentType());
-                    response.setContentLength(byteArray.length);
-                    response.setHeader("Content-Disposition", "attachment; filename=" + attachmentObject.getFileName());
-
-                    InputStream is = new ByteArrayInputStream(byteArray);
-                    IOUtils.copy(is, response.getOutputStream());
-                    response.flushBuffer();
-                    return;
-                }
-
-            }
-        }
-
-        throw new IllegalArgumentException(attachment + " not found");
-    }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/{year}/{month}/{day}/{messageId:.+}/headers")
@@ -299,7 +271,7 @@ public class MessageController extends AbstractController {
     ApiResponse<String> getBody(@PathVariable("year") int year,
                                 @PathVariable("month") int month,
                                 @PathVariable("day") int day,
-                                @PathVariable("messageId") String messageId) throws Exception {
+                                @PathVariable("messageId") final String messageId) throws Exception {
         logger.info(String.format("getBody %d %d %d %s", year, month, day, messageId));
 
         ApiResponse<String> response = new ApiResponse<>();
@@ -316,6 +288,16 @@ public class MessageController extends AbstractController {
         } else {
             response.setPayload(message.getBodyHTML().replaceAll("http://","https://"));
         }
+
+        final String clientKey = getClientKey();
+        final LoginUser loginUser = getLoginUser();
+
+        backgroundExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.VIEW, messageId));
+            }
+        });
 
         response.setStatus(ApiResponse.STATUS_SUCCESS);
         return response;
