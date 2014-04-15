@@ -1606,7 +1606,7 @@ body ul {
 
 /* results */
 .results {
-	margin: 0px 16px 31px 0px;
+	margin: 4px 16px 4px 0px;
 	position: relative;
 	float: left;
 	font-size: 11px;
