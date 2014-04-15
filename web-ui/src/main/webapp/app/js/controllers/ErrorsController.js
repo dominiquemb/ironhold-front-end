@@ -64,6 +64,12 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 	}
     };
 
+    $scope.clearTechError = function(id) {
+	if ($scope.activeTab === $scope.tabName) {
+	    $scope.techErrors.splice(id, 1);
+	}
+    };
+
     $scope.clearWarning = function(id) {
 	if ($scope.activeTab === $scope.tabName) {
 	    $scope.warnings.splice(id, 1);
