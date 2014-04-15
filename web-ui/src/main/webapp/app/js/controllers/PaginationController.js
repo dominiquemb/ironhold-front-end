@@ -4,6 +4,7 @@
 ironholdApp.controller('PaginationController', function ($http, $resource, $window, $rootScope, $scope) {
     $scope.currentPage = 1;
     $scope.showPagination = false;
+    $scope.pageSize = 20;
     $scope.totalPages = 0;
  
     $rootScope.$on('reset', function() {

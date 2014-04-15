@@ -922,7 +922,7 @@ body pre {
 }
 
 .close-button-gray {
-	background: url("../img/sprites/ImageSprite.png") repeat scroll -46px -18px;
+	background: url("../img/sprites/ImageSprite.png") -384px -18px;
 }
 
 .btn:hover .close-button-gray {

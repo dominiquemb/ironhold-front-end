@@ -1,6 +1,6 @@
 <ul class="pull-right pagination-plain text-primary" data-ng-show="showPagination && (totalPages > 1)">
 	<li data-ng-hide="currentPage==1">
-		<a class="pagination_prev" data-ng-click="goTo(currentPage - 1)">&lt; previous</a> |&nbsp;
+		<a title="Previous {{ pageSize}} results" class="pagination_prev" data-ng-click="goTo(currentPage - 1)">&lt; previous</a> |&nbsp;
 	</li>
 	<li class="active" data-ng-hide="currentPage==1">
 		pages <a class="pagination_1" data-ng-click="goTo(currentPage - 1)">{{ currentPage - 1 }}</a>,
@@ -17,7 +17,7 @@
 		&nbsp;<a class="pagination_3" data-ng-click="goTo(currentPage + 1)">{{currentPage + 1 }}</a>
 	</li>
 	<li data-ng-show="(currentPage + 1) <= totalPages">
-		&nbsp;| <a class="pagination_last" data-ng-click="goTo(currentPage + 1)">next &gt;</a>
+		&nbsp;| <a title="Next {{ pageSize }} results" class="pagination_last" data-ng-click="goTo(currentPage + 1)">next &gt;</a>
 	</li>
 </ul>
 
