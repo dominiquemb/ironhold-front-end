@@ -72,6 +72,15 @@ body pre {
 	font-weight: 700;
 }
 
+.loading-centered {
+	position: relative;
+	font-size: 40px;
+	margin: auto auto;
+	padding-top: 86px;
+	text-align: left;
+	width: 420px;
+}
+
 /* modal */ 
 
 .modal {
