@@ -102,7 +102,7 @@ public class UserController extends AbstractController {
 
     }
 
-    @Secured("ROLE_MANAGE_USERS")
+    @Secured("ROLE_CAN_MANAGE_USERS")
     @RequestMapping(method = RequestMethod.GET)
     public
     @ResponseBody
