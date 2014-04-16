@@ -13,6 +13,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.showNoResults = false;
     $scope.inputSearch = null;
     $scope.showLoading = false;
+    $scope.hidePlaceholderScroller = false;
     $scope.highlightActive = false;
     $scope.messageTypeTable = {
 	'bloomberg_message': 'Bloomberg Message',
@@ -64,7 +65,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		clearTimeout($scope.loadingTimeout);
 	    	$scope.showLoading = false;
                 $scope.$emit('showSearchResults', true);
-            }
+		$scope.showSearchResults = false;
+		$scope.hidePlaceholderScroller = true;
+		}
 	    else {
 	    	$scope.showNoResults = true;
 	    }

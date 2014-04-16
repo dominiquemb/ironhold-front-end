@@ -1,14 +1,23 @@
-<ul class="results message-list">
-    <li>
-	<div class="loading" data-ng-show="showLoading && !showNoResults">
-		<img src="img/Loading-Animation.gif" width="350" height="90" title="Loading..." />
-	</div>
-    </li>
-    <li>
-	<div class="loading" data-ng-show="!showLoading && showNoResults">
-		0 results
-	</div>
-    </li>
+<div class="results-initial" data-ng-hide="showPlaceholderScroller">
+	<div class="jspVerticalBar">
+		<div class="jspCap jspCapTop"></div>
+		<a class="jspArrow jspArrowUp disabled"></a>
+		<div class="jspTrack" style="height: 100%;">
+		</div>
+		<a class="jspArrow jspArrowDown disabled"></a>
+		<div class="jspCap jspCapBottom"></div>
+	</div>  
+</div>
+
+<div class="results message-list loading" data-ng-show="showLoading && !showNoResults">
+	<img alt="Loading..." src="img/Loading-Animation.gif" width="350" height="90" title="Loading..." />
+</div>
+
+<div class="results message-list loading" data-ng-show="!showLoading && showNoResults">
+	0 results
+</div>
+
+<ul class="results message-list" data-ng-show="messages.length > 0">
     <li class="result message-item message-item-unbordered" data-ng-repeat="(key, message) in messages"
 	data-ng-class="{'active-single': currentMessageNumber === key, 'active-multi': message.highlighted}">
 	<div class="table-bordered-outer-bottom no-margin" data-ng-click="selectMessage(message, key)">
