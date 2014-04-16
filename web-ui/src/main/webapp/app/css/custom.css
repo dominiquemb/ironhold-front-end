@@ -582,6 +582,15 @@ body pre {
 	color: #666;
 }
 
+.msgview_id {
+	font-family: 'Roboto Condensed';
+	overflow: hidden;
+	font-weight: 300;
+	font-size: 16px;
+	margin: 2px 0px 0px 0px;
+	color: #666;
+}
+
 .msgview_top h3 {
 	margin: 0px;
 }
