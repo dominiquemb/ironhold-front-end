@@ -59,7 +59,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
     $scope.adjustMiddleSection = function() {
-		console.log('Tab content height:');
+/*		console.log('Tab content height:');
 		console.log($('.msgview .tab-content').height());
 	
 		console.log('Controlbar height:');
@@ -67,16 +67,16 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
 		console.log('Top section height:');
 		console.log($('.msgview_top').outerHeight(true));
-
+*/
 		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true) + 4;
 
 		if ($('.msgview_bottom').height() == null) {
 			msgviewHeight -= 4;
 		}
-
+/*
 		console.log('Height of both middle section and bottom section:');
 		console.log(msgviewHeight);
-
+*/
 		$scope.bottomSectionHeight = $('.msgview_bottom').outerHeight(true);
 
 		console.log('Botttom section height:');

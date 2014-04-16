@@ -14,6 +14,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.suggestons = null;
     $scope.showSortingPanel = null;
     $scope.inputSearch = '';
+    $scope.searchPending = false;
     $scope.searchProgressShow = false;
     $scope.searchProgressTimer = false;
     $scope.searchProgressText = 'Searching...';
@@ -41,19 +42,12 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.search = function() {
         if ($scope.activeTab === $scope.tabName) {
-	    var disableFacets = false;
-
             $scope.currentlySearching(true);
             $scope.$emit('reset');
 
-	    if ($scope.searchMatches > 20000) {
-		disableFacets = true;
-	    }
+            $scope.$emit('searchPreviewRequest', $scope.inputSearch);
 
-            $scope.$emit('search', {
-                inputSearch: $scope.inputSearch,
-		disableFacets: disableFacets
-            });
+	    $scope.searchPending = true;
         }
     };
 
@@ -162,7 +156,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchPreview = function () {
         if ($scope.activeTab === $scope.tabName) {
             $scope.reset();
-                $scope.currentlySearching(false);
+            $scope.currentlySearching(false);
             $scope.$emit('searchPreviewRequest', $scope.inputSearch);
         }
     };
@@ -170,11 +164,24 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $rootScope.$on('searchPreviewData', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
+	    var disableFacets = false;
+
 	    $scope.currentlySearching(false);
             $scope.searchMatches = result.payload.matches;
             $scope.searchTime = result.payload.timeTaken;
             $scope.showSearchPreviewResults = true;
 	    $scope.showSortingPanel = false;
+
+	    if ($scope.searchPending) {
+		    if ($scope.searchMatches > 20000) {
+			disableFacets = true;
+		    }
+
+		    $scope.$emit('search', {
+			inputSearch: $scope.inputSearch,
+			disableFacets: disableFacets
+		    });
+	    }
 	}
     });
 

@@ -269,6 +269,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
                     $scope.$emit('facets', {
                     facets: result.payload.facets,
+		    disableFacets: args.disableFacets,
                     matches: result.payload.matches
                     });
 

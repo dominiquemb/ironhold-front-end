@@ -4,8 +4,12 @@
 	</span>
 </div>
 
-<div class="scrollbar-hidden filter-list" data-ng-show="showFacets">
-    <ul class="filter-list-inner">
+<div class="scrollbar-hidden filter-list">
+    <div class="loading loading-facets" data-ng-show="tooManyResults">
+	narrow down your search to 20 thousand or less results to see filters here
+    </div>
+
+    <ul class="filter-list-inner" data-ng-show="!tooManyResults && showFacets">
 <!--	<li class="widget-box widget-box-simple filter-container row" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
 -->
 	<li class="widget-box widget-box-simple filter-container row" data-ng-repeat="facet in facets">

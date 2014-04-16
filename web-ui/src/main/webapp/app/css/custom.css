@@ -81,6 +81,14 @@ body pre {
 	width: 420px;
 }
 
+.loading.loading-facets {
+	font-size: 18px;
+	padding-top: 43px; 
+	padding-right: 24px;
+	padding-left: 24px;
+	text-align: left;
+}
+
 /* modal */ 
 
 .modal {

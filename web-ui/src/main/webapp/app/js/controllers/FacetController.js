@@ -64,8 +64,13 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 			data.facets[facet].isCollapsed = false;
 		}
 		$scope.facets = data.facets;
+
 		if (data.facets.length > 0 && data.matches > 0) {
 			$scope.showFacets = true;
+		}
+
+		if (data.disableFacets) {
+			$scope.tooManyResults = true;
 		}
 	}
     });
