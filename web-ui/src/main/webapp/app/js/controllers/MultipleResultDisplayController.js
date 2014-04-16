@@ -194,6 +194,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             $scope.searchMessages = 0;
             $scope.matches = [];
             $scope.messages = [];
+	    $scope.currentMessageNumber = -1;
 	    $scope.showNoResults = false;
 	    $scope.showLoading = false;
             $scope.currentPage = 1;
