@@ -58,7 +58,7 @@ body pre {
 
 /* suggestions */
 .suggestions {
-	margin-left: 4px;
+	margin-left: 10px;
 	font-size: 12px;
 }
 
@@ -236,7 +236,7 @@ body pre {
 
 /* filter-tag */
 .filter-tag-container {
-	margin: 0px 6px;
+	margin: 0px 6px 0px 10px;
 	position: relative;
 	line-height: 18px;
 	width: auto;
@@ -302,7 +302,7 @@ body pre {
 	height: 20px;
 	padding: 0px;
 	margin: 0px;
-	padding: 1px 0px 0px 10px;
+	padding: 1px 0px 0px 8px;
 	border: 0px;
 	/*border-right: 1px solid #b5b5b5;*/
 	font-weight: normal;
@@ -935,6 +935,7 @@ body pre {
 .errors .error-xs {
 	margin-right: 5px;
 	margin-top: 1px;
+	margin-left: 2px;
 }
 
 .close-button-blue {
@@ -1254,7 +1255,7 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	color: #999;
 	font-size: 12px;
 	height: 22px;
-	margin-left: 2px;
+	margin-left: 5px;
 	line-height: 20px;
 }
 
