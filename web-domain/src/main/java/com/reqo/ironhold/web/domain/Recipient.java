@@ -7,7 +7,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Recipient {
     public static final Function<Recipient, String> TO_NAME = new Function<Recipient, String>() {
         @Override
@@ -26,12 +28,21 @@ public class Recipient {
 
     }
 
-    public Recipient(String name, String address) {
-        this.name = name == null ? getNameFromAddress(address) : name;
-        this.address = address;
-        this.domain = address != null && address.contains("@")
+    public static Recipient build(String name, String address) {
+        Recipient recipient = new Recipient();
+
+        if (name == null) {
+            recipient.setName(getNameFromAddress(address));
+        } else {
+            recipient.setName(name);
+        }
+
+        recipient.setAddress(address);
+        recipient.setDomain(address != null && address.contains("@")
                 && address.lastIndexOf('@') < address.length() ? address
-                .substring(address.lastIndexOf('@') + 1) : null;
+                .substring(address.lastIndexOf('@') + 1) : null);
+
+        return recipient;
     }
 
     public static String getNameFromAddress(String address) {
@@ -139,7 +150,7 @@ public class Recipient {
                     (int) name.charAt(0)));
         }
 
-        return new Recipient(name, result.getAddress());
+        return Recipient.build(name, result.getAddress());
     }
 
     private static Recipient updateNameAndAddress(Recipient recipient) {
@@ -148,19 +159,19 @@ public class Recipient {
             return recipient;
         } else {
             if (recipient.getAddress() == null) {
-                return new Recipient("unknown", "unknown");
+                return Recipient.build("unknown", "unknown");
             }
             String address = recipient.getAddress().trim();
             if (address.contains("@")) {
                 String name = address.substring(0, address.indexOf("@"));
                 if (name.trim().length() > 0) {
-                    return new Recipient(name, address);
+                    return Recipient.build(name, address);
                 } else {
-                    return new Recipient(address, address);
+                    return Recipient.build(address, address);
                 }
 
             } else {
-                return new Recipient(address, address);
+                return Recipient.build(address, address);
             }
         }
     }

@@ -38,7 +38,7 @@ import java.util.concurrent.Executors;
 @Controller
 @Secured("ROLE_CAN_LOGIN")
 @RequestMapping(value = "/messages")
-public class MessageController extends AbstractController {
+public class MessageController {
     @Autowired
     protected IMessageIndexService messageIndexService;
     @Autowired

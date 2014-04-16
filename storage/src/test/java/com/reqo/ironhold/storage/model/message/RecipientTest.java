@@ -16,7 +16,7 @@ public class RecipientTest {
 
     @Test
     public void testNormalizeNoWork() {
-        Recipient original = new Recipient("name", "address");
+        Recipient original = Recipient.build("name", "address");
         Recipient result = Recipient.normalize(original);
         Assert.assertEquals("unknown", result.getName());
         Assert.assertEquals("address", result.getAddress());
@@ -25,7 +25,7 @@ public class RecipientTest {
 
     @Test
     public void testNormalizeEmptyNameNoAtSign() {
-        Recipient original = new Recipient("", "address");
+        Recipient original = Recipient.build("", "address");
         Recipient result = Recipient.normalize(original);
         Assert.assertEquals("unknown", result.getName());
         Assert.assertEquals("address", result.getAddress());
@@ -34,7 +34,7 @@ public class RecipientTest {
 
     @Test
     public void testNormalizeEmptyNameWithAtSign() {
-        Recipient original = new Recipient("", "address@domain.com");
+        Recipient original = Recipient.build("", "address@domain.com");
         Recipient result = Recipient.normalize(original);
         Assert.assertEquals("unknown", result.getName());
         Assert.assertEquals("address@domain.com", result.getAddress());
@@ -43,7 +43,7 @@ public class RecipientTest {
 
     @Test
     public void testNormalizeEmptyNameWithNoNameAndAtSign() {
-        Recipient original = new Recipient("", "@domain.com");
+        Recipient original = Recipient.build("", "@domain.com");
         Recipient result = Recipient.normalize(original);
         Assert.assertEquals("unknown", result.getName());
         Assert.assertEquals("@domain.com", result.getAddress());
@@ -52,7 +52,7 @@ public class RecipientTest {
 
     @Test
     public void testNormalizeArrayEmptyNameWithNoNameAndAtSign() {
-        Recipient original = new Recipient("", "@domain.com");
+        Recipient original = Recipient.build("", "@domain.com");
         Recipient[] originals = new Recipient[1];
         originals[0] = original;
         Recipient[] result = Recipient.normalize(originals);
@@ -75,7 +75,7 @@ public class RecipientTest {
         List<String> lines = FileUtils.readLines(file);
         Set<String> cleanLines = new HashSet<String>();
         for (String line : lines) {
-            cleanLines.add(Recipient.normalize(new Recipient(line, line))
+            cleanLines.add(Recipient.normalize(Recipient.build(line, line))
                     .getName());
         }
         Assert.assertEquals(74704, lines.size());
@@ -90,7 +90,7 @@ public class RecipientTest {
         List<String> lines = FileUtils.readLines(file);
         Set<String> cleanLines = new HashSet<String>();
         for (String line : lines) {
-            cleanLines.add(Recipient.normalize(new Recipient(line, line))
+            cleanLines.add(Recipient.normalize(Recipient.build(line, line))
                     .getName());
         }
         Assert.assertEquals(125265, lines.size());
@@ -104,7 +104,7 @@ public class RecipientTest {
         List<String> lines = FileUtils.readLines(file);
         Set<String> cleanLines = new HashSet<String>();
         for (String line : lines) {
-            cleanLines.add(Recipient.normalize(new Recipient(line, line))
+            cleanLines.add(Recipient.normalize(Recipient.build(line, line))
                     .getName());
         }
         Assert.assertEquals(21468, lines.size());

@@ -150,7 +150,7 @@ public class LoginUserEditor extends Panel {
                     if (name.isValid() && email.isValid() && username.isValid() && password.isValid() && confirmPassword.isValid() && emailAddresses.isValid()) {
                         if (loginUser == null) {
                             loginUser = new LoginUser();
-                            loginUser.setMainRecipient(new Recipient(name.getValue(), email.getValue()));
+                            loginUser.setMainRecipient(Recipient.build(name.getValue(), email.getValue()));
                             loginUser.setName(name.getValue());
                             loginUser.setUsername(username.getValue());
                             int role = 0;
@@ -171,7 +171,7 @@ public class LoginUserEditor extends Panel {
                             List<Recipient> recipientList = new ArrayList<>();
                             for (String email : emailAddresses.getValue().trim().split("\n")) {
                                 if (!email.trim().isEmpty()) {
-                                    recipientList.add(new Recipient(name.getValue(), email.trim()));
+                                    recipientList.add(Recipient.build(name.getValue(), email.trim()));
                                 }
                             }
                             loginUser.setRecipients(recipientList);
@@ -184,7 +184,7 @@ public class LoginUserEditor extends Panel {
                             miscIndexService.store(client, loginUser);
                             window.setViewMode(null, loginUser);
                         } else {
-                            loginUser.setMainRecipient(new Recipient(name.getValue(), email.getValue()));
+                            loginUser.setMainRecipient(Recipient.build(name.getValue(), email.getValue()));
                             loginUser.setName(name.getValue());
                             loginUser.setUsername(username.getValue());
                             int role = 0;
@@ -206,7 +206,7 @@ public class LoginUserEditor extends Panel {
                             List<Recipient> recipientList = new ArrayList<>();
                             for (String email : emailAddresses.getValue().trim().split("\n")) {
                                 if (!email.trim().isEmpty()) {
-                                    recipientList.add(new Recipient(name.getValue(), email.trim()));
+                                    recipientList.add(Recipient.build(name.getValue(), email.trim()));
                                 }
                             }
                             loginUser.setRecipients(recipientList);

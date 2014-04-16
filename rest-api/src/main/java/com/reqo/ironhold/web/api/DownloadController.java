@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
  */
 @Controller
 @RequestMapping(value = "/download")
-public class DownloadController extends AbstractController {
+public class DownloadController {
     @Autowired
     protected IMessageIndexService messageIndexService;
     @Autowired

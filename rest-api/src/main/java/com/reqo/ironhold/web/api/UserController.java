@@ -10,6 +10,7 @@ import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
+import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.UserDetailsResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * User: ilya
@@ -31,7 +34,8 @@ import java.util.List;
 @Controller
 @Secured("ROLE_CAN_LOGIN")
 @RequestMapping(value = "/users")
-public class UserController extends AbstractController {
+public class UserController {
+    public static final String EMPTY_PASSWORD = "********";
     @Autowired
     protected IMessageIndexService messageIndexService;
     @Autowired
@@ -42,9 +46,11 @@ public class UserController extends AbstractController {
     protected IMimeMailMessageStorageService mimeMailMessageStorageService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final ExecutorService backgroundExecutor;
 
     public UserController() {
         super();
+        this.backgroundExecutor = Executors.newFixedThreadPool(10);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/searchHistory")
@@ -68,14 +74,13 @@ public class UserController extends AbstractController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{clientKey}/{username}")
+    @RequestMapping(method = RequestMethod.GET, value = "/{username}")
     public
     @ResponseBody
-    ApiResponse<UserDetailsResponse> getUserDetails(@PathVariable("clientKey") String clientKey,
-                                                    @PathVariable("username") String username) {
+    ApiResponse<UserDetailsResponse> getUserDetails(@PathVariable("username") String username) {
 
         ApiResponse<UserDetailsResponse> apiResponse = new ApiResponse<>();
-        final LoginUser loginUser = miscIndexService.getLoginUser(clientKey, username);
+        final LoginUser loginUser = miscIndexService.getLoginUser(getClientKey(), username);
         if (loginUser == null) {
             apiResponse.setPayload(null);
             apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
@@ -92,7 +97,7 @@ public class UserController extends AbstractController {
                         }
                     });
 
-            loginUser.setHashedPassword("********");
+            loginUser.setHashedPassword(EMPTY_PASSWORD);
             UserDetailsResponse result = new UserDetailsResponse(loginUser, roles);
             apiResponse.setPayload(result);
             apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
@@ -100,6 +105,22 @@ public class UserController extends AbstractController {
 
         return apiResponse;
 
+    }
+
+    @Secured("ROLE_CAN_MANAGE_USERS")
+    @RequestMapping(method = RequestMethod.POST)
+    public
+    @ResponseBody
+    void updateUser(@RequestBody LoginUser userDetails) {
+        final String clientKey = getClientKey();
+        final LoginUser loginUser = miscIndexService.getLoginUser(getClientKey(), userDetails.getUsername());
+        if (!loginUser.getHashedPassword().equals(EMPTY_PASSWORD)) {
+            userDetails.setHashedPassword(CheckSumHelper.getCheckSum(userDetails.getHashedPassword().getBytes()));
+            miscIndexService.store(clientKey, userDetails);
+        } else {
+            userDetails.setHashedPassword(loginUser.getHashedPassword());
+            miscIndexService.store(clientKey, userDetails);
+        }
     }
 
     @Secured("ROLE_CAN_MANAGE_USERS")

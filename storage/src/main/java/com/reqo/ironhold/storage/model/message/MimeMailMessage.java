@@ -348,18 +348,18 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                 if (mimeMessage.getFrom() != null) {
                     try {
                         internetAddress = (InternetAddress) mimeMessage.getFrom()[0];
-                        this.from = new Recipient(internetAddress.getPersonal(),
+                        this.from = Recipient.build(internetAddress.getPersonal(),
                                 internetAddress.getAddress());
 
                     } catch (AddressException e) {
-                        this.from = new Recipient(mimeMessage.getHeader("From")[0],
+                        this.from = Recipient.build(mimeMessage.getHeader("From")[0],
                                 mimeMessage.getHeader("From")[0]);
                     }
                 } else {
-                    this.from = new Recipient("unknown", "unknown");
+                    this.from = Recipient.build("unknown", "unknown");
                 }
             } catch (AddressException e) {
-                this.from = new Recipient(mimeMessage.getHeader("From")[0], "unknown");
+                this.from = Recipient.build(mimeMessage.getHeader("From")[0], "unknown");
             }
 
 
@@ -368,13 +368,13 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     for (Address address : mimeMessage
                             .getRecipients(Message.RecipientType.TO)) {
                         internetAddress = (InternetAddress) address;
-                        addTo(new Recipient(internetAddress.getPersonal(),
+                        addTo(Recipient.build(internetAddress.getPersonal(),
                                 internetAddress.getAddress()));
                     }
                 }
             } catch (AddressException e) {
                 for (String headerTo : mimeMessage.getHeader("TO")) {
-                    addTo(new Recipient(headerTo, headerTo));
+                    addTo(Recipient.build(headerTo, headerTo));
                 }
 
             }
@@ -384,13 +384,13 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     for (Address address : mimeMessage
                             .getRecipients(Message.RecipientType.CC)) {
                         internetAddress = (InternetAddress) address;
-                        addCc(new Recipient(internetAddress.getPersonal(),
+                        addCc(Recipient.build(internetAddress.getPersonal(),
                                 internetAddress.getAddress()));
                     }
                 }
             } catch (AddressException e) {
                 for (String headerCc : mimeMessage.getHeader("CC")) {
-                    addCc(new Recipient(headerCc, headerCc));
+                    addCc(Recipient.build(headerCc, headerCc));
                 }
 
             }
@@ -399,14 +399,14 @@ public class MimeMailMessage implements IHasMessageId, IPartitioned, ISubPartiti
                     for (Address address : mimeMessage
                             .getRecipients(Message.RecipientType.BCC)) {
                         internetAddress = (InternetAddress) address;
-                        addBcc(new Recipient(internetAddress.getPersonal(),
+                        addBcc(Recipient.build(internetAddress.getPersonal(),
                                 internetAddress.getAddress()));
                     }
                 }
 
             } catch (AddressException e) {
                 for (String headerBcc : mimeMessage.getHeader("BCC")) {
-                    addBcc(new Recipient(headerBcc, headerBcc));
+                    addBcc(Recipient.build(headerBcc, headerBcc));
                 }
 
             }

@@ -55,7 +55,7 @@ public class UserSetup {
         loginUser.setName(username);
         loginUser.setHashedPassword(CheckSumHelper.getCheckSum(password.getBytes()));
         loginUser.setRolesBitMask(role);
-        Recipient recipient = new Recipient(username, email);
+        Recipient recipient = Recipient.build(username, email);
         loginUser.setMainRecipient(recipient);
         miscIndexService.store(client, loginUser);
 

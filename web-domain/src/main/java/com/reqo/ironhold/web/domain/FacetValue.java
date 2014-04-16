@@ -1,6 +1,9 @@
 package com.reqo.ironhold.web.domain;
 
 import com.gs.collections.api.block.function.Function;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.Comparator;
@@ -78,25 +81,21 @@ public class FacetValue {
         this.facetName = facetName;
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
-        FacetValue that = (FacetValue) o;
+    @Override
+    public boolean equals(Object rhs) {
+        return EqualsBuilder.reflectionEquals(this, rhs);
 
-        if (value != that.value) return false;
-        if (facetName != null ? !facetName.equals(that.facetName) : that.facetName != null) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
-
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = label != null ? label.hashCode() : 0;
-        result = 31 * result + (int) (value ^ (value >>> 32));
-        result = 31 * result + (facetName != null ? facetName.hashCode() : 0);
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
+
 }
