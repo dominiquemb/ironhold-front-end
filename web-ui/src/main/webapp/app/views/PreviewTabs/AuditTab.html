@@ -17,6 +17,9 @@
 			<div class="scrollable-content sub-tab-content-inner">
 			    <div class="pull-right message-body-container">
 				
+				<div data-ng-show="!modeData.source.length && !modeData.audit.length && !modeData.logs.length">
+					No audit data available.
+				</div>
 				<div data-ng-show="modeData.source.length > 0">
 					<div>
 						Message Source
@@ -65,7 +68,7 @@
 					</table>
 				</div>
 
-				<div class="modeData.logs.length > 0">
+				<div data-ng-show="modeData.logs.length > 0">
 					<div>
 					    Message Log
 					</div>
