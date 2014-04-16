@@ -11,7 +11,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
     $scope.middleSectionHeight = 0;
-    $scope.showSelectMessage;
+    $scope.showSelectMessage = 0;
     $scope.bottomSectionHeight = 0;
     $scope.topSectionHeight = 0;
 
