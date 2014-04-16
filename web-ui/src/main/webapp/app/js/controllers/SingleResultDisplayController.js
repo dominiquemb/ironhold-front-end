@@ -127,11 +127,9 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentMessage = false;
 		$scope.showPreviewToolbar = false;
-		$scope.mode = 'text';
 		$scope.showSelectMessage = false;
 		$scope.modeData = {};
 		$scope.showContainer = false;
-		$state.go('loggedin.main.text');
 	}
     });
 

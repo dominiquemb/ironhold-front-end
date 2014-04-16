@@ -435,7 +435,7 @@ body pre {
 
 .msgview .sub-tab-content.scrollbar-hidden > .jspContainer > .jspPane {
 	right: 20px;
-	width: auto !important;
+	width: 100% !important;
 	left: 0px;
 }
 
@@ -655,7 +655,7 @@ body pre {
 .msgview_middle {
 	position: relative;
 	margin: 0px 0px;
-	width: auto !important;
+	width: 100% !important;
 	height: 200px;
 }
 
