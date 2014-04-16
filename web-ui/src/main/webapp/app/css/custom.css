@@ -73,6 +73,10 @@ body pre {
 	padding-top: 86px;
 }
 
+.listing .loading {
+	padding-top: 171px;
+}
+
 .loading-centered {
 	position: relative;
 	font-size: 40px;

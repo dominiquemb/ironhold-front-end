@@ -69,6 +69,9 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 		if (data.facets.length > 0 && data.matches > 0) {
 			$scope.showFacets = true;
 		}
+		else {
+			$scope.showFacets = false;
+		}
 
 		if (data.disableFacets) {
 			$scope.tooManyResults = true;
