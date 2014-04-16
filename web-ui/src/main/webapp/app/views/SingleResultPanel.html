@@ -25,29 +25,9 @@
 				from the list<br/>
 				to display here
 			</div>
-			<div class="msgview_main" data-ng-show="currentMessage">
-			    <div class="row msgview_top">
-				<div class="pull-left from-picture-container">
-				    <div class="from-picture empty-photo msgview_img-xl"></div>
+			<div class="msgview_main" data-ng-show="currentMessage"> 
+				<div data-ui-view>
 				</div>
-				<div class="pull-left header-container">
-				    <h3 class="gray-dark msgview_subject" data-ng-bind-html="currentMessage.subjectWithHighlights"></h3>
-				    <h4 class="msgview_date">
-					<span class="pull-left">
-						{{ currentMessage.formattedIndexedMailMessage.dayName }} {{ currentMessage.formattedIndexedMailMessage.messageDate }}
-						- {{ currentMessage.formattedIndexedMailMessage.age }}
-					</span>
-					<span class="pull-right">
-						{{ currentMessage.formattedIndexedMailMessage.formattedSize }}
-					</span>
-				    </h4>
-				</div>
-				<div class="message-header"></div>
-			    </div> <!-- msgview_top -->
-	
-			    <span class="msgview_content" data-ui-view>
-			    </span>
-
 			</div> <!-- msgview_main -->
 		</div> <!-- msgview -->
 	</div>
