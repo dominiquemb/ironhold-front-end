@@ -11,6 +11,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
     $scope.middleSectionHeight = 0;
+    $scope.showSelectMessage;
     $scope.bottomSectionHeight = 0;
     $scope.topSectionHeight = 0;
 
@@ -127,9 +128,19 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.currentMessage = false;
 		$scope.showPreviewToolbar = false;
 		$scope.mode = 'text';
+		$scope.showSelectMessage = false;
 		$scope.modeData = {};
 		$scope.showContainer = false;
 		$state.go('loggedin.main.text');
+	}
+    });
+
+    $rootScope.$on('results', function(evt, results) {
+	if (results.matches === 0) {
+		$scope.showSelectMessage = false;
+	}
+	else {
+		$scope.showSelectMessage = true;
 	}
     });
 
