@@ -79,19 +79,20 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 */
 		$scope.bottomSectionHeight = $('.msgview_bottom').outerHeight(true);
 
+/*
 		console.log('Botttom section height:');
 		console.log($scope.bottomSectionHeight);
-
+*/
 		if ($scope.bottomSectionHeight == null) {
 				$scope.middleSectionHeight = msgviewHeight;
 		} else {
                 $scope.middleSectionHeight = msgviewHeight - $scope.bottomSectionHeight;
 		}
 
-
+/*
 		console.log('Middle section height:');
 		console.log($scope.middleSectionHeight);
-
+*/
 		$('.msgview_middle').height($scope.middleSectionHeight);
 
     };
