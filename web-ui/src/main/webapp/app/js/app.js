@@ -307,6 +307,13 @@ ironholdApp.filter('to_trusted', ['$sce', function($sce){
         };
 }]);
 
+ironholdApp.filter('htmlToPlaintext', function() {
+    return function(text) {
+      return String(text).replace(/<[^>]+>/gm, '');
+    }
+  }
+);
+
 ironholdApp.filter('truncate', function () {
 	return function (text, length, end) {
 	    if (isNaN(length)) {

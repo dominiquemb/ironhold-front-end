@@ -8,10 +8,9 @@
 		<span>Error occurred, see details below</span>
         </div>
 	<div class="modal-details-title">Technical Error Details</div>
-	<textarea class="modal-textarea" readonly>
-		{{ modalError.message }} 
-	</textarea>
+	<div class="modal-textarea" data-ng-bind-html="modalError.message">
+	</div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default" ng-click="closeErrorDetails()">Cancel</button>
+    <button class="btn btn-primary" ng-click="closeErrorDetails()">Cancel</button>
 </div>
