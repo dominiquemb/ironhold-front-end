@@ -58,7 +58,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $rootScope.$on('results', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
             $scope.messages = args.resultEntries;
-            $scope.matches = args.matches;
+              $scope.matches = args.matches;
             if ($scope.matches > 0) {
 	    	$scope.showNoResults = false;
                 $scope.showSearchResults = true;
