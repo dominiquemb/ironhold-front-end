@@ -1,7 +1,7 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope, $modal) {
+ironholdApp.controller('ErrorsController', function ($http, $resource, $window, $rootScope, $scope, $timeout, $modal) {
     $scope.showErrors = false;
     $scope.showWarnings = false;
     $scope.errors = [];

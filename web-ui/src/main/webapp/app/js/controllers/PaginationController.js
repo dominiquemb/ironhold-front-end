@@ -1,7 +1,7 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('PaginationController', function ($http, $resource, $window, $rootScope, $scope) {
+ironholdApp.controller('PaginationController', function ($http, $resource, $window, $rootScope, $scope, $timeout) {
     $scope.currentPage = 1;
     $scope.showPagination = false;
     $scope.pageSize = 20;

@@ -1,7 +1,7 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('SearchbarController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService) {
+ironholdApp.controller('SearchbarController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $interval, Restangular, searchResultsService, $state, logInService) {
     logInService.confirmLoggedIn($state);
 
     var typingTimer;
