@@ -38,7 +38,7 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 			message: err
 		});
 
-		setTimeout(function() {
+		$timeout(function() {
 			$scope.clearError(id);
 		}, 5000);
 	}
@@ -52,7 +52,7 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 			message: msg
 		});
 		
-		setTimeout(function() {
+		$timeout(function() {
 			$scope.clearError(id);
 		}, 5000);
 	}
@@ -84,7 +84,7 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 			message: msg
 		});
 
-		setTimeout(function() {
+		$timeout(function() {
 			$scope.clearWarning(id);
 		}, 2000);
 	}

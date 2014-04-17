@@ -54,7 +54,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.currentlySearching = function(showhide) {
         if (showhide && !$scope.searchProgressTimer) {
-            $scope.searchProgressTimer = setInterval(function() {
+            $scope.searchProgressTimer = $interval(function() {
                 $('.search-progress-text').html(
                     $('.search-progress-text').html() + ' . . .'
                 );
@@ -66,7 +66,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
                 $scope.$apply();
             }, 1000);
         } else if (!showhide) {
-            clearInterval($scope.searchProgressTimer);
+            $interval.cancel($scope.searchProgressTimer);
             $scope.searchProgressTimer = false;
             $('.search-progress-text').html('Searching . . .');
             $scope.showSortingPanel = true;

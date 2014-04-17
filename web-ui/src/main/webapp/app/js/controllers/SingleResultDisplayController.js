@@ -147,7 +147,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
-		setTimeout(function() {
+		$timeout(function() {
 					$('.msgview_bottom').height( $('.msgview_bottom').height() + 'px' );
 					$('.msgview_bottom .jspVerticalBar').css('visibility', 'visible');
 					$scope.$emit('initCustomScrollbars', '.msgview_bottom');

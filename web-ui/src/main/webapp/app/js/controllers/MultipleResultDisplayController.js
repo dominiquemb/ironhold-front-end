@@ -77,9 +77,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
             $scope.inputSearch = args.inputSearch;
-	    $scope.loadingTimeout = setTimeout(function() {
+	    $scope.loadingTimeout = $timeout(function() {
 		$scope.showLoading = true;
-	    }, 200);
+	    }, 2000);
         }
     });
 
