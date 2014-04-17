@@ -2068,6 +2068,7 @@ body ul {
 .footer-copyright {
 	position: absolute;
 	right: 692px;
+	text-transform: none;
 }
 
 .footer-archive-total {
