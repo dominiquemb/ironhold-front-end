@@ -42,7 +42,14 @@ body pre {
 	border-radius: 0px;
 	margin: 0px;
 	padding: 0px;
-}	
+}
+
+body .btn.btn-primary,
+body .btn.btn-primary:hover,
+body .btn.btn-primary:focus {
+	background-color: #2E68B1 !important;	
+	border-color: #2E68B1 !important;
+}
 
 .shortcut {
 	text-decoration: underline;
