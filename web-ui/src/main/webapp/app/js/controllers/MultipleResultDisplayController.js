@@ -177,8 +177,25 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.highlightMessage = function(evt, message) {
         if ($scope.activeTab === $scope.tabName) {
             evt.stopPropagation();
+
+	    var highlighted = 0;
+
             message.highlighted = true;
-            $scope.$emit('highlightActive', true);
+
+	    angular.forEach($scope.messages, function(entry) {
+		if (entry.highlighted) {
+			highlighted++;
+		}
+	    });
+
+	    if (highlighted > 1) {
+            	$scope.$emit('highlightActive', true);
+	    }
+
+	    if (highlighted === 1 && message.highlighted) {
+		message.selected = true;
+                $scope.$emit('selectResultRequest', message, $scope.inputSearch);
+	    }
         }
     };
 
