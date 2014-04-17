@@ -62,8 +62,8 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             if ($scope.matches > 0) {
 	    	$scope.showNoResults = false;
                 $scope.showSearchResults = true;
-		clearTimeout($scope.loadingTimeout);
-	    	$scope.showLoading = false;
+//		clearTimeout($scope.loadingTimeout);
+//	    	$scope.showLoading = false;
                 $scope.$emit('showSearchResults', true);
 		$scope.showSearchResults = false;
 		$scope.hidePlaceholderScroller = true;
@@ -79,7 +79,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             $scope.inputSearch = args.inputSearch;
 	    $scope.loadingTimeout = setTimeout(function() {
 		$scope.showLoading = true;
-	    }, 2000);
+	    }, 200);
         }
     });
 
