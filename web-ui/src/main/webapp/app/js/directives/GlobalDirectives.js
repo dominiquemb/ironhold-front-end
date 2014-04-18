@@ -211,11 +211,41 @@ ironholdApp.directive('footer', function() {
 	};
 });
 
+ironholdApp.directive('searchResultsList', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/SearchResultsList.html'
+	};
+});
+
+ironholdApp.directive('usersResultsList', function() {
+	return {
+		restrict: 'ACE',
+		templateUrl: 'views/UsersResultsList.html'
+	};
+});
+
 ironholdApp.directive('searchTabContainer', function() {
 	return {
 		restrict: 'ACE',
 		scope: true,
 		controller: 'SearchController'
+	};
+});
+
+ironholdApp.directive('usersTabContainer', function() {
+	return {
+		restrict: 'ACE',
+		scope: true,
+		controller: 'UsersController'
+	};
+});
+
+ironholdApp.directive('usersSearchTab', function() {
+	return {
+		restrict: 'ACE',
+		scope: true,
+		controller: 'UsersSearchController'
 	};
 });
 
@@ -258,14 +288,6 @@ ironholdApp.directive('logsTabContainer', function() {
 	};
 });
 
-ironholdApp.directive('usersTabContainer', function() {
-	return {
-		restrict: 'ACE',
-		scope: true,
-		controller: 'UsersController'
-	};
-});
-
 ironholdApp.directive('settingsTabContainer', function() {
 	return {
 		restrict: 'ACE',
@@ -273,7 +295,5 @@ ironholdApp.directive('settingsTabContainer', function() {
 		controller: 'SettingsController'
 	};
 });
-
-
 
 }());

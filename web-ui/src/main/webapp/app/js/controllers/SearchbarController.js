@@ -46,9 +46,14 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
             $scope.currentlySearching(true);
             $scope.$emit('reset');
 
-            $scope.$emit('searchPreviewRequest', $scope.inputSearch);
+	    if ($scope.tabName === 'search') {
+		    $scope.$emit('searchPreviewRequest', $scope.inputSearch);
 
-	    $scope.searchPending = true;
+		    $scope.searchPending = true;
+	    }
+	    else {
+		$scope.executeSearch();
+	    }
         }
     };
 
@@ -167,6 +172,21 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
         }
     };
 
+    $scope.executeSearch = function() {
+	    if ($scope.searchMatches > 20000) {
+		$scope.disableFacets = true;
+	    }
+	    else {
+		/* This else is necessary because disableFacets might be true from a previous search */
+		$scope.disableFacets = false;
+	    }
+console.log('????');
+	    $scope.$emit('search', {
+		inputSearch: $scope.inputSearch,
+		disableFacets: $scope.disableFacets
+	    });
+    };
+
 
     $rootScope.$on('searchPreviewData', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -177,18 +197,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	    $scope.showSortingPanel = false;
 
 	    if ($scope.searchPending) {
-		    if ($scope.searchMatches > 20000) {
-			$scope.disableFacets = true;
-		    }
-		    else {
-			/* This else is necessary because disableFacets might be true from a previous search */
-			$scope.disableFacets = false;
-		    }
-
-		    $scope.$emit('search', {
-			inputSearch: $scope.inputSearch,
-			disableFacets: $scope.disableFacets
-		    });
+		$scope.executeSearch();
 	    }
 	}
     });

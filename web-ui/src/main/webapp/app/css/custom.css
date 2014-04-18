@@ -1549,8 +1549,8 @@ body ul {
 	top: 3px;
 }
 
-.msglist.show-placeholder-scrollbar .jspVerticalBar {
-	right: -22px;
+.show-placeholder-scrollbar .jspVerticalBar {
+	right: -22px !important;
 }
 
 .msglist.docked .sidebar-left {

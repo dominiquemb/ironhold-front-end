@@ -6,7 +6,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.mode = 'text';
     $scope.currentPage = 1;
-    $scope.messages = [];
+    $scope.entries = [];
     $scope.matches = 0;
     $scope.showSearchResults = false;
     $scope.currentMessageNumber = -1;
@@ -41,7 +41,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         if ($scope.activeTab === $scope.tabName) {
 		if (($scope.currentMessageNumber + 1) >= 0) {
 			$scope.currentMessageNumber++;
-			$scope.selectMessage($scope.messages[$scope.currentMessageNumber], $scope.currentMessageNumber);
+			$scope.selectMessage($scope.entries[$scope.currentMessageNumber], $scope.currentMessageNumber);
 		}
 	}
     });
@@ -50,26 +50,39 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         if ($scope.activeTab === $scope.tabName) {
 		if (($scope.currentMessageNumber - 1) >= 0) {
 			$scope.currentMessageNumber--;
-			$scope.selectMessage($scope.messages[$scope.currentMessageNumber], $scope.currentMessageNumber);
+			$scope.selectMessage($scope.entries[$scope.currentMessageNumber], $scope.currentMessageNumber);
 		}
 	}
     });
 
     $rootScope.$on('results', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
-            $scope.messages = args.resultEntries;
-              $scope.matches = args.matches;
-            if ($scope.matches > 0) {
-	    	$scope.showNoResults = false;
-                $scope.showSearchResults = true;
-//		clearTimeout($scope.loadingTimeout);
-//	    	$scope.showLoading = false;
-                $scope.$emit('showSearchResults', true);
-		$scope.showSearchResults = false;
-		$scope.hidePlaceholderScroller = true;
-		}
+            $scope.entries = args.resultEntries;
+	
+	    if ($scope.tabName === 'search') {
+		    $scope.matches = args.matches;
+		    if ($scope.matches > 0) {
+			$scope.showNoResults = false;
+			$scope.showSearchResults = true;
+			$scope.$emit('showSearchResults', true);
+			$scope.showSearchResults = false;
+			$scope.hidePlaceholderScroller = true;
+			}
+		    else {
+			$scope.showNoResults = true;
+		    }
+	    }
 	    else {
-	    	$scope.showNoResults = true;
+		if ($scope.entries.length > 0) {
+			$scope.showNoResults = false;
+			$scope.showSearchResults = true;
+			$scope.$emit('showSearchResults', true);
+			$scope.showSearchResults = false;
+			$scope.hidePlaceholderScroller = true;
+		}
+		else {
+			$scope.showNoResults = true;
+		}
 	    }
         }
     });
@@ -88,9 +101,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             return message.attachmentWithHighlights;
         }
     };
-
+/*
     $scope.getMessageType = function(message) {
-        if ($scope.activeTab === $scope.tabName) {
+        if ($scope.activeTab === 'search') {
 	    var type = message.formattedIndexedMailMessage.messageType;
 
             if (!type) {
@@ -108,15 +121,15 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     };
 
     $scope.isImportanceEqualTo = function(message, importance) {
-        if ($scope.activeTab === $scope.tabName) {
+	if ($scope.activeTab === 'search') {
             return message.formattedIndexedMailMessage.importance === importance;
         }
     };
-
+*/
 
     $scope.unselectAllMessages = function() {
         if ($scope.activeTab === $scope.tabName) {
-            angular.forEach($scope.messages, function(message) {
+            angular.forEach($scope.entries, function(message) {
                 message.selected = false;
             });
 	    $scope.currentMessageNumber = 0;
@@ -130,7 +143,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.selectMessage = function(message, key) {
         if ($scope.activeTab === $scope.tabName) {
-            if ($scope.messages.length > 0) {
+            if ($scope.entries.length > 0) {
                 $scope.unselectAllMessages();
                 if (!$scope.highlightActive) {
                     message.selected = !message.selected;
@@ -158,7 +171,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.unhighlightAllMessages = function() {
         if ($scope.activeTab === $scope.tabName) {
-            angular.forEach($scope.messages, function(entry) {
+            angular.forEach($scope.entries, function(entry) {
                 $scope.unhighlightMessage(entry);
             });
                 $scope.$emit('highlightActive', false);
@@ -167,7 +180,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.highlightAllMessages = function() {
         if ($scope.activeTab === $scope.tabName) {
-            angular.forEach($scope.messages, function(entry) {
+            angular.forEach($scope.entries, function(entry) {
                 $scope.highlightMessage(entry);
             });
                 $scope.$emit('highlightActive', true);
@@ -182,7 +195,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
             message.highlighted = true;
 
-	    angular.forEach($scope.messages, function(entry) {
+	    angular.forEach($scope.entries, function(entry) {
 		if (entry.highlighted) {
 			highlighted++;
 		}
@@ -213,7 +226,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         if ($scope.activeTab === $scope.tabName) {
             $scope.searchMessages = 0;
             $scope.matches = [];
-            $scope.messages = [];
+            $scope.entries = [];
 	    $scope.currentMessageNumber = -1;
 	    $scope.showNoResults = false;
 	    $scope.showLoading = false;
