@@ -7,6 +7,17 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.users = [];
     $scope.pageNum = 0;
 
+    $rootScope.$on('submitUser', function(evt, user) {
+	if ($scope.activeTab === $scope.tabName) {
+		usersService
+//			.one(user.username)
+			.post(user.username, user)
+			.then(function(result) {
+				console.log(result);
+			});
+	}
+    });
+
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === $scope.tabName) {
 	    usersService.get({

@@ -29,6 +29,14 @@ var ironholdApp = angular.module('ironholdApp', ['ngRoute','ngResource','ngSanit
 		    templateUrl: "views/PreviewTabs/UserViewTab.html"
 	    })
 
+	    .state('loggedin.main.useredit', {
+		    templateUrl: "views/PreviewTabs/UserEditTab.html"
+	    })
+
+	    .state('loggedin.main.useradd', {
+		    templateUrl: "views/PreviewTabs/UserAddTab.html"
+	    })
+
 	    .state('loggedin.main.body', {
 		    templateUrl: "views/PreviewTabs/HtmlTab.html"
 	    })

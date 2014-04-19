@@ -73,6 +73,25 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
+    $scope.addUser = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$state.go('loggedin.main.useradd');
+	}
+    };
+
+    $scope.submitUser = function(user) {
+	if ($scope.activeTab === $scope.tabName) {
+		user.recipients = (typeof user.newRecipients === 'string') ? user.newRecipients.split(',') : user.recipients;
+		$scope.$emit('submitUser', user);
+	}
+    };
+
+    $scope.editUser = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$state.go('loggedin.main.useredit');
+	}
+    };
+
     $scope.adjustMiddleSection = function() {
 		console.log('Tab content height:');
 		console.log($('.msgview .tab-content').height());

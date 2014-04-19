@@ -12,6 +12,14 @@
 					 {{ currentUser.loginUser.name }}
 				</div>
 				<table class="table table-bordered">
+						<tr class="user-name">
+                                                        <td>
+                                                                Name:
+                                                        </td>
+                                                        <td>
+					 			{{ currentUser.loginUser.name }}
+                                                        </td>
+                                                </tr>
 					<tr class="user-email">
 						<td>
 							Email Address:
@@ -26,22 +34,6 @@
 						</td>
 						<td>
 							{{ currentUser.loginUser.username }}
-						</td>
-					</tr>
-					<tr class="user-enabled">
-						<td>
-							Enabled:
-						</td>
-						<td>
-							{{ currentUser.loginUser.enabled }}
-						</td>
-					</tr>
-					<tr class="user-administrator">
-						<td>
-							Adminstrator:
-						</td>
-						<td>
-							{{ currentUser.loginUser.administrator }}
 						</td>
 					</tr>
 					<tr class="user-roles">
@@ -76,6 +68,9 @@
 							Assigned PSTs
 						</td>
 						<td>
+							<span data-ng-repeat="pst in currentUser.sources">
+								{{ pst }}
+							</span>
 						</td>
 					</tr>
 					<tr class="user-search-history">
@@ -89,7 +84,5 @@
 			    </div>
 			</div>
 			<!-- .scrollable-content -->
-		</div>
-		<div class="row msgview_bottom expandable attachments-view">
 		</div>
 	</div>

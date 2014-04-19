@@ -1,0 +1,94 @@
+<div class="row userview_top">
+	<div class="pull-left from-picture-container">
+	    <div class="from-picture empty-photo msgview_img-xl"></div>
+	</div>
+</div>
+
+	<div class="msgview_content">
+		<div class="row userview_middle sub-tab-content">
+			<div class="scrollable-content sub-tab-content-inner">
+			    <div class="pull-left user-body-container">
+				<div class="user-full-name">
+					 {{ currentUser.loginUser.name }}
+				</div>
+				<form name="edit-user-form" data-ng-submit="submitUser(currentUser.loginUser)">
+					<table class="table table-bordered">
+						<tr class="user-name">
+							<td>
+								Name:
+							</td>
+							<td>
+								<input type="text" data-ng-model="currentUser.loginUser.name" required />		
+							</td>
+						</tr>
+						<tr class="user-email">
+							<td>
+								Email Address:
+							</td>
+							<td>
+								<input type="text" data-ng-model="currentUser.loginUser.mainRecipient.address" required />								
+							</td>
+						</tr>
+						<tr class="user-username">
+							<td>
+								Username:
+							</td>
+							<td>
+								<input type="text" data-ng-model="currentUser.loginUser.username" required />
+							</td>
+						</tr>
+						<tr class="user-password">
+							<td>
+								Password:
+							</td>
+							<td>
+								<input type="password" data-ng-model="currentUser.loginUser.hashedPassword" required />
+							</td>
+						</tr>
+						<tr class="user-password-confirm">
+							<td>
+								Confirm Password:
+							</td>
+							<td>
+								<input type="password" data-ng-model="currentUser.loginUser.hashedPassword" required />
+							</td>
+						</tr>
+						<tr class="user-roles">
+							<td>
+								Roles:
+							</td>
+							<td>
+								<span data-ng-repeat="role in currentUser.roles">
+									{{ role }}
+								</span>
+							</td>
+						</tr>
+						<tr class="user-other-emails">
+							<td>
+								Other Email Addresses:
+							</td>
+							<td>
+								<span data-ng-repeat="email in currentUser.loginUser.recipients">
+								{{ email.address }}
+								</span>
+								<textarea data-ng-init="currentUser.loginUser.newRecipients = currentUser.loginUser.recipients.toString() || []" data-ng-model="currentUser.loginUser.newRecipients"></textarea>
+							</td>
+						</tr>
+						<tr class="user-assigned-psts">
+							<td>
+								Assigned PSTs
+							</td>
+							<td>
+								<span data-ng-repeat="pst in currentUser.loginUser.sources">
+									{{ pst }}
+								</span>
+							</td>
+						</tr>
+					</table>
+					<button type="submit" class="btn btn-primary">Submit Changes</button>
+				</form>
+			    </div>
+			</div>
+			<!-- .scrollable-content -->
+		</div>
+	</div>
