@@ -31,8 +31,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 	    return $scope.currentlyVisible === elemName;
     };
 
-    $scope.verifyResetCode = function(code) {
-        console.log(code);
+    $scope.verifyResetCode = function() {
 	    $scope.makeVisible('forgot-password-step-3');
     };
 

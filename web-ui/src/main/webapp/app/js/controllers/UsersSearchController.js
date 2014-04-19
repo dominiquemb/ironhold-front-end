@@ -90,7 +90,6 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
             $scope.inputSearch = args.inputSearch;
-console.log('is this running');
             usersService.get({
 		    criteria: args.inputSearch,
 		    page: $scope.pageNum,

@@ -84,6 +84,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			$scope.showNoResults = true;
 		}
 	    }
+
         }
     });
 

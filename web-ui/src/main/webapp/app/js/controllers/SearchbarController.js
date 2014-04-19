@@ -180,7 +180,6 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 		/* This else is necessary because disableFacets might be true from a previous search */
 		$scope.disableFacets = false;
 	    }
-console.log('????');
 	    $scope.$emit('search', {
 		inputSearch: $scope.inputSearch,
 		disableFacets: $scope.disableFacets

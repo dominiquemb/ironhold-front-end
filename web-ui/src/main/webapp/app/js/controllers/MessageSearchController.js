@@ -13,7 +13,6 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         'DATE': 'date',
         'SIZE': 'size'
     };
-console.log('test');
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	    if (tab === $scope.tabName) {
