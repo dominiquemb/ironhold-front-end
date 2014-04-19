@@ -1,0 +1,95 @@
+<div class="row userview_top">
+	<div class="pull-left from-picture-container">
+	    <div class="from-picture empty-photo msgview_img-xl"></div>
+	</div>
+</div>
+
+	<div class="msgview_content">
+		<div class="row userview_middle sub-tab-content">
+			<div class="scrollable-content sub-tab-content-inner">
+			    <div class="pull-left user-body-container">
+				<div class="user-full-name">
+					 {{ currentUser.loginUser.name }}
+				</div>
+				<table class="table table-bordered">
+					<tr class="user-email">
+						<td>
+							Email Address:
+						</td>
+						<td>
+							{{ currentUser.loginUser.mainRecipient.address }}
+						</td>
+					</tr>
+					<tr class="user-username">
+						<td>
+							Username:
+						</td>
+						<td>
+							{{ currentUser.loginUser.username }}
+						</td>
+					</tr>
+					<tr class="user-enabled">
+						<td>
+							Enabled:
+						</td>
+						<td>
+							{{ currentUser.loginUser.enabled }}
+						</td>
+					</tr>
+					<tr class="user-administrator">
+						<td>
+							Adminstrator:
+						</td>
+						<td>
+							{{ currentUser.loginUser.administrator }}
+						</td>
+					</tr>
+					<tr class="user-roles">
+						<td>
+							Roles:
+						</td>
+						<td>
+							<span data-ng-repeat="role in currentUser.roles">
+								{{ role }}
+							</span>
+						</td>
+					</tr>
+					<tr class="user-other-emails">
+						<td>
+							Other Email Addresses:
+						</td>
+						<td>
+							<span data-ng-repeat="email in currentUser.recipients">
+							{{ email.address }}
+							</span>
+						</td>
+					</tr>
+					<tr class="user-max-results">
+						<td>
+							Maximum Num. of Results:
+						</td>
+						<td>
+						</td>
+					</tr>
+					<tr class="user-assigned-psts">
+						<td>
+							Assigned PSTs
+						</td>
+						<td>
+						</td>
+					</tr>
+					<tr class="user-search-history">
+						<td>
+							Search History:
+						</td>
+						<td>
+						</td>
+					</tr>
+				</table>
+			    </div>
+			</div>
+			<!-- .scrollable-content -->
+		</div>
+		<div class="row msgview_bottom expandable attachments-view">
+		</div>
+	</div>

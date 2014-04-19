@@ -421,15 +421,36 @@ body .btn.btn-primary:focus {
 	width: 5px;
 }
 
+/* userview */
+
+.userview_middle{
+	position: relative;
+	margin: 0px 0px;
+	width: 100% !important;
+	height: 100%;
+}
+
+.userview_top {
+	margin: 0px;
+}
+
 /* msgview */
 .msgview {
-	position: absolute;
-	right: 0px;
-	bottom: 0px;
-	top: -6px;
-	overflow: hidden !important;
-	padding-left: 0px;
-	width: 717px;
+       position: absolute;
+       right: 0px;
+       bottom: 0px;
+       top: -6px;
+       overflow: hidden !important;
+       padding-left: 0px;
+       width: 717px;
+}
+
+.msgview .tab-pane {
+	height: 100%;
+}
+
+.msgview_content {
+	height: 100%;
 }
 
 .msgview .placeholder_text {
@@ -567,7 +588,7 @@ body .btn.btn-primary:focus {
 	margin-bottom: 18px;
 }
 
-.msgview_top .from-picture-container {
+.from-picture-container {
 	position: absolute;
 	width: 37px;
 }
@@ -619,6 +640,11 @@ body .btn.btn-primary:focus {
 
 .msgview_main {
 	margin-top: 9px;
+	height: 100%;
+}
+
+.msgview_main_uiview {
+	height: 100%;
 }
 
 .msgview_bottom {	
@@ -725,6 +751,19 @@ body .btn.btn-primary:focus {
 	position: absolute;
 	right: 0px;
 	z-index: 2;
+}
+
+/* user */
+
+.user-body-container .user-full-name {
+	color: #2E68B1;
+	font-size: 33px;
+	line-height: 35px;
+	margin-bottom: 15px;
+}
+
+.user-body-container {
+	margin-left: 55px;
 }
 
 /* message-list */

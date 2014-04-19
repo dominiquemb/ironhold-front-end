@@ -61,18 +61,18 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
         }
     });
 
-//    $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
-    $rootScope.$on('selectResultRequest', function() {
+    $rootScope.$on('selectResultRequest', function(evt, username) {
         if ($scope.activeTab === $scope.tabName) {
-/*
-            messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: inputSearch}).then(function(result) {
-                $scope.$emit('selectResultData', result);
-                $scope.$emit('selectMessage', result.payload.messages[0]);
-            },
+            usersService
+		.one(username)
+		.get()
+		.then(function(result) {
+			$scope.$emit('selectResultData', result.payload);
+			$scope.$emit('selectUser', result.payload);
+                },
 		function(err) {
 			$scope.$emit('technicalError', err);
 		});
-*/
         }
     });
 

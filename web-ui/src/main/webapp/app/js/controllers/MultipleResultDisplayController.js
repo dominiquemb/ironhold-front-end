@@ -141,31 +141,43 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         }
     };
 
-    $scope.selectMessage = function(message, key) {
+    $scope.selectEntry = function(entry, key) {
         if ($scope.activeTab === $scope.tabName) {
             if ($scope.entries.length > 0) {
                 $scope.unselectAllMessages();
                 if (!$scope.highlightActive) {
-                    message.selected = !message.selected;
+                    entry.selected = !entry.selected;
 
-		    if (message.selected) {
+		    if (entry.selected) {
 		    	$scope.currentMessageNumber = key;
 		    }	
                 }
                 else {
-                    message.selected = true;
+                    entry.selected = true;
 		    $scope.currentMessageNumber = key;
                 }
                 $scope.unhighlightAllMessages();
+	    }
+	}
+    };
 
-                $scope.$emit('selectResultRequest', message, $scope.inputSearch);
-            }
+    $scope.selectMessage = function(entry, key) {
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.selectEntry(entry, key);
+	        $scope.$emit('selectResultRequest', entry, $scope.inputSearch);
         }
+    };
+
+    $scope.selectUser = function(entry, key) {
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.selectEntry(entry, key);
+	        $scope.$emit('selectResultRequest', entry);
+	}
     };
 
     $rootScope.$on('selectResultData', function(evt, result) {
         if ($scope.activeTab === $scope.tabName) {
-            $scope.currentMessage = result.payload.messages[0];
+            $scope.currentMessage = result;
         }
     });
 

@@ -5,7 +5,8 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     logInService.confirmLoggedIn($state);
 	
     $scope.showContainer = false;
-    $scope.currentMessage = false; 
+    $scope.currentMessage = false;  
+    $scope.currentUser = false;
     $scope.showPreviewToolbar = false;
     $scope.mode = 'text';
     $scope.modeData = {};
@@ -14,6 +15,15 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.showSelectMessage = 0;
     $scope.bottomSectionHeight = 0;
     $scope.topSectionHeight = 0;
+
+    $rootScope.$on('activeTab', function(evt, tab) {
+	if (tab === 'search') {
+		$state.go('loggedin.main.' + $scope.mode);
+	}
+	else if (tab === 'users') {
+		$state.go('loggedin.main.userview');
+	}
+    });
 
     $scope.getFileType = function(name) {
 	var ext = name.toLowerCase().split('.');
@@ -39,7 +49,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		if (newval !== oldval) {
 			if ($scope.activeTab === $scope.tabName) {
 				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
-    				$scope.adjustMiddleSection();
+	
+				if ($scope.isActiveTab('search')) {
+	    				$scope.adjustMiddleSection();
+				}
 			}
 		}
      });
@@ -55,11 +68,13 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
      });
 */
     $rootScope.$on('pageResized', function() {
-	$scope.adjustMiddleSection();
+	if ($scope.isActiveTab('search')) {
+		$scope.adjustMiddleSection();
+	}
     });
 
     $scope.adjustMiddleSection = function() {
-/*		console.log('Tab content height:');
+		console.log('Tab content height:');
 		console.log($('.msgview .tab-content').height());
 	
 		console.log('Controlbar height:');
@@ -67,32 +82,32 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
 		console.log('Top section height:');
 		console.log($('.msgview_top').outerHeight(true));
-*/
+
 		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true) + 4;
 
 		if ($('.msgview_bottom').height() == null) {
 			msgviewHeight -= 4;
 		}
-/*
+
 		console.log('Height of both middle section and bottom section:');
 		console.log(msgviewHeight);
-*/
+
 		$scope.bottomSectionHeight = $('.msgview_bottom').outerHeight(true);
 
-/*
+
 		console.log('Botttom section height:');
 		console.log($scope.bottomSectionHeight);
-*/
+
 		if ($scope.bottomSectionHeight == null) {
 				$scope.middleSectionHeight = msgviewHeight;
 		} else {
-                $scope.middleSectionHeight = msgviewHeight - $scope.bottomSectionHeight;
+	                $scope.middleSectionHeight = msgviewHeight - $scope.bottomSectionHeight;
 		}
 
-/*
+
 		console.log('Middle section height:');
 		console.log($scope.middleSectionHeight);
-*/
+
 		$('.msgview_middle').height($scope.middleSectionHeight);
 
     };
@@ -224,8 +239,19 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $rootScope.$on('selectMessage', function(evt, message) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentMessage = message;
+		$scope.msgviewData = true;
 		$scope.showPreviewToolbar = true;
 		$scope.requestSubTabData($scope.mode);
+		$state.go('loggedin.main.' + $scope.mode);
+	}
+    });
+
+    $rootScope.$on('selectUser', function(evt, user) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentUser = user;
+		$scope.msgviewData = true;
+		$scope.showPreviewToolbar = true;
+		$state.go('loggedin.main.userview');
 	}
     });
 

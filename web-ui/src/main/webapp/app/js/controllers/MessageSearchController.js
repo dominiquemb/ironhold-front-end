@@ -143,9 +143,12 @@ console.log('test');
 
     $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
         if ($scope.activeTab === $scope.tabName) {
-            messagesService.one(message.formattedIndexedMailMessage.messageId).get({criteria: inputSearch}).then(function(result) {
-                $scope.$emit('selectResultData', result);
-                $scope.$emit('selectMessage', result.payload.messages[0]);
+            messagesService
+		.one(message.formattedIndexedMailMessage.messageId)
+		.get({criteria: inputSearch})
+		.then(function(result) {
+			$scope.$emit('selectResultData', result.payload.messages[0]);
+			$scope.$emit('selectMessage', result.payload.messages[0]);
             },
 		function(err) {
 			$scope.$emit('technicalError', err);
