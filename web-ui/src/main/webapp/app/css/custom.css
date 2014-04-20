@@ -69,6 +69,19 @@ body .btn.btn-primary:focus {
 	font-size: 12px;
 }
 
+/* no-result-content */
+.no-result-content .jspTrack {
+	visibility: hidden;
+}
+
+.no-result-content .jspArrowUp {
+	background: url(../img/sprites/ImageSprite.png) -81px -32px !important;
+}
+
+.no-result-contnet .jspArrowDown {
+	background: url(../img/sprites/ImageSprite.png) -65px -32px !important;
+}
+
 /* loading message */
 
 .loading {

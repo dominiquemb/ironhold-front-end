@@ -1,4 +1,4 @@
-<div class="results-initial" data-ng-hide="hidePlaceholderScroller">
+<div class="results-initial no-result-content" data-ng-hide="hidePlaceholderScroller">
 	<div class="jspVerticalBar">
 		<div class="jspCap jspCapTop"></div>
 		<a class="jspArrow jspArrowUp disabled"></a>
@@ -9,7 +9,7 @@
 	</div>  
 </div>
 
-<div class="loading" data-ng-show="showLoading && entries.length === 0 && !showNoResults">
+<div class="loading no-result-content" data-ng-show="showLoading && entries.length === 0 && !showNoResults">
 	<img alt="Loading..." src="img/Loading-Animation.gif" width="350" height="90" title="Loading..." />
 	<div class="jspVerticalBar">
 		<div class="jspCap jspCapTop"></div>
@@ -21,7 +21,7 @@
 	</div>  
 </div>
 
-<div class="loading" data-ng-show="showNoResults">
+<div class="loading no-result-content" data-ng-show="showNoResults">
 	0 results
 	<div class="jspVerticalBar">
 		<div class="jspCap jspCapTop"></div>
