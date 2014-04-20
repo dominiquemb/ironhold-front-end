@@ -102,7 +102,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             return message.attachmentWithHighlights;
         }
     };
-/*
+
     $scope.getMessageType = function(message) {
         if ($scope.activeTab === 'search') {
 	    var type = message.formattedIndexedMailMessage.messageType;
@@ -126,7 +126,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             return message.formattedIndexedMailMessage.importance === importance;
         }
     };
-*/
+
 
     $scope.unselectAllMessages = function() {
         if ($scope.activeTab === $scope.tabName) {
