@@ -1589,7 +1589,7 @@ body ul {
 }
 
 .show-placeholder-scrollbar .jspVerticalBar {
-	right: -22px !important;
+/*	right: -22px !important; */
 }
 
 .msglist.docked .sidebar-left {
@@ -1617,14 +1617,14 @@ body ul {
 
 .msglist .message-list-container .jspContainer {
 	width: 100% !important;
-	height: 100% !important;
+/*	height: 100% !important; */
 }
 
 .msglist .message-list-container .jspPane {
 	left: 0px !important;
 	right: 22px !important;
-	width: auto !important;
-	height: 100%;
+	width: 100% !important;
+	min-height: 100%;
 /*	width: 100% !important; */
 }
 
@@ -1708,6 +1708,7 @@ body ul {
 	background-color: #fff;
 	padding: 0px;
 	cursor: pointer;
+	margin-right: 21px;
 	color: #333;
 	max-width: 100%;
 	word-wrap: break-word;

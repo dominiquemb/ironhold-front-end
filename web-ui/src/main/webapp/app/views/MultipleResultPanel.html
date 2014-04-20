@@ -11,10 +11,26 @@
 
 <div class="loading" data-ng-show="showLoading && entries.length === 0 && !showNoResults">
 	<img alt="Loading..." src="img/Loading-Animation.gif" width="350" height="90" title="Loading..." />
+	<div class="jspVerticalBar">
+		<div class="jspCap jspCapTop"></div>
+		<a class="jspArrow jspArrowUp disabled"></a>
+		<div class="jspTrack" style="height: 100%;">
+		</div>
+		<a class="jspArrow jspArrowDown disabled"></a>
+		<div class="jspCap jspCapBottom"></div>
+	</div>  
 </div>
 
 <div class="loading" data-ng-show="showNoResults">
 	0 results
+	<div class="jspVerticalBar">
+		<div class="jspCap jspCapTop"></div>
+		<a class="jspArrow jspArrowUp disabled"></a>
+		<div class="jspTrack" style="height: 100%;">
+		</div>
+		<a class="jspArrow jspArrowDown disabled"></a>
+		<div class="jspCap jspCapBottom"></div>
+	</div>  
 </div>
 
 <div data-ng-show="isActiveTab('search')" class="search-results-list">
