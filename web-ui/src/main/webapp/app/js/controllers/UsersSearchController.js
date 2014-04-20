@@ -20,23 +20,27 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === $scope.tabName) {
-	    usersService.get({
-		    criteria: '*',
-		    page: $scope.pageNum,
-		    pageSize: $scope.pageSize
-	    })
-	    .then(function(result) {
-			$scope.users = result.payload;
-			$scope.initCustomScrollbars('.scrollbar-hidden');
-			$scope.initialized();
+	    $scope.initCustomScrollbars('.scrollbar-hidden');
+	
+	    if ($scope.users.length === 0) {
+		    usersService.get({
+			    criteria: '*',
+			    page: $scope.pageNum,
+			    pageSize: $scope.pageSize
+		    })
+		    .then(function(result) {
+				$scope.users = result.payload;
+				$scope.initCustomScrollbars('.scrollbar-hidden');
+				$scope.initialized();
 
-			$scope.$emit('results', {
-			'resultEntries': $scope.users
-			});
-	    },
-	    function(err) {
-		$scope.$emit('technicalError', err);
-	    });
+				$scope.$emit('results', {
+				'resultEntries': $scope.users
+				});
+		    },
+		    function(err) {
+			$scope.$emit('technicalError', err);
+		    });
+	    }
 	}
     });
 

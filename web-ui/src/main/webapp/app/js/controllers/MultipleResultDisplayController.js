@@ -21,12 +21,6 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	'email': 'Email Message'
     };
 
-    $scope.$on('activeTab', function(evt, tab) {
-	if (tab === $scope.tabName) {
-            $scope.$emit('reinitScrollbars');
-	}
-    });
-
     $scope.getEntries = function() {
         if ($scope.activeTab === $scope.tabName) {
 		return $scope.entries[$scope.tabName];
