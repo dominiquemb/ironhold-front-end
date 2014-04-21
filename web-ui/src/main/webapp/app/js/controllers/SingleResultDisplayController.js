@@ -120,7 +120,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		console.log('Top section height:');
 		console.log($('.msgview_top').outerHeight(true));
 
-		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true) + 4;
+		var msgviewHeight = $('.msgview .tab-content').height() - $('.msgview .controlbar').height() - $('.msgview_top').outerHeight(true) - $('.msgview_main').outerHeight(true) + 95;
 
 		if ($('.msgview_bottom').height() == null) {
 			msgviewHeight -= 4;
