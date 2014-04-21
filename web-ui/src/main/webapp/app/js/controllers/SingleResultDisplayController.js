@@ -16,6 +16,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.bottomSectionHeight = 0;
     $scope.topSectionHeight = 0;
 
+    $rootScope.$on('resetSingleResultPanel', function() {
+	$scope.reset();
+    });
+
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === 'search') {
 		$state.go('loggedin.main.' + $scope.mode);
@@ -174,13 +178,21 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $rootScope.$on('reset', function() {
 	if ($scope.activeTab === $scope.tabName) {
+		$scope.reset();
+	}
+    });
+
+    $scope.reset = function() {
+	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentMessage = false;
 		$scope.showPreviewToolbar = false;
 		$scope.showSelectMessage = false;
+		$scope.msgviewData = false;
 		$scope.modeData = {};
 		$scope.showContainer = false;
+		$scope.$emit('reinitScrollbars');
 	}
-    });
+    };
 
     $rootScope.$on('results', function(evt, results) {
 	if (results.matches === 0) {

@@ -89,6 +89,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			}
 		    else {
 			$scope.showNoResults = true;
+			$scope.$emit('resetSingleResultPanel');
 		    }
 	    }
 	    else {
@@ -101,6 +102,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		}
 		else {
 			$scope.showNoResults = true;
+			$scope.$emit('resetSingleResultPanel');
 		}
 	    }
             $scope.$emit('reinitScrollbars');
