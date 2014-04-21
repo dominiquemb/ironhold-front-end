@@ -33,15 +33,28 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
 	return ext;
     };
-
+/*
     $scope.$watch(function() {
-	return Math.round($('.msgview_middle').offset().top) + $('.msgview_bottom').height() + 185;
+		if ($('.msgview_middle').length) {
+			return Math.round($('.msgview_middle').offset().top) + $('.msgview_bottom').height() + 185;
+		}
+		else {
+			return $('body').height();
+		}
 	},
 	function(newval) {
 		if (newval > $('body').height()) {
 			$('.wrapper').css('min-height', newval);
 		}
      });
+*/
+    $scope.adjustMinHeight = function() {
+	var newval  = Math.round($('.msgview_middle').offset().top) + $('.msgview_bottom').height() + 185;
+	if (newval > $('body').height()) {
+		$('.wrapper').css('min-height', newval);
+		$scope.$emit('reinitScrollbars');
+	}
+    };
 			
     $scope.$watch(function() {
 		return $('.sub-tab-content-inner').text();
@@ -50,6 +63,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 			if ($scope.activeTab === $scope.tabName) {
 				$scope.$emit('initCustomScrollbars', '.sub-tab-content');
 	
+				$scope.adjustMinHeight();
 				if ($scope.isActiveTab('search')) {
 	    				$scope.adjustMiddleSection();
 				}
@@ -262,6 +276,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.showPreviewToolbar = true;
 		$scope.requestSubTabData($scope.mode);
 		$state.go('loggedin.main.' + $scope.mode);
+		$scope.adjustMinHeight();
 	}
     });
 
