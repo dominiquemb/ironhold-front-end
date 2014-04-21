@@ -82,6 +82,11 @@ body .btn.btn-primary:focus {
 	background: url(../img/sprites/ImageSprite.png) -65px -32px !important;
 }
 
+/* initial state */
+.listing > .jspContainer > .jspPane > .no-result-content > .jspVerticalBar {
+	visibility: hidden;
+}
+
 /* loading message */
 
 .loading {
@@ -1635,6 +1640,7 @@ body ul {
 }
 
 .msglist .message-list-container .jspPane {
+	margin: 0px !important;
 	left: 0px !important;
 	right: 22px !important;
 	width: 100% !important;

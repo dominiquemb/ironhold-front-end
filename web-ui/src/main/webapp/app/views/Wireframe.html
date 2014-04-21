@@ -7,7 +7,7 @@
 		</div>
 
 		<div class="row msglist">
-		    <div data-ng-keydown="evalKey($event)" class="listing scrollbar-hidden message-list-container results-feed" data-ng-class="{'no-result-content': entries.length === 0}">
+		    <div data-ng-keydown="evalKey($event)" class="listing scrollbar-hidden message-list-container results-feed" data-ng-class="{'no-result-content': noEntries(), 'initial-state': noEntries() && initialState}">
 		    </div>
 		</div>
 	</div>

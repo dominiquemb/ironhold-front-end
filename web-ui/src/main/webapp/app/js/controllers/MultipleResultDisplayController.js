@@ -8,6 +8,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.currentPage = 1;
     $scope.entries = {};
     $scope.matches = 0;
+    $scope.initialState = true;
     $scope.showSearchResults = false;
     $scope.currentMessageNumber = -1;
     $scope.showNoResults = false;
@@ -74,8 +75,17 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	}
     });
 
+    $scope.resetNoResults = function() {
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.showNoResults = true;
+		$scope.$emit('resetSingleResultPanel');
+		$scope.currentMessageNumber = -1;
+	}
+    };
+
     $rootScope.$on('results', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
+	    $scope.initialState = false;
             $scope.entries[$scope.tabName] = args.resultEntries;
 	
 	    if ($scope.tabName === 'search') {
@@ -88,8 +98,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			$scope.hidePlaceholderScroller = true;
 			}
 		    else {
-			$scope.showNoResults = true;
-			$scope.$emit('resetSingleResultPanel');
+			$scope.resetNoResults();
 		    }
 	    }
 	    else {
@@ -101,8 +110,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			$scope.hidePlaceholderScroller = true;
 		}
 		else {
-			$scope.showNoResults = true;
-			$scope.$emit('resetSingleResultPanel');
+			$scope.resetNoResults();
 		}
 	    }
             $scope.$emit('reinitScrollbars');
@@ -113,6 +121,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         if ($scope.activeTab === $scope.tabName) {
             $scope.inputSearch = args.inputSearch;
 	    $scope.loadingTimeout = $timeout(function() {
+		$scope.initialState = false;
 		$scope.showLoading = true;
 	    }, 2000);
         }

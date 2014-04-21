@@ -8,6 +8,10 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 
     $scope.$emit('activeTab', $scope.activeTab);
 
+    $(window).on('beforeunload', function() {
+	$(window).scrollTop(0);
+    });
+
     window.onresize = function(){
         if ($scope.scrollbars) {
                 $scope.reinitScrollbars();
@@ -133,7 +137,5 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 	return $scope.activeTab === tab;
     };
 });
-
-
 
 }());
