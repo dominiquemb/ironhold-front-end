@@ -101,9 +101,12 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $rootScope.$on('updateSearchbar', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
             $scope.currentlySearching(false);
-            angular.forEach(args, function(settingValue, settingName) {
-                $scope[settingName] = settingValue;
-            });
+
+	    if (args) {
+		    angular.forEach(args, function(settingValue, settingName) {
+			$scope[settingName] = settingValue;
+		    });
+	    }
         }
     });
 

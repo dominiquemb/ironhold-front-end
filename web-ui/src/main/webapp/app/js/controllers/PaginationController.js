@@ -42,10 +42,12 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
 
     $rootScope.$on('updateSearchbar', function(evt, info) {
         if ($scope.activeTab === $scope.tabName) {
-            if (info.searchMatches > 0) {
-                $scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
-                $scope.showPagination = true;
-            }
+	    if (info) {
+		    if (info.searchMatches > 0) {
+			$scope.totalPages = Math.ceil($scope.searchMatches / $scope.pageSize);
+			$scope.showPagination = true;
+		    }
+	    }
         }
     });
 

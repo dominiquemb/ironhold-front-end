@@ -76,10 +76,10 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
         }
     });
 
-    $rootScope.$on('selectResultRequest', function(evt, username) {
+    $rootScope.$on('selectResultRequest', function(evt, user) {
         if ($scope.activeTab === $scope.tabName) {
             usersService
-		.one(username)
+		.one(user.loginUser.username)
 		.get()
 		.then(function(result) {
 			$scope.$emit('selectResultData', result.payload);
@@ -105,8 +105,10 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
                         $scope.initialized();
 
                         $scope.$emit('results', {
-                        'resultEntries': $scope.users
+	                        'resultEntries': $scope.users
                         });
+	
+			$scope.$emit('updateSearchbar');
             },
             function(err) {
                 $scope.$emit('technicalError', err);
