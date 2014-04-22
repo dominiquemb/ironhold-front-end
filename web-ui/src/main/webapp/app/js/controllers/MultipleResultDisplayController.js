@@ -25,7 +25,6 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.entryNumMatchesKey = function(key) {
         if ($scope.activeTab === $scope.tabName) {
-console.log($scope.currentEntryNumber[$scope.tabName]);
 		return $scope.currentEntryNumber[$scope.tabName] === key;
 	}
     };
@@ -65,20 +64,26 @@ console.log($scope.currentEntryNumber[$scope.tabName]);
         }
     });
 
+    $scope.getCurrentEntryNumber = function() {
+        if ($scope.activeTab === $scope.tabName) {
+		return $scope.currentEntryNumber[$scope.tabName] || 0;
+	}
+    };
+
     $rootScope.$on('selectBelowMessage', function() {
         if ($scope.activeTab === $scope.tabName) {
-		if (($scope.currentMessageNumber + 1) >= 0) {
-			$scope.currentMessageNumber++;
-			$scope.selectMessage($scope.entries[$scope.tabName][$scope.currentMessageNumber], $scope.currentMessageNumber);
+		if (($scope.currentEntryNumber[$scope.tabName] + 1) >= 0) {
+			$scope.currentEntryNumber[$scope.tabName]++;
+			$scope.selectMessage($scope.entries[$scope.tabName][$scope.getCurrentEntryNumber()], $scope.getCurrentEntryNumber());
 		}
 	}
     });
 
     $rootScope.$on('selectAboveMessage', function() {
         if ($scope.activeTab === $scope.tabName) {
-		if (($scope.currentMessageNumber - 1) >= 0) {
-			$scope.currentMessageNumber--;
-			$scope.selectMessage($scope.entries[$scope.tabName][$scope.currentMessageNumber], $scope.currentMessageNumber);
+		if (($scope.currentEntryNumber[$scope.tabName] - 1) >= 0) {
+			$scope.currentEntryNumber[$scope.tabName]--;
+			$scope.selectMessage($scope.entries[$scope.tabName][$scope.getCurrentEntryNumber()], $scope.getCurrentEntryNumber());
 		}
 	}
     });
@@ -185,21 +190,15 @@ console.log($scope.currentEntryNumber[$scope.tabName]);
     $scope.selectEntry = function(entry, key) {
         if ($scope.activeTab === $scope.tabName) {
             if ($scope.entries[$scope.tabName].length > 0) {
-console.log('is this even happening');
                 $scope.unselectAllMessages();
                 if (!$scope.highlightActive) {
-console.log('not highlightActive');
-console.log(entry.selected);
                     entry.selected = !entry.selected;
 
 		    if (entry.selected) {
-console.log('entry selected');
 		    	$scope.currentEntryNumber[$scope.tabName] = key;
 		    }	
                 }
                 else {
-console.log('else selected');
-console.log($scope.currentEntryNumber[$scope.tabName]);
                     entry.selected = true;
 		    $scope.currentEntryNumber[$scope.tabName] = key;
                 }
@@ -217,8 +216,6 @@ console.log($scope.currentEntryNumber[$scope.tabName]);
 
     $scope.selectUser = function(entry, key) {
         if ($scope.activeTab === $scope.tabName) {
-console.log(entry);
-console.log('test');
 		$scope.selectEntry(entry, key);
 	        $scope.$emit('selectResultRequest', entry);
 	}
