@@ -18,7 +18,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.searchPending = false;
     $scope.searchProgressShow = false;
     $scope.searchProgressTimer = false;
-    $scope.searchProgressText = 'Searching...';
+    $scope.searchProgressText = 'searching...';
     $scope.searchProgressCount = 0;
 
     searchResultsService.prepForBroadcast("-", "- ");
