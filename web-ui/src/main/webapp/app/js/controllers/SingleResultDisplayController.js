@@ -9,6 +9,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.currentUser = false;
     $scope.showPreviewToolbar = false;
     $scope.mode = 'text';
+    $scope.subTabLoading = {};
     $scope.modeData = {};
     $scope.limitedTabs = false;
     $scope.middleSectionHeight = 0;
@@ -17,8 +18,16 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.topSectionHeight = 0;
 
     $rootScope.$on('resetSingleResultPanel', function() {
-	$scope.reset();
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.reset();
+	}
     });
+
+    $scope.isSubTabLoading = function(tab) {
+	if ($scope.activeTab === $scope.tabName) {
+		return $scope.subTabLoading[tab] === true;
+	}
+    };
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === 'search') {
@@ -30,12 +39,14 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     });
 
     $scope.getFileType = function(name) {
-	var ext = name.toLowerCase().split('.');
-	ext = ext[ext.length-1];
-	if (!(parseInt(ext[0]) === "NaN" || ext.length > 1)) {
-		ext = "ext-" + ext;
+	if ($scope.activeTab === $scope.tabName) {
+		var ext = name.toLowerCase().split('.');
+		ext = ext[ext.length-1];
+		if (!(parseInt(ext[0]) === "NaN" || ext.length > 1)) {
+			ext = "ext-" + ext;
+		}
+		return ext;
 	}
-	return ext;
     };
 /*
     $scope.$watch(function() {
@@ -207,6 +218,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
+		$scope.subTabLoading[$scope.mode] = false;
 		$timeout(function() {
 					$('.msgview_bottom').height( $('.msgview_bottom').height() + 'px' );
 					$('.msgview_bottom .jspVerticalBar').css('visibility', 'visible');
@@ -270,6 +282,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $rootScope.$on('mode', function(evt, mode) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.mode = mode;
+
+		$timeout(function() {
+			$scope.subTabLoading[mode] = true;
+		}, 1);
+
 		$scope.requestSubTabData(mode);
 	}
     });

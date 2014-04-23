@@ -17,7 +17,11 @@
 	<div class="message-header"></div>
 	</div> <!-- msgview_top -->
 
-	<div class="msgview_content">
+	<div class="loading" data-ng-show="isSubTabLoading('body')">
+	        <img alt="Loading..." src="img/Loading-Animation.gif" width="350" height="90" title="Loading..." />
+	</div>
+
+	<div class="msgview_content" data-ng-hide="isSubTabLoading('body')">
 		<div class="row msgview_middle sub-tab-content">
 		<div class="scrollable-content sub-tab-content-inner">
 		    <div class="pull-right message-body-container">
