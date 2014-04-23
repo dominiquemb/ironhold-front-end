@@ -2112,6 +2112,12 @@ body ul {
 	text-transform: uppercase;
 }
 
+.login-box .toolbar > div.login-footer {
+	text-align: center !important;
+	width: 100%;
+	color: #fff;
+}
+
 .footer {
 	position:fixed;
 	bottom: 0px;
