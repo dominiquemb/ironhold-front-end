@@ -11,6 +11,29 @@ ironholdApp.directive('resultsFeed', function() {
         };
 });
 
+ironholdApp.directive('clientKey', function() {
+	return {
+		restrict: 'ACE',
+		link: function(scope, elem) {
+			var genericSubs = ['rq6', 'ih650ww001'],
+			sub = null, 
+			matchingSub = false;
+
+    			scope.subdomain = document.domain.split('.')[0];
+			
+			for (sub in genericSubs) {
+				if (scope.subdomain === sub) {
+					matchingSub = true;
+				}
+			}
+
+			if (!matchingSub) {
+				$(elem).val(scope.subdomain);
+			}
+		}
+	};
+});
+
 ironholdApp.directive('clearForm', function() {
        return {
                scope: {
