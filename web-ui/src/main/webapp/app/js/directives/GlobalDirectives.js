@@ -14,6 +14,8 @@ ironholdApp.directive('resultsFeed', function() {
 ironholdApp.directive('clientKey', function() {
 	return {
 		restrict: 'ACE',
+		scope: false,
+                controller: 'LoginController',
 		link: function(scope, elem) {
 			var genericSubs = ['rq6', 'ih650ww001'],
 			sub = null, 
@@ -28,8 +30,46 @@ ironholdApp.directive('clientKey', function() {
 			}
 
 			if (!matchingSub) {
-				$(elem).val(scope.subdomain);
+//				$(elem).val(scope.subdomain);
+//				scope.mainLogin.clientKey = scope.subdomain;
+//				$(elem).attr('disabled', 'true');
 			}
+		}
+	};
+});
+
+ironholdApp.directive('username', function() {
+	return {
+		restrict: 'ACE',
+		scope: false,
+                controller: 'LoginController',
+		link: function(scope, elem) {
+			var delimiters = ['/', '@', '\\'],
+			usernameval = null,
+			d = null,
+			clientkeyval = null;
+
+			scope.$watch(function() {
+				return	$(elem).val();
+			}, function(newval, oldval) {
+				for (d in delimiters) {
+					if (newval.indexOf(delimiters[d]) !== -1) {
+						clientkeyval = newval.split(delimiters[d])[0];
+					}
+				}
+
+				if (clientkeyval) {
+/*
+					$('.client-key').attr('disabled', 'false');
+					$('.client-key').val(clientkeyval);
+					scope.mainLogin.clientKey.$modelValue = clientkeyval;
+					$('.client-key').trigger('input');
+					$('.client-key').attr('disabled', 'true');
+					$(elem).val('');
+					clientkeyval = null;
+*/
+				}
+			});
 		}
 	};
 });

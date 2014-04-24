@@ -8,7 +8,8 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 
     $scope.currentlyVisible = 'login';
     $scope.formSubmitted = false;
-    $scope.formInvalid = false;
+    $scope.formInvalid = false; 
+    $scope.disableClientKey = false;
 
     $scope.makeVisible = function(elemName) {
 	    $scope.currentlyVisible = elemName;
