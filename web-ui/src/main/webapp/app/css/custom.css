@@ -2119,9 +2119,8 @@ body ul {
 }
 
 .login-box .toolbar > div.login-footer {
-	text-align: center !important;
-	width: 100%;
 	color: #fff;
+	margin-left: 37px;
 }
 
 .footer {
@@ -2409,7 +2408,7 @@ body ul {
 /* forms */
 
 .login-layout .formErrors {
-	margin-top: 107px;
+	margin-top: 117px;
 	margin-bottom: -10px;
 }
 

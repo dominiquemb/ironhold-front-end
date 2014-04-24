@@ -126,18 +126,32 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 			this.logInCallbacks.push(callback);
 		},
 
-		logIn: function(clientKey, username, password) {
+		logIn: function(clientKey, username, password, rememberMe) {
 			loggedIn = true;
-			ipCookie(
-				'ironholdSession', 
-				JSON.stringify({
-					'session': null /* REPLACE THIS WITH A SESSION KEY LATER */,
-					'clientKey': clientKey,
-					'username': username,
-					'authdata': Base64.encode(clientKey + "/" + username + ':' + password),
-				}),
-				{expires: 99}
-			);
+			if (rememberMe) {
+				ipCookie(
+					'ironholdSession', 
+					JSON.stringify({
+						'session': null /* REPLACE THIS WITH A SESSION KEY LATER */,
+						'clientKey': clientKey,
+						'username': username,
+						'authdata': Base64.encode(clientKey + "/" + username + ':' + password),
+					}),
+					{expires: 7}
+				);
+			}
+			else {
+				ipCookie(
+					'ironholdSession', 
+					JSON.stringify({
+						'session': null /* REPLACE THIS WITH A SESSION KEY LATER */,
+						'clientKey': clientKey,
+						'username': username,
+						'authdata': Base64.encode(clientKey + "/" + username + ':' + password),
+					}),
+					{expires: 0.5}
+				);
+			}
 
     			angular.forEach(this.logInCallbacks, function(callback, index) {
     			callback(index);

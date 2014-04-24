@@ -56,8 +56,8 @@
                     <div class="space"></div>
 
                     <div class="clearfix">
-                        <label class="inline">
-                            <input type="checkbox" class="ace"/>
+                        <label class="inline" data-ng-click="rememberMe()">
+                            <input type="checkbox" class="ace" data-ng-checked="rememberMeActive()" />
                             <span class="lbl"> Remember Me</span>
                         </label>
                             <input type="submit" value="Login" data-ng-click="submit()" 
@@ -70,7 +70,7 @@
         </div>
         <!-- .widget-main -->
         <div class="toolbar clearfix">
-	    <div class="login-footer">&copy; Reqo, Inc.</div>
+	    <div class="login-footer">&copy;2014 Reqo, Inc.</div>
 <!--
             <div>
                 <a class="pull-left forgot-password-link" data-ng-click="makeVisible('forgot-username')">

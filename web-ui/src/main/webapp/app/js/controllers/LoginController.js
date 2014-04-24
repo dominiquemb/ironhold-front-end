@@ -10,9 +10,19 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.formSubmitted = false;
     $scope.formInvalid = false; 
     $scope.disableClientKey = false;
+    $scope.rememberMeVal = true;
 
     $scope.makeVisible = function(elemName) {
 	    $scope.currentlyVisible = elemName;
+    };
+
+    $scope.rememberMeActive = function() {
+console.log($scope.rememberMeVal);
+	return $scope.rememberMeVal;
+    };
+
+    $scope.rememberMe = function() {
+	$scope.rememberMeVal = !$scope.rememberMeVal;
     };
 
     $scope.submit = function() {
@@ -39,7 +49,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.logIn = function() {
         Restangular.one('login').one($scope.clientKey).one($scope.username).post("", $scope.password, {"Accept": "application/json", "Content-type" : "application/json"}).then(function(result) {
             if (result.payload.success) {
-		logInService.logIn($scope.clientKey, $scope.username, $scope.password);
+		logInService.logIn($scope.clientKey, $scope.username, $scope.password, $scope.rememberMeVal);
 
 	    	/* This redirection should be improved later */
 		$state.go('loggedin.main.text');
