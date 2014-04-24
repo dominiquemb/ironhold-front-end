@@ -149,7 +149,7 @@ ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 						'username': username,
 						'authdata': Base64.encode(clientKey + "/" + username + ':' + password),
 					}),
-					{expires: 0.5}
+					{expires: 1}
 				);
 			}
 

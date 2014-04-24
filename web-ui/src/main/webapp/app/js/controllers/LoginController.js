@@ -1,10 +1,12 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, $state, logInService) {
+ironholdApp.controller('LoginController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, $state, logInService, ipCookie) {
     if (logInService.confirmLoggedIn($state)) {
 	$state.go('loggedin.main.text');
     }
+
+console.log(ipCookie('ironholdSession'));
 
     $scope.currentlyVisible = 'login';
     $scope.formSubmitted = false;
@@ -14,15 +16,6 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 
     $scope.makeVisible = function(elemName) {
 	    $scope.currentlyVisible = elemName;
-    };
-
-    $scope.rememberMeActive = function() {
-console.log($scope.rememberMeVal);
-	return $scope.rememberMeVal;
-    };
-
-    $scope.rememberMe = function() {
-	$scope.rememberMeVal = !$scope.rememberMeVal;
     };
 
     $scope.submit = function() {
