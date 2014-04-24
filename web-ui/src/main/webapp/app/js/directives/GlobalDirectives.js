@@ -10,7 +10,7 @@ ironholdApp.directive('resultsFeed', function() {
                 templateUrl: 'views/MultipleResultPanel.html'
         };
 });
-
+/*
 ironholdApp.directive('clientKey', function() {
 	return {
 		restrict: 'ACE',
@@ -30,9 +30,9 @@ ironholdApp.directive('clientKey', function() {
 			}
 
 			if (!matchingSub) {
-//				$(elem).val(scope.subdomain);
-//				scope.mainLogin.clientKey = scope.subdomain;
-//				$(elem).attr('disabled', 'true');
+				$(elem).val(scope.subdomain);
+				scope.mainLogin.clientKey = scope.subdomain;
+				$(elem).attr('disabled', 'true');
 			}
 		}
 	};
@@ -59,7 +59,6 @@ ironholdApp.directive('username', function() {
 				}
 
 				if (clientkeyval) {
-/*
 					$('.client-key').attr('disabled', 'false');
 					$('.client-key').val(clientkeyval);
 					scope.mainLogin.clientKey.$modelValue = clientkeyval;
@@ -67,13 +66,12 @@ ironholdApp.directive('username', function() {
 					$('.client-key').attr('disabled', 'true');
 					$(elem).val('');
 					clientkeyval = null;
-*/
 				}
 			});
 		}
 	};
 });
-
+*/
 ironholdApp.directive('clearForm', function() {
        return {
                scope: {
