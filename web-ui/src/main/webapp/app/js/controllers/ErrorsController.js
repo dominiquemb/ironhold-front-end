@@ -9,17 +9,26 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
     $scope.techErrors = [];
     $scope.modalError = false;
     $scope.modal = false;
+    $scope.singleErrorHidden = false;
  
     $scope.showErrorDetails = function(err) {
-	$scope.modalError = err;
-	$scope.modal = $modal.open({
-		templateUrl: 'views/Modals/TechError.html',
-		scope: $scope
-	});
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.modalError = err;
+		$scope.modal = $modal.open({
+			templateUrl: 'views/Modals/TechError.html',
+			scope: $scope
+		});
+	}
+    };
+
+    $scope.hideSingleError = function() {
+		$scope.singleErrorHidden = true;
     };
 
     $scope.closeErrorDetails = function() {
-	$scope.modal.close();
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.modal.close();
+	}
     };
 
     $rootScope.$on('reset', function() {

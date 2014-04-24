@@ -181,6 +181,12 @@ body .btn.btn-primary:focus {
 	height: 20px;
 }
 
+.login-layout .error-item {
+	width: auto;
+	margin-left: 42px;
+	margin-right: 44px;
+}
+
 .error-item {
 	background-color: #fdd8d5;
 	color: #880c03;
@@ -2401,6 +2407,11 @@ body ul {
 }
 
 /* forms */
+
+.login-layout .formErrors {
+	margin-top: 107px;
+	margin-bottom: -10px;
+}
 
 .formErrors {
 	margin-top: 30px;

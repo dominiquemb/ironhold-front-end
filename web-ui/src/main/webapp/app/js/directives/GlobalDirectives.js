@@ -37,7 +37,6 @@ ironholdApp.directive('clientKey', function() {
 		}
 	};
 });
-
 ironholdApp.directive('username', function() {
 	return {
 		restrict: 'ACE',
