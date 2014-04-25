@@ -9,9 +9,21 @@ ironholdApp.controller('PaginationController', function ($http, $resource, $wind
  
     $rootScope.$on('reset', function() {
         if ($scope.activeTab === $scope.tabName) {
+		$scope.reset();
+        }
+    });
+
+    $scope.reset = function() {
+        if ($scope.activeTab === $scope.tabName) {
             $scope.showPagination = false;
             $scope.currentPage = 1;
-        }
+	}
+    };
+
+    $rootScope.$on('searchPreviewData', function() {
+        if ($scope.activeTab === $scope.tabName) {
+		$scope.reset();	
+	}
     });
 
     $rootScope.$on('facetToggled', function() {
