@@ -97,6 +97,37 @@ ironholdApp.config(function ($httpProvider) {
   $httpProvider.interceptors.push('httpRequestInterceptor');
 });
 
+ironholdApp.factory('rolesService', function($rootScope, ipCookie, usersService) {
+	var Roles = function() {};
+
+	Roles.prototype = {
+		getUserRoles: function(callback) {
+			var username = (ipCookie('ironholdSession')) ? ipCookie('ironholdSession').username : false;
+			if (username) {
+			    usersService
+				.one(username)
+				.get()
+				.then(function(result) {
+					if (callback) {
+						callback(result.payload.roles);
+					}
+				},
+				function() {
+					if (callback) {
+						callback([]);
+					}
+				});
+			}
+			else {
+				if (callback) {
+					callback([]);
+				}
+			}
+		}
+	};
+	return new Roles();
+});
+
 ironholdApp.factory('logInService', function($rootScope, ipCookie, Base64) {
 	var loggedIn = false;
 

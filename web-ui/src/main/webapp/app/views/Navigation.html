@@ -21,7 +21,7 @@
 			    <li data-ng-class="{'active':getClass('logs')}" data-ng-click="setActiveTab('logs')">
 				<a data-toggle="tab">Logs</a>
 			    </li>
-			    <li data-ng-class="{'active':getClass('users')}" data-ng-click="setActiveTab('users')">
+			    <li data-ng-show="hasRole('CAN_MANAGE_USERS')" data-ng-class="{'active':getClass('users')}" data-ng-click="setActiveTab('users')">
 				<a data-toggle="tab">Users</a>
 			    </li>
 			    <li data-ng-class="{'active':getClass('settings')}" data-ng-click="setActiveTab('settings')">

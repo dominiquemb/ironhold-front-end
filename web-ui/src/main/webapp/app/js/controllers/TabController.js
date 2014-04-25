@@ -1,10 +1,15 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService, usersService, messagesService) {
+ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService, usersService, messagesService, rolesService) {
     logInService.confirmLoggedIn($state);
     $scope.activeTab = 'search';
     $scope.pageSize = 20;
+    $scope.roles = [];
+
+    rolesService.getUserRoles(function(result) {
+	$scope.roles = result;
+    });
 
     $scope.$emit('activeTab', $scope.activeTab);
 
@@ -18,6 +23,10 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 		$scope.$emit('pageResized');
                 $scope.$apply();
         }
+    };
+
+    $scope.hasRole = function(role) {
+	return ($scope.roles.indexOf(role) !== -1 || $scope.roles.indexOf('SUPER_USER') !== -1);
     };
 
     $scope.clickEvent = function() {
