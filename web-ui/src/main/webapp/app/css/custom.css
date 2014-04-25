@@ -84,6 +84,7 @@ body .btn.btn-primary:focus {
 
 .no-result-content > .jspContainer > .jspVerticalBar {
 	display: none;
+	margin-left: -6px;
 }
 
 /* initial state */
