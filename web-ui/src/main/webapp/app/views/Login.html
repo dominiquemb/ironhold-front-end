@@ -10,14 +10,18 @@
                         <div class="errors formError">
                                 <div class="error-item" data-ng-hide="!isFormInvalid() || hideSingleError">
                                         <div class="pull-left img-xs error-xs"></div>
-                                        <span>Invalid login.  Please check and try again.</span>
+                                        <p class="error-item-text">
+						<span>Invalid login.  Please check and try again.</span>
+					</p>
 <!--                                        <div class="clickable pull-right img-xs close-button-gray" data-ng-click="hideSingleError()"></div>
 -->
                                 </div>
                                 <div class="error-item" data-ng-repeat="error in techErrors track by $index">
                                         <div class="pull-left img-xs error-xs"></div>
-                                        <span>Error occurred. Additional technical <a class="clickable" data-ng-click="showErrorDetails(error)">details</a>
-                                        </span>
+                                        <p class="error-item-text">
+						<span>Error occurred. Additional technical <a class="clickable" data-ng-click="showErrorDetails(error)">details</a>
+                                        	</span>
+					</p>
                                         <div class="clickable pull-right img-xs close-button-blue" title="Close error" data-ng-click="clearTechError(error.id)"></div>
                                 </div>
                         </div>

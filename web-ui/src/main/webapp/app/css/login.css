@@ -15,6 +15,10 @@
 	background-color: #F8F8F8;
 }
 
+.login-layout .error-item-text {
+	margin-left: 23px;
+	margin-bottom: 0px;
+}
 
 .login-layout.login-layout-white .widget-box .widget-main form {
 	margin-top: 105px;
@@ -43,6 +47,7 @@
 .login-layout.login-layout-white .widget-body .lbl {
 	margin-top: 7px;
 	line-height: 50px;
+	font-size: 13px !important;
 }
 
 .login-layout.login-layout-white .background-white {
