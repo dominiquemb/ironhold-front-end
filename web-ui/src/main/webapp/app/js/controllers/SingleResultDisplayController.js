@@ -218,7 +218,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
+console.log('is sub-tab loading?');
+		$timeout.cancel($scope.modeLoadingTimeout);
 		$scope.subTabLoading[$scope.mode] = false;
+console.log($scope.subTabLoading[$scope.mode]);
 		$timeout(function() {
 					$('.msgview_bottom').height( $('.msgview_bottom').height() + 'px' );
 					$('.msgview_bottom .jspVerticalBar').css('visibility', 'visible');
@@ -283,9 +286,9 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.mode = mode;
 
-		$timeout(function() {
+		$scope.modeLoadingTimeout = $timeout(function() {
 			$scope.subTabLoading[mode] = true;
-		}, 1);
+		}, 1000);
 
 		$scope.requestSubTabData(mode);
 	}
