@@ -44,7 +44,9 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 		
 		$scope.techErrors.push({
 			id: id,
-			message: err
+			message: err.data,
+			code: err.status,
+			url: err.config.url
 		});
 
 		$timeout(function() {

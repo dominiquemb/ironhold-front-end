@@ -8,9 +8,11 @@
 		<span>Error occurred, see details below</span>
         </div>
 	<div class="modal-details-title">Technical Error Details</div>
-	<div class="modal-textarea" data-ng-bind-html="modalError.code">
+	<div class="modal-textarea">
+		<strong>Error code</strong>: {{ modalError.code }}
 	</div>
-	<div class="modal-textarea" data-ng-bind-html="modalError.url">
+	<div class="modal-textarea">
+		<strong>URL</strong>: {{ modalError.url }}
 	</div>
 	<div class="modal-textarea" data-ng-bind-html="modalError.message">
 	</div>
