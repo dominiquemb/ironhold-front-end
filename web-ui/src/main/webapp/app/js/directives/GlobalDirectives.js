@@ -10,6 +10,18 @@ ironholdApp.directive('resultsFeed', function() {
                 templateUrl: 'views/MultipleResultPanel.html'
         };
 });
+
+ironholdApp.directive('autoFocus', function($timeout) {
+    return {
+        restrict: 'ACE',
+        link: function(_scope, _element) {
+            $timeout(function(){
+                _element[0].focus();
+            }, 0);
+        }
+    };
+});
+
 /*
 ironholdApp.directive('clientKey', function() {
 	return {
