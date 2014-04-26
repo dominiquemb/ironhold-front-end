@@ -2384,6 +2384,15 @@ body ul {
 	border-right: 1px solid #ccc;
 }
 
+.nav-tabs.hover-inactive-tab-color-blue[class*="tab-color"] > li.inactive > a {
+	color: #999;
+}
+
+.nav-tabs.hover-inactive-tab-color-blue[class*="tab-color"] > li.inactive:hover > a {
+	cursor: default !important;
+	background-color: #fff !important;
+}
+
 .nav-tabs[class*="tab-color"].inactive-border-none > li > a {
 	border: 0px;
 }

@@ -13,7 +13,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.modeData = {};
     $scope.limitedTabs = false;
     $scope.middleSectionHeight = 0;
-    $scope.showSelectMessage = 0;
+    $scope.showSelectMessage = false;
     $scope.bottomSectionHeight = 0;
     $scope.topSectionHeight = 0;
 
@@ -294,10 +294,12 @@ console.log($scope.subTabLoading[$scope.mode]);
 	}
     });
 
-    $scope.switchMode = function(newMode) {
+    $scope.switchMode = function(newMode, condition) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.mode = newMode;
-		$scope.$emit('mode', newMode);
+		if (condition !== false) {
+			$scope.mode = newMode;
+			$scope.$emit('mode', newMode);
+		}
 	}
     };
 
