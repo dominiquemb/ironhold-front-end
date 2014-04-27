@@ -99,11 +99,10 @@ ironholdApp.config(function ($httpProvider) {
 
 ironholdApp.factory('versionService', function() {
     return {
-    get: function () {
-      return ${build.number};
-    }
-  };
-
+        get: function () {
+        return "${build.number}";
+        }
+    };
 });
 
 ironholdApp.factory('rolesService', function($rootScope, ipCookie, usersService) {
