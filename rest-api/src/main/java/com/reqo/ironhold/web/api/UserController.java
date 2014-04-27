@@ -4,6 +4,7 @@ import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.collections.impl.utility.ArrayIterate;
 import com.gs.collections.impl.utility.ListIterate;
 import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -164,11 +166,17 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/roles")
     public
     @ResponseBody
-    ApiResponse<RoleEnum[]> getRoles() {
+    ApiResponse<Map<String, Integer>> getRoles() {
         logger.info("Current user is " + getUserName());
-        ApiResponse<RoleEnum[]> apiResponse = new ApiResponse<>();
+        ApiResponse<Map<String, Integer>> apiResponse = new ApiResponse<>();
 
-        apiResponse.setPayload(RoleEnum.values());
+        Map<String, Integer> roles = UnifiedMap.newMap();
+
+        for (RoleEnum role : RoleEnum.values()) {
+            roles.put(role.name(), role.getValue());
+        }
+
+        apiResponse.setPayload(roles);
         apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
         return apiResponse;
