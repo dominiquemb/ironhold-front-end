@@ -11,6 +11,7 @@ import com.reqo.ironhold.storage.IMimeMailMessageStorageService;
 import com.reqo.ironhold.storage.interfaces.IMessageIndexService;
 import com.reqo.ironhold.storage.interfaces.IMetaDataIndexService;
 import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
+import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.UserDetailsResponse;
@@ -54,6 +55,26 @@ public class UserController {
         super();
         this.backgroundExecutor = Executors.newFixedThreadPool(10);
     }
+
+    @Secured("ROLE_CAN_MANAGE_USERS")
+    @RequestMapping(method = RequestMethod.GET, value="/psts")
+    public
+    @ResponseBody
+    ApiResponse<List<PSTFileMeta>> getAvailablePSTs(@RequestParam(required = false, defaultValue = "*") final String criteria,
+                                                      @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                      @RequestParam(required = false, defaultValue = "0") int page) {
+
+        ApiResponse<List<PSTFileMeta>> apiResponse = new ApiResponse<>();
+
+        List<PSTFileMeta> metas = miscIndexService.getPSTFileMetas(getClientKey(), criteria, page * pageSize, pageSize);
+
+        apiResponse.setPayload(metas);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/searchHistory")
     public
