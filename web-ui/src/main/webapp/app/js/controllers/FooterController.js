@@ -1,9 +1,10 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService, usersService, messagesService) {
+ironholdApp.controller('FooterController', function ($http, $resource, $window, $rootScope, $scope, $location, Restangular, searchResultsService, $state, logInService, usersService, messagesService, versionService) {
     logInService.confirmLoggedIn($state);
 
+    $scope.version = versionService.get();
     $scope.searchMatches = null;
     $scope.selectedFacets = null;
     $scope.searchTime = null;

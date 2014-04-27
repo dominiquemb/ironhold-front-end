@@ -97,6 +97,15 @@ ironholdApp.config(function ($httpProvider) {
   $httpProvider.interceptors.push('httpRequestInterceptor');
 });
 
+ironholdApp.factory('versionService', function() {
+    return {
+    get: function () {
+      return ${build.number};
+    }
+  };
+
+});
+
 ironholdApp.factory('rolesService', function($rootScope, ipCookie, usersService) {
 	var Roles = function() {};
 

@@ -12,6 +12,9 @@
     <artifactId>web-ui</artifactId>
     <name>WEB Angular UI</name>
     <packaging>war</packaging>
+    <properties>
+        <build.number>0000</build.number>
+    </properties>
     <build>
         <finalName>web-ui</finalName>
 
