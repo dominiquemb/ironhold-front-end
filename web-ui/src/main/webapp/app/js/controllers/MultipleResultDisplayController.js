@@ -23,6 +23,8 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	'email': 'Email Message'
     };
 
+    $scope.$emit('initCustomScrollbars');
+
     $scope.entryNumMatchesKey = function(key) {
         if ($scope.activeTab === $scope.tabName) {
 		return $scope.currentEntryNumber[$scope.tabName] === key;
