@@ -63,6 +63,11 @@ body .btn.btn-primary:focus {
 	color: #0066FF;
 }
 
+/* dropdown-menu */
+.dropdown-menu li:hover > a, .dropdown-submenu > a:hover {
+	background-color: #2E68B1 !important;
+}
+
 /* suggestions */
 .suggestions {
 	margin-left: 10px;
