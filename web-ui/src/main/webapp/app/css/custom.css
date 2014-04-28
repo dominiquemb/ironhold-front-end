@@ -1655,7 +1655,7 @@ body ul {
 	left: 0px !important;
 	right: 22px !important;
 	width: 100% !important;
-	min-height: 100%;
+	height: 99999px;
 /*	width: 100% !important; */
 }
 
@@ -2412,7 +2412,7 @@ body ul {
 
 .blue-hilite {
 	background-color: #fefdd4;
-	color: #58595b;
+	color: #000;
 }
 
 .upper {
