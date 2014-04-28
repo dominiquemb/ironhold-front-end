@@ -63,6 +63,15 @@ body .btn.btn-primary:focus {
 	color: #0066FF;
 }
 
+/* pst */
+.pst-options-container,
+.pst-selections-container {
+	max-height: 100px;
+	min-width: 200px;
+	overflow: auto;
+	margin: 10px;
+}
+
 /* dropdown-menu */
 .dropdown-menu li:hover > a, .dropdown-submenu > a:hover {
 	background-color: #2E68B1 !important;

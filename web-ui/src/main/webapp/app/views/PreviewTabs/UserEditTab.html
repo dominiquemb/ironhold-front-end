@@ -76,12 +76,25 @@
 						</tr>
 						<tr class="user-assigned-psts">
 							<td>
-								Assigned PSTs
+								PSTs:
 							</td>
 							<td>
-								<span data-ng-repeat="pst in currentUser.loginUser.sources">
-									{{ pst }}
-								</span>
+								<div class="pull-left">
+									Available PSTs:<br />
+									<div class="pst-options-container">
+										<span data-ng-repeat="(key, pst) in psts">
+											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, currentUser.loginUser)" value="{{ key }}" data-ng-checked="isPstSelected(pst.id, currentUser.loginUser)" /> {{ pst.pstFileName }}<br />
+										</span>
+									</div>
+								</div>
+								<div class="pull-right">
+									Selected PSTs:
+									<div class="pst-selections-container">
+										<span data-ng-repeat="(key, pst) in selectedPsts">
+											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, currentUser.loginUser)" data-ng-checked="isPstSelected(pst.id, currentUser.loginUser)" value="{{ key }}" /> {{ pst.pstFileName }}<br />
+										</span>
+									</div>
+								</div>
 							</td>
 						</tr>
 					</table>

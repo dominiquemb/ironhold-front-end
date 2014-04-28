@@ -6,14 +6,31 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $scope.users = [];
     $scope.pageNum = 0;
+    $scope.selectedPsts = [];
+    $scope.psts = [];
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
+		user.sources = $scope.selectedPsts;
 		usersService
-//			.one(user.username)
-			.post(user.username, user)
+			.post(user)
 			.then(function(result) {
 				console.log(result);
+			});
+	}
+    });
+
+    $rootScope.$on('pstRequest', function(evt, data) {
+	if ($scope.activeTab === $scope.tabName) {
+		usersService
+			.one('psts')
+			.get({
+				'criteria': data.criteria,
+				'page': data.page,
+				'pageSize': data.pageSize
+				})
+			.then(function(result) {
+				$scope.psts = result.payload || [];
 			});
 	}
     });
@@ -50,6 +67,36 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 	    }
     });
 
+    $scope.togglePst = function(evt, pst) {
+	if ($scope.activeTab === $scope.tabName) {
+		var p = null,
+		checkbox = evt.target;
+
+		if (checkbox.checked) {
+			$scope.selectedPsts.push(pst);
+		}
+		else {
+			for (p in $scope.selectedPsts) {
+				if ($scope.selectedPsts[p].id === pst.id) {
+					$scope.selectedPsts.splice(p, 1);
+				}
+			}	
+		}
+	}
+    };
+
+    $scope.isPstSelected = function(id) {
+	if ($scope.activeTab === $scope.tabName) {
+		var pst;
+		for (pst in $scope.selectedPsts) {
+			if ($scope.selectedPsts[pst].id === id) {
+				return true;
+			}
+		}
+		return false;
+	}
+    };
+
     $scope.onTabActivation = function() {
 		    searchResultsService.prepForBroadcast("-", "- ");
 
@@ -73,6 +120,9 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $rootScope.$on('reset', function() {
         if ($scope.activeTab === $scope.tabName) {
             $scope.initialState = true;
+	    $scope.psts = [];
+	    $scope.users = [];
+	    $scope.pageNum = 0;
         }
     });
 
@@ -84,6 +134,12 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		.then(function(result) {
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
+			$scope.selectedPsts = result.payload.loginUser.sources || [];
+			$scope.$emit('pstRequest', {
+				'criteria': '*',
+				'page': 1,
+				'pageSize': 100
+			});
                 },
 		function(err) {
 			$scope.$emit('technicalError', err);

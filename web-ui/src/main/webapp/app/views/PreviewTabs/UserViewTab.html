@@ -64,14 +64,16 @@
 						</td>
 					</tr>
 					<tr class="user-assigned-psts">
-						<td>
-							Assigned PSTs
-						</td>
-						<td>
-							<span data-ng-repeat="pst in currentUser.sources">
-								{{ pst }}
-							</span>
-						</td>
+							<td>
+								Selected PSTs:
+							</td>
+							<td>
+								<div class="pst-selections-container">
+									<span data-ng-repeat="pst in psts">
+										{{ pst.pstFileName }}<br />
+									</span>
+								</div>
+							</td>
 					</tr>
 					<tr class="user-search-history">
 						<td>
