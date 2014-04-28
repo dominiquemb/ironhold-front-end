@@ -82,11 +82,6 @@ body .btn.btn-primary:focus {
 	background: url(../img/sprites/ImageSprite.png) -65px -32px !important;
 }
 
-.no-result-content .jspVerticalBar:nth-child(1) {
-	display: none;
-	margin-left: -6px;
-}
-
 /* initial state */
 .listing > .jspContainer > .jspPane > .no-result-content > .jspVerticalBar {
 	visibility: hidden;
