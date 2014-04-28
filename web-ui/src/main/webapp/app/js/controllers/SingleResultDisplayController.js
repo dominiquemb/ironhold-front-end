@@ -23,8 +23,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
-console.log('this is a test to make sure changes got pushed');
-
     $scope.isSubTabLoading = function(tab) {
 	if ($scope.activeTab === $scope.tabName) {
 		return $scope.subTabLoading[tab] === true;

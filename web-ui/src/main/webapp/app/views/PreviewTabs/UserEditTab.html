@@ -11,7 +11,7 @@
 				<div class="user-full-name">
 					 {{ currentUser.loginUser.name }}
 				</div>
-				<form name="edit-user-form" data-ng-submit="submitUser(currentUser.loginUser)">
+				<form name="edit-user-form user-form" data-ng-submit="submitUser(currentUser.loginUser)">
 					<table class="table table-bordered">
 						<tr class="user-name">
 							<td>
@@ -98,7 +98,6 @@
 							</td>
 						</tr>
 					</table>
-					<button type="submit" class="btn btn-primary">Submit Changes</button>
 				</form>
 			    </div>
 			</div>

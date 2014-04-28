@@ -25,6 +25,10 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
         }
     };
 
+    $scope.isState = function(state) {
+	return $state.current.name.indexOf(state) !== -1;
+    };
+
     $scope.hasRole = function(role) {
 	return ($scope.roles.indexOf(role) !== -1 || $scope.roles.indexOf('SUPER_USER') !== -1);
     };

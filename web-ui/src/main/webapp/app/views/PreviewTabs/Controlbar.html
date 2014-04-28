@@ -7,10 +7,20 @@
 			</div>
 		</div>
 		<div data-ng-show="isActiveTab('users')">
-			<div class="controlbar_item pull-left edit-user" data-ng-click="editUser()">
+			<div data-ng-show="isState('useredit') || isState('useradd')" class="controlbar_item pull-left" data-ng-click="saveChanges()">
+				<div class="pull-right controlbar_item-name">
+					Save
+				</div>
+			</div>
+			<div data-ng-show="isState('useredit') || isState('useradd')" class="controlbar_item pull-left" data-ng-click="userView()">
+				<div class="pull-right controlbar_item-name">
+					Cancel
+				</div>
+			</div>
+			<div data-ng-hide="isState('useredit') || isState('useradd')" class="controlbar_item pull-left edit-user" data-ng-click="editUser()">
 				<div class="pull-right controlbar_item-name">Edit User</div>
 			</div>
-			<div class="controlbar_item pull-left add-user" data-ng-click="addUser()">
+			<div data-ng-hide="isState('useradd') || isState('useredit')" class="controlbar_item pull-left add-user" data-ng-click="addUser()">
 				<div class="pull-right controlbar_item-name">Add User</div>
 			</div>
 		</div>

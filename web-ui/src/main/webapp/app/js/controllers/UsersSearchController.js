@@ -8,6 +8,15 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.pageNum = 0;
     $scope.selectedPsts = [];
     $scope.psts = [];
+    $scope.currentUser = false;
+
+    $scope.saveChanges = function() {
+	$('.user-form').submit();
+    };
+
+    $scope.userView = function() {
+	$state.go('loggedin.main.userview');
+    };
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
@@ -135,6 +144,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
 			$scope.selectedPsts = result.payload.loginUser.sources || [];
+			$scope.currentUser = user;
 			$scope.$emit('pstRequest', {
 				'criteria': '*',
 				'page': 1,
