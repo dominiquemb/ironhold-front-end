@@ -101,6 +101,16 @@ body .btn.btn-primary:focus {
 	visibility: hidden;
 }
 
+.initial-message {
+	position: absolute;
+	top: -58px;
+	width: 553px;
+	height: 297px;
+	left: -102px;
+	z-index: 2;
+	background: url(../img/sprites/ImageSprite.png) 0px -396px !important;
+}
+
 /* loading message */
 
 .loading {
