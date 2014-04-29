@@ -10,19 +10,36 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.psts = [];
     $scope.currentUser = false;
 
-    $scope.saveChanges = function() {
-	$('.user-form').submit();
-    };
-
     $scope.userView = function() {
 	$state.go('loggedin.main.userview');
+console.log($scope.roles);
+    };
+
+    $scope.toggleRole = function(evt, role) {
+	if ($scope.activeTab === $scope.tabName) {
+		var checkbox = evt.target;
+
+		if (checkbox.checked) {
+			$scope.currentUser.loginUser.bitMask = $scope.currentUser.loginUser.bitMask | $scope.roles[role];
+		}
+		else {
+			$scope.currentUser.loginUser.bitMask = $scope.currentUser.loginUser.bitMask & ~$scope.roles[role];
+		}
+	}
     };
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		user.sources = $scope.selectedPsts;
 		usersService
-			.post(user)
+			.post(
+				"",
+				user,
+				{
+				"Accept": "application/json",
+				"Content-type" : "application/json"
+				}
+			)
 			.then(function(result) {
 				console.log(result);
 			});

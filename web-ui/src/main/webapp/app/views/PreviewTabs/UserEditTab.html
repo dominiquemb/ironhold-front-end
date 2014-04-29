@@ -11,7 +11,7 @@
 				<div class="user-full-name">
 					 {{ currentUser.loginUser.name }}
 				</div>
-				<form name="edit-user-form user-form" data-ng-submit="submitUser(currentUser.loginUser)">
+				<form name="edit-user-form user-form" class="user-form">
 					<table class="table table-bordered">
 						<tr class="user-name">
 							<td>
@@ -59,7 +59,9 @@
 							</td>
 							<td>
 								<div data-ng-repeat="role in currentUser.roles">
+									<input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRole(role)" data-ng-click="toggleRole($event, role)">
 									{{ role }}
+									<br />
 								</div>
 							</td>
 						</tr>
