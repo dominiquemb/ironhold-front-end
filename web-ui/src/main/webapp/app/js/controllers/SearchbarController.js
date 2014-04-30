@@ -151,6 +151,14 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
         }
     };
 
+    $scope.searchKeyDown = function() {
+        if ($scope.activeTab === $scope.tabName) {
+		if (!$scope.searchEntered) {
+			$scope.searchEntered = true;
+			$scope.$emit('searchEntered');
+		}
+	}
+    };
 
     $scope.searchKeyUp = function($event) {
         if ($scope.activeTab === $scope.tabName) {

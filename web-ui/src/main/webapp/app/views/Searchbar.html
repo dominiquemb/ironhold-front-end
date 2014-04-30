@@ -4,7 +4,7 @@
             <div class="input-history dropdown">
                 <input type="text" class="auto-focus search-input clear-form-input form-control search-field"
                        placeholder="Enter your search here" data-ng-model="inputSearch"
-                       data-ng-keyup="searchKeyUp($event)">
+                       data-ng-keyup="searchKeyUp($event)" data-ng-keydown="searchKeyDown()">
 
                 <a class="dropdown-toggle">
                     <div class="img-xs caret-gray-down" title="Search history"></div>

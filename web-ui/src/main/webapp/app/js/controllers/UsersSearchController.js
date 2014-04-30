@@ -27,7 +27,13 @@ console.log($scope.roles);
 		}
 	}
     };
-
+/*
+    $scope.hasRole = function(role) {
+	if ($scope.activeTab === $scope.tabName) {
+		return (currentUser.loginUser.bitMask & $scope.roles[role]) === $scope.roles[role];
+	}
+    };
+*/
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		user.sources = $scope.selectedPsts;
