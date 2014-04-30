@@ -10,7 +10,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.matches = 0;
     $scope.currentEntryNumber = {};
     $scope.initialState = true;
-    $scope.searchEntered = false;
+    $scope.removeInstructions = false;
     $scope.showSearchResults = false;
     $scope.currentMessageNumber = -1;
     $scope.showNoResults = false;
@@ -26,10 +26,8 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 
     $scope.$emit('initCustomScrollbars');
 
-    $rootScope.$on('searchEntered', function() {
-        if ($scope.activeTab === $scope.tabName) {
-		$scope.searchEntered = true;
-	}
+    $rootScope.$on('removeInstructions', function() {
+	$scope.removeInstructions = true;
     });
 
     $scope.entryNumMatchesKey = function(key) {

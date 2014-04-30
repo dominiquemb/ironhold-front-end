@@ -142,6 +142,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     };
 
     $scope.setActiveTab = function(tab) {
+	$scope.$emit('removeInstructions');
 	$scope.activeTab = tab;
     	$scope.$emit('activeTab', $scope.activeTab);
     };
