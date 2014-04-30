@@ -1433,7 +1433,10 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 .controlbar_item {
 	margin: 8px 0px;
 	cursor: pointer;
+/*
 	width: auto;
+*/
+	width: 84px;
 	text-align: center;
 }
 
