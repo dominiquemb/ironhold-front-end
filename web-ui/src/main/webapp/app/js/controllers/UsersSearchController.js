@@ -52,6 +52,17 @@ console.log($scope.roles);
 	}
     });
 
+    $rootScope.$on('searchHistoryRequest', function(evt, data) {
+	if ($scope.activeTab === $scope.tabName) {
+		usersService
+			.one('searchHistory')
+			.get(data.loginUser.username)
+			.then(function(result) {
+				$scope.searchHistory = result.payload;
+			});
+	}
+    });
+
     $rootScope.$on('pstRequest', function(evt, data) {
 	if ($scope.activeTab === $scope.tabName) {
 		usersService
@@ -168,6 +179,7 @@ console.log($scope.roles);
 			$scope.$emit('selectUser', result.payload);
 			$scope.selectedPsts = result.payload.loginUser.sources || [];
 			$scope.currentUser = user;
+			$scope.$emit('searchHistoryRequest', user);
 			$scope.$emit('pstRequest', {
 				'criteria': '*',
 				'page': 1,
