@@ -8,6 +8,7 @@
 		</div>
 		<div data-ng-show="isActiveTab('users')">
 			<div data-ng-show="isState('useredit') || isState('useradd')" class="controlbar_item pull-left" data-ng-click="submitUser(currentUser.loginUser)">
+				<div class="msgview_img msgview_img-xl saveuser-lg"></div>
 				<div class="pull-right controlbar_item-name">
 					Save
 				</div>
@@ -18,9 +19,11 @@
 				</div>
 			</div>
 			<div data-ng-hide="isState('useredit') || isState('useradd')" class="controlbar_item pull-left edit-user" data-ng-click="editUser()">
+				<div class="msgview_img msgview_img-xl edituser-lg"></div>
 				<div class="pull-right controlbar_item-name">Edit User</div>
 			</div>
 			<div data-ng-hide="isState('useradd') || isState('useredit')" class="controlbar_item pull-left add-user" data-ng-click="addUser()">
+				<div class="msgview_img msgview_img-xl adduser-lg"></div>
 				<div class="pull-right controlbar_item-name">Add User</div>
 			</div>
 		</div>

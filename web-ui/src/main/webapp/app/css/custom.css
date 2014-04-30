@@ -932,6 +932,31 @@ body .btn.btn-primary:focus {
 	background: url(../img/sprites/ImageSprite.png) -702px 0px;
 }
 
+.saveuser-lg {
+	background: url(../img/sprites/ImageSprite.png) -481px -3px;
+	width: 31px !important;
+}
+
+.edituser-lg {
+	background: url(../img/sprites/ImageSprite.png) -508px -3px;
+}
+
+.adduser-lg {
+	background: url(../img/sprites/ImageSprite.png) -541px -3px;
+}
+
+div:hover > .saveuser-lg {
+	background: url(../img/sprites/ImageSprite.png) -481px -35px;
+}
+
+div:hover > .edituser-lg {
+	background: url(../img/sprites/ImageSprite.png) -508px -35px;
+}
+
+div:hover > .adduser-lg {
+	background: url(../img/sprites/ImageSprite.png) -541px -35px;
+}
+
 .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px 0px;
 }
