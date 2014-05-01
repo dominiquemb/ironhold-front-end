@@ -1476,7 +1476,7 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	margin: 2px 0px 0px;
 	line-height: 14px;
 	min-width: 43px;
-	width: 43px;
+	width: auto;
 	cursor: pointer;
 }
 
