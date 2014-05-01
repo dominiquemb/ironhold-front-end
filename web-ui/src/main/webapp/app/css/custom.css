@@ -1447,7 +1447,7 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	height: 72px;
 	cursor: pointer;
 	width: auto;
-	padding: 5px;
+	padding: 4px;
 	min-width: 43px;
 	text-align: center;
 }
