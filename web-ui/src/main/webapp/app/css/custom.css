@@ -941,19 +941,19 @@ body .btn.btn-primary:focus {
 }
 
 .edituser-lg {
-	background: url(../img/sprites/ImageSprite.png) -508px -3px;
+	background: url(../img/sprites/ImageSprite.png) -511px -3px;
 }
 
 .adduser-lg {
-	background: url(../img/sprites/ImageSprite.png) -541px -3px;
+	background: url(../img/sprites/ImageSprite.png) -544px -3px;
 }
 
 .cancel-lg {
-	background: url(../img/sprites/ImageSprite.png) -576px -3px;
+	background: url(../img/sprites/ImageSprite.png) -577px -3px;
 }
 
 div:hover > .cancel-lg {
-	background: url(../img/sprites/ImageSprite.png) -576px -35px;
+	background: url(../img/sprites/ImageSprite.png) -577px -35px;
 }
 
 div:hover > .saveuser-lg {
@@ -961,11 +961,11 @@ div:hover > .saveuser-lg {
 }
 
 div:hover > .edituser-lg {
-	background: url(../img/sprites/ImageSprite.png) -508px -35px;
+	background: url(../img/sprites/ImageSprite.png) -511px -35px;
 }
 
 div:hover > .adduser-lg {
-	background: url(../img/sprites/ImageSprite.png) -541px -35px;
+	background: url(../img/sprites/ImageSprite.png) -544px -35px;
 }
 
 .download-lg {
