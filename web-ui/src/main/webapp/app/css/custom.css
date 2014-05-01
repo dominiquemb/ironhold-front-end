@@ -1431,12 +1431,12 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 }
 
 .controlbar_item {
-	margin: 8px 0px;
+	margin: 2px;
+	height: 72px;
 	cursor: pointer;
-/*
 	width: auto;
-*/
-	width: 84px;
+	padding: 5px;
+	min-width: 43px;
 	text-align: center;
 }
 
@@ -1461,7 +1461,11 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 }
 
 .controlbar_item-name {
-	margin: 0px 11px;
+	margin: 2px 0px 0px;
+	line-height: 14px;
+	min-width: 43px;
+	width: 43px;
+	width: auto;
 	cursor: pointer;
 }
 
