@@ -815,6 +815,7 @@ body .btn.btn-primary:focus {
 
 .user-body-container {
 	padding-left: 65px;
+	padding-right: 11px;
 	width: 100%;
 }
 
