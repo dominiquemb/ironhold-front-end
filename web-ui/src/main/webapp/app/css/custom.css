@@ -944,6 +944,14 @@ body .btn.btn-primary:focus {
 	background: url(../img/sprites/ImageSprite.png) -541px -3px;
 }
 
+.cancel-lg {
+	background: url(../img/sprites/ImageSprite.png) -576px -3px;
+}
+
+div:hover > .cancel-lg {
+	background: url(../img/sprites/ImageSprite.png) -576px -35px;
+}
+
 div:hover > .saveuser-lg {
 	background: url(../img/sprites/ImageSprite.png) -481px -35px;
 }
@@ -1465,7 +1473,6 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	line-height: 14px;
 	min-width: 43px;
 	width: 43px;
-	width: auto;
 	cursor: pointer;
 }
 
