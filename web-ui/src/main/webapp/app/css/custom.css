@@ -107,7 +107,7 @@ body .btn.btn-primary:focus {
 	width: 553px;
 	height: 297px;
 	left: -102px;
-	z-index: 2;
+	z-index: 99;
 	background: url(../img/sprites/ImageSprite.png) 0px -396px !important;
 }
 
