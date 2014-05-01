@@ -2387,6 +2387,7 @@ body ul {
 .nav-tabs {
 	font-weight: normal;
 	background-color: transparent !important;
+	border-color: #CCCCCC;
 }
 
 .nav-tabs.nav > li > a {
