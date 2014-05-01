@@ -472,10 +472,13 @@ body .btn.btn-primary:focus {
 /* userview */
 
 .userview_middle{
-	position: relative;
+	position: absolute;
+	right: 3px;
 	margin: 0px 0px;
 	width: 100% !important;
-	height: 100%;
+	height: auto;
+	bottom: 3px;
+	top: 81px;
 }
 
 .userview_top {
@@ -811,7 +814,8 @@ body .btn.btn-primary:focus {
 }
 
 .user-body-container {
-	margin-left: 55px;
+	padding-left: 65px;
+	width: 100%;
 }
 
 /* message-list */
