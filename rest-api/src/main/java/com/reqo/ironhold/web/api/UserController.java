@@ -118,8 +118,9 @@ public class UserController {
             apiResponse.setPayload(result);
             apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
 
-            return apiResponse;
         }
+
+        return apiResponse;
     }
 
     @Secured("ROLE_CAN_MANAGE_USERS")
