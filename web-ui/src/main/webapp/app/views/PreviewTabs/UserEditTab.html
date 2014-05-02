@@ -58,8 +58,8 @@
 								Roles:
 							</td>
 							<td>
-								<div data-ng-repeat="role in currentUser.roles">
-									<input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRole(role)" data-ng-click="toggleRole($event, role)">
+								<div data-ng-repeat="(role, bit) in allRoles">
+									<input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleBitmask(role)" data-ng-click="toggleRole($event, role)">
 									{{ role }}
 									<br />
 								</div>

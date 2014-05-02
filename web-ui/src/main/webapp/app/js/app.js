@@ -131,6 +131,21 @@ ironholdApp.factory('rolesService', function($rootScope, ipCookie, usersService)
 					callback([]);
 				}
 			}
+		},
+		getAllRoles: function(callback) {
+			    usersService
+				.one('roles')
+				.get()
+				.then(function(result) {
+					if (callback) {
+						callback(result.payload);
+					}
+				},
+				function() {
+					if (callback) {
+						callback([]);
+					}
+				});
 		}
 	};
 	return new Roles();

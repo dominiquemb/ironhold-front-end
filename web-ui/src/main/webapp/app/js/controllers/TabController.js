@@ -6,9 +6,14 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     $scope.activeTab = 'search';
     $scope.pageSize = 20;
     $scope.roles = [];
+    $scope.allRoles = {};
 
     rolesService.getUserRoles(function(result) {
 	$scope.roles = result;
+    });
+
+    rolesService.getAllRoles(function(result) {
+	$scope.allRoles = result;
     });
 
     $scope.$emit('activeTab', $scope.activeTab);

@@ -12,7 +12,6 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $scope.userView = function() {
 	$state.go('loggedin.main.userview');
-console.log($scope.roles);
     };
 
     $scope.toggleRole = function(evt, role) {
@@ -20,20 +19,20 @@ console.log($scope.roles);
 		var checkbox = evt.target;
 
 		if (checkbox.checked) {
-			$scope.currentUser.loginUser.bitMask = $scope.currentUser.loginUser.bitMask | $scope.roles[role];
+			$scope.currentUser.loginUser.rolesBitMask = $scope.currentUser.loginUser.rolesBitMask | $scope.allRoles[role];
 		}
 		else {
-			$scope.currentUser.loginUser.bitMask = $scope.currentUser.loginUser.bitMask & ~$scope.roles[role];
+			$scope.currentUser.loginUser.rolesBitMask = $scope.currentUser.loginUser.rolesBitMask & ~$scope.allRoles[role];
 		}
 	}
     };
-/*
-    $scope.hasRole = function(role) {
+
+    $scope.hasRoleBitmask = function(role) {
 	if ($scope.activeTab === $scope.tabName) {
-		return (currentUser.loginUser.bitMask & $scope.roles[role]) === $scope.roles[role];
+		return ($scope.currentUser.loginUser.rolesBitMask & $scope.allRoles[role]) === $scope.allRoles[role];
 	}
     };
-*/
+
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		user.sources = $scope.selectedPsts;
@@ -46,8 +45,8 @@ console.log($scope.roles);
 				"Content-type" : "application/json"
 				}
 			)
-			.then(function(result) {
-				console.log(result);
+			.then(function() {
+				$scope.userView();
 			});
 	}
     });
