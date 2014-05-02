@@ -137,7 +137,7 @@ public class UserController {
     void updateUser(@RequestBody LoginUser userDetails) {
         final String clientKey = getClientKey();
         final LoginUser loginUser = miscIndexService.getLoginUser(getClientKey(), userDetails.getUsername());
-        if (!loginUser.getHashedPassword().equals(EMPTY_PASSWORD)) {
+        if (!userDetails.getHashedPassword().equals(EMPTY_PASSWORD)) {
             userDetails.setHashedPassword(CheckSumHelper.getCheckSum(userDetails.getHashedPassword().getBytes()));
             miscIndexService.store(clientKey, userDetails);
         } else {
