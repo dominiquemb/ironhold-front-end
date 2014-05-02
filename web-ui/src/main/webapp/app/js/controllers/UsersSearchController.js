@@ -56,7 +56,8 @@ console.log($scope.roles);
 	if ($scope.activeTab === $scope.tabName) {
 		usersService
 			.one('searchHistory')
-			.get(data.loginUser.username)
+			.one(data.loginUser.username)
+			.get()
 			.then(function(result) {
 				$scope.searchHistory = result.payload;
 			});
