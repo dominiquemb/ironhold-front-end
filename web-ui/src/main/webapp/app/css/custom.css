@@ -1481,6 +1481,10 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	cursor: pointer;
 }
 
+.controlbar_item:hover .controlbar_item-name {
+	color: #2E68B1;
+}
+
 .controlbar-group-row .controlbar_item-name {
 	margin: 0px 0px;
 }
