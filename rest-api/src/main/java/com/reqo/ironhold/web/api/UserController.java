@@ -57,12 +57,12 @@ public class UserController {
     }
 
     @Secured("ROLE_CAN_MANAGE_USERS")
-    @RequestMapping(method = RequestMethod.GET, value="/psts")
+    @RequestMapping(method = RequestMethod.GET, value = "/psts")
     public
     @ResponseBody
     ApiResponse<List<PSTFileMeta>> getAvailablePSTs(@RequestParam(required = false, defaultValue = "*") final String criteria,
-                                                      @RequestParam(required = false, defaultValue = "10") int pageSize,
-                                                      @RequestParam(required = false, defaultValue = "0") int page) {
+                                                    @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                    @RequestParam(required = false, defaultValue = "0") int page) {
 
         ApiResponse<List<PSTFileMeta>> apiResponse = new ApiResponse<>();
 
@@ -96,7 +96,33 @@ public class UserController {
 
     }
 
+    @Secured("ROLE_CAN_MANAGE_USERS")
+    @RequestMapping(method = RequestMethod.GET, value = "/searchHistory/{username}")
+    public
+    @ResponseBody
+    ApiResponse<List<ViewableAuditLogMessage>> getHistory(@PathVariable("username") String username) {
 
+        ApiResponse<List<ViewableAuditLogMessage>> apiResponse = new ApiResponse<>();
+        final LoginUser loginUser = miscIndexService.getLoginUser(getClientKey(), username);
+        if (loginUser == null) {
+            apiResponse.setPayload(null);
+            apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+            apiResponse.setMessage("User not found");
+        } else {
+
+            List<AuditLogMessage> history = metaDataIndexService.getAuditLogMessages(getClientKey(), loginUser, AuditActionEnum.SEARCH);
+            MutableList<ViewableAuditLogMessage> messages = FastList.newList(history).collect(ViewableAuditLogMessage.FROM_AUDIT_LOG_MESSAGE);
+
+
+            List<ViewableAuditLogMessage> result = messages.toSortedListBy(ViewableAuditLogMessage.SORT_BY_CONTEXT);
+            apiResponse.setPayload(result);
+            apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+            return apiResponse;
+        }
+    }
+
+    @Secured("ROLE_CAN_MANAGE_USERS")
     @RequestMapping(method = RequestMethod.GET, value = "/{username}")
     public
     @ResponseBody
