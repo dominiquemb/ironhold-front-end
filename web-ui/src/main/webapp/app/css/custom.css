@@ -1387,7 +1387,7 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	width: 100%;
 	min-height: 43px;
 	min-height: 42px;
-	background-color: #f3f3f3;
+	background-color: #ffffff;
 }
 
 .middlebar .pagination-container {
