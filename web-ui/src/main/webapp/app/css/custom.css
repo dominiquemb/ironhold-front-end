@@ -1387,7 +1387,7 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	width: 100%;
 	min-height: 43px;
 	min-height: 42px;
-	background-color: #ffffff;
+	background-color: #f3f3f3;
 }
 
 .middlebar .pagination-container {
@@ -1706,7 +1706,8 @@ body ul {
 	position: absolute;
 	right: 3px;
 	width: auto !important;
-	margin-left: 236px;
+	border-left: 1px solid #ccc;
+	margin-left: 230px;
 	top: 0px;
 	bottom: 107px;
 	left: 0px;
@@ -1807,7 +1808,8 @@ body ul {
 	background-color: #fff;
 	padding: 0px;
 	cursor: pointer;
-	margin-right: 21px;
+	margin-right: 23px;
+	margin-left: 6px;
 	color: #333;
 	max-width: 100%;
 	word-wrap: break-word;
@@ -2098,7 +2100,9 @@ body ul {
 	z-index: 2;
 	border-top: 1px solid #ccc;
 	min-width: 230px;
+/*
 	border-right: 1px solid #ccc;
+*/
 	height: 100%;
 	top: 61px;
 	padding-left: 0px;
