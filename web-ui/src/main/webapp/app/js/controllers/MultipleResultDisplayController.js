@@ -210,6 +210,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		    $scope.currentEntryNumber[$scope.tabName] = key;
                 }
                 $scope.unhighlightAllMessages();
+		entry.highlighted = true;
 	    }
 	}
     };
@@ -252,13 +253,13 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         }
     };
 
-    $scope.highlightMessage = function(evt, message) {
+    $scope.toggleHighlight = function(message, evt) {
         if ($scope.activeTab === $scope.tabName) {
-            evt.stopPropagation();
+	    if (evt) {
+		evt.stopPropagation();
+	    }
 
 	    var highlighted = 0;
-
-            message.highlighted = true;
 
 	    angular.forEach($scope.entries[$scope.tabName], function(entry) {
 		if (entry.highlighted) {
@@ -266,24 +267,64 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 		}
 	    });
 
+	    if (message.highlighted) {
+		    if (highlighted > 1) {
+			message.highlighted = false;
+			highlighted--;
+		    }
+	    }
+	    else {
+		message.highlighted = true;
+		highlighted++;
+	    }
+
 	    if (highlighted > 1) {
-            	$scope.$emit('highlightActive', true);
+		$scope.$emit('highlightActive', true);
+	    }
+	    else {
+		$scope.$emit('highlightActive', false);
 	    }
 
 	    if (highlighted === 1 && message.highlighted) {
 		message.selected = true;
-                $scope.$emit('selectResultRequest', message, $scope.inputSearch);
+		$scope.$emit('selectResultRequest', message, $scope.inputSearch);
 	    }
-        }
+
+	    $scope.selectRemainingMessage();
+	}
+    };
+
+    $scope.selectRemainingMessage = function() {
+        if ($scope.activeTab === $scope.tabName) {
+	    var highlighted = [];
+
+	    angular.forEach($scope.entries[$scope.tabName], function(entry, key) {
+		if (entry.highlighted) {
+			highlighted.push({entry: entry, key: key});
+		}
+	    });
+
+	    if (highlighted.length === 1) {
+		$scope.selectEntry(highlighted[0].entry, highlighted[0].key);
+	        $scope.$emit('selectResultRequest', highlighted[0].entry, $scope.inputSearch);
+	    }
+	}
+    };
+
+    $scope.highlightMessage = function(message) {
+        if ($scope.activeTab === $scope.tabName) {
+	    message.highlighted = true;
+	}
     };
 
     $scope.unhighlightMessage = function(message) {
         if ($scope.activeTab === $scope.tabName) {
-            message.highlighted = false;
+		message.highlighted = false;
+		message.selected = false;
         }
-        };
+    };
 
-        $rootScope.$on('reset', function() {
+    $rootScope.$on('reset', function() {
         $scope.reset();
     });
 
