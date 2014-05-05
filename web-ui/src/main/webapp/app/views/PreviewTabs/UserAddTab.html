@@ -11,7 +11,7 @@
 				<div class="user-full-name">
 					Add New User
 				</div>
-				<form name="edit-user-form user-form" data-ng-init="newUser = {'mainRecipient': {}, 'recipients': []}" data-ng-submit="submitUser(newUser)">
+				<form name="edit-user-form user-form" data-ng-submit="submitUser(newUser)">
 					<table class="table table-bordered">
 						<tr class="user-name">
 							<td>
@@ -50,7 +50,7 @@
 								Confirm Password:
 							</td>
 							<td>
-								<input type="password" data-ng-model="newUser.hashedPassword" required />
+								<input type="password" data-ng-model="newUser.confirmedPassword" required />
 							</td>
 						</tr>
 						<tr class="user-roles">
@@ -58,8 +58,10 @@
 								Roles:
 							</td>
 							<td>
-								<div data-ng-repeat="role in currentUser.roles">
-									{{ role }}
+								<div data-ng-repeat="(role, bit) in allRoles">
+                                                                        <input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleBitmask(role, newUser)" data-ng-click="toggleRole($event, role, newUser)">
+                                                                        {{ role }}
+                                                                        <br />
 								</div>
 							</td>
 						</tr>
@@ -80,7 +82,7 @@
 									Available PSTs:<br />
 									<div class="pst-options-container">
 										<span data-ng-repeat="(key, pst) in psts">
-											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, currentUser.loginUser)" value="{{ key }}" data-ng-checked="isPstSelected(pst.id, currentUser.loginUser)" /> {{ pst.pstFileName }}<br />
+											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, newUser)" value="{{ key }}" data-ng-checked="isPstSelected(pst.id, newUser)" /> {{ pst.pstFileName }}<br />
 										</span>
 									</div>
 								</div>
@@ -88,7 +90,7 @@
 									Selected PSTs:
 									<div class="pst-selections-container">
 										<span data-ng-repeat="(key, pst) in selectedPsts">
-											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, currentUser.loginUser)" data-ng-checked="isPstSelected(pst.id, currentUser.loginUser)" value="{{ key }}" /> {{ pst.pstFileName }}<br />
+											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, newUser)" data-ng-checked="isPstSelected(pst.id, newUser)" value="{{ key }}" /> {{ pst.pstFileName }}<br />
 										</span>
 									</div>
 								</div>

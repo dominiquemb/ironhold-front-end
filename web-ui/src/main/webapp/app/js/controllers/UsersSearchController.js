@@ -8,46 +8,52 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.pageNum = 0;
     $scope.selectedPsts = [];
     $scope.psts = [];
+    $scope.newUser = {
+	'mainRecipient': {}, 
+	'recipients': []
+    };
     $scope.currentUser = false;
 
     $scope.userView = function() {
 	$state.go('loggedin.main.userview');
     };
 
-    $scope.toggleRole = function(evt, role) {
+    $scope.toggleRole = function(evt, role, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		var checkbox = evt.target;
 
 		if (checkbox.checked) {
-			$scope.currentUser.loginUser.rolesBitMask = $scope.currentUser.loginUser.rolesBitMask | $scope.allRoles[role];
+			user.rolesBitMask = $scope.currentUser.loginUser.rolesBitMask | $scope.allRoles[role];
 		}
 		else {
-			$scope.currentUser.loginUser.rolesBitMask = $scope.currentUser.loginUser.rolesBitMask & ~$scope.allRoles[role];
+			user.rolesBitMask = $scope.currentUser.loginUser.rolesBitMask & ~$scope.allRoles[role];
 		}
 	}
     };
 
-    $scope.hasRoleBitmask = function(role) {
+    $scope.hasRoleBitmask = function(role, user) {
 	if ($scope.activeTab === $scope.tabName) {
-		return ($scope.currentUser.loginUser.rolesBitMask & $scope.allRoles[role]) === $scope.allRoles[role];
+		return (user.rolesBitMask & $scope.allRoles[role]) === $scope.allRoles[role];
 	}
     };
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
-		user.sources = $scope.selectedPsts;
-		usersService
-			.post(
-				"",
-				user,
-				{
-				"Accept": "application/json",
-				"Content-type" : "application/json"
-				}
-			)
-			.then(function() {
-				$scope.userView();
-			});
+		if (user.confirmedPassword === user.hashedPassword) {
+			user.sources = $scope.selectedPsts;
+			usersService
+				.post(
+					"",
+					user,
+					{
+					"Accept": "application/json",
+					"Content-type" : "application/json"
+					}
+				)
+				.then(function() {
+					$scope.userView();
+				});
+		}
 	}
     });
 

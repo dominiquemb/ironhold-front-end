@@ -50,7 +50,7 @@
 								Confirm Password:
 							</td>
 							<td>
-								<input type="password" data-ng-model="currentUser.loginUser.hashedPassword" required />
+								<input type="password" data-ng-init="currentUser.loginUser.confirmedPassword = currentUser.loginUser.hashedPassword" data-ng-model="currentUser.loginUser.confirmedPassword" required />
 							</td>
 						</tr>
 						<tr class="user-roles">
@@ -59,7 +59,7 @@
 							</td>
 							<td>
 								<div data-ng-repeat="(role, bit) in allRoles">
-									<input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleBitmask(role)" data-ng-click="toggleRole($event, role)">
+									<input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleBitmask(role, currentUser.loginUser)" data-ng-click="toggleRole($event, role, currentUser.loginUser)">
 									{{ role }}
 									<br />
 								</div>
