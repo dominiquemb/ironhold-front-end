@@ -2,6 +2,13 @@
    'use strict';
 
 
+ironholdApp.directive('initialMessage', function() {
+        return {
+                restrict: 'ACE',
+                controller: 'InitialInstructionsController'
+        };
+});
+
 ironholdApp.directive('resultsFeed', function() {
         return {
                 scope: true,
