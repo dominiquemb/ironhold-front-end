@@ -9,8 +9,11 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.selectedPsts = [];
     $scope.psts = [];
     $scope.newUser = {
-	'mainRecipient': {}, 
-	'recipients': []
+	loginUser: {
+		'mainRecipient': {}, 
+		'recipients': []
+	},
+	roles: []
     };
     $scope.currentUser = false;
 
@@ -18,7 +21,42 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 	$state.go('loggedin.main.userview');
     };
 
-    $scope.toggleRole = function(evt, role, user) {
+    $scope.toggleRoleName = function(evt, role, user) {
+	if ($scope.activeTab === $scope.tabName) {
+		var checkbox = evt.target;
+
+		if (checkbox.checked) {
+			if (role === 'NONE') {
+				user.roles = [];
+				user.loginUser.rolesBitMask = 0;
+			}
+			else {
+				user.roles.push(role);
+				user.loginUser.rolesBitMask = user.loginUser.rolesBitMask | $scope.allRoles[role];
+			}
+		}
+		else {
+			if (role !== 'NONE') {
+				angular.forEach(user.roles, function(roleVal, roleKey) {
+					if (roleVal === role) {
+						user.roles.splice(roleKey, 1);
+						user.loginUser.rolesBitMask = user.loginUser.rolesBitMask & ~$scope.allRoles[role];
+					}
+					if (roleVal === 'SUPER_USER') {
+						user.roles.splice(roleKey, 1);
+						user.loginUser.rolesBitMask = user.loginUser.rolesBitMask & ~$scope.allRoles['SUPER_USER'];
+					}
+				});
+			}
+			else {
+				user.roles.push('SUPER_USER');
+				user.loginUser.rolesBitMask = user.loginUser.rolesBitMask | $scope.allRoles['SUPER_USER'];
+			}
+		}
+	}
+    };
+
+    $scope.toggleRoleBitmask = function(evt, role, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		var checkbox = evt.target;
 
@@ -34,6 +72,17 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.hasRoleBitmask = function(role, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		return (user.rolesBitMask & $scope.allRoles[role]) === $scope.allRoles[role];
+	}
+    };
+
+    $scope.hasRoleName = function(role, user) {
+	if ($scope.activeTab === $scope.tabName) {
+		if (role === 'NONE') {
+			return (user.roles.length === 0);
+		}
+		else {
+			return (user.roles.indexOf(role) !== -1 || user.roles.indexOf('SUPER_USER') !== -1);
+		}
 	}
     };
 

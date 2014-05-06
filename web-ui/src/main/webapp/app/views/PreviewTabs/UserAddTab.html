@@ -59,7 +59,7 @@
 							</td>
 							<td>
 								<div data-ng-repeat="(role, bit) in allRoles">
-                                                                        <input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleBitmask(role, newUser)" data-ng-click="toggleRole($event, role, newUser)">
+                                                                        <input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleBitmaskName(role, newUser)" data-ng-click="toggleRoleName($event, role, newUser)">
                                                                         {{ role }}
                                                                         <br />
 								</div>
@@ -82,7 +82,7 @@
 									Available PSTs:<br />
 									<div class="pst-options-container">
 										<span data-ng-repeat="(key, pst) in psts">
-											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, newUser)" value="{{ key }}" data-ng-checked="isPstSelected(pst.id, newUser)" /> {{ pst.pstFileName }}<br />
+											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, newUser.loginUser)" value="{{ key }}" data-ng-checked="isPstSelected(pst.id, newUser.loginUser)" /> {{ pst.pstFileName }}<br />
 										</span>
 									</div>
 								</div>
@@ -90,7 +90,7 @@
 									Selected PSTs:
 									<div class="pst-selections-container">
 										<span data-ng-repeat="(key, pst) in selectedPsts">
-											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, newUser)" data-ng-checked="isPstSelected(pst.id, newUser)" value="{{ key }}" /> {{ pst.pstFileName }}<br />
+											<input name="pst-options" type="checkbox" data-ng-click="togglePst($event, pst, newUser.loginUser)" data-ng-checked="isPstSelected(pst.id, newUser.loginUser)" value="{{ key }}" /> {{ pst.pstFileName }}<br />
 										</span>
 									</div>
 								</div>
