@@ -22,6 +22,11 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	'bloomberg_chat': 'Bloomberg Chat',
 	'email': 'Email Message'
     };
+    $scope.removeInstructions = false;
+
+    $rootScope.$on('removeInstructions', function() {
+	$scope.removeInstructions = true;
+    });
 
     $scope.$emit('initCustomScrollbars');
 
