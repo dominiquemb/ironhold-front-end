@@ -7,6 +7,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.users = [];
     $scope.pageNum = 0;
     $scope.selectedPsts = [];
+    $scope.editedUser = false;
     $scope.psts = [];
     $scope.newUser = {
 	loginUser: {
@@ -15,10 +16,27 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 	},
 	roles: []
     };
+    $scope.backUpUser = false;
     $scope.currentUser = false;
 
     $scope.userView = function() {
 	$state.go('loggedin.main.userview');
+    };
+
+    $scope.editUser = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.backUpUser = $scope.currentUser;
+		$state.go('loggedin.main.useredit');
+	}
+    };
+
+    $scope.userCancel = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentUser = $scope.backUpUser;
+		$scope.$emit('restoreBackUpUser', $scope.backUpUser);
+		$scope.$emit('selectResultRequest', $scope.backUpUser);
+		$state.go('loggedin.main.userview');
+	}	
     };
 
     $scope.toggleRoleName = function(evt, role, user) {

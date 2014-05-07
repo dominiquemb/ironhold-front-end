@@ -23,6 +23,12 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
+    $rootScope.$on('restoreBackUpUser', function(evt, backup) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.currentUser = backup;
+	}
+    });
+
     $scope.isSubTabLoading = function(tab) {
 	if ($scope.activeTab === $scope.tabName) {
 		return $scope.subTabLoading[tab] === true;
@@ -112,12 +118,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		user.recipients = (typeof user.newRecipients === 'string') ? user.newRecipients.split(',') : user.recipients;
 		$scope.$emit('submitUser', user);
-	}
-    };
-
-    $scope.editUser = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$state.go('loggedin.main.useredit');
 	}
     };
 
