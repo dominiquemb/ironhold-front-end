@@ -933,6 +933,10 @@ body .btn.btn-primary:focus {
 	background-color: gray;
 }
 
+.listing .user-photo {
+	margin: 0px 4px;
+}
+
 .user-photo {
 	background: url(../img/sprites/ImageSprite.png) -702px 0px;
 }
@@ -1957,6 +1961,7 @@ body ul {
 	line-height: 18px;
 	color: #666;
 	width: 41px;
+	min-height: 5px;
 	font-size: 16px;
 	padding-top: 0px;
 	font-weight: 300;

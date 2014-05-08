@@ -5,23 +5,34 @@
 		<div class="result-message">
 			<div class="result-message-inner">
 			    <div class="message-first-line">
-				    <span class="user-full-name">Name: {{ user.loginUser.name }}</span>
+				    <span class="message-icons pull-left">
+					    <div class="user-photo pull-right"></div>
+				    </span>
+					<span class="pull-left message-sender" title="<{{message.formattedIndexedMailMessage.sender.address}}>">
+				    		<span class="user-full-name">{{ user.loginUser.name }}</span>
+					</span>
+					<span class="pull-right message-stats">
+						<span class="user-last-login pull-left message-age">Last Login: {{ user.loginUser.lastLogin }}</span>
+					</span>
+
 			    </div>
 			    <div class="message-second-line">
-				<span class="user-username">Username: {{ user.loginUser.username }}</span>
+				    <div class="message-size pull-left">
+				    </div>
+				    <div class="message-subject pull-left">
+					<span class="user-username">Username: {{ user.loginUser.username }}</span>
+				    </div>
 			    </div>
-			    <div class="entries-third-line">
-				<span class="user-email">Email: {{ user.loginUser.mainRecipient.address }}</span>
-			    </div>
-			    <div class="entries-fourth-line">
-				<span class="user-last-login">Last Login: {{ user.loginUser.lastLogin }}</span>
+			    <div class="message-recipients">
+					<div class="message-recipients-line">
+						<span class="user-email">Email: {{ user.loginUser.mainRecipient.address }}</span>
+					</div>
 			    </div>
 			</div>
-<!--
+
 			<div class="checkmark" data-ng-click="highlightMessage($event, user)">
 			    <i class="img-xs checkmark-icon"></i>
 			</div>
--->
 		</div>
 	</div>
     </li>
