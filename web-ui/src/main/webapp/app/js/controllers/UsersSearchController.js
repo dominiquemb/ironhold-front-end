@@ -18,16 +18,33 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     };
     $scope.backUpUser = false;
     $scope.currentUser = false;
+    $scope.otherEmails = '';
 
     $scope.userView = function() {
-	$state.go('loggedin.main.userview');
-    };
+	if ($scope.activeTab === $scope.tabName) {
+		$state.go('loggedin.main.userview');
+	}
+    };	
 
     $scope.editUser = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.backUpUser = $scope.currentUser;
 		$state.go('loggedin.main.useredit');
 	}
+    };
+
+    $scope.getOtherEmails = function(user) {
+	var emails = '';
+	angular.forEach(user.recipients, function(email) {
+		if (emails.length > 0) {
+			emails += ', ' + email.address;
+		}
+		else {
+			emails += email.address;
+		}
+	});
+
+	return emails;
     };
 
     $scope.userCancel = function() {
@@ -106,18 +123,29 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
-		if (user.confirmedPassword === user.hashedPassword) {
-			user.sources = $scope.selectedPsts;
+		if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
+			if ($scope.otherEmails.length > 0) {
+				user.loginUser.recipients = [];
+				angular.forEach($scope.otherEmails.trim().split(','), function(recipient) {
+					user.loginUser.recipients.push({
+						'name': recipient.split('@')[0],
+						'address': recipient,
+						'domain': recipient.split('@')[1]
+					});
+				});
+			}
+			user.loginUser.sources = $scope.selectedPsts;
 			usersService
 				.post(
 					"",
-					user,
+					user.loginUser,
 					{
 					"Accept": "application/json",
 					"Content-type" : "application/json"
 					}
 				)
 				.then(function() {
+					$scope.$emit('selectResultRequest', user);
 					$scope.userView();
 				});
 		}
@@ -250,6 +278,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		.then(function(result) {
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
+			$scope.otherEmails = $scope.getOtherEmails(user.loginUser);
 			$scope.selectedPsts = result.payload.loginUser.sources || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);

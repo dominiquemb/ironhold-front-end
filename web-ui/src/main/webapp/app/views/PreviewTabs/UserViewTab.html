@@ -51,9 +51,11 @@
 							Other Email Addresses:
 						</td>
 						<td>
-							<span data-ng-repeat="email in currentUser.recipients">
+							<div>{{ getOtherEmails(currentUser.loginUser) }}</div>
+<!--							<div data-ng-repeat="email in currentUser.loginUser.recipients">
 							{{ email.address }}
-							</span>
+							</div>
+-->
 						</td>
 					</tr>
 					<tr class="user-max-results">

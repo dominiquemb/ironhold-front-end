@@ -70,10 +70,7 @@
 								Other Email Addresses:
 							</td>
 							<td>
-								<span data-ng-repeat="email in currentUser.loginUser.recipients">
-								{{ email.address }}
-								</span>
-								<textarea data-ng-init="currentUser.loginUser.newRecipients = currentUser.loginUser.recipients.toString() || []" data-ng-model="currentUser.loginUser.newRecipients"></textarea>
+								<textarea data-ng-model="otherEmails"></textarea>
 							</td>
 						</tr>
 						<tr class="user-assigned-psts">
