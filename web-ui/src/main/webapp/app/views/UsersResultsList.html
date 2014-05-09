@@ -27,6 +27,9 @@
 					<div class="message-recipients-line">
 						<span class="user-email">Email: {{ user.loginUser.mainRecipient.address }}</span>
 					</div>
+					<div class="message-recipients-line user-roles">
+						<span class="user-email">Roles: {{ user.roles.join(', ') }}</span>
+					</div>
 			    </div>
 			</div>
 

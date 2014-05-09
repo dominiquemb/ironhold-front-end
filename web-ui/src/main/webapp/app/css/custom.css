@@ -1859,11 +1859,17 @@ body ul {
 	clear: left;
 	padding-left: 47px;
 	position: relative;
-	height: 14px;
+	height: 15px;
 	line-height: 15px;
 	margin-bottom: 3px;
 	overflow: hidden;
 	font-size: 12px;
+}
+
+.result .message-recipients-line.user-roles {
+	overflow: visible;
+	height: auto;
+	word-break: normal;
 }
 
 .result .message-recipients {
