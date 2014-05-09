@@ -2468,6 +2468,10 @@ body ul {
 	background-color: #2e68b1 !important;
 }
 
+.nav.nav-tabs[class*="tab-color-"]>li:not(.active)>a:hover {
+	opacity: 1;
+}
+
 .nav-tabs[class*="tab-color"].active-border-gray > li.active > a {
 	border-left: 1px solid #ccc;
 	border-top: 1px solid #ccc;
