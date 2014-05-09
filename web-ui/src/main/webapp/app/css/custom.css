@@ -510,6 +510,11 @@ body .btn.btn-primary:focus {
 	height: 100%;
 }
 
+.msgview_content input,
+.msgview_content textarea {
+	width: 100%;
+}
+
 .msgview .placeholder_text {
 	position: absolute;
 }
