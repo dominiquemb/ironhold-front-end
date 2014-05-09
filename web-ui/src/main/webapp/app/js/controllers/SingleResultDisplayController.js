@@ -226,7 +226,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
 
     $scope.usersearchhistoryTab = function() {
-	$scope.$emit('searchHistoryRequest', currentUser);
+	$scope.$emit('searchHistoryRequest', $scope.currentUser);
     };
 
     $scope.textTab = function() {
