@@ -4,11 +4,11 @@
 	    <li data-ng-show="limitedTabs" class="active">
 		<a data-toggle="tab">Multi-Select</a>
 	    </li>
-	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('text')}">
-		<a data-toggle="tab" data-ui-sref="loggedin.main.text" data-ng-click="switchMode('text')">User Details</a>
+	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('userview')}">
+		<a data-toggle="tab" data-ui-sref="loggedin.main.userview" data-ng-click="switchMode('userview', true, false)">User Details</a>
 	    </li>
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('usersearchhistory'), 'inactive': !currentUser}">
-		<a data-toggle="tab" data-ui-sref="loggedin.main.usersearchhistory" data-ng-click="switchMode('usersearchhistory', currentUser)">Search History</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.usersearchhistory" data-ng-click="switchMode('usersearchhistory', currentUser, true)">Search History</a>
 	    </li>
 	</ul>
 
@@ -17,16 +17,16 @@
 		<a data-toggle="tab">Multi-Select</a>
 	    </li>
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('text')}">
-		<a data-toggle="tab" data-ui-sref="loggedin.main.text" data-ng-click="switchMode('text')">Text</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.text" data-ng-click="switchMode('text', true, false)">Text</a>
 	    </li>
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('body'), 'inactive': !currentMessage}">
-		<a data-toggle="tab" data-ui-sref="loggedin.main.body" data-ng-click="switchMode('body', currentMessage)">HTML</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.body" data-ng-click="switchMode('body', currentMessage, true)">HTML</a>
 	    </li>
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('headers'), 'inactive': !currentMessage}">
-		<a data-toggle="tab" data-ui-sref="loggedin.main.headers" data-ng-click="switchMode('headers', currentMessage)">Headers</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.headers" data-ng-click="switchMode('headers', currentMessage, true)">Headers</a>
 	    </li>
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('audit'), 'inactive': !currentMessage}">
-		<a data-toggle="tab" data-ui-sref="loggedin.main.audit" data-ng-show="hasRole('CAN_VIEW_AUDIT')" data-ng-click="switchMode('audit', currentMessage)">Audit</a>
+		<a data-toggle="tab" data-ui-sref="loggedin.main.audit" data-ng-show="hasRole('CAN_VIEW_AUDIT')" data-ng-click="switchMode('audit', currentMessage, true)">Audit</a>
 	    </li>
 	</ul>
 	<div class="tab-content">

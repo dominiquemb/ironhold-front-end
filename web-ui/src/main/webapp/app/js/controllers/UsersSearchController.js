@@ -20,16 +20,29 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.currentUser = false;
     $scope.otherEmails = '';
 
-    $scope.userView = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$state.go('loggedin.main.userview');
+    $rootScope.$on('activeTab', function(evt, tab) {
+	if (tab === 'users') {
+		$scope.userView();
 	}
+    });
+
+    $scope.addUser = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$state.go('loggedin.main.useradd');
+		$scope.$emit('mode', 'useradd', false);
+	}
+    };
+
+    $scope.userView = function() {
+	$state.go('loggedin.main.userview');
+	$scope.$emit('mode', 'userview', false);
     };	
 
     $scope.editUser = function() {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.backUpUser = $scope.currentUser;
 		$state.go('loggedin.main.useredit');
+		$scope.$emit('mode', 'useredit', false);
 	}
     };
 

@@ -17,6 +17,8 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     $rootScope.$on('activeTab', function(evt, tab) {
 	    if (tab === $scope.tabName) {
 		    $scope.onTabActivation();
+		    $state.go('loggedin.main.text');
+		    $scope.$emit('mode', 'text', false);
                     $scope.initCustomScrollbars('.scrollbar-hidden');
 	    }
     });

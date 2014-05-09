@@ -108,12 +108,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
-    $scope.addUser = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$state.go('loggedin.main.useradd');
-	}
-    };
-
     $scope.submitUser = function(user) {
 	if ($scope.activeTab === $scope.tabName) {
 		user.recipients = (typeof user.newRecipients === 'string') ? user.newRecipients.split(',') : user.recipients;
@@ -230,6 +224,11 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
+
+    $scope.usersearchhistoryTab = function() {
+	$scope.$emit('searchHistoryRequest', currentUser);
+    };
+
     $scope.textTab = function() {
 		$scope.$emit('modeRequest', {
 			mode: '',
@@ -281,23 +280,25 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		}
     };
 
-    $rootScope.$on('mode', function(evt, mode) {
+    $rootScope.$on('mode', function(evt, mode, requestExtraData) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.mode = mode;
 
-		$scope.modeLoadingTimeout = $timeout(function() {
-			$scope.subTabLoading[mode] = true;
-		}, 1000);
+		if (requestExtraData) {
+			$scope.modeLoadingTimeout = $timeout(function() {
+				$scope.subTabLoading[mode] = true;
+			}, 1000);
 
-		$scope.requestSubTabData(mode);
+			$scope.requestSubTabData(mode);
+		}
 	}
     });
 
-    $scope.switchMode = function(newMode, condition) {
+    $scope.switchMode = function(newMode, condition, needExtraData) {
 	if ($scope.activeTab === $scope.tabName) {
 		if (condition !== false) {
 			$scope.mode = newMode;
-			$scope.$emit('mode', newMode);
+			$scope.$emit('mode', newMode, needExtraData);
 		}
 	}
     };
