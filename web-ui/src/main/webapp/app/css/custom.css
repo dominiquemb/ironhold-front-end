@@ -63,6 +63,12 @@ body .btn.btn-primary:focus {
 	color: #0066FF;
 }
 
+/* search history tab */
+.user-search-history-table {
+	min-width: 200px;
+	margin: 10px;
+}
+
 /* pst */
 .pst-options-container,
 .pst-selections-container {

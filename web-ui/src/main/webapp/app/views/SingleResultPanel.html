@@ -1,12 +1,17 @@
 <div class="tabbable">
+
 	<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white" data-ng-show="isActiveTab('users')">
 	    <li data-ng-show="limitedTabs" class="active">
 		<a data-toggle="tab">Multi-Select</a>
 	    </li>
-	    <li data-ng-hide="limitedTabs" class="active">
+	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('text')}">
 		<a data-toggle="tab" data-ui-sref="loggedin.main.text" data-ng-click="switchMode('text')">User Details</a>
 	    </li>
+	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('usersearchhistory'), 'inactive': !currentUser}">
+		<a data-toggle="tab" data-ui-sref="loggedin.main.usersearchhistory" data-ng-click="switchMode('usersearchhistory', currentUser)">Search History</a>
+	    </li>
 	</ul>
+
 	<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white" data-ng-show="isActiveTab('search')">
 	    <li data-ng-show="limitedTabs" class="active">
 		<a data-toggle="tab">Multi-Select</a>
