@@ -9,18 +9,11 @@
 			<div class="scrollable-content sub-tab-content-inner">
 			    <div class="pull-left user-body-container">
 				<div class="user-full-name">
-					Add New User
+					<span data-ng-click="editName()"  data-ng-hide="editingName">Click to type full name</span>
+					<input data-ng-show="editingName" type="text" data-ng-model="newUser.name" required />		
 				</div>
 				<form name="edit-user-form user-form" data-ng-submit="submitUser(newUser)">
 					<table class="table table-bordered">
-						<tr class="user-name">
-							<td>
-								Name:
-							</td>
-							<td>
-								<input type="text" data-ng-model="newUser.name" required />		
-							</td>
-						</tr>
 						<tr class="user-email">
 							<td>
 								Email Address:

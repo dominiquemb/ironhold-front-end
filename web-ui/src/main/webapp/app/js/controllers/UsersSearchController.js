@@ -8,6 +8,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.pageNum = 0;
     $scope.selectedPsts = [];
     $scope.editedUser = false;
+    $scope.editingName = false;
     $scope.psts = [];
     $scope.newUser = {
 	loginUser: {
@@ -25,6 +26,10 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		$scope.userView();
 	}
     });
+
+    $scope.editName = function() {
+	$scope.editingName = true;
+    };
 
     $scope.addUser = function() {
 	if ($scope.activeTab === $scope.tabName) {
@@ -158,6 +163,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 					}
 				)
 				.then(function() {
+					$scope.editingName = false;
 					$scope.$emit('selectResultRequest', user);
 					$scope.userView();
 				});
