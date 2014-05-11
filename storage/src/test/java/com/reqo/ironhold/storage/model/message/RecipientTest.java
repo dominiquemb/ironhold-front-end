@@ -111,4 +111,11 @@ public class RecipientTest {
         Assert.assertEquals(11784, cleanLines.size());
     }
 
+    @Test
+    public void testStringConstructor() {
+        Recipient recipient = new Recipient("ig@reqo.com");
+        Assert.assertEquals("ig", recipient.getName());
+        Assert.assertEquals("ig@reqo.com", recipient.getAddress());
+        Assert.assertEquals("reqo.com", recipient.getDomain());
+    }
 }

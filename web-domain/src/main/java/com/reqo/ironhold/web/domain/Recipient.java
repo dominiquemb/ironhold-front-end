@@ -28,6 +28,14 @@ public class Recipient {
 
     }
 
+    public Recipient(String recipient) {
+        this.address = recipient.trim().toLowerCase();
+        this.name = getNameFromAddress(this.address);
+        setDomain(address != null && address.contains("@")
+                && address.lastIndexOf('@') < address.length() ? address
+                .substring(address.lastIndexOf('@') + 1) : null);
+    }
+
     public static Recipient build(String name, String address) {
         Recipient recipient = new Recipient();
 

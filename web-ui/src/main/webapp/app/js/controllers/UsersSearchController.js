@@ -11,11 +11,11 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.editingName = false;
     $scope.psts = [];
     $scope.newUser = {
-	loginUser: {
-		'mainRecipient': {}, 
-		'recipients': []
-	},
-	roles: []
+	    loginUser: {
+		    'mainRecipient': {},
+		    'recipients': []
+	    },
+	    roles: []
     };
     $scope.backUpUser = false;
     $scope.currentUser = false;
