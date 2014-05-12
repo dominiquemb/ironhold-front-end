@@ -40,18 +40,20 @@ ironholdApp.controller('ErrorsController', function ($http, $resource, $window, 
 
     $rootScope.$on('technicalError', function(evt, err) {
 	if ($scope.activeTab === $scope.tabName) {
-		var id = $scope.techErrors.length;
-		
-		$scope.techErrors.push({
-			id: id,
-			message: err.data,
-			code: err.status,
-			url: err.config.url
-		});
+		if (!$scope.disableTechErrors) {
+			var id = $scope.techErrors.length;
+			
+			$scope.techErrors.push({
+				id: id,
+				message: err.data,
+				code: err.status,
+				url: err.config.url
+			});
 
-		$timeout(function() {
-			$scope.clearError(id);
-		}, 5000);
+			$timeout(function() {
+				$scope.clearError(id);
+			}, 5000);
+		}
 	}
     });
 
