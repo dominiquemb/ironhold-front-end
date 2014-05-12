@@ -1262,6 +1262,8 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 }
 
 .searchbar .input-history .dropdown-menu {
+	max-height: 350px;
+	overflow: auto;
 	margin-top: 2px;
 	width: 100%;
 }
