@@ -2,12 +2,10 @@
     <div class="input-group clear-form" data-ng-class="{'active': searchFieldHilite}">
         <div class="input-container">
             <div class="input-history dropdown">
-                <input type="text" class="auto-focus search-input clear-form-input form-control search-field"
-                       placeholder="Enter your search here" data-ng-model="inputSearch"
-                       data-ng-keyup="searchKeyUp($event)" data-ng-keydown="searchKeyDown()">
+                <input type="text" class="auto-focus search-input clear-form-input form-control search-field" placeholder="Enter your search here" data-ng-model="inputSearch" data-ng-keyup="searchKeyUp($event)" data-ng-keydown="disableInstructions()">
 
                 <a class="dropdown-toggle">
-                    <div class="img-xs caret-gray-down" data-ng-hide="searchHistory.length === 0" data-ng-click="removeInstructions()" title="Search history"></div>
+                    <div class="img-xs caret-gray-down" data-ng-hide="searchHistory.length === 0" data-ng-click="disableInstructions()" title="Search history"></div>
                 </a>
 
                 <div class="dropdown-menu dropdown-info">

@@ -14,6 +14,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     $scope.suggestons = null;
     $scope.disableFacets = false;
     $scope.showSortingPanel = null;
+    $scope.removeInstructions = false;
     $scope.inputSearch = '';
     $scope.searchPending = false;
     $scope.searchProgressShow = false;
@@ -29,10 +30,9 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	}
     };
 
-    $scope.removeInstructions = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$scope.$emit('removeInstructions');
-	}
+    $scope.disableInstructions = function() {
+	$scope.removeInstructions = true;
+	$scope.$emit('removeInstructions');
     };
 
     $rootScope.$on('searchHistoryData', function(evt, result) {
@@ -158,11 +158,10 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
     };
 
     $scope.searchKeyDown = function() {
-        if ($scope.activeTab === $scope.tabName) {
-		if (!$scope.removeInstructions) {
-			$scope.removeInstructions = true;
-			$scope.$emit('removeInstructions');
-		}
+	if (!$scope.removeInstructions) {
+console.log('??????????');
+		$scope.removeInstructions = true;
+		$scope.$emit('removeInstructions');
 	}
     };
 
