@@ -7,14 +7,14 @@
                        data-ng-keyup="searchKeyUp($event)" data-ng-keydown="searchKeyDown()">
 
                 <a class="dropdown-toggle">
-                    <div class="img-xs caret-gray-down" title="Search history"></div>
+                    <div class="img-xs caret-gray-down" data-ng-click="removeInstructions()" title="Search history"></div>
                 </a>
 
                 <div class="dropdown-menu dropdown-info">
                     <ul>
                         <li data-ng-repeat="history in searchHistory">
-                            <a data-ng-click="newSearchInput(history.context)">
-                                {{ history.context }}</a>
+                            <a data-ng-click="newSearchInput(history.auditLogMessage.context)">
+                                {{ history.auditLogMessage.context }}</a>
                         </li>
                     </ul>
                 </div>

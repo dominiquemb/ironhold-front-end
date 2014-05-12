@@ -29,6 +29,12 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	}
     };
 
+    $scope.removeInstructions = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('removeInstructions');
+	}
+    };
+
     $rootScope.$on('searchHistoryData', function(evt, result) {
 	if ($scope.activeTab === $scope.tabName) {
        		$scope.searchHistory = result.payload;

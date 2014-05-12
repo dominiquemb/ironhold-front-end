@@ -1267,7 +1267,18 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 }
 
 .searchbar .input-history li {
-	margin: 0px 10px;
+	margin: 0px;
+	width: 100%;
+}
+
+.searchbar .input-history li:hover a {
+	color: #fff;
+}
+
+.searchbar .input-history li a {
+	width: 100%;
+	display: block;
+	padding: 1px 4px;
 }
 
 .searchbar .input-container {
