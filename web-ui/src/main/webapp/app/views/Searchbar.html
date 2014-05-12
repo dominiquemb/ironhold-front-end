@@ -7,7 +7,7 @@
                        data-ng-keyup="searchKeyUp($event)" data-ng-keydown="searchKeyDown()">
 
                 <a class="dropdown-toggle">
-                    <div class="img-xs caret-gray-down" data-ng-click="removeInstructions()" title="Search history"></div>
+                    <div class="img-xs caret-gray-down" data-ng-hide="searchHistory.length === 0" data-ng-click="removeInstructions()" title="Search history"></div>
                 </a>
 
                 <div class="dropdown-menu dropdown-info">
