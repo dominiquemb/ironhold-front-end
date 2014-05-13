@@ -235,6 +235,10 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         }
     });
 
+    $rootScope.$on('unhighlightAllMessages', function() {
+	$scope.unhighlightAllMessages();
+    });
+
     $scope.unhighlightAllMessages = function() {
         if ($scope.activeTab === $scope.tabName) {
             angular.forEach($scope.entries[$scope.tabName], function(entry) {

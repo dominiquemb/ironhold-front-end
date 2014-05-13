@@ -30,6 +30,15 @@
 	    </li>
 	</ul>
 	<div class="tab-content">
+		<div data-ng-show="limitedTabs" id="msgview" class="tab-pane in active">
+			<div class="row controlbar">
+			</div>
+			<div class="msgview_main loading loading-centered">
+				this feature has not been implemented yet
+				<br />
+				<a data-ng-click="unselectAll()">Unselect All</a>
+			</div>
+		</div>
 		<div data-ng-hide="limitedTabs" id="msgview" class="tab-pane in active">
 			<div class="row controlbar">
 			</div>

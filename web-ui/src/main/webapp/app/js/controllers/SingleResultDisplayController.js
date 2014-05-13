@@ -23,6 +23,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
+    $scope.unselectAll = function() {
+	$scope.$emit('unhighlightAllMessages');
+    };
+
     $rootScope.$on('restoreBackUpUser', function(evt, backup) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentUser = backup;
