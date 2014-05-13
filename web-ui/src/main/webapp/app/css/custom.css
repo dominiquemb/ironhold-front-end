@@ -510,7 +510,8 @@ body .btn.btn-primary:focus {
 	height: 100%;
 }
 
-.msgview_content input,
+.msgview_content input[type="text"],
+.msgview_content input[type="password"],
 .msgview_content textarea {
 	width: 100%;
 }
