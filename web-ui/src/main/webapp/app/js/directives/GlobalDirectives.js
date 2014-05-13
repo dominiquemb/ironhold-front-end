@@ -9,6 +9,17 @@ ironholdApp.directive('initialMessage', function() {
         };
 });
 
+ironholdApp.directive('logo', function() {
+        return {
+                restrict: 'ACE',
+		link: function(scope) {
+			scope.reload = function() {
+				location.reload();
+			};
+		}
+        };
+});
+
 ironholdApp.directive('resultsFeed', function() {
         return {
                 scope: true,

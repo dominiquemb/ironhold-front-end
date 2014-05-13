@@ -846,6 +846,8 @@ body .btn.btn-primary:focus {
 	width: 212px;
 	height: 82px;
 	margin-left: 5px;
+	position: absolute;
+	z-index: 13;
 }
 
 .login-logo {
