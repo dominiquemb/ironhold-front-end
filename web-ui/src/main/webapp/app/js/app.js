@@ -114,7 +114,9 @@ ironholdApp.factory('rolesService', function($rootScope, ipCookie, usersService)
 
 	Roles.prototype = {
 		getUserRoles: function(callback) {
+	console.log('getUserRoles');
 			var username = (ipCookie('ironholdSession')) ? ipCookie('ironholdSession').username : false;
+console.log(usersService);
 			if (username) {
 			    usersService
 				.one(username)

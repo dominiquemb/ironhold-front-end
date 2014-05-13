@@ -9,6 +9,8 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     $scope.allRoles = {};
     $scope.disableTechErrors = true;
 
+console.log(rolesService);
+
     rolesService.getUserRoles(function(result) {
 	$scope.roles = result;
     });
