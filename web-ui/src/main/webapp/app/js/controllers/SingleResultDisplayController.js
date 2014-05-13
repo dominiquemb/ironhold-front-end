@@ -323,7 +323,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.currentUser = user;
 		$scope.msgviewData = true;
 		$scope.showPreviewToolbar = true;
-		$state.go('loggedin.main.userview');
+
+		if ($scope.mode !== 'userview') {
+			$scope.requestSubTabData($scope.mode);
+		}
 	}
     });
 
