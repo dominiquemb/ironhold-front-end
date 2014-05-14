@@ -152,7 +152,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 					});
 				});
 			}
-			user.loginUser.sources = $scope.selectedPsts;
+			user.loginUser.sources = $scope.extractPstIds($scope.selectedPsts);
 			usersService
 				.post(
 					"",
@@ -194,9 +194,53 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				})
 			.then(function(result) {
 				$scope.psts = result.payload || [];
+				$scope.selectedPsts = $scope.mapPsts($scope.selectedPsts);
+
+// Mock data to make debugging easier
+/*
+				$scope.psts = [{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7e","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true},
+				{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7f","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true},
+				{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7g","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true}];
+			$scope.selectedPsts = $scope.mapPsts(['adf26bdf-4857-4ce5-b7b5-bc32a1088a7e', 'adf26bdf-4857-4ce5-b7b5-bc32a1088a7f', 'adf26bdf-4857-4ce5-b7b5-bc32a1088a7g']) || [];
+*/
 			});
 	}
     });
+
+    $scope.extractPstIds = function(input) {
+	if ($scope.activeTab === $scope.tabName) {
+		var newPstArray = [];
+		angular.forEach(input, function(pst) {
+			newPstArray.push(pst.id);
+		});
+		return newPstArray;
+	}
+    };
+
+    $scope.mapPsts = function(input) {
+	if ($scope.activeTab === $scope.tabName) {
+		if (input) {
+			var newPstArray = [];
+			angular.forEach(input, function(unmatchedPst) {
+				angular.forEach($scope.psts, function(pst) {
+					if (pst.id === unmatchedPst) {
+						newPstArray.push(pst);
+					}
+				});
+			});
+			
+			if (newPstArray.length > 0) {
+				return newPstArray;
+			}
+			else {
+				return $scope.selectedPsts;
+			}
+		}
+		else {
+			return $scope.selectedPsts;
+		}
+	}
+    };
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === $scope.tabName) {
@@ -291,6 +335,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('selectResultRequest', function(evt, user) {
         if ($scope.activeTab === $scope.tabName) {
+console.log('?????');
             usersService
 		.one(user.loginUser.username)
 		.get()
@@ -298,7 +343,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
 			$scope.otherEmails = $scope.getOtherEmails(user.loginUser);
-			$scope.selectedPsts = result.payload.loginUser.sources || [];
+			$scope.selectedPsts = $scope.mapPsts(result.payload.loginUser.sources) || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);
 			$scope.$emit('pstRequest', {
