@@ -108,7 +108,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	    $scope.initialState = false;
             $scope.entries[$scope.tabName] = args.resultEntries;
 	
-	    if ($scope.tabName === 'search') {
+	    if ($scope.tabName === 'search' || $scope.tabName === 'discovery') {
 		    $scope.matches = args.matches;
 		    if ($scope.matches > 0) {
 			$scope.currentEntryNumber[$scope.tabName] = -1;
@@ -156,7 +156,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     };
 
     $scope.getMessageType = function(message) {
-        if ($scope.activeTab === 'search') {
+        if ($scope.activeTab === 'search' || $scope.activeTab === 'discovery') {
 	    var type = message.formattedIndexedMailMessage.messageType;
 
             if (!type) {
@@ -174,7 +174,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     };
 
     $scope.isImportanceEqualTo = function(message, importance) {
-	if ($scope.activeTab === 'search') {
+        if ($scope.activeTab === 'search' || $scope.activeTab === 'discovery') {
             return message.formattedIndexedMailMessage.importance === importance;
         }
     };

@@ -44,6 +44,10 @@ body pre {
 	padding: 0px;
 }
 
+body form input[type="text"].ng-valid {
+	border-color: #ccc;
+}
+
 body .btn.btn-primary,
 body .btn.btn-primary:hover,
 body .btn.btn-primary:focus {
@@ -2181,6 +2185,22 @@ body ul {
 	line-height: 8px;
 	padding: 0px 3px;
 	cursor: pointer;
+}
+
+.sidebar-left .filter-form {
+	padding: 10px;
+}
+
+.sidebar-left .filter-form .btn {
+	margin-right: 15px;
+	margin-top: 5px;
+	padding: 0px 22px;
+	float: right;
+}
+
+.sidebar-left .filter-form input[type="text"] {
+	width: 195px;
+	margin-bottom: 5px;
 }
 
 .sidebar-left .filter-list {

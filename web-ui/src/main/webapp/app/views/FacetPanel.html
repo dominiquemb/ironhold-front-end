@@ -4,44 +4,78 @@
 	</span>
 </div>
 
-<div class="scrollbar-hidden filter-list">
-    <div class="loading loading-facets" data-ng-show="tooManyResults">
-	please narrow down your search to 20 thousand or less results to see filters here
-    </div>
-
-    <ul class="filter-list-inner" data-ng-show="!tooManyResults && showFacets">
-<!--	<li class="widget-box widget-box-simple filter-container row" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
--->
-	<li class="widget-box widget-box-simple filter-container row" data-ng-repeat="facet in facets">
-	    <div class="widget-header clickable" data-ng-click="collapseFacet(facet)">
-		<div class="collapse-trigger" data-ng-class="{'caret-four-thirty-down': !isCollapsed(facet), 'caret-four-thirty-up': isCollapsed(facet)}"></div>
-		<span class="filter-list-name">
-					    {{ facet.name.label | truncate: 16 }}
-		</span>
-	    </div>
-	    <div class="widget-body collapse" data-ng-class="{'in': !isCollapsed(facet)}">
-		<div class="widget-body-inner">
-		    <ul class="widget-main">
-			<li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
-			    data-ng-repeat="facetValue in facet.valueMap" data-ng-click="toggleFacet(facetValue)">
-			    <div class="pull-left checkbox">
-				<i class="img-xs checkmark-icon"></i>
-			    </div>
-				<span class="filter-name" title="{{ facetValue.label }}" data-ng-show="facetValue.label.length >= 16">
-					{{ facetValue.label | truncate : 16 }}
-				</span>
-				<span class="filter-name" data-ng-show="facetValue.label.length < 16">
-					{{ facetValue.label }}
-					
-				</span>
-				<span class="text-primary filter-value">
-				    {{ facetValue.value }}
-				</span>
-			</li>
-		    </ul>
-		</div>
-	    </div>
-	</li>
-    </ul>
+<div data-ng-show="isActiveTab('discovery')">
+	<div class="scrollbar-hidden">
+		<form name="filter-form" class="filter-form">
+			Start Date <br />
+			<input type="text" data-ng-model="startdate" />
+			<br />
+			End Date <br />
+			<input type="text" data-ng-model="enddate" /> 
+			<br />
+			From <br />
+			<input type="text" data-ng-model="from" /> 
+			<br />
+			To / Cc / Bcc / DL
+			<br />
+			<input type="text" data-ng-model="recipients" /> 
+			<br />
+			Subject <br />
+			<input type="text" data-ng-model="subject" /> 
+			<br />
+			Body <br />
+			<input type="text" data-ng-model="body" /> 
+			<br />
+			Message Type <br />
+			<input type="text" data-ng-model="messageType" /> 
+			<br />
+			Attachment <br />
+			<input type="text" data-ng-model="attachment" /> 
+			<button type="submit" class="btn btn-primary">Search</button>
+		</form>
+	</div>
 </div>
+
+<div data-ng-show="isActiveTab('search')">
+	<div class="scrollbar-hidden filter-list">
+	    <div class="loading loading-facets" data-ng-show="tooManyResults">
+		please narrow down your search to 20 thousand or less results to see filters here
+	    </div>
+
+	    <ul class="filter-list-inner" data-ng-show="!tooManyResults && showFacets">
+	<!--	<li class="widget-box widget-box-simple filter-container row" collapsed-arrow="icon-four-thirty-down" uncollapsed-arrow="icon-four-thirty-up" data-ng-repeat="facet in facets">
+	-->
+		<li class="widget-box widget-box-simple filter-container row" data-ng-repeat="facet in facets">
+		    <div class="widget-header clickable" data-ng-click="collapseFacet(facet)">
+			<div class="collapse-trigger" data-ng-class="{'caret-four-thirty-down': !isCollapsed(facet), 'caret-four-thirty-up': isCollapsed(facet)}"></div>
+			<span class="filter-list-name">
+						    {{ facet.name.label | truncate: 16 }}
+			</span>
+		    </div>
+		    <div class="widget-body collapse" data-ng-class="{'in': !isCollapsed(facet)}">
+			<div class="widget-body-inner">
+			    <ul class="widget-main">
+				<li class="filter facet-toggle" data-ng-class="{'active': facetValue.selected === true}"
+				    data-ng-repeat="facetValue in facet.valueMap" data-ng-click="toggleFacet(facetValue)">
+				    <div class="pull-left checkbox">
+					<i class="img-xs checkmark-icon"></i>
+				    </div>
+					<span class="filter-name" title="{{ facetValue.label }}" data-ng-show="facetValue.label.length >= 16">
+						{{ facetValue.label | truncate : 16 }}
+					</span>
+					<span class="filter-name" data-ng-show="facetValue.label.length < 16">
+						{{ facetValue.label }}
+						
+					</span>
+					<span class="text-primary filter-value">
+					    {{ facetValue.value }}
+					</span>
+				</li>
+			    </ul>
+			</div>
+		    </div>
+		</li>
+	    </ul>
+	</div>
 <!-- .filter-list -->
+</div>

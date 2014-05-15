@@ -12,7 +12,7 @@
 	    </li>
 	</ul>
 
-	<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white" data-ng-show="isActiveTab('search')">
+	<ul class="upper nav nav-tabs inactive-border-none active-border-gray hover-inactive-tab-color-blue hover-inactive-text-white hover-active-text-blue active-text-blue inactive-text-gray tab-color-white background-white" data-ng-show="isActiveTab('search') || isActiveTab('discovery')">
 	    <li data-ng-show="limitedTabs" class="active">
 		<a data-toggle="tab">Multi-Select</a>
 	    </li>
@@ -27,6 +27,9 @@
 	    </li>
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('audit'), 'inactive': !currentMessage}">
 		<a data-toggle="tab" data-ui-sref="loggedin.main.audit" data-ng-show="hasRole('CAN_VIEW_AUDIT')" data-ng-click="switchMode('audit', currentMessage, true)">Audit</a>
+	    </li>
+	    <li data-ng-hide="limitedTabs || !isActiveTab('discovery')" data-ng-class="{'active': isModeActive('comments'), 'inactive': !currentMessage}">
+		<a data-toggle="tab" data-ui-sref="loggedin.main.comments" data-ng-click="switchMode('comments', currentMessage, true)">Comments</a>
 	    </li>
 	</ul>
 	<div class="tab-content">
