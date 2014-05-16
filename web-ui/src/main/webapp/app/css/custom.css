@@ -687,6 +687,7 @@ body .btn.btn-primary:focus {
 	font-family: 'Roboto Condensed';
 	overflow: hidden;
 	font-weight: 300;
+	word-break: break-all;
 	font-size: 16px;
 	margin: 2px 0px 0px 0px;
 	color: #666;
@@ -1233,6 +1234,7 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 .name {
 	font-family: 'Roboto';
 	font-size: 14px;
+	text-transform: uppercase;
 }
 
 .name .caret-blue-down {
