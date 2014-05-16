@@ -2198,7 +2198,9 @@ body ul {
 	float: right;
 }
 
-.sidebar-left .filter-form input[type="text"] {
+.sidebar-left .filter-form input[type="text"],
+.sidebar-left .filter-form select,
+.sidebar-left .filter-form textarea {
 	width: 195px;
 	margin-bottom: 5px;
 }

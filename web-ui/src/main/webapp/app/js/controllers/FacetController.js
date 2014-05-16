@@ -7,6 +7,10 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     $scope.selectedFacets = [];
     $scope.facets = [];
     $scope.showFacets = false;
+    $scope.currentDateObj = new Date();
+    $scope.currentDate = new Date($scope.currentDateObj.getFullYear(), $scope.currentDateObj.getMonth(), $scope.currentDateObj.getDate(), 0, 0, 0, 0);
+
+    $('.datepicker').datepicker();
 
     $rootScope.$on('reset', function() {
 	if ($scope.activeTab === $scope.tabName) {

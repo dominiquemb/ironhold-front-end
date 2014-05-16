@@ -8,10 +8,10 @@
 	<div class="scrollbar-hidden">
 		<form name="filter-form" class="filter-form">
 			Start Date <br />
-			<input type="text" data-ng-model="startdate" />
+			<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
 			<br />
 			End Date <br />
-			<input type="text" data-ng-model="enddate" /> 
+			<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
 			<br />
 			From <br />
 			<input type="text" data-ng-model="from" /> 
@@ -27,7 +27,10 @@
 			<input type="text" data-ng-model="body" /> 
 			<br />
 			Message Type <br />
-			<input type="text" data-ng-model="messageType" /> 
+			<select>
+				<option selected>Email</option>
+				<option>Bloomberg</option>
+			</select>
 			<br />
 			Attachment <br />
 			<input type="text" data-ng-model="attachment" /> 
