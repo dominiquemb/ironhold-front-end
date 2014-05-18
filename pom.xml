@@ -226,7 +226,7 @@
                 <elasticsearch.replicas>1</elasticsearch.replicas>
                 <elasticsearch.shards>5</elasticsearch.shards>
                 <logger>file</logger>
-                <mailserver>mail.transworldfacilities.com</mailserver>
+                <mailserver>sendmail.rqpartners.com</mailserver>
             </properties>
         </profile>
         <profile>
