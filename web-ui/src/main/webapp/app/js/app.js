@@ -264,6 +264,9 @@ ironholdApp.factory('usersService', function(Restangular, logInService) {
 	var results = false;
 	if (logInService.getAuthdata()) {
 		results = Restangular.one("users");
+	} else {
+	    logInService.logOut();
+	    return false;
 	}
 	return (results) ? results : false;
 });
