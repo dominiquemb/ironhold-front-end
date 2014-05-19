@@ -19,7 +19,6 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     };
     $scope.backUpUser = false;
     $scope.currentUser = false;
-    $scope.otherEmails = '';
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === 'users') {
@@ -51,6 +50,8 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.editUser = function() {
         if ($scope.activeTab === $scope.tabName) {
             $scope.backUpUser = $scope.currentUser;
+console.log('scope.currentUser');
+console.log($scope.currentUser);
             $state.go('loggedin.main.useredit');
             $scope.$emit('mode', 'useredit', false);
             $scope.$emit('pstRequest', {
@@ -152,9 +153,10 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
-			if ($scope.otherEmails.length > 0) {
+			if (user.otherEmails.length > 0) {
 				user.loginUser.recipients = [];
-				angular.forEach($scope.otherEmails.trim().split(','), function(recipient) {
+console.log(user.otherEmails);
+				angular.forEach(user.otherEmails.trim().split(','), function(recipient) {
 					user.loginUser.recipients.push({
 						'name': recipient.split('@')[0],
 						'address': recipient,
@@ -351,7 +353,10 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		.then(function(result) {
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
-			$scope.otherEmails = $scope.getOtherEmails(user.loginUser);
+/*			user.otherEmails = $scope.getOtherEmails(user.loginUser);
+console.log('user.otherEmails');
+console.log(user.otherEmails);
+*/
 			$scope.selectedPsts = $scope.mapPsts(user.loginUser.sources) || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);

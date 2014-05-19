@@ -63,7 +63,7 @@
 								Other Email Addresses:
 							</td>
 							<td>
-								<textarea data-ng-model="otherEmails"></textarea>
+								<textarea data-ng-init="currentUser.otherEmails = getOtherEmails(currentUser.loginUser)" data-ng-model="currentUser.otherEmails"></textarea>
 							</td>
 						</tr>
 						<tr class="user-assigned-psts">
