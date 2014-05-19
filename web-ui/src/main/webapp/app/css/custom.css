@@ -2205,6 +2205,8 @@ body ul {
 .sidebar-left .filter-form textarea {
 	width: 195px;
 	margin-bottom: 5px;
+	height: 32px;
+	padding: 4px;
 }
 
 .sidebar-left .filter-list {
