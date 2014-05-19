@@ -153,16 +153,17 @@ console.log($scope.currentUser);
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
 		if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
-			if (user.otherEmails.length > 0) {
-				user.loginUser.recipients = [];
-console.log(user.otherEmails);
-				angular.forEach(user.otherEmails.trim().split(','), function(recipient) {
-					user.loginUser.recipients.push({
-						'name': recipient.split('@')[0],
-						'address': recipient,
-						'domain': recipient.split('@')[1]
+			if (user.otherEmails) {
+				if (user.otherEmails.length > 0) {
+					user.loginUser.recipients = [];
+					angular.forEach(user.otherEmails.trim().split(','), function(recipient) {
+						user.loginUser.recipients.push({
+							'name': recipient.split('@')[0],
+							'address': recipient,
+							'domain': recipient.split('@')[1]
+						});
 					});
-				});
+				}
 			}
 			user.loginUser.sources = $scope.extractPstIds($scope.selectedPsts);
 			usersService
