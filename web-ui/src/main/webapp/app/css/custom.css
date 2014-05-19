@@ -1237,6 +1237,10 @@ body .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > 
 	text-transform: uppercase;
 }
 
+.name li a {
+	text-transform: none;
+}
+
 .name .caret-blue-down {
 	margin-right: 6px;
 	margin-top: 14px;
