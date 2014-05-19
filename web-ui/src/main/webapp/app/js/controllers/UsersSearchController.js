@@ -28,14 +28,19 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     });
 
     $scope.editName = function() {
-	$scope.editingName = true;
+	    $scope.editingName = true;
     };
 
     $scope.addUser = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$state.go('loggedin.main.useradd');
-		$scope.$emit('mode', 'useradd', false);
-	}
+	    if ($scope.activeTab === $scope.tabName) {
+            $state.go('loggedin.main.useradd');
+            $scope.$emit('mode', 'useradd', false);
+            $scope.$emit('pstRequest', {
+                    'criteria': '*',
+                    'page': 0,
+                    'pageSize': 100
+            });
+	    }
     };
 
     $scope.userView = function() {
@@ -44,11 +49,16 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     };	
 
     $scope.editUser = function() {
-	if ($scope.activeTab === $scope.tabName) {
-		$scope.backUpUser = $scope.currentUser;
-		$state.go('loggedin.main.useredit');
-		$scope.$emit('mode', 'useredit', false);
-	}
+        if ($scope.activeTab === $scope.tabName) {
+            $scope.backUpUser = $scope.currentUser;
+            $state.go('loggedin.main.useredit');
+            $scope.$emit('mode', 'useredit', false);
+            $scope.$emit('pstRequest', {
+                    'criteria': '*',
+                    'page': 0,
+                    'pageSize': 100
+            });
+        }
     };
 
     $scope.getOtherEmails = function(user) {
@@ -346,11 +356,7 @@ console.log('?????');
 			$scope.selectedPsts = $scope.mapPsts(result.payload.loginUser.sources) || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);
-			$scope.$emit('pstRequest', {
-				'criteria': '*',
-				'page': 1,
-				'pageSize': 100
-			});
+
                 },
 		function(err) {
 			$scope.$emit('technicalError', err);
