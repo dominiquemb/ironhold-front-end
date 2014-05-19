@@ -345,7 +345,6 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('selectResultRequest', function(evt, user) {
         if ($scope.activeTab === $scope.tabName) {
-console.log('?????');
             usersService
 		.one(user.loginUser.username)
 		.get()
@@ -353,7 +352,7 @@ console.log('?????');
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
 			$scope.otherEmails = $scope.getOtherEmails(user.loginUser);
-			$scope.selectedPsts = $scope.mapPsts(result.payload.loginUser.sources) || [];
+			$scope.selectedPsts = $scope.mapPsts(user.loginUser.sources) || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);
 
