@@ -4,37 +4,35 @@
 	</span>
 </div>
 
-<div data-ng-show="isActiveTab('discovery')">
-	<div class="scrollbar-hidden">
-		<form name="filter-form" class="filter-form">
-			Start Date <br />
-			<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
-			End Date <br />
-			<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
-			From <br />
-			<input type="text" data-ng-model="from" /> 
-			<br />
-			Recipient
-			<br />
-			<input type="text" data-ng-model="recipients" /> 
-			<br />
-			Subject <br />
-			<input type="text" data-ng-model="subject" /> 
-			<br />
-			Body <br />
-			<input type="text" data-ng-model="body" /> 
-			<br />
-			Message Type <br />
-			<select>
-				<option selected>Email</option>
-				<option>Bloomberg</option>
-			</select>
-			<br />
-			Attachment <br />
-			<input type="text" data-ng-model="attachment" /> 
-			<button type="submit" class="btn btn-primary">Search</button>
-		</form>
-	</div>
+<div class="scrollbar-hidden filter-form filter-list" data-ng-show="isActiveTab('discovery')">
+	<form name="filter-form">
+		Start Date <br />
+		<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
+		End Date <br />
+		<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
+		From <br />
+		<input type="text" data-ng-model="from" /> 
+		<br />
+		Recipient
+		<br />
+		<input type="text" data-ng-model="recipients" /> 
+		<br />
+		Subject <br />
+		<input type="text" data-ng-model="subject" /> 
+		<br />
+		Body <br />
+		<input type="text" data-ng-model="body" /> 
+		<br />
+		Message Type <br />
+		<select>
+			<option selected>Email</option>
+			<option>Bloomberg</option>
+		</select>
+		<br />
+		Attachment <br />
+		<input type="text" data-ng-model="attachment" /> 
+		<button type="submit" class="btn btn-primary">Search</button>
+	</form>
 </div>
 
 <div data-ng-show="isActiveTab('search')">

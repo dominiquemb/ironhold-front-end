@@ -2195,6 +2195,10 @@ body ul {
 
 .sidebar-left .filter-form {
 	padding: 10px;
+	width: 205px;
+	height: auto;
+	bottom: 3px;
+	top: 3px;	
 }
 
 .sidebar-left .filter-form .btn {
