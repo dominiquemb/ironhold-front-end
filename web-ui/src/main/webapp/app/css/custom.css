@@ -2201,6 +2201,10 @@ body ul {
 	top: 3px;	
 }
 
+.sidebar-left .filter-form.scrollbar-hidden {
+	max-width: 235px;
+}
+
 .sidebar-left .filter-form .btn {
 	margin-right: 15px;
 	margin-top: 5px;
