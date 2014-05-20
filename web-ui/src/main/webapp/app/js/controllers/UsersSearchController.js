@@ -358,6 +358,11 @@ console.log($scope.currentUser);
 console.log('user.otherEmails');
 console.log(user.otherEmails);
 */
+			    $scope.$emit('pstRequest', {
+				    'criteria': '*',
+				    'page': 0,
+				    'pageSize': 100
+			    });
 			$scope.selectedPsts = $scope.mapPsts(user.loginUser.sources) || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);
