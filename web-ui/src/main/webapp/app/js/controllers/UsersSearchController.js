@@ -63,17 +63,19 @@ console.log($scope.currentUser);
     };
 
     $scope.getOtherEmails = function(user) {
-	var emails = '';
-	angular.forEach(user.recipients, function(email) {
-		if (emails.length > 0) {
-			emails += ', ' + email.address;
-		}
-		else {
-			emails += email.address;
-		}
-	});
+	if (user) {
+		var emails = '';
+		angular.forEach(user.recipients, function(email) {
+			if (emails.length > 0) {
+				emails += ', ' + email.address;
+			}
+			else {
+				emails += email.address;
+			}
+		});
 
-	return emails;
+		return emails;
+	}
     };
 
     $scope.userCancel = function() {
