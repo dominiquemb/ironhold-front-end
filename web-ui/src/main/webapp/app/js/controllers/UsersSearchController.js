@@ -50,8 +50,6 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.editUser = function() {
         if ($scope.activeTab === $scope.tabName) {
             $scope.backUpUser = $scope.currentUser;
-console.log('scope.currentUser');
-console.log($scope.currentUser);
             $state.go('loggedin.main.useredit');
             $scope.$emit('mode', 'useredit', false);
             $scope.$emit('pstRequest', {
@@ -198,6 +196,20 @@ console.log($scope.currentUser);
 	}
     });
 
+    $scope.getUnselectedPsts = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		var unselected = $scope.psts;
+		angular.forEach($scope.selectedPsts, function(selectedPst) {
+			angular.forEach(unselected, function(unselectedPst, key) {
+				if (unselectedPst.id === selectedPst.id) {
+					selected.splice(key, 1);
+				}
+			});
+		});
+		return unselected;
+	}
+    };
+
     $rootScope.$on('pstRequest', function(evt, data) {
 	if ($scope.activeTab === $scope.tabName) {
 		usersService
@@ -210,14 +222,15 @@ console.log($scope.currentUser);
 			.then(function(result) {
 				$scope.psts = result.payload || [];
 				$scope.selectedPsts = $scope.mapPsts($scope.selectedPsts);
+				$scope.unselectedPsts = $scope.getUnselectedPsts();
 
 // Mock data to make debugging easier
-/*
+
 				$scope.psts = [{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7e","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true},
 				{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7f","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true},
 				{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7g","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true}];
 			$scope.selectedPsts = $scope.mapPsts(['adf26bdf-4857-4ce5-b7b5-bc32a1088a7e', 'adf26bdf-4857-4ce5-b7b5-bc32a1088a7f', 'adf26bdf-4857-4ce5-b7b5-bc32a1088a7g']) || [];
-*/
+
 			});
 	}
     });
@@ -288,6 +301,34 @@ console.log($scope.currentUser);
 		    $scope.onTabActivation();
 	    }
     });
+
+    $scope.selectPsts = function(psts) {
+	if ($scope.activeTab === $scope.tabName) {
+		angular.forEach(psts, function(selectedId) {
+			angular.forEach($scope.unselectedPsts, function(availablePst, key) {
+				if (selectedId === availablePst.id) {
+					$scope.selectedPsts.push(availablePst);
+					$scope.unselectedPsts.splice(key, 1);
+				}
+			});
+		});
+		psts = [];
+	}
+    };
+
+    $scope.removePsts = function(psts) {
+	if ($scope.activeTab === $scope.tabName) {
+		angular.forEach(psts, function(selectedId) {
+			angular.forEach($scope.selectedPsts, function(availablePst, key) {
+				if (selectedId === availablePst.id) {
+					$scope.unselectedPsts.push(availablePst);
+					$scope.selectedPsts.splice(key, 1);
+				}
+			});
+		});
+		psts = [];
+	}
+    };
 
     $scope.togglePst = function(evt, pst) {
 	if ($scope.activeTab === $scope.tabName) {

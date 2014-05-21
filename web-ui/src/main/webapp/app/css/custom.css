@@ -516,8 +516,12 @@ body .btn.btn-primary:focus {
 
 .msgview_content input[type="text"],
 .msgview_content input[type="password"],
-.msgview_content textarea {
+.msgview_content textarea  {
 	width: 100%;
+}
+
+.msgview_content select {
+	min-width: 190px;
 }
 
 .msgview .placeholder_text {
@@ -2631,4 +2635,43 @@ form input.ng-valid:hover {
 
 form input.ng-valid {
 	border-color: #58595b;
+}
+
+/* Multi-select */
+.multiSelect {
+    overflow: auto;
+}
+.multiSelect .select {
+    margin-right: 20px;
+    float: left;
+}
+.multiSelect .text {
+    clear: both;
+    font-size: 11px;
+}
+.multiSelect label::after {
+    content: ":";
+}
+.btn.mover {
+    display: block;
+    margin-top: 25px;
+    vertical-align: top;
+}
+.btn.mover.left {
+    padding: 3px 8px 2px 6px;
+}
+.btn.mover.right {
+    margin-top: 24px;
+    padding: 3px 7px 2px;
+}
+.btn.mover i {
+    margin: 0;
+}
+
+.multi-select-arrows button {
+	height: 21px;
+	line-height: 0px;
+	margin: 10px 10px 0px;
+	padding: 0px;
+	width: 65px;
 }
