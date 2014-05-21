@@ -202,7 +202,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		angular.forEach($scope.selectedPsts, function(selectedPst) {
 			angular.forEach(unselected, function(unselectedPst, key) {
 				if (unselectedPst.id === selectedPst.id) {
-					selected.splice(key, 1);
+					unselected.splice(key, 1);
 				}
 			});
 		});
@@ -225,12 +225,12 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				$scope.unselectedPsts = $scope.getUnselectedPsts();
 
 // Mock data to make debugging easier
-
+/*
 				$scope.psts = [{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7e","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true},
 				{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7f","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true},
 				{"id":"adf26bdf-4857-4ce5-b7b5-bc32a1088a7g","pstFileName":"BESADMIN","mailBoxName":"Bes.Admin","originalFilePath":"\\\\GLTSRV17\\d$\\DATA_USR\\Mail Archive\\EMS Export\\OLD EXPORT\\EXARCHIVES\\BesAdmin","commentary":null,"md5":"eed76dd072b8596ebd16e561fbd611af","hostname":"IH650IM001","size":425984,"started":"06/02/2013","finished":"06/02/2013","messages":49,"duplicates":49,"failures":0,"partialFailures":0,"maxSize":0,"compressedMaxSize":0,"messagesWithAttachments":19,"messagesWithoutAttachments":30,"typeMap":{"PSTMessage":49},"folderMap":{"/Top of Personal Folders/Sent Items":27,"/Top of Personal Folders/Spam Mail/Approved Sender List":1,"/Top of Personal Folders/Inbox":21},"compressedAverageSize":0.0,"averageSize":0.0,"medianSize":0.0,"medianCompressedSize":0.0,"completed":true}];
 			$scope.selectedPsts = $scope.mapPsts(['adf26bdf-4857-4ce5-b7b5-bc32a1088a7e', 'adf26bdf-4857-4ce5-b7b5-bc32a1088a7f', 'adf26bdf-4857-4ce5-b7b5-bc32a1088a7g']) || [];
-
+*/
 			});
 	}
     });
