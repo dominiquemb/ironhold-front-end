@@ -10,7 +10,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.editedUser = false;
     $scope.editingName = false;
     $scope.psts = [];
-    $scope.newUser = {
+    $scope.newUserTemplate = {
 	    loginUser: {
 		    'mainRecipient': {},
 		    'recipients': []
@@ -32,13 +32,15 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $scope.addUser = function() {
 	    if ($scope.activeTab === $scope.tabName) {
-            $state.go('loggedin.main.useradd');
-            $scope.$emit('mode', 'useradd', false);
-            $scope.$emit('pstRequest', {
-                    'criteria': '*',
-                    'page': 0,
-                    'pageSize': 100
-            });
+		    $scope.newUser = $scope.newUserTemplate;
+		    $state.go('loggedin.main.useradd');
+		    $scope.selectedPsts = [];
+		    $scope.$emit('mode', 'useradd', false);
+		    $scope.$emit('pstRequest', {
+			    'criteria': '*',
+			    'page': 0,
+			    'pageSize': 100
+		    });
 	    }
     };
 
@@ -221,7 +223,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				})
 			.then(function(result) {
 				$scope.psts = result.payload || [];
-				$scope.selectedPsts = $scope.mapPsts($scope.selectedPsts);
+//				$scope.selectedPsts = $scope.mapPsts($scope.selectedPsts);
 				$scope.unselectedPsts = $scope.getUnselectedPsts();
 
 // Mock data to make debugging easier
@@ -401,11 +403,6 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 console.log('user.otherEmails');
 console.log(user.otherEmails);
 */
-			    $scope.$emit('pstRequest', {
-				    'criteria': '*',
-				    'page': 0,
-				    'pageSize': 100
-			    });
 			$scope.selectedPsts = $scope.mapPsts(user.loginUser.sources) || [];
 			$scope.currentUser = user;
 			$scope.$emit('searchHistoryRequest', user);
