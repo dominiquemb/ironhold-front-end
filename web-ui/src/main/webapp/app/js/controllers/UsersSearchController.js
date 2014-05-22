@@ -181,7 +181,9 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 					$scope.editingName = false;
 					$scope.$emit('selectResultRequest', user);
 					$scope.userView();
+					$scope.requestUserList();
 				});
+
 		}
 	}
     });
@@ -272,11 +274,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 	}
     };
 
-    $rootScope.$on('activeTab', function(evt, tab) {
-	if (tab === $scope.tabName) {
-	    $scope.initCustomScrollbars('.scrollbar-hidden');
-	
-	    if ($scope.users.length === 0) {
+    $scope.requestUserList = function() {
 		    usersService.get({
 			    criteria: '*',
 			    page: $scope.pageNum,
@@ -294,6 +292,13 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		    function(err) {
 			$scope.$emit('technicalError', err);
 		    });
+	    $scope.initCustomScrollbars('.scrollbar-hidden');	
+    };
+
+    $rootScope.$on('activeTab', function(evt, tab) {
+	if (tab === $scope.tabName) {
+	    if ($scope.users.length === 0) {
+		$scope.requestUserList();
 	    }
 	}
     });
