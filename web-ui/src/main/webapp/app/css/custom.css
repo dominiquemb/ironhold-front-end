@@ -1198,6 +1198,11 @@ body .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .ta
 	font-size: 12px;
 }
 
+body .table.no-border, 
+body .table.no-border tr > td {
+	border: 0px;
+}
+
 body .table thead tr th {
 	text-transform: uppercase;
 	font-size: 11px;

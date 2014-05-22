@@ -71,26 +71,32 @@
 								PSTs:
 							</td>
 							<td>
-								<div class="pull-left">
+								<table class="table no-border">
+								<tr>
+								<td>
 									<select data-ng-model="leftPsts" multiple>
 										<option data-ng-repeat="(key, pst) in unselectedPsts" value="{{ pst.id }}">{{ pst.pstFileName }}</option>
 									</select>
-								</div>
+								</td>
 								
-								<div class="pull-left multi-select-arrows">
-									<div>
-										<button type="button" class="btn btn-primary" data-ng-click="selectPsts(leftPsts)">&gt;&gt;</button>
+								<td>
+									<div class="multi-select-arrows">
+										<div>
+											<button type="button" class="btn btn-primary" data-ng-click="selectPsts(leftPsts)">&gt;&gt;</button>
+										</div>
+										<div>
+											<button type="button" class="btn btn-primary" data-ng-click="removePsts(rightPsts)">&lt;&lt;</button>
+										</div>
 									</div>
-									<div>
-										<button type="button" class="btn btn-primary" data-ng-click="removePsts(rightPsts)">&lt;&lt;</button>
-									</div>
-								</div>
+								</td>
 								
-								<div class="pull-left">
+								<td>
 									<select data-ng-model="rightPsts" multiple>
 										<option data-ng-repeat="(key, pst) in selectedPsts" value="{{ pst.id }}">{{ pst.pstFileName }}</option>
 									</select>
-								</div>
+								</td>
+								</tr>
+								</table>
 <!--
 								<multi-select data-ng-model="currentUser.selectedPsts" available="blah" selected-label="Selected PSTS" available-label="Available PSTs" display-attr="pstFileName"></multi-select>
 -->
