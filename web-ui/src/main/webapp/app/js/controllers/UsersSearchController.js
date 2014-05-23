@@ -78,11 +78,13 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 	}
     };
 
-    $scope.userCancel = function() {
+    $scope.userCancel = function(noselect) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.currentUser = $scope.backUpUser;
 		$scope.$emit('restoreBackUpUser', $scope.backUpUser);
-		$scope.$emit('selectResultRequest', $scope.backUpUser);
+		if (!noselect) {
+			$scope.$emit('selectResultRequest', $scope.backUpUser);
+		}
 		$state.go('loggedin.main.userview');
 	}	
     };
@@ -402,6 +404,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		.one(user.loginUser.username)
 		.get()
 		.then(function(result) {
+	    		$scope.userCancel(true);
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
 /*			user.otherEmails = $scope.getOtherEmails(user.loginUser);
