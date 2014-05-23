@@ -3,7 +3,7 @@
 
 ironholdApp.controller('TabController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, $state, logInService, usersService, messagesService, rolesService) {
     logInService.confirmLoggedIn($state);
-    $scope.activeTab = 'search';
+    $scope.activeTab = ($location.search().tab) ? $location.search().tab : 'search';
     $scope.pageSize = 20;
     $scope.roles = [];
     $scope.allRoles = {};
@@ -151,6 +151,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
 	$scope.$emit('removeInstructions');
 	$scope.activeTab = tab;
     	$scope.$emit('activeTab', $scope.activeTab);
+    	$location.search('tab', $scope.activeTab);
     };
 
     $scope.isActiveTab = function(tab) {
