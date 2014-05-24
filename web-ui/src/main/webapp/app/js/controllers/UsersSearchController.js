@@ -174,6 +174,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				.post(
 					"",
 					user.loginUser,
+					{"oldUsername": user.oldUsername},
 					{
 					"Accept": "application/json",
 					"Content-type" : "application/json"

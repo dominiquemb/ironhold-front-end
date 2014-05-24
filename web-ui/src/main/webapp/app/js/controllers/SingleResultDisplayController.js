@@ -115,6 +115,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.submitUser = function(user) {
 	if ($scope.activeTab === $scope.tabName) {
 		user.recipients = (typeof user.newRecipients === 'string') ? user.newRecipients.split(',') : user.recipients;
+		user.oldUsername = $scope.backUpUser.loginUser.username;
 		$scope.$emit('submitUser', user);
 	}
     };
