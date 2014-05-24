@@ -14,6 +14,7 @@ import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
 import com.reqo.ironhold.storage.model.metadata.PSTFileMeta;
 import com.reqo.ironhold.storage.security.CheckSumHelper;
 import com.reqo.ironhold.web.domain.*;
+import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.UserDetailsResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.slf4j.Logger;
@@ -180,6 +181,18 @@ public class UserController {
             miscIndexService.store(clientKey, userDetails);
         }
         return true;
+    }
+
+
+    @Secured("ROLE_CAN_MANAGE_USERS")
+    @RequestMapping(method = RequestMethod.GET, value = "/max/{username}")
+    public
+    @ResponseBody
+    ApiResponse<CountSearchResponse> maxResults(@PathVariable("username") String username) {
+        final LoginUser existingUser = miscIndexService.getLoginUser(getClientKey(), username);
+        ApiResponse<CountSearchResponse> response = new ApiResponse<>();
+        response.setPayload(messageIndexService.getMatchCount(getClientKey(), "*", existingUser));
+        return response;
     }
 
     @Secured("ROLE_CAN_MANAGE_USERS")
