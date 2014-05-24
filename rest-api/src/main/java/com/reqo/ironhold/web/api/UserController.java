@@ -179,6 +179,7 @@ public class UserController {
             userDetails.setHashedPassword(loginUser.getHashedPassword());
             miscIndexService.store(clientKey, userDetails);
         }
+        return true;
     }
 
     @Secured("ROLE_CAN_MANAGE_USERS")
