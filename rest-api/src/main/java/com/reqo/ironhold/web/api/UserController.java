@@ -161,9 +161,16 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public
     @ResponseBody
-    void updateUser(@RequestBody LoginUser userDetails, @RequestParam(required = false, defaultValue = "") String oldUsername) {
+    boolean updateUser(@RequestBody LoginUser userDetails, @RequestParam(required = false, defaultValue = "") String oldUsername) {
         final String clientKey = getClientKey();
+        if (oldUsername.length() > 0 && !userDetails.getUsername().equals(oldUsername)) {
+            final LoginUser existingUser = miscIndexService.getLoginUser(getClientKey(), userDetails.getUsername());
+            if (existingUser != null) {
+                return false; // username already exists
+            }
+        }
         String userNameToFetch = oldUsername.length() > 0 ? oldUsername : userDetails.getUsername();
+
         final LoginUser loginUser = miscIndexService.getLoginUser(getClientKey(), userNameToFetch);
         if (!userDetails.getHashedPassword().equals(EMPTY_PASSWORD)) {
             userDetails.setHashedPassword(CheckSumHelper.getCheckSum(userDetails.getHashedPassword().getBytes()));
