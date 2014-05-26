@@ -16,7 +16,7 @@
                "username" :
                   {
                      "type" : "string",
-                     "analyzer" : "keyword"
+                     "index" : "not_analyzed"
                   },
                "hashedPassword" :
                   {
