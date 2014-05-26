@@ -180,11 +180,16 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 					"Content-type" : "application/json"
 					}
 				)
-				.then(function() {
+				.then(function(result) {
 					$scope.editingName = false;
-					$scope.$emit('selectResultRequest', user);
-					$scope.userView();
-					$scope.requestUserList();
+					if (result.toString() === "true") {
+						$scope.$emit('selectResultRequest', user);
+						$scope.userView();
+						$scope.requestUserList();
+					}
+					else {
+						$scope.$emit('error', 'That username is already in use. Please type a different username.');
+					}
 				});
 
 		}
