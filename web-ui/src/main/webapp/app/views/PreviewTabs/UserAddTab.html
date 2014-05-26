@@ -10,7 +10,7 @@
 			    <div class="pull-left user-body-container">
 				<div class="user-full-name">
 					<span data-ng-click="editName()"  data-ng-hide="editingName">Click to type full name</span>
-					<input data-ng-show="editingName" type="text" data-ng-model="newUser.name" required />		
+					<input data-ng-show="editingName" type="text" data-ng-model="newUser.loginUser.name" required />		
 				</div>
 				<form name="edit-user-form user-form" data-ng-submit="submitUser(newUser)">
 					<table class="table table-bordered">
@@ -19,7 +19,7 @@
 								Email Address:
 							</td>
 							<td>
-								<input type="text" data-ng-model="newUser.mainRecipient.address" required />								
+								<input type="text" data-ng-model="newUser.loginUser.mainRecipient.address" required />								
 							</td>
 						</tr>
 						<tr class="user-username">
@@ -27,7 +27,7 @@
 								Username:
 							</td>
 							<td>
-								<input type="text" data-ng-model="newUser.username" required />
+								<input type="text" data-ng-model="newUser.loginUser.username" required />
 							</td>
 						</tr>
 						<tr class="user-password">
@@ -35,7 +35,7 @@
 								Password:
 							</td>
 							<td>
-								<input type="password" data-ng-model="newUser.hashedPassword" required />
+								<input type="password" data-ng-model="newUser.loginUser.hashedPassword" required />
 							</td>
 						</tr>
 						<tr class="user-password-confirm">
@@ -43,7 +43,7 @@
 								Confirm Password:
 							</td>
 							<td>
-								<input type="password" data-ng-model="newUser.confirmedPassword" required />
+								<input type="password" data-ng-model="newUser.loginUser.confirmedPassword" required />
 							</td>
 						</tr>
 						<tr class="user-roles">
@@ -63,7 +63,7 @@
 								Other Email Addresses:
 							</td>
 							<td>
-								<textarea data-ng-model="newUser.newRecipients"></textarea>
+								<textarea data-ng-model="newUser.loginUser.newRecipients"></textarea>
 							</td>
 						</tr>
 						<tr class="user-assigned-psts">

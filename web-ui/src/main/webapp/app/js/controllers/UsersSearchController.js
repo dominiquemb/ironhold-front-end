@@ -156,7 +156,9 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
+console.log(user.loginUser);
 		if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
+console.log(user.loginUser);
 			if (user.otherEmails) {
 				if (user.otherEmails.length > 0) {
 					user.loginUser.recipients = [];
@@ -170,6 +172,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				}
 			}
 			user.loginUser.sources = $scope.extractPstIds($scope.selectedPsts);
+console.log(user.loginUser);
 			usersService
 				.post(
 					"",
