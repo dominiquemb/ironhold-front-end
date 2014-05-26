@@ -404,6 +404,22 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
         }
     });
 
+    $scope.getMaxNumResults = function() {
+	return $scope.maxNumResults;
+    };
+
+    $rootScope.$on('maxNumResultsRequest', function(evt, user) {
+        if ($scope.activeTab === $scope.tabName) {
+		usersService
+			.one('max')
+			.one(user.loginUser.username)
+			.get()
+			.then(function(result) {
+				$scope.maxNumResults = result.payload.matches;
+			});
+	}
+    });
+
     $rootScope.$on('selectResultRequest', function(evt, user) {
         if ($scope.activeTab === $scope.tabName) {
             usersService
@@ -419,6 +435,7 @@ console.log(user.otherEmails);
 */
 			$scope.selectedPsts = $scope.mapPsts(user.loginUser.sources) || [];
 			$scope.currentUser = user;
+			$scope.$emit('maxNumResultsRequest', user);
 			$scope.$emit('searchHistoryRequest', user);
 
                 },
