@@ -17,11 +17,12 @@ import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import org.apache.commons.io.FileUtils;
-import org.elasticsearch.action.admin.indices.alias.get.IndicesGetAliasesResponse;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.joda.time.DateTime;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.sort.SortOrder;
@@ -292,9 +293,9 @@ public class MessageIndexServiceTest {
         Assert.assertEquals(messages.size(),
                 messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser).getMatches());
 
-        IndicesGetAliasesResponse response = client.admin().indices().prepareGetAliases(INDEX_PREFIX).execute().get();
-        Map<String, List<AliasMetaData>> aliases = response.getAliases();
-        Assert.assertEquals(counter, aliases.keySet().size());
+        GetAliasesResponse response = client.admin().indices().prepareGetAliases(INDEX_PREFIX).execute().get();
+        ImmutableOpenMap<String, List<AliasMetaData>> aliases = response.getAliases();
+        Assert.assertEquals(counter, aliases.keys().size());
         for (int i = 2000; i < counter; i++) {
             Assert.assertTrue(aliases.containsKey(INDEX_PREFIX + "." + i));
         }
@@ -322,9 +323,9 @@ public class MessageIndexServiceTest {
         Assert.assertEquals(messages.size(),
                 messageIndexService.getTotalMessageCount(INDEX_PREFIX, superUser).getMatches());
 
-        IndicesGetAliasesResponse response = client.admin().indices().prepareGetAliases(INDEX_PREFIX).execute().get();
-        Map<String, List<AliasMetaData>> aliases = response.getAliases();
-        Assert.assertEquals(counter, aliases.keySet().size());
+        GetAliasesResponse response = client.admin().indices().prepareGetAliases(INDEX_PREFIX).execute().get();
+        ImmutableOpenMap<String, List<AliasMetaData>> aliases = response.getAliases();
+        Assert.assertEquals(counter, aliases.keys().size());
         for (int i = 2000; i < counter; i++) {
             Assert.assertTrue(aliases.containsKey(INDEX_PREFIX + "." + i));
         }

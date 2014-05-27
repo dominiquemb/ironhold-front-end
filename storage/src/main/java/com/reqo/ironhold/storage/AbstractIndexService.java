@@ -1,10 +1,13 @@
 package com.reqo.ironhold.storage;
 
+import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.admin.indices.alias.get.IndicesGetAliasesResponse;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesResponse;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.collect.UnmodifiableIterator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
@@ -99,7 +102,7 @@ public abstract class AbstractIndexService {
             String indexAlias = getIndexAlias(indexPrefix);
             String indexName = getIndexName(indexAlias, partition);
 
-            QueryBuilder qb = QueryBuilders.fieldQuery(field, value);
+            QueryBuilder qb = QueryBuilders.termQuery(field, value);
             client.getClient().prepareDeleteByQuery(indexName).setTypes(type.getValue()).setQuery(qb).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
@@ -110,9 +113,11 @@ public abstract class AbstractIndexService {
     public void forceRefreshMappings(String indexPrefix, boolean followAliases) {
         try {
             if (followAliases) {
-                IndicesGetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
-                Map<String, List<AliasMetaData>> aliases = response.getAliases();
-                for (String indexName : aliases.keySet()) {
+                GetAliasesResponse response = client.getClient().admin().indices().prepareGetAliases(indexPrefix).execute().get();
+                ImmutableOpenMap<String, List<AliasMetaData>> aliases = response.getAliases();
+                UnmodifiableIterator<String> it = aliases.keysIt();
+                while (it.hasNext()) {
+                    String indexName = it.next();
                     for (IndexedObjectType type : mappings.keySet()) {
                         client.addTypeMapping(indexName, type, mappings.get(type));
                     }

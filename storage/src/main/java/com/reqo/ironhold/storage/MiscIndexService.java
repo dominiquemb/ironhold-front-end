@@ -89,7 +89,7 @@ public class MiscIndexService extends AbstractIndexService implements IMiscIndex
         SearchRequestBuilder searchRequestBuilder = client.getSearchRequestBuilder(alias);
         SearchResponse response = searchRequestBuilder
                 .setTypes(IndexedObjectType.PST_FILE_META.getValue())
-                .setFilter(FilterBuilders
+                .setPostFilter(FilterBuilders
                         .andFilter(
                                 FilterBuilders.termFilter("md5", meta.getMd5()),
                                 FilterBuilders.termFilter("size", meta.getSize())

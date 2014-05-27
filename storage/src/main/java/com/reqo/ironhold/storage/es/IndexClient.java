@@ -188,7 +188,7 @@ public class IndexClient {
                 fb.add(FilterBuilders.termFilter(criterion.getKey(), criterion.getValue()));
             }
 
-            request.setFilter(fb);
+            request.setPostFilter(fb);
 
             logger.debug(request.toString());
             return request.execute().get();
@@ -329,7 +329,7 @@ public class IndexClient {
                         addSourceFilter(filterBuilders, source);
                     }
                 }
-                search.setFilter(filterBuilders);
+                search.setPostFilter(filterBuilders);
             }
         } else {
             throw new SecurityException("This user does not have search role");

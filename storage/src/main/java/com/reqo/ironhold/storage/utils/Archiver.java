@@ -75,7 +75,7 @@ public class Archiver {
 
     private void run(String client, String field, String value, boolean execute) throws Exception {
         logger.info("Running in " + (execute ? "archive" : "read-only") + " mode");
-        QueryBuilder qb = QueryBuilders.fieldQuery(field, "\"" + value + "\"");
+        QueryBuilder qb = QueryBuilders.termQuery(field, "\"" + value + "\"");
 
         int count = 0;
 
