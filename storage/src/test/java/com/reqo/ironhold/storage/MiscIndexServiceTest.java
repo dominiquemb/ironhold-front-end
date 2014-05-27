@@ -49,7 +49,7 @@ public class MiscIndexServiceTest {
 
     @After
     public void tearDown() throws ExecutionException, InterruptedException {
-        client.admin().indices().prepareDelete().execute().get();
+        client.admin().indices().prepareDelete("*").execute().get();
     }
 
 
