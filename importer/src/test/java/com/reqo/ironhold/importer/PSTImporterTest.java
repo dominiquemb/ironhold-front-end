@@ -104,7 +104,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     public void tearDown() throws Exception {
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
-        esClient.getObject().admin().indices().prepareDelete("_all").execute().actionGet();
+        esClient.getObject().admin().indices().prepareDelete("*").execute().get();
         this.metaDataIndexService.clearCache();
         this.miscIndexService.clearCache();
         this.messageIndexService.clearCache();
