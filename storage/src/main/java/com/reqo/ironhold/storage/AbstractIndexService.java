@@ -102,7 +102,7 @@ public abstract class AbstractIndexService {
             String indexAlias = getIndexAlias(indexPrefix);
             String indexName = getIndexName(indexAlias, partition);
 
-            QueryBuilder qb = QueryBuilders.termQuery(field, value);
+            QueryBuilder qb = QueryBuilders.queryString(field + ":" + value);
             client.getClient().prepareDeleteByQuery(indexName).setTypes(type.getValue()).setQuery(qb).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);

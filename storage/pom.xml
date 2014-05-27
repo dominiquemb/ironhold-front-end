@@ -9,6 +9,16 @@
     </parent>
     <artifactId>storage</artifactId>
     <name>Storage</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
 
         <!-- IronHold dependencies -->

@@ -2,9 +2,11 @@ package com.reqo.ironhold.storage;
 
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
+import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchSetting;
 import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
 import com.gs.collections.api.list.ImmutableList;
 import com.gs.collections.impl.block.factory.Predicates;
+import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.pff.PSTMessage;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.es.IndexFieldEnum;
@@ -49,7 +51,9 @@ public class MessageIndexServiceTest {
     private static final String INDEX_PREFIX = "unittest";
     private MessageIndexService messageIndexService;
 
-    @ElasticsearchNode
+    @ElasticsearchNode(settings = {
+            @ElasticsearchSetting(name = "script.disable_dynamic", value = "false")
+    })
     private static Node node;
 
     @ElasticsearchClient
@@ -77,7 +81,7 @@ public class MessageIndexServiceTest {
 
     @After
     public void tearDown() throws ExecutionException, InterruptedException {
-        client.admin().indices().prepareDelete().execute().get();
+        client.admin().indices().prepareDelete("*").execute().get();
     }
 
     @Test
