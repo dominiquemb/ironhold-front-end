@@ -2,6 +2,7 @@ package com.reqo.ironhold.storage;
 
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchClient;
 import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchNode;
+import com.github.tlrx.elasticsearch.test.annotations.ElasticsearchSetting;
 import com.github.tlrx.elasticsearch.test.support.junit.runners.ElasticsearchRunner;
 import com.reqo.ironhold.storage.es.IndexClient;
 import com.reqo.ironhold.storage.model.IMAPBatchMetaTestModel;
@@ -30,7 +31,9 @@ public class MiscIndexServiceTest {
     private static final String INDEX_PREFIX = "unittest";
     private MiscIndexService miscIndexService;
 
-    @ElasticsearchNode
+    @ElasticsearchNode(settings = {
+            @ElasticsearchSetting(name = "script.disable_dynamic", value = "false")
+    })
     private static Node node;
 
     @ElasticsearchClient
