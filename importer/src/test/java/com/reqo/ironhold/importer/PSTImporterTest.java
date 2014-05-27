@@ -105,6 +105,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
         deleteIfExists(((LocalKeyStoreService) keyStoreService).getKeyStore());
         deleteIfExists(((LocalMimeMailMessageStorageService) mimeMailMessageStorageService).getDataStore().getParentFile());
         esClient.getObject().admin().indices().prepareDelete("*").execute().get();
+        deleteIfExists(new File("/tmp/es/data"));
         this.metaDataIndexService.clearCache();
         this.miscIndexService.clearCache();
         this.messageIndexService.clearCache();
