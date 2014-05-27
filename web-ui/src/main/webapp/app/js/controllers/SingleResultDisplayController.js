@@ -112,13 +112,23 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
-    $scope.submitUser = function(user) {
+    $scope.submitUser = function(formName, user) {
 	if ($scope.activeTab === $scope.tabName) {
-		user.recipients = (typeof user.newRecipients === 'string') ? user.newRecipients.split(',') : user.recipients;
-		if ($scope.backUpUser) {
-		    user.oldUsername = $scope.backUpUser.loginUser.username;
-		}
-		$scope.$emit('submitUser', user);
+		$scope.$emit('formValidate', {
+			formName: formName, 
+			callback: function(result) {
+				if (result) {
+					user.recipients = (typeof user.newRecipients === 'string') ? user.newRecipients.split(',') : user.recipients;
+					if ($scope.backUpUser) {
+					    user.oldUsername = $scope.backUpUser.loginUser.username;
+					}
+					$scope.$emit('submitUser', user);
+				}
+				else {
+					$scope.$emit('error', 'Please fill out all fields');
+				}
+			}
+		});
 	}
     };
 

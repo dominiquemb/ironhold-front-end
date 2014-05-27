@@ -1,6 +1,12 @@
 (function () {
    'use strict';
 
+ironholdApp.directive('externalSubmit', function() {
+        return {
+                restrict: 'ACE',
+		controller: 'ExternalSubmitController'
+        };
+});
 
 ironholdApp.directive('initialMessage', function() {
         return {
