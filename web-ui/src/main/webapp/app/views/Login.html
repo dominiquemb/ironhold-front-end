@@ -5,7 +5,7 @@
     <div class="widget-body">
         <div class="widget-main background-white">
             <div class="login-logo" title="IronHold"></div>
-            <form name="mainLogin">
+            <form name="mainLogin" data-ng-class="{'invalid': isFormInvalid()}">
 		<div class="formErrors">
                         <div class="errors formError">
                                 <div class="error-item" data-ng-hide="!isFormInvalid() || hideSingleError">
@@ -32,7 +32,7 @@
 		    </h4>
 
 		    <div class="space-6"></div>
-                <fieldset data-ng-class="{'invalid': isFormInvalid()}">
+                <fieldset>
                     <label class="block clearfix">
 									<span class="block input-icon input-icon-right">
 										<input type="text" class="auto-focus form-control username" name="username" placeholder="Username" required

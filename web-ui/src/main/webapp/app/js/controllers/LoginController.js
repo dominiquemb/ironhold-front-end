@@ -32,7 +32,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     };
 
     $scope.isFormInvalid = function() {
-	    return $scope.formInvalid;
+	return $scope.formInvalid;
     };
 
     $scope.isVisible = function(elemName) {

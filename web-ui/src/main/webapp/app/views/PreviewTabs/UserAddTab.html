@@ -12,7 +12,7 @@
 					<span data-ng-click="editName()"  data-ng-hide="editingName">Click to type full name</span>
 					<input data-ng-show="editingName" type="text" data-ng-model="newUser.loginUser.name" required />		
 				</div>
-				<form name="edit-user-form" class="external-submit user-form" data-ng-submit="submitUser(newUser)">
+				<form name="edit-user-form" class="external-submit user-form" data-ng-submit="submitUser(newUser)" data-ng-class="{'invalid': formInvalid}">
 					<table class="table table-bordered">
 						<tr class="user-email">
 							<td>

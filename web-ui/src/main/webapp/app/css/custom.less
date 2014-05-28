@@ -62,7 +62,8 @@ body pre {
 	padding: 0px;
 }
 
-body form input[type="text"].ng-valid {
+body form input[type="text"].ng-valid,
+body form input[type="password"].ng-valid {
 	border-color: @Gray-C;
 }
 
@@ -2612,52 +2613,52 @@ body ul {
 	height: 20px;
 }
 
-form .invalid input.ng-invalid:focus {
+form.invalid input.ng-invalid:focus {
 	border-color: red;
 }
 
-form .invalid input.ng-invalid:active {
+form.invalid input.ng-invalid:active {
 	border-color: red;
 }
 
-form .invalid input.ng-invalid:hover {
+form.invalid input.ng-invalid:hover {
 	border-color: red;
 }
 
-form .invalid input.ng-invalid {
+form.invalid input.ng-invalid {
 	border-color: red;
 }
 
 form input.ng-invalid:focus {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-invalid:active {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-invalid:hover {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-invalid {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-valid:focus {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-valid:active {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-valid:hover {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 form input.ng-valid {
-	border-color: #58595b;
+	border-color: @Gray-C;
 }
 
 /* Multi-select */
