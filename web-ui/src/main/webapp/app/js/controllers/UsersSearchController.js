@@ -156,9 +156,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
-console.log(user.loginUser);
 		if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
-console.log(user.loginUser);
 			if (user.otherEmails) {
 				if (user.otherEmails.length > 0) {
 					user.loginUser.recipients = [];
@@ -172,7 +170,6 @@ console.log(user.loginUser);
 				}
 			}
 			user.loginUser.sources = $scope.extractPstIds($scope.selectedPsts);
-console.log(user.loginUser);
 			usersService
 				.post(
 					"",
@@ -285,7 +282,14 @@ console.log(user.loginUser);
 	}
     };
 
+    $rootScope.$on('multipleDisplayControllerInit', function(evt, tab) {
+	if ($scope.tabName === tab) {
+		$scope.requestUserList();
+	}
+    });
+
     $scope.requestUserList = function() {
+	if ($scope.activeTab === $scope.tabName) {
 		    usersService.get({
 			    criteria: '*',
 			    page: $scope.pageNum,
@@ -304,15 +308,8 @@ console.log(user.loginUser);
 			$scope.$emit('technicalError', err);
 		    });
 	    $scope.initCustomScrollbars('.scrollbar-hidden');	
-    };
-
-    $rootScope.$on('activeTab', function(evt, tab) {
-	if (tab === $scope.tabName) {
-	    if ($scope.users.length === 0) {
-		$scope.requestUserList();
-	    }
 	}
-    });
+    };
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	    if (tab === $scope.tabName) {
@@ -379,19 +376,17 @@ console.log(user.loginUser);
     };
 
     $scope.onTabActivation = function() {
-		    searchResultsService.prepForBroadcast("-", "- ");
+	    searchResultsService.prepForBroadcast("-", "- ");
 
-		    if (usersService) {
-			    usersService.one("searchHistory").get().then(function(result) {
-				$scope.$emit('searchHistoryData', result);
-			    }, function(err) {
-				$scope.$emit('technicalError', err);
-			    });
-		    }
+	    if (usersService) {
+		    usersService.one("searchHistory").get().then(function(result) {
+			$scope.$emit('searchHistoryData', result);
+		    }, function(err) {
+			$scope.$emit('technicalError', err);
+		    });
+	    }
     };
-
-    $scope.onTabActivation();
-
+	
     $scope.initialized = function() {
         if ($scope.activeTab === $scope.tabName) {
             $scope.initialState = false;
@@ -433,8 +428,6 @@ console.log(user.loginUser);
 			$scope.$emit('selectResultData', result.payload);
 			$scope.$emit('selectUser', result.payload);
 /*			user.otherEmails = $scope.getOtherEmails(user.loginUser);
-console.log('user.otherEmails');
-console.log(user.otherEmails);
 */
 			$scope.selectedPsts = $scope.mapPsts(user.loginUser.sources) || [];
 			$scope.currentUser = user;
@@ -472,6 +465,8 @@ console.log(user.otherEmails);
             });
         }
     });
+
+    $scope.onTabActivation();
 });
 
 

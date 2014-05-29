@@ -350,6 +350,8 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             $scope.currentPage = page;
         }
     });
+
+    $scope.$emit('multipleDisplayControllerInit', $scope.tabName);
 });
 
 
