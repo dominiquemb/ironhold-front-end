@@ -5,6 +5,8 @@ ironholdApp.controller('UsersController', function ($http, $resource, $window, $
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'users';
+    $scope.showPreviewToolbar = true;
+    $scope.modes[$scope.tabName] = 'userview';
     $scope.initialState = true;
 });
 

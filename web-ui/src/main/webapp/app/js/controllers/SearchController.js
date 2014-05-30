@@ -6,6 +6,8 @@ ironholdApp.controller('SearchController', function ($http, $resource, $window, 
 
     $scope.tabName = 'search';
     $scope.facetAreaShort = false;
+    $scope.modes[$scope.tabName] = 'text';
+    $scope.showPreviewToolbar = false;
     $scope.limitFacets = false;
     $scope.initialState = true;
 });

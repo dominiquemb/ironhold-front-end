@@ -6,6 +6,7 @@ ironholdApp.controller('TabController', function ($http, $resource, $window, $ro
     $scope.activeTab = ($location.search().tab) ? $location.search().tab : 'search';
     $scope.pageSize = 20;
     $scope.roles = [];
+    $scope.modes = {};
     $scope.allRoles = {};
     $scope.disableTechErrors = true;
 

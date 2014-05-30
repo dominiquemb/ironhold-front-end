@@ -7,8 +7,6 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.showContainer = false;
     $scope.currentMessage = false;  
     $scope.currentUser = false;
-    $scope.showPreviewToolbar = false;
-    $scope.mode = 'text';
     $scope.subTabLoading = {};
     $scope.modeData = {};
     $scope.limitedTabs = false;
@@ -21,6 +19,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.reset();
 	}
+    });
+
+    $rootScope.$on('limitedTabs', function(evt, onOrOff) {
+	$scope.limitedTabs = onOrOff;
     });
 
     $scope.unselectAll = function() {
@@ -41,7 +43,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === 'search') {
-		$state.go('loggedin.main.' + $scope.mode);
+		$state.go('loggedin.main.' + $scope.mode[$scope.tabName]);
 	}
 	else if (tab === 'users') {
 		$state.go('loggedin.main.userview');
@@ -180,7 +182,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $scope.isModeActive = function(mode) {
         if ($scope.activeTab === $scope.tabName) {
-            return $scope.mode === mode;
+            return $scope.modes[$scope.tabName] === mode;
         }
     };
 
@@ -216,6 +218,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.$emit('reinitScrollbars');
 	}
     };
+
+    $rootScope.$on('showMsgView', function(evt, onOrOff) {
+	$scope.msgviewData = onOrOff;
+    });
 
     $rootScope.$on('results', function(evt, results) {
 	if (results.matches === 0) {
@@ -299,7 +305,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     $rootScope.$on('mode', function(evt, mode, requestExtraData) {
 	if ($scope.activeTab === $scope.tabName) {
-		$scope.mode = mode;
+		$scope.modes[$scope.tabName] = mode;
 
 		if (requestExtraData) {
 			$scope.modeLoadingTimeout = $timeout(function() {
@@ -314,7 +320,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.switchMode = function(newMode, condition, needExtraData) {
 	if ($scope.activeTab === $scope.tabName) {
 		if (condition !== false) {
-			$scope.mode = newMode;
+			$scope.modes[$scope.tabName] = newMode;
 			$scope.$emit('mode', newMode, needExtraData);
 		}
 	}
@@ -325,8 +331,8 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.currentMessage = message;
 		$scope.msgviewData = true;
 		$scope.showPreviewToolbar = true;
-		$scope.requestSubTabData($scope.mode);
-		$state.go('loggedin.main.' + $scope.mode);
+		$scope.requestSubTabData($scope.modes[$scope.tabName]);
+		$state.go('loggedin.main.' + $scope.modes[$scope.tabName]);
 		$scope.adjustMinHeight();
 	}
     });
@@ -337,8 +343,8 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.msgviewData = true;
 		$scope.showPreviewToolbar = true;
 
-		if ($scope.mode !== 'userview') {
-			$scope.requestSubTabData($scope.mode);
+		if ($scope.modes[$scope.tabName] !== 'userview') {
+			$scope.requestSubTabData($scope.modes[$scope.tabName]);
 		}
 	}
     });

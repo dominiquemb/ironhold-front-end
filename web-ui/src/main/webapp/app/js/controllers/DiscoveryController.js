@@ -5,6 +5,8 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'discovery';
+    $scope.showPreviewToolbar = false;
+    $scope.modes[$scope.tabName] = 'text';
     $scope.initialState = true;
 });
 

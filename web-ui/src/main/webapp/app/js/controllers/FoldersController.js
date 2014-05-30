@@ -5,6 +5,8 @@ ironholdApp.controller('FoldersController', function ($http, $resource, $window,
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'folders';
+    $scope.modes[$scope.tabName] = 'text';
+    $scope.showPreviewToolbar = false;
     $scope.initialState = true;
 });
 

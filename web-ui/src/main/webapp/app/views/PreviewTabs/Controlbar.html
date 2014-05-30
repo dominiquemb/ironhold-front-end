@@ -25,7 +25,7 @@
 					Cancel
 				</div>
 			</div>
-			<div data-ng-hide="isState('useredit') || isState('useradd')" class="controlbar_item pull-left edit-user" data-ng-click="editUser()">
+			<div data-ng-hide="isState('useredit') || isState('useradd') || currentUser === false" class="controlbar_item pull-left edit-user" data-ng-click="editUser()">
 				<div class="msgview_img edituser-lg"></div>
 				<div class="pull-right controlbar_item-name">Edit<br />User</div>
 			</div>

@@ -5,6 +5,8 @@ ironholdApp.controller('SettingsController', function ($http, $resource, $window
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'settings';
+    $scope.modes[$scope.tabName] = 'text';
+    $scope.showPreviewToolbar = false;
     $scope.initialState = true;
 });
 

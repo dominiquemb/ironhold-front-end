@@ -5,6 +5,8 @@ ironholdApp.controller('LogsController', function ($http, $resource, $window, $r
     logInService.confirmLoggedIn($state);
 
     $scope.tabName = 'logs';
+    $scope.modes[$scope.tabName] = 'text';
+    $scope.showPreviewToolbar = false;
     $scope.initialState = true;
 });
 

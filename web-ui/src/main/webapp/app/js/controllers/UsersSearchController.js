@@ -33,6 +33,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     $scope.addUser = function() {
 	    if ($scope.activeTab === $scope.tabName) {
 		    $scope.newUser = $scope.newUserTemplate;
+		    $scope.$emit('showMsgView', true);
 		    $state.go('loggedin.main.useradd');
 		    $scope.selectedPsts = [];
 		    $scope.$emit('mode', 'useradd', false);
@@ -384,16 +385,18 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 			    if (result.pending) {
 					result.pending.then(function(data) {
 						$scope.$emit('searchHistoryData', data);
-						console.log(data);
 					});
 				}
 			    else if (result.cached) {
 				$scope.$emit('searchHistoryData', result);
-				console.log(result.cached);
 			    }
 		    } else {
 			$scope.$emit('technicalError', 'There is no search history available');
 		    }
+	    }
+
+	    if ($scope.activeTab === 'users') {
+		$scope.userView();
 	    }
     };
 	
@@ -477,6 +480,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
     });
 
     $scope.onTabActivation();
+
 });
 
 
