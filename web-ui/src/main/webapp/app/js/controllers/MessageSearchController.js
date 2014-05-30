@@ -1,7 +1,7 @@
 (function () {
    'use strict';
 
-ironholdApp.controller('MessageSearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, messagesService, downloadService) {
+ironholdApp.controller('MessageSearchController', function ($http, $resource, $window, $rootScope, $scope, $location, $timeout, Restangular, searchResultsService, $state, logInService, usersService, searchHistoryService, messagesService, downloadService) {
     logInService.confirmLoggedIn($state);
 
     $scope.msgs = [];
@@ -26,13 +26,21 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
     $scope.onTabActivation = function() {
 		    searchResultsService.prepForBroadcast("-", "- ");
 
-		    if (usersService) {
-			    usersService.one("searchHistory").get().then(function(result) {
+	if (usersService) {
+		    var result = searchHistoryService.getSearchHistory();
+		    if (result) {
+			    if (result.pending) {
+					result.pending.then(function(data) {
+						$scope.$emit('searchHistoryData', data);
+					});
+				}
+			    else if (result.cached) {
 				$scope.$emit('searchHistoryData', result);
-			    }, function(err) {
-				$scope.$emit('technicalError', err);
-			    });
+			    }
+		    } else {
+			$scope.$emit('technicalError', 'There is no search history available');
 		    }
+	}
     };
 
     $scope.onTabActivation();

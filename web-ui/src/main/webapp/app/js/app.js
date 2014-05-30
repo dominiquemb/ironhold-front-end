@@ -258,6 +258,46 @@ ironholdApp.factory('downloadService', function(Restangular, logInService) {
 	return (results) ? results : false;
 });
 
+ironholdApp.factory('searchHistoryService', function (Restangular, $q, logInService, usersService) {
+	    var searchHistory = false,
+	    locked = false;
+	    if (usersService) {
+		    var Service = function() {
+		    };
+		    Service.prototype = {
+			getSearchHistory: function() {
+				if (!searchHistory) {
+					if (!locked) {
+						locked = $q.defer();
+						this.refreshSearchHistory();
+					}
+					return {pending: locked.promise, cached: false};
+				}
+				else {
+					return {pending: false, cached: searchHistory};
+				}
+			},
+			refreshSearchHistory: function() {
+					    usersService
+						.one("searchHistory")
+						.get()
+						.then(function(result) {
+							searchHistory = result;
+							locked.resolve(result);
+							locked = false;
+						}, function(result) {
+							locked.reject(result);
+							locked = false;
+						});
+			}
+		    };
+		return new Service();
+	    }
+	    else {
+		logInService.logOut();
+	    }
+});
+
 ironholdApp.factory('usersService', function(Restangular, logInService) {
 	var results = false;
 	if (logInService.getAuthdata()) {
