@@ -36,21 +36,24 @@
 		<div data-ng-show="limitedTabs" class="tab-pane in active">
 			<div class="row controlbar">
 			</div>
-			<div class="msgview_main loading loading-centered">
-				this feature has not been implemented yet
-				<br />
-				<a data-ng-click="unselectAll()">Unselect All</a>
+			<div class="msgview_main loading loading-centered loading-normal-text gray-6 loading-centered-thin">
+				<b>{{ numSelectedMsgs }}</b> items selected<br />
+				<div class="controlbar_item controlbar_item-horizontal pull-left download" data-ng-click="downloadMessage()">
+					<span class="pull-left msgview_img download-lg"></span>
+					<span class="pull-left controlbar_item-name">Download</span>
+				</div>
+				<div class="clickable clear-both" data-ng-click="unselectAll()">Cancel</div>
 			</div>
 		</div>
 		<div data-ng-hide="limitedTabs" id="msgview" class="tab-pane in active">
 			<div class="row controlbar">
 			</div>
-			<div class="msgview_main loading loading-centered" data-ng-show="showSelectMessage && !currentMessage && showContainer">
+			<div class="msgview_main loading loading-centered loading-large-text" data-ng-show="showSelectMessage && !currentMessage && showContainer">
 				please select message<br/>
 				from the list<br/>
 				to display here
 			</div>
-			<div class="msgview_main" data-ng-show="msgviewData"> 
+			<div class="msgview_main" data-ng-show="msgviewData && !limitedTabs"> 
 				<div data-ui-view class="msgview_main_uiview">
 				</div>
 			</div> <!-- msgview_main -->

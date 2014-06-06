@@ -253,7 +253,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
             angular.forEach($scope.entries[$scope.tabName], function(entry) {
                 $scope.highlightMessage(entry);
             });
-                $scope.$emit('highlightActive', true);
+                $scope.$emit('highlightActive', true, $scope.entries[$scope.tabName].length);
         }
     };
 
@@ -283,7 +283,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	    }
 
 	    if (highlighted > 1) {
-		$scope.$emit('highlightActive', true);
+		$scope.$emit('highlightActive', true, highlighted);
 	    }
 	    else {
 		$scope.$emit('highlightActive', false);

@@ -12,6 +12,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
     $scope.limitedTabs = false;
     $scope.middleSectionHeight = 0;
     $scope.showSelectMessage = false;
+    $scope.numSelectedMsgs = 0;
     $scope.bottomSectionHeight = 0;
     $scope.topSectionHeight = 0;
 
@@ -21,8 +22,9 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	}
     });
 
-    $rootScope.$on('limitedTabs', function(evt, onOrOff) {
+    $rootScope.$on('limitedTabs', function(evt, onOrOff, amtSelected) {
 	$scope.limitedTabs = onOrOff;
+	$scope.numSelectedMsgs = amtSelected || 0;
     });
 
     $scope.unselectAll = function() {
@@ -174,9 +176,10 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 
     };
 
-    $rootScope.$on('highlightActive', function(evt, offOrOn) {
+    $rootScope.$on('highlightActive', function(evt, offOrOn, amtSelected) {
 	if ($scope.activeTab === $scope.tabName) {
 		$scope.limitedTabs = offOrOn;
+		$scope.numSelectedMsgs = amtSelected || 0;
 	}
     });
 

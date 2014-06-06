@@ -34,6 +34,10 @@ body a {
 	text-decoration: none !important;
 }
 
+.clear-both {
+	clear: both;
+}
+
 body a:hover {
 	color: @Blue-Active;
 }
@@ -151,16 +155,28 @@ body .btn.btn-primary:focus {
 	padding-top: 86px;
 }
 
+.loading-normal-text {
+	font-size: 18px;
+	font-weight: normal;
+}
+
 .listing .loading {
 	padding-top: 171px;
 }
 
+.loading-large-text {
+	font-size: 40px;
+}
+
 .loading-centered {
 	position: relative;
-	font-size: 40px;
 	margin: auto auto;
 	text-align: left;
 	width: 420px;
+}
+
+.loading-centered-thin {
+	width: 215px;
 }
 
 .loading.loading-facets {
@@ -1018,6 +1034,15 @@ div:hover > .adduser-lg {
 .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px 0px;
 }
+
+.controlbar_item.controlbar_item-horizontal {
+	height: 42px;
+}	
+
+.controlbar_item.controlbar_item-horizontal .controlbar_item-name {
+	padding-left: 13px;
+	line-height: 25px;
+} 
 
 .controlbar_item:hover .download-lg {
 	background: url(../img/sprites/ImageSprite.png) -448px -32px;
@@ -2775,3 +2800,8 @@ form input.ng-valid {
 	font-weight: normal;
 	color: @white;
 }
+
+.gray-6 {
+	color: @Gray-6;
+}
+
