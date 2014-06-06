@@ -37,12 +37,13 @@
 			<div class="row controlbar">
 			</div>
 			<div class="msgview_main loading loading-centered loading-normal-text gray-6 loading-centered-thin">
-				<b>{{ numSelectedMsgs }}</b> items selected<br />
+				<b>{{ numSelectedMsgs }}</b> items selected<br /><br />
 				<div class="controlbar_item controlbar_item-horizontal pull-left download" data-ng-click="downloadMessage()">
 					<span class="pull-left msgview_img download-lg"></span>
 					<span class="pull-left controlbar_item-name">Download</span>
 				</div>
-				<div class="clickable clear-both" data-ng-click="unselectAll()">Cancel</div>
+				<br /><br /><br />
+				<div class="clickable clear-both uppercase" data-ng-click="unselectAll()">Cancel</div>
 			</div>
 		</div>
 		<div data-ng-hide="limitedTabs" id="msgview" class="tab-pane in active">
