@@ -22,6 +22,7 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('activeTab', function(evt, tab) {
 	if (tab === 'users') {
+		$scope.requestUserList();
 		$scope.userView();
 	}
     });
