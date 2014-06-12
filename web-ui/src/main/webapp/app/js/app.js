@@ -492,10 +492,7 @@ Array.prototype.remove = function() {
 };
 
 location.getSubdomain = function() {
-	var subdomain,
-	domain,
-	tld,
-	host = location.host.split('.');
+	var host = location.host.split('.');
 
 	if (location.host.indexOf('localhost') !== -1) {
 		if (host.length > 1) {

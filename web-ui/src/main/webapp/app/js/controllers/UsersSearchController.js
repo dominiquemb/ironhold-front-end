@@ -215,8 +215,8 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 		var unselected = [];
 		angular.forEach($scope.psts, function(unselectedPst) {
 			var found = false;
-			angular.forEach($scope.selectedPsts, function(selectedPst, key) {
-				if (unselectedPst.id == selectedPst.id) {
+			angular.forEach($scope.selectedPsts, function(selectedPst) {
+				if (unselectedPst.id === selectedPst.id) {
 					found = true;
 				}
 			});

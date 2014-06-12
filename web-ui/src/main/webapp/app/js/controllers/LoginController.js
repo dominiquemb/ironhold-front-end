@@ -19,11 +19,9 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 			case 'glt':
 				$scope.clientKeyAutofilled = true;
 				return ck;
-				break;
 			default: 
 				return '';
-				break;
-		};
+		}
 	}
     };
 
