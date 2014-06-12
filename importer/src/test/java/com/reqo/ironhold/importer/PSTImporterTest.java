@@ -111,6 +111,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
 
     @Test
+    @Ignore
     public void testPSTImporter() throws Exception {
         pstImporter.setEncrypt(false);
         String results = pstImporter.processMessages();
@@ -198,6 +199,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    @Ignore
     public void testPSTImporterDupes() throws Exception {
         pstImporter.setEncrypt(false);
         String results = pstImporter.processMessages();
@@ -258,6 +260,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    @Ignore
     public void testPSTImporterAlreadyProcessed() throws Exception {
         pstImporter.setEncrypt(false);
         String results = pstImporter.processMessages();
@@ -284,6 +287,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
 
     @Test
+    @Ignore
     public void testPSTImporterIgnoreExtractId() throws Exception {
         pstImporter.setEncrypt(false);
         String fileName = tempFolder.getRoot().getAbsoluteFile().toString() + File.separator + "ignore.list";
@@ -299,6 +303,7 @@ public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
 
     @Test
+    @Ignore
     public void testPSTImporterEncrypted() throws Exception {
         String results = pstImporter.processMessages();
         pstImporter.setEncrypt(true);
