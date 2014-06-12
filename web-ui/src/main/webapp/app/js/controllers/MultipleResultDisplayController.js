@@ -111,7 +111,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 	    if ($scope.tabName === 'search' || $scope.tabName === 'discovery') {
 		    $scope.matches = args.matches;
 		    if ($scope.matches > 0) {
-			$scope.currentEntryNumber[$scope.tabName] = -1;
+			if (!args.showOldSelection) {
+				$scope.currentEntryNumber[$scope.tabName] = -1;
+			}
 			$scope.showNoResults = false;
 			$scope.showSearchResults = true;
 			$scope.$emit('showSearchResults', true);
@@ -119,12 +121,16 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			$scope.hidePlaceholderScroller = true;
 			}
 		    else {
-			$scope.resetNoResults();
+			if (!args.showOldSelection) {
+				$scope.resetNoResults();
+			}
 		    }
 	    }
 	    else {
 		if ($scope.entries[$scope.tabName].length > 0) {
-			$scope.currentEntryNumber[$scope.tabName] = -1;
+			if (!args.showOldSelection) {
+				$scope.currentEntryNumber[$scope.tabName] = -1;
+			}
 			$scope.showNoResults = false;
 			$scope.showSearchResults = true;
 			$scope.$emit('showSearchResults', true);
@@ -132,7 +138,9 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			$scope.hidePlaceholderScroller = true;
 		}
 		else {
-			$scope.resetNoResults();
+			if (!args.showOldSelection) {
+				$scope.resetNoResults();
+			}
 		}
 	    }
             $scope.$emit('reinitScrollbars');

@@ -308,7 +308,8 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				$scope.initialized();
 
 				$scope.$emit('results', {
-				'resultEntries': $scope.users
+				'resultEntries': $scope.users,
+				'showOldSelection': true
 				});
 		    },
 		    function(err) {
