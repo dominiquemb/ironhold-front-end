@@ -490,3 +490,17 @@ Array.prototype.remove = function() {
     }
     return this;
 };
+
+location.getSubdomain = function() {
+	var host = location.host.split('.');
+
+	if (location.host.indexOf('localhost') !== -1) {
+		if (host.length > 1) {
+			return host[0];
+		}
+	}
+	else if (host.length > 2) {
+		return host[0];
+	}
+	return '';
+};

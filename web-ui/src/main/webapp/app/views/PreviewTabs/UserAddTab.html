@@ -73,7 +73,7 @@
 							<td>
 								<div class="pull-left">
 									<select data-ng-model="leftPsts" multiple>
-										<option data-ng-repeat="(key, pst) in unselectedPsts" value="{{ pst.id }}">{{ pst.pstFileName }}</option>
+										<option data-ng-repeat="(key, pst) in unselectedPsts track by $index" value="{{ pst.id }}">{{ pst.pstFileName }}</option>
 									</select>
 								</div>
 								
@@ -88,7 +88,7 @@
 								
 								<div class="pull-left">
 									<select data-ng-model="rightPsts" multiple>
-										<option data-ng-repeat="(key, pst) in selectedPsts" value="{{ pst.id }}">{{ pst.pstFileName }}</option>
+										<option data-ng-repeat="(key, pst) in selectedPsts track by $index" value="{{ pst.id }}">{{ pst.pstFileName }}</option>
 									</select>
 								</div>
 <!--

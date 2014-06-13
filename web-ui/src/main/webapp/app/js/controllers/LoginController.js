@@ -10,7 +10,22 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
     $scope.formSubmitted = false;
     $scope.formInvalid = false; 
     $scope.disableClientKey = false;
+    $scope.clientKeyAutofilled = false;
     $scope.rememberMeVal = true;
+
+    $scope.processClientKey = function(ck) {
+	if (ck.length) {
+		switch (ck) {
+			case 'glt':
+				$scope.clientKeyAutofilled = true;
+				return ck;
+			default: 
+				return '';
+		}
+	}
+    };
+
+    $scope.clientKey = $scope.processClientKey(location.getSubdomain());
 
     $(document).ready(function() {
 	$('input').on('keydown', function() {
