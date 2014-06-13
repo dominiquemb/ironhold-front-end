@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-
+@Ignore
 @ContextConfiguration(locations = "classpath:PSTImporterTest_context.xml")
 public class PSTImporterTest extends AbstractJUnit4SpringContextTests {
 
