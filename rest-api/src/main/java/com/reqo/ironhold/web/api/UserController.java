@@ -169,6 +169,11 @@ public class UserController {
             if (existingUser != null) {
                 return false; // username already exists
             }
+        } else if (oldUsername.length() == 0) { // Add User
+            final LoginUser existingUser = miscIndexService.getLoginUser(getClientKey(), userDetails.getUsername());
+            if (existingUser != null) {
+                return false; // username already exists
+            }
         }
         String userNameToFetch = oldUsername.length() > 0 ? oldUsername : userDetails.getUsername();
 
