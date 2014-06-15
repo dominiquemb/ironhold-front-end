@@ -1,6 +1,7 @@
 package com.reqo.ironhold.storage.es;
 
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import com.reqo.ironhold.web.domain.FacetGroupName;
 import com.reqo.ironhold.web.domain.LoginUser;
 import com.reqo.ironhold.web.domain.Recipient;
@@ -14,9 +15,11 @@ import org.elasticsearch.search.facet.terms.TermsFacetBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MessageSearchBuilder {
+
 
     public static MessageSearchBuilder newBuilder(SearchRequestBuilder builder, LoginUser loginUser) {
         return new MessageSearchBuilder(builder, loginUser);
@@ -45,12 +48,61 @@ public class MessageSearchBuilder {
     private boolean toDomainFacet;
     private boolean fileExtFacet;
     private boolean msgTypeFacet;
+    private Date startDate;
+    private Date endDate;
+    private String sender;
+    private String recipient;
+    private String subject;
+    private String body;
+    private String attachment;
+    private MessageTypeEnum messageType;
+
     private IndexedObjectType indexedObjectType;
     private LoginUser loginUser;
 
     private MessageSearchBuilder(SearchRequestBuilder builder, LoginUser loginUser) {
         this.builder = builder;
         this.loginUser = loginUser;
+    }
+
+    public MessageSearchBuilder withSender(String sender) {
+        this.sender = sender;
+        return this;
+    }
+
+    public MessageSearchBuilder withRecipient(String recipient) {
+        this.recipient = recipient;
+        return this;
+    }
+
+    public MessageSearchBuilder withSubject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+
+    public MessageSearchBuilder withBody(String body) {
+        this.body = body;
+        return this;
+    }
+
+    public MessageSearchBuilder withAttachment(String attachment) {
+        this.attachment = attachment;
+        return this;
+    }
+
+    public MessageSearchBuilder withMessageType(MessageTypeEnum messageType) {
+        this.messageType = messageType;
+        return this;
+    }
+
+    public MessageSearchBuilder withStartDate(Date startDate) {
+        this.startDate = startDate;
+        return this;
+    }
+
+    public MessageSearchBuilder withEndDate(Date endDate) {
+        this.endDate = endDate;
+        return this;
     }
 
     public MessageSearchBuilder withCriteria(String criteria) {
@@ -203,6 +255,7 @@ public class MessageSearchBuilder {
             QueryStringQueryBuilder qb = QueryBuilders.queryString(criteria);
             qb.defaultOperator(Operator.AND);
 
+
             if (max(fromFacetValues.size(), fromDomainFacetValues.size(), toFacetValues.size(), toDomainFacetValues.size(),
                     dateFacetValues.size(), fileExtFacetValues.size(), msgTypeFacetValues.size()) > 0) {
 
@@ -267,6 +320,48 @@ public class MessageSearchBuilder {
             } else {
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
                 andFilter.add(FilterBuilders.matchAllFilter());
+
+                if (startDate != null || endDate != null) {
+                    andFilter.add(FilterBuilders.rangeFilter(IndexFieldEnum.DATE.getValue()).from(startDate).to(endDate));
+                }
+
+                if (sender != null) {
+                    andFilter.add(FilterBuilders.orFilter(
+                            FilterBuilders.termFilter(IndexFieldEnum.FROM_NAME.getValue(), sender),
+                            FilterBuilders.termFilter(IndexFieldEnum.FROM_ADDRESS.getValue(), sender),
+                            FilterBuilders.termFilter(IndexFieldEnum.FROM_DOMAIN.getValue(), sender)));
+                }
+
+                if (recipient != null) {
+                    andFilter.add(FilterBuilders.orFilter(
+                            FilterBuilders.termFilter(IndexFieldEnum.TO_NAME.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.TO_ADDRESS.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.TO_DOMAIN.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.CC_NAME.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.CC_ADDRESS.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.CC_DOMAIN.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.BCC_NAME.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.BCC_ADDRESS.getValue(), recipient),
+                            FilterBuilders.termFilter(IndexFieldEnum.BCC_DOMAIN.getValue(), recipient) ));
+                }
+
+                if (subject != null) {
+                    andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.SUBJECT.getValue(), subject));
+                }
+
+                if (body != null) {
+                    andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.BODY.getValue(), body));
+                }
+
+                if (messageType != null) {
+                    andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.MSGTYPE.getValue(), messageType.getValue()));
+                }
+
+                if (attachment != null) {
+                    andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.ATTACHMENT.getValue(), attachment));
+                }
+
+
                 FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(qb,
                         andFilter);
                 builder.setQuery(fqb);
@@ -430,7 +525,6 @@ public class MessageSearchBuilder {
         throw new IllegalArgumentException("Unknown facet [" + facetName + "]");
     }
 
-
     public boolean isDateFacet() {
         return dateFacet;
     }
@@ -494,4 +588,5 @@ public class MessageSearchBuilder {
     public void setCriteria(String criteria) {
         this.criteria = criteria;
     }
+
 }

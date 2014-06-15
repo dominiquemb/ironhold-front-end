@@ -11,12 +11,15 @@ import com.reqo.ironhold.storage.interfaces.IMiscIndexService;
 import com.reqo.ironhold.storage.model.message.MimeMailMessage;
 import com.reqo.ironhold.storage.model.message.source.MessageSource;
 import com.reqo.ironhold.storage.model.search.IndexedObjectType;
+import com.reqo.ironhold.storage.model.search.MessageTypeEnum;
 import com.reqo.ironhold.web.domain.*;
 import com.reqo.ironhold.web.domain.responses.CountSearchResponse;
 import com.reqo.ironhold.web.domain.responses.MessageSearchResponse;
 import com.reqo.ironhold.web.domain.responses.SuggestSearchResponse;
 import com.reqo.ironhold.web.support.ApiResponse;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +162,97 @@ public class MessageController {
         for (String facet : facets) {
             FacetGroupName facetGroupName = FacetGroupName.fromValue(facet);
             searchBuilder.withNamedFacet(facetGroupName);
+        }
+
+        MessageSearchResponse result = messageIndexService.search(searchBuilder);
+
+        for (final MessageMatch match : result.getMessages()) {
+            match.optimize();
+            backgroundExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.PREVIEW, match.getFormattedIndexedMailMessage().getMessageId(), criteria));
+                }
+            });
+        }
+
+        backgroundExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
+            }
+        });
+
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/advanced")
+    @Secured("ROLE_CAN_SEARCH")
+    public
+    @ResponseBody
+    ApiResponse<MessageSearchResponse> getMessagesWithAdvancedCriteria(@RequestParam(required = false, defaultValue = "*") final String criteria,
+                                                   @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                                   @RequestParam(required = false, defaultValue = "SCORE") String sortField,
+                                                   @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
+                                                   @RequestParam(required = false, defaultValue = "") String startDate,
+                                                   @RequestParam(required = false, defaultValue = "") String endDate,
+                                                   @RequestParam(required = false, defaultValue = "") String sender,
+                                                   @RequestParam(required = false, defaultValue = "") String recipient,
+                                                   @RequestParam(required = false, defaultValue = "") String subject,
+                                                   @RequestParam(required = false, defaultValue = "") String body,
+                                                   @RequestParam(required = false, defaultValue = "") String messageType,
+                                                   @RequestParam(required = false, defaultValue = "") String attachment
+                                                   ) {
+        ApiResponse<MessageSearchResponse> apiResponse = new ApiResponse<>();
+
+        final String clientKey = getClientKey();
+        final LoginUser loginUser = getLoginUser();
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), loginUser);
+
+        searchBuilder.withResultsLimit(page * pageSize, pageSize);
+
+        searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
+
+        if (criteria.length()>0) {
+            searchBuilder.withCriteria(criteria);
+        }
+        if (startDate.length()>0) {
+            String[] chunks = startDate.split("/");
+            searchBuilder.withStartDate(new DateTime(Integer.parseInt(chunks[2]), Integer.parseInt(chunks[0]), Integer.parseInt(chunks[1]), 0, 0).toDate());
+        }
+
+        if (endDate.length()>0) {
+            String[] chunks = startDate.split("/");
+            searchBuilder.withEndDate(new DateTime(Integer.parseInt(chunks[2]), Integer.parseInt(chunks[0]), Integer.parseInt(chunks[1]), 0, 0).toDate());
+        }
+
+        if (sender.length()>0) {
+            searchBuilder.withSender(sender);
+        }
+
+        if (recipient.length()>0) {
+            searchBuilder.withRecipient(recipient);
+        }
+
+        if (subject.length()>0) {
+            searchBuilder.withSubject(subject);
+        }
+
+        if (body.length()>0) {
+            searchBuilder.withBody(body);
+        }
+
+        if (attachment.length()>0) {
+            searchBuilder.withAttachment(attachment);
+        }
+
+        if (messageType.length()>0) {
+            searchBuilder.withMessageType(MessageTypeEnum.getByValue(messageType));
         }
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
