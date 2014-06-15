@@ -218,41 +218,56 @@ public class MessageController {
 
         searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
 
+        final StringBuilder context = new StringBuilder();
         if (criteria.length()>0) {
             searchBuilder.withCriteria(criteria);
+            context.append(criteria);
         }
         if (startDate.length()>0) {
             String[] chunks = startDate.split("/");
             searchBuilder.withStartDate(new DateTime(Integer.parseInt(chunks[2]), Integer.parseInt(chunks[0]), Integer.parseInt(chunks[1]), 0, 0).toDate());
+            context.append(" from " + startDate);
         }
 
         if (endDate.length()>0) {
-            String[] chunks = startDate.split("/");
+            String[] chunks = endDate.split("/");
             searchBuilder.withEndDate(new DateTime(Integer.parseInt(chunks[2]), Integer.parseInt(chunks[0]), Integer.parseInt(chunks[1]), 0, 0).toDate());
+            context.append(" to " + endDate);
         }
 
         if (sender.length()>0) {
             searchBuilder.withSender(sender);
+            context.append(" from " + sender);
         }
 
         if (recipient.length()>0) {
             searchBuilder.withRecipient(recipient);
+            context.append(" to " + recipient);
+
         }
 
         if (subject.length()>0) {
             searchBuilder.withSubject(subject);
+            context.append(" subject " + subject);
+
         }
 
         if (body.length()>0) {
             searchBuilder.withBody(body);
+            context.append(" body " + body);
+
         }
 
         if (attachment.length()>0) {
             searchBuilder.withAttachment(attachment);
+            context.append(" attachment " + attachment);
+
         }
 
         if (messageType.length()>0) {
             searchBuilder.withMessageType(MessageTypeEnum.getByValue(messageType));
+            context.append(" message type " + messageType);
+
         }
 
         MessageSearchResponse result = messageIndexService.search(searchBuilder);
@@ -262,7 +277,7 @@ public class MessageController {
             backgroundExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.PREVIEW, match.getFormattedIndexedMailMessage().getMessageId(), criteria));
+                    metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.PREVIEW, match.getFormattedIndexedMailMessage().getMessageId(), context.toString()));
                 }
             });
         }
@@ -270,7 +285,7 @@ public class MessageController {
         backgroundExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, criteria));
+                metaDataIndexService.store(clientKey, new AuditLogMessage(loginUser, AuditActionEnum.SEARCH, null, context.toString()));
             }
         });
 
