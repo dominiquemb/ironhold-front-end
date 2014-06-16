@@ -195,6 +195,9 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 				});
 
 		}
+		else {
+			$scope.$emit('error', 'Please make sure that passwords match.');
+		}
 	}
     });
 
