@@ -7,7 +7,7 @@
 	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('userview') || isModeActive('useredit') || isModeActive('useradd')}">
 		<a data-toggle="tab" data-ui-sref="loggedin.main.userview" data-ng-click="switchMode('userview', true, false)">User Details</a>
 	    </li>
-	    <li data-ng-hide="limitedTabs" data-ng-class="{'active': isModeActive('usersearchhistory'), 'inactive': !currentUser}">
+	    <li data-ng-hide="limitedTabs || isModeActive('useradd')" data-ng-class="{'active': isModeActive('usersearchhistory'), 'inactive': (!currentUser || isModeActive('useradd'))}">
 		<a data-toggle="tab" data-ui-sref="loggedin.main.usersearchhistory" data-ng-click="switchMode('usersearchhistory', currentUser, true)">Search History</a>
 	    </li>
 	</ul>
