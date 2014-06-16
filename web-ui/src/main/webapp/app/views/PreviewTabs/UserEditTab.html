@@ -63,7 +63,7 @@
 								Roles:
 							</td>
 							<td>
-								<div data-ng-repeat="(role, bit) in allRoles" data-ng-hide="role == 'CAN_LOGIN' || role == 'SUPER_USER'">
+								<div data-ng-repeat="(role, bit) in allRoles" data-ng-hide="role == 'CAN_LOGIN' || role == 'SUPER_USER' || role == 'NONE'">
 									<input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleName(role, currentUser)" data-ng-click="toggleRoleName($event, role, currentUser)"/>
 									{{ role }}
 									<br />

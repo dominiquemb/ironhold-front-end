@@ -46,12 +46,24 @@
 								<input type="password" data-ng-model="newUser.loginUser.confirmedPassword" required />
 							</td>
 						</tr>
-						<tr class="user-roles">
+						<tr class="user-enabled">
+							<td>Can Login</td>
+							<td>
+								<input type="checkbox" name="enabled" data-ng-click="toggleRoleName($event, 'CAN_LOGIN', newUser)" value="false"/>Enabled
+							</td>
+						</tr>
+						<tr class="user-administrator">
+							<td>Administrator</td>
+							<td>
+								<input type="checkbox" name="administrator" data-ng-click="toggleRoleName($event, 'SUPER_USER', newUser)" value="false"/>Enabled
+							</td>
+						</tr>
+						<tr class="user-roles" data-ng-hide="hasRoleName('SUPER_USER', newUser)">
 							<td>
 								Roles:
 							</td>
 							<td>
-								<div data-ng-repeat="(role, bit) in allRoles">
+								<div data-ng-repeat="(role, bit) in allRoles" data-ng-hide="role == 'CAN_LOGIN' || role == 'SUPER_USER' || role =='NONE'">
                                                                         <input type="checkbox" name="role-options" value="{{ role }}" data-ng-checked="hasRoleName(role, newUser)" data-ng-click="toggleRoleName($event, role, newUser)">
                                                                         {{ role }}
                                                                         <br />
