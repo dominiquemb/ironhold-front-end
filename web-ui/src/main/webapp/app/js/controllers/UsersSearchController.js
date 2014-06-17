@@ -29,6 +29,10 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $scope.editName = function() {
 	    $scope.editingName = true;
+	    $timeout(function() {
+		$('.user-full-name input').focus();
+	    }, 0);
+		
     };
 
     $scope.addUser = function() {
