@@ -9,7 +9,7 @@ ironholdApp.controller('ExternalSubmitController', function ($rootScope, $scope)
 			if (!form.$valid) {
 				$scope.formInvalid = true;
 			}
-			obj.callback($scope[obj.formName].$valid);
+			obj.callback(!$scope.formInvalid);
 		}
 	});
 });
