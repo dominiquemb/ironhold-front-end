@@ -30,12 +30,9 @@ public interface IMessageIndexService {
 
     CountSearchResponse getMatchCount(String indexPrefix, String search, LoginUser loginUser);
 
-
     CountSearchResponse getMatchCount(MessageSearchBuilder builder, LoginUser loginUser);
-
 
     CountSearchResponse getTotalMessageCount(String indexPrefix, LoginUser loginUser);
 
     SuggestSearchResponse getSuggestions(String indexPrefix, String search, LoginUser loginUser);
-
 }

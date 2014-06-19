@@ -296,6 +296,93 @@ public class MessageController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/count/advanced")
+    @Secured("ROLE_CAN_SEARCH")
+    public
+    @ResponseBody
+    ApiResponse<CountSearchResponse> getMessagesWithAdvancedCriteriaCount(@RequestParam(required = false, defaultValue = "*") final String criteria,
+                                                                       @RequestParam(required = false, defaultValue = "10") int pageSize,
+                                                                       @RequestParam(required = false, defaultValue = "0") int page,
+                                                                       @RequestParam(required = false, defaultValue = "SCORE") String sortField,
+                                                                       @RequestParam(required = false, defaultValue = "DESC") String sortOrder,
+                                                                       @RequestParam(required = false, defaultValue = "") String startDate,
+                                                                       @RequestParam(required = false, defaultValue = "") String endDate,
+                                                                       @RequestParam(required = false, defaultValue = "") String sender,
+                                                                       @RequestParam(required = false, defaultValue = "") String recipient,
+                                                                       @RequestParam(required = false, defaultValue = "") String subject,
+                                                                       @RequestParam(required = false, defaultValue = "") String body,
+                                                                       @RequestParam(required = false, defaultValue = "") String messageType,
+                                                                       @RequestParam(required = false, defaultValue = "") String attachment
+    ) {
+        ApiResponse<CountSearchResponse> apiResponse = new ApiResponse<>();
+
+        final String clientKey = getClientKey();
+        final LoginUser loginUser = getLoginUser();
+        MessageSearchBuilder searchBuilder = messageIndexService.getNewBuilder(getClientKey(), loginUser);
+
+        searchBuilder.withResultsLimit(page * pageSize, pageSize);
+
+        searchBuilder.withSort(IndexFieldEnum.valueOf(sortField), SortOrder.valueOf(sortOrder));
+
+        final StringBuilder context = new StringBuilder();
+        if (criteria.length()>0) {
+            searchBuilder.withCriteria(criteria);
+            context.append(criteria);
+        }
+        if (startDate.length()>0) {
+            String[] chunks = startDate.split("/");
+            searchBuilder.withStartDate(new DateTime(Integer.parseInt(chunks[2]), Integer.parseInt(chunks[0]), Integer.parseInt(chunks[1]), 0, 0).toDate());
+            context.append(" from " + startDate);
+        }
+
+        if (endDate.length()>0) {
+            String[] chunks = endDate.split("/");
+            searchBuilder.withEndDate(new DateTime(Integer.parseInt(chunks[2]), Integer.parseInt(chunks[0]), Integer.parseInt(chunks[1]), 0, 0).toDate());
+            context.append(" to " + endDate);
+        }
+
+        if (sender.length()>0) {
+            searchBuilder.withSender(sender);
+            context.append(" from " + sender);
+        }
+
+        if (recipient.length()>0) {
+            searchBuilder.withRecipient(recipient);
+            context.append(" to " + recipient);
+
+        }
+
+        if (subject.length()>0) {
+            searchBuilder.withSubject(subject);
+            context.append(" subject " + subject);
+
+        }
+
+        if (body.length()>0) {
+            searchBuilder.withBody(body);
+            context.append(" body " + body);
+
+        }
+
+        if (attachment.length()>0) {
+            searchBuilder.withAttachment(attachment);
+            context.append(" attachment " + attachment);
+
+        }
+
+        if (messageType.length()>0) {
+            searchBuilder.withMessageType(MessageTypeEnum.getByValue(messageType));
+            context.append(" message type " + messageType);
+
+        }
+
+        CountSearchResponse result = messageIndexService.getMatchCount(searchBuilder, getLoginUser());
+        apiResponse.setPayload(result);
+        apiResponse.setStatus(ApiResponse.STATUS_SUCCESS);
+
+        return apiResponse;
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/{messageId:.+}")
     public
     @ResponseBody

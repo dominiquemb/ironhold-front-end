@@ -252,9 +252,7 @@ public class MessageSearchBuilder {
 
     public SearchRequestBuilder build() {
         if (id == null) {
-            QueryStringQueryBuilder qb = QueryBuilders.queryString(criteria);
-            qb.defaultOperator(Operator.AND);
-
+            BaseQueryBuilder qb = QueryBuilders.queryString(criteria).defaultOperator(Operator.AND);
 
             if (max(fromFacetValues.size(), fromDomainFacetValues.size(), toFacetValues.size(), toDomainFacetValues.size(),
                     dateFacetValues.size(), fileExtFacetValues.size(), msgTypeFacetValues.size()) > 0) {
@@ -354,7 +352,7 @@ public class MessageSearchBuilder {
                 }
 
                 if (messageType != null) {
-                    andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.MSGTYPE.getValue(), messageType.getValue()));
+                    qb = QueryBuilders.boolQuery().must(QueryBuilders.queryString(criteria).defaultOperator(Operator.AND)).must(QueryBuilders.matchQuery(IndexFieldEnum.MSGTYPE.getValue(), messageType.getValue()));
                 }
 
                 if (attachment != null) {
@@ -364,6 +362,7 @@ public class MessageSearchBuilder {
 
                 FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(qb,
                         andFilter);
+
                 builder.setQuery(fqb);
             }
 
