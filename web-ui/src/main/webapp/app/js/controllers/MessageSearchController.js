@@ -247,56 +247,98 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
             return messages;
         }
     };
+
+    $scope.processResults = function(args, result) {
+			var showSuggestions = false;
+			if (result.payload.suggestions[0]) {
+				if (result.payload.suggestions[0].options) {
+					if (result.payload.suggestions[0].options.length > 0) {
+						showSuggestions = true;
+					}
+				}
+			}
+
+			$scope.$emit('updateFooter', {
+			    searchTime: result.payload.timeTaken,
+			    searchMatches: result.payload.matches,
+			    selectedFacets: []
+			});
+
+			$scope.$emit('updateSearchbar', {
+			    searchTime: result.payload.timeTaken,
+			    searchMatches: result.payload.matches,
+			    suggestions: result.payload.suggestions,
+			    showSearchPreviewResults: true,
+				showSuggestions: showSuggestions
+			});
+
+			$scope.msgs = $scope.formatMessages(result.payload.messages);
+			searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
+			$scope.initCustomScrollbars('.scrollbar-hidden');
+
+		
+			if (!args.advanced || !args.disableFacets) {
+			    $scope.$emit('facets', {
+			    facets: result.payload.facets,
+			    disableFacets: args.disableFacets,
+			    matches: result.payload.matches
+			    });
+			}
+
+			$scope.initialized();
+			    $scope.$emit('results', {
+			    'matches': result.payload.matches,
+			    'resultEntries': $scope.msgs
+			    });
+    };
 	
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
-	    var facets;
-	    if (!args.disableFacets) {
-		facets = "from,from_domain,to,to_domain,date,msg_type,file_ext";
-	    }
+
             $scope.inputSearch = args.inputSearch;
-            messagesService.get({
-                criteria: args.inputSearch,
-                facets: facets,
-                pageSize: $scope.pageSize,
-                sortField: $scope.sortField,
-                        sortOrder: $scope.sortOrder
-                })
-                .then(function(result) {
-                $scope.$emit('updateFooter', {
-                    searchTime: result.payload.timeTaken,
-                    searchMatches: result.payload.matches,
-                    selectedFacets: []
-                });
-                $scope.$emit('updateSearchbar', {
-                    searchTime: result.payload.timeTaken,
-                    searchMatches: result.payload.matches,
-                    suggestions: result.payload.suggestions,
-                    showSearchPreviewResults: true,
-                        showSuggestions: (result.payload.suggestions[0].options.length > 0) ? true : false
-                });
 
-                    $scope.msgs = $scope.formatMessages(result.payload.messages);
-
-                    searchResultsService.prepForBroadcast(result.payload.matches, $scope.searchTime);
-                    $scope.initCustomScrollbars('.scrollbar-hidden');
-
-                    $scope.$emit('facets', {
-                    facets: result.payload.facets,
-		    disableFacets: args.disableFacets,
-                    matches: result.payload.matches
-                    });
-
-                    $scope.initialized();
-
-                    $scope.$emit('results', {
-                    'matches': result.payload.matches,
-                    'resultEntries': $scope.msgs
-                    });
-                  },
-		function(err) {
-			$scope.$emit('technicalError', err);
-		});
+	    if (args.advanced) {
+console.log('dsfdsffs');
+		messagesService
+			.one('advanced')
+			.get({
+				criteria: args.inputSearch,
+				pageSize: $scope.pageSize,
+				page: $scope.page,
+				sortField: $scope.sortField,
+				sortOrder: $scope.sortOrder,
+				startDate: args.startDate,
+				endDate: args.endDate,
+				sender: args.sender,
+				recipient: args.recipient,
+				subject: args.subject,
+				body: args.body,
+				messageType: args.messageType,
+				attachment: args.attachment
+			})
+			.then(function(result) {
+				$scope.processResults(args, result);
+			});
+	    }
+	    else {
+		    var facets;
+		    if (!args.disableFacets) {
+			facets = "from,from_domain,to,to_domain,date,msg_type,file_ext";
+		    }
+		    messagesService.get({
+			criteria: args.inputSearch,
+			facets: facets,
+			pageSize: $scope.pageSize,
+			sortField: $scope.sortField,
+				sortOrder: $scope.sortOrder
+			})
+			.then(function(result) {
+				$scope.processResults(args, result);
+			  },
+			function(err) {
+				$scope.$emit('technicalError', err);
+			});
+		}
         }
     });
 });

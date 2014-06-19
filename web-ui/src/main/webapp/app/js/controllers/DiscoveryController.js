@@ -10,5 +10,4 @@ ironholdApp.controller('DiscoveryController', function ($http, $resource, $windo
     $scope.initialState = true;
 });
 
-
 }());

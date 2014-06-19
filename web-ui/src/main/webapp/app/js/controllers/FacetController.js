@@ -9,9 +9,29 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     $scope.showFacets = false;
 
     $('.datepicker').datepicker();
+
     $('.datepicker').on('changeDate', function() {
 	$('.datepicker').datepicker('hide');
     });
+
+    $scope.disableInstructions = function() {
+	$scope.removeInstructions = true;
+	$scope.$emit('removeInstructions');
+    };
+
+    $scope.advancedSearch = function(form) {
+	$scope.$emit('search', {
+		advanced: true,
+		startDate: form.startDate,
+		endDate: form.endDate,
+		sender: form.sender,
+		recipient: form.recipient,
+		subject: form.subject,
+		body: form.body,
+		messageType: form.messageType,
+		attachment: form.attachment
+	});
+    };
 
     $rootScope.$on('reset', function() {
 	if ($scope.activeTab === $scope.tabName) {

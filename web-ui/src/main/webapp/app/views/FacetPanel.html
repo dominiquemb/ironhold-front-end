@@ -5,33 +5,33 @@
 </div>
 
 <div class="scrollbar-hidden filter-form filter-list" data-ng-show="isActiveTab('discovery')">
-	<form name="filter-form">
+	<form name="filterForm" data-ng-submit="advancedSearch(filterForm)" data-ng-click="disableInstructions()">
 		Start Date <br />
-		<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
+		<input type="text" class="datepicker form-control" data-ng-model="filterForm.startDate" data-date-format="mm/dd/yy" /> 
 		End Date <br />
-		<input type="text" class="datepicker form-control" data-date-format="mm/dd/yy" /> 
+		<input type="text" class="datepicker form-control" data-ng-model="filterForm.endDate" data-date-format="mm/dd/yy" /> 
 		From <br />
-		<input type="text" data-ng-model="from" /> 
+		<input type="text" data-ng-model="filterForm.from" /> 
 		<br />
 		Recipient
 		<br />
-		<input type="text" data-ng-model="recipients" /> 
+		<input type="text" data-ng-model="filterForm.recipients" /> 
 		<br />
 		Subject <br />
-		<input type="text" data-ng-model="subject" /> 
+		<input type="text" data-ng-model="filterForm.subject" /> 
 		<br />
 		Body <br />
-		<input type="text" data-ng-model="body" /> 
+		<input type="text" data-ng-model="filterForm.body" /> 
 		<br />
 		Message Type <br />
-		<select>
+		<select data-ng-model="filterForm.messageType">
 			<option value="EMAIL" selected>Email</option>
 			<option value="BLOOMBERG_MESSAGE">Bloomberg Message</option>
 			<option value="BLOOMBERG_CHAT">Bloomberg Chat</option>
 		</select>
 		<br />
 		Attachment <br />
-		<input type="text" data-ng-model="attachment" /> 
+		<input type="text" data-ng-model="filterForm.attachment" /> 
 		<button type="submit" class="btn btn-primary">Search</button>
 	</form>
 </div>
