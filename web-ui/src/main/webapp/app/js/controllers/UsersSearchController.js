@@ -162,45 +162,56 @@ ironholdApp.controller('UsersSearchController', function ($http, $resource, $win
 
     $rootScope.$on('submitUser', function(evt, user) {
 	if ($scope.activeTab === $scope.tabName) {
-		if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
-			if (user.otherEmails) {
-				if (user.otherEmails.length > 0) {
-					user.loginUser.recipients = [];
-					angular.forEach(user.otherEmails.trim().split(','), function(recipient) {
-						user.loginUser.recipients.push({
-							'name': recipient.split('@')[0],
-							'address': recipient,
-							'domain': recipient.split('@')[1]
+		if ($scope.currentlyProcessing !== user.loginUser.username) {
+			if (user.loginUser.confirmedPassword === user.loginUser.hashedPassword) {
+				$scope.currentlyProcessing = user.loginUser.username;			
+				if (user.otherEmails) {
+					if (user.otherEmails.length > 0) {
+						user.loginUser.recipients = [];
+						angular.forEach(user.otherEmails.trim().split(','), function(recipient) {
+							user.loginUser.recipients.push({
+								'name': recipient.split('@')[0],
+								'address': recipient,
+								'domain': recipient.split('@')[1]
+							});
 						});
-					});
+					}
 				}
-			}
-			user.loginUser.sources = $scope.extractPstIds($scope.selectedPsts);
-			usersService
-				.post(
-					"",
-					user.loginUser,
-					{"oldUsername": user.oldUsername},
-					{
-					"Accept": "application/json",
-					"Content-type" : "application/json"
-					}
-				)
-				.then(function(result) {
-					$scope.editingName = false;
-					if (result.toString() === "true") {
-						$scope.$emit('selectResultRequest', user);
-						$scope.userView();
-						$scope.requestUserList();
-					}
-					else {
-						$scope.$emit('error', 'That username is already in use. Please type a different username.');
-					}
-				});
+				user.loginUser.sources = $scope.extractPstIds($scope.selectedPsts);
 
-		}
-		else {
-			$scope.$emit('error', 'Please make sure that passwords match.');
+				usersService
+					.post(
+						"",
+						user.loginUser,
+						{"oldUsername": user.oldUsername},
+						{
+						"Accept": "application/json",
+						"Content-type" : "application/json"
+						}
+					)
+					.then(function(result) {
+						$scope.editingName = false;
+						if (result.toString() === "true") {
+							$scope.$emit('selectResultRequest', user);
+							$scope.userView();
+							$scope.requestUserList();
+							$scope.currentlyProcessing = false;
+						}
+						else {
+							$scope.$emit('error', 'That username is already in use. Please type a different username.');
+							$scope.currentlyProcessing = false;
+						}
+					},
+					function() {
+						$scope.$emit('error', 'An error occurred.');
+						$scope.currentlyProcessing = false;
+					});
+
+			}
+			else {
+				$scope.$emit('error', 'Please make sure that passwords match.');
+				$scope.currentlyProcessing = false;
+			}
 		}
 	}
     });
