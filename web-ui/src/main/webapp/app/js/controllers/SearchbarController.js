@@ -61,7 +61,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
 	    if ($scope.tabName === 'search') {
 		    $scope.$emit('searchPreviewRequest', {
-			criteria: $scope.inputSearch
+			inputSearch: $scope.inputSearch
 		    });
 
 		    $scope.searchPending = true;
@@ -72,7 +72,7 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	    }
 	    else {
 		$scope.executeSearch({
-			criteria: $scope.inputSearch
+			inputSearch: $scope.inputSearch
 		});
 	    }
         }
