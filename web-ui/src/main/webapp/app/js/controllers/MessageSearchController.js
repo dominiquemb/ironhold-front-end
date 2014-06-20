@@ -166,14 +166,45 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         }
     });
 
-    $rootScope.$on('searchPreviewRequest', function(evt, inputSearch) {
+    $rootScope.$on('searchPreviewRequest', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
-            messagesService.one("count").get({criteria: inputSearch}).then(function(result) {
-                $scope.$emit('totalResultsChange', result);
-                $scope.$emit('searchPreviewData', result);
-            }, function(err) {
-		$scope.$emit('technicalError', err);
-		});
+		if (args.advanced) {
+			messagesService
+				.one('count')
+				.one('advanced')
+				.get({
+					criteria: args.inputSearch,
+					pageSize: $scope.pageSize,
+					page: $scope.page,
+					sortField: $scope.sortField,
+					sortOrder: $scope.sortOrder,
+					startDate: args.advanced.startDate,
+					endDate: args.advanced.endDate,
+					sender: args.advanced.sender,
+					recipient: args.advanced.recipient,
+					subject: args.advanced.subject,
+					body: args.advanced.body,
+					messageType: args.advanced.messageType,
+					attachment: args.advanced.attachment
+				})
+				.then(function(result) {
+					$scope.$emit('totalResultsChange', result);
+					$scope.$emit('searchPreviewData', result, args);
+				},
+				function(err) {
+					$scope.$emit('technicalError', err);
+				});
+	    } else {
+		    messagesService
+			.one("count")
+			.get({criteria: args.inputSearch})
+			.then(function(result) {
+				$scope.$emit('totalResultsChange', result);
+				$scope.$emit('searchPreviewData', result, args);
+	                }, function(err) {
+				$scope.$emit('technicalError', err);
+			});
+	    }
         }
     });
 
@@ -294,11 +325,9 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 	
     $rootScope.$on('search', function(evt, args) {
         if ($scope.activeTab === $scope.tabName) {
-
             $scope.inputSearch = args.inputSearch;
 
 	    if (args.advanced) {
-console.log('dsfdsffs');
 		messagesService
 			.one('advanced')
 			.get({
@@ -307,14 +336,14 @@ console.log('dsfdsffs');
 				page: $scope.page,
 				sortField: $scope.sortField,
 				sortOrder: $scope.sortOrder,
-				startDate: args.startDate,
-				endDate: args.endDate,
-				sender: args.sender,
-				recipient: args.recipient,
-				subject: args.subject,
-				body: args.body,
-				messageType: args.messageType,
-				attachment: args.attachment
+				startDate: args.advanced.startDate,
+				endDate: args.advanced.endDate,
+				sender: args.advanced.sender,
+				recipient: args.advanced.recipient,
+				subject: args.advanced.subject,
+				body: args.advanced.body,
+				messageType: args.advanced.messageType,
+				attachment: args.advanced.attachment
 			})
 			.then(function(result) {
 				$scope.processResults(args, result);

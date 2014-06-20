@@ -7,6 +7,7 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
     $scope.selectedFacets = [];
     $scope.facets = [];
     $scope.showFacets = false;
+    $scope.advanced = {};
 
     $('.datepicker').datepicker();
 
@@ -14,23 +15,26 @@ ironholdApp.controller('FacetController', function ($http, $resource, $window, $
 	$('.datepicker').datepicker('hide');
     });
 
+    $rootScope.$on('requestAdvancedArguments', function(evt, criteria) {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('searchPreviewRequest', {
+			inputSearch: criteria,
+			advanced: $scope.advanced
+		});
+	}
+    });
+
     $scope.disableInstructions = function() {
 	$scope.removeInstructions = true;
 	$scope.$emit('removeInstructions');
     };
 
-    $scope.advancedSearch = function(form) {
-	$scope.$emit('search', {
-		advanced: true,
-		startDate: form.startDate,
-		endDate: form.endDate,
-		sender: form.sender,
-		recipient: form.recipient,
-		subject: form.subject,
-		body: form.body,
-		messageType: form.messageType,
-		attachment: form.attachment
-	});
+    $scope.advancedSearch = function() {
+	if ($scope.activeTab === $scope.tabName) {
+		$scope.$emit('externalSearch', {
+			advanced: $scope.advanced
+		});
+	}
     };
 
     $rootScope.$on('reset', function() {

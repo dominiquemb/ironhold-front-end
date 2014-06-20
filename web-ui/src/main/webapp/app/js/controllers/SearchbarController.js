@@ -47,18 +47,33 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 	}
     });
 
+    $rootScope.$on('externalSearch', function(evt, args) {
+	if ($scope.activeTab === $scope.tabName) {
+		args.inputSearch = $scope.inputSearch;
+		$scope.executeSearch(args);
+	}
+    });	
+
     $scope.search = function() {
         if ($scope.activeTab === $scope.tabName) {
             $scope.currentlySearching(true);
             $scope.$emit('reset');
 
 	    if ($scope.tabName === 'search') {
-		    $scope.$emit('searchPreviewRequest', $scope.inputSearch);
+		    $scope.$emit('searchPreviewRequest', {
+			criteria: $scope.inputSearch
+		    });
 
 		    $scope.searchPending = true;
 	    }
+	    else if ($scope.tabName === 'discovery') {
+		$scope.$emit('requestAdvancedArguments', $scope.inputSearch);
+		$scope.searchPending = true;
+	    }
 	    else {
-		$scope.executeSearch();
+		$scope.executeSearch({
+			criteria: $scope.inputSearch
+		});
 	    }
         }
     };
@@ -188,7 +203,7 @@ console.log('??????????');
         }
     };
 
-    $scope.executeSearch = function() {
+    $scope.executeSearch = function(args) {
 	    if ($scope.searchMatches > 20000) {
 		$scope.disableFacets = true;
 	    }
@@ -196,14 +211,13 @@ console.log('??????????');
 		/* This else is necessary because disableFacets might be true from a previous search */
 		$scope.disableFacets = false;
 	    }
-	    $scope.$emit('search', {
-		inputSearch: $scope.inputSearch,
-		disableFacets: $scope.disableFacets
-	    });
+
+	    args.disableFacets = $scope.disableFacets;
+
+	    $scope.$emit('search', args);
     };
 
-
-    $rootScope.$on('searchPreviewData', function(evt, result) {
+    $rootScope.$on('searchPreviewData', function(evt, result, originalArgs) {
 	if ($scope.activeTab === $scope.tabName) {
 	    $scope.currentlySearching(false);
             $scope.searchMatches = result.payload.matches;
@@ -212,7 +226,7 @@ console.log('??????????');
 	    $scope.showSortingPanel = false;
 
 	    if ($scope.searchPending) {
-		$scope.executeSearch();
+		$scope.executeSearch(originalArgs);
 	    }
 	}
     });
