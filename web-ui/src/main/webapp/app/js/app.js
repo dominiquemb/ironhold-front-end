@@ -504,3 +504,16 @@ location.getSubdomain = function() {
 	}
 	return '';
 };
+
+String.prototype.formatSize = function() {
+	var num = parseInt(this),
+	strNum = this.split(' ')[0],
+	sizeType = this.split(' ')[1][0];
+
+	if (strNum.length > 3) {
+		num = Math.round( num / Math.pow(10, (strNum.length - 3) ) );
+	}
+
+	num += sizeType;	
+	return num;
+};

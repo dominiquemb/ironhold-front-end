@@ -31,8 +31,12 @@
 				    </div>
 -->
 				    <div title="{{ message.formattedIndexedMailMessage.size | number }}Kb" class="message-size pull-left">
-						{{ message.formattedIndexedMailMessage.sizeDescription.substr(0, message.formattedIndexedMailMessage.formattedSize.length-1).replace(' ', '') }}
+						{{ message.formattedIndexedMailMessage.sizeDescription.formatSize() }}
 				    </div>
+<!--				    <div title="{{ message.formattedIndexedMailMessage.size | number }}Kb" class="message-size pull-left">
+					.substr(0, message.formattedIndexedMailMessage.formattedSize.length-1).replace(' ', '') }}
+				    </div>
+-->
 				    <div class="message-subject pull-left">
 					<span data-ng-show="message.subjectWithHighlights.length > 0" data-ng-bind-html="message.subjectWithHighlights"></span>
 					<span data-ng-show="(message.subjectWithHighlights.length == 0) || !(message.subjectWithHighlights)">(no subject)</span>
