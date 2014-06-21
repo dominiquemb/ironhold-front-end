@@ -9,7 +9,7 @@
 			{{ currentMessage.formattedIndexedMailMessage.dayName }} {{ currentMessage.formattedIndexedMailMessage.messageDate }}
 			- {{ currentMessage.formattedIndexedMailMessage.age }}
 		</span>
-		<span class="pull-right">
+		<span class="pull-right" title="{{ currentMessage.formattedIndexedMailMessage.size | number }}Kb">
 			{{ currentMessage.formattedIndexedMailMessage.formattedSize }}
 		</span>
 	    </h4>
