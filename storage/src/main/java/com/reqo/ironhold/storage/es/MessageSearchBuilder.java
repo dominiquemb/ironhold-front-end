@@ -340,7 +340,7 @@ public class MessageSearchBuilder {
                             FilterBuilders.termFilter(IndexFieldEnum.CC_DOMAIN.getValue(), recipient),
                             FilterBuilders.termFilter(IndexFieldEnum.BCC_NAME.getValue(), recipient),
                             FilterBuilders.termFilter(IndexFieldEnum.BCC_ADDRESS.getValue(), recipient),
-                            FilterBuilders.termFilter(IndexFieldEnum.BCC_DOMAIN.getValue(), recipient) ));
+                            FilterBuilders.termFilter(IndexFieldEnum.BCC_DOMAIN.getValue(), recipient)));
                 }
 
                 if (subject != null) {
@@ -367,9 +367,57 @@ public class MessageSearchBuilder {
             }
 
         } else {
-            FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(
-                    QueryBuilders.queryString(criteria), FilterBuilders
+
+            BaseQueryBuilder qb = QueryBuilders.queryString(criteria).defaultOperator(Operator.AND);
+
+            AndFilterBuilder andFilter = FilterBuilders.andFilter();
+            andFilter.add(FilterBuilders.matchAllFilter());
+            andFilter.add(FilterBuilders
                     .idsFilter(indexedObjectType.getValue()).addIds(id));
+
+            if (startDate != null || endDate != null) {
+                andFilter.add(FilterBuilders.rangeFilter(IndexFieldEnum.DATE.getValue()).from(startDate).to(endDate));
+            }
+
+            if (sender != null) {
+                andFilter.add(FilterBuilders.orFilter(
+                        FilterBuilders.termFilter(IndexFieldEnum.FROM_NAME.getValue(), sender),
+                        FilterBuilders.termFilter(IndexFieldEnum.FROM_ADDRESS.getValue(), sender),
+                        FilterBuilders.termFilter(IndexFieldEnum.FROM_DOMAIN.getValue(), sender)));
+            }
+
+            if (recipient != null) {
+                andFilter.add(FilterBuilders.orFilter(
+                        FilterBuilders.termFilter(IndexFieldEnum.TO_NAME.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.TO_ADDRESS.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.TO_DOMAIN.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.CC_NAME.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.CC_ADDRESS.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.CC_DOMAIN.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.BCC_NAME.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.BCC_ADDRESS.getValue(), recipient),
+                        FilterBuilders.termFilter(IndexFieldEnum.BCC_DOMAIN.getValue(), recipient)));
+            }
+
+            if (subject != null) {
+                andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.SUBJECT.getValue(), subject));
+            }
+
+            if (body != null) {
+                andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.BODY.getValue(), body));
+            }
+
+            if (messageType != null) {
+                qb = QueryBuilders.boolQuery().must(QueryBuilders.queryString(criteria).defaultOperator(Operator.AND)).must(QueryBuilders.matchQuery(IndexFieldEnum.MSGTYPE.getValue(), messageType.getValue()));
+            }
+
+            if (attachment != null) {
+                andFilter.add(FilterBuilders.termFilter(IndexFieldEnum.ATTACHMENT.getValue(), attachment));
+            }
+
+
+            FilteredQueryBuilder fqb = QueryBuilders.filteredQuery(qb,
+                    andFilter);
 
             builder.setQuery(fqb);
         }
