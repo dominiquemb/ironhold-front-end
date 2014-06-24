@@ -226,12 +226,16 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 	$scope.msgviewData = onOrOff;
     });
 
-    $rootScope.$on('results', function(evt, results) {
+    $rootScope.$on('results', function(evt, results, advanced) {
 	if (results.matches === 0) {
 		$scope.showSelectMessage = false;
 	}
 	else {
 		$scope.showSelectMessage = true;
+	}
+
+	if (advanced) {
+		$scope.advanced = advanced;
 	}
     });
 

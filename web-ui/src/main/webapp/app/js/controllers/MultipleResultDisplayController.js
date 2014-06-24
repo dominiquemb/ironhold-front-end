@@ -107,6 +107,10 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
         if ($scope.activeTab === $scope.tabName) {
 	    $scope.initialState = false;
             $scope.entries[$scope.tabName] = args.resultEntries;
+
+	    if (args.advanced) {
+		$scope.advanced = args.advanced;
+	    }
 	
 	    if ($scope.tabName === 'search' || $scope.tabName === 'discovery') {
 		    $scope.matches = args.matches;
@@ -143,6 +147,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
 			}
 		}
 	    }
+
             $scope.$emit('reinitScrollbars');
         }
     });
@@ -226,7 +231,7 @@ ironholdApp.controller('MultipleResultDisplayController', function ($http, $reso
     $scope.selectMessage = function(entry, key) {
         if ($scope.activeTab === $scope.tabName) {
 		$scope.selectEntry(entry, key);
-	        $scope.$emit('selectResultRequest', entry, $scope.inputSearch);
+	        $scope.$emit('selectResultRequest', entry, $scope.inputSearch, $scope.advanced);
         }
     };
 

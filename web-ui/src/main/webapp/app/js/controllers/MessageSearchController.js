@@ -151,18 +151,46 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
         }
     });
 
-    $rootScope.$on('selectResultRequest', function(evt, message, inputSearch) {
+    $rootScope.$on('selectResultRequest', function(evt, message, inputSearch, advanced) {
         if ($scope.activeTab === $scope.tabName) {
-            messagesService
-		.one(message.formattedIndexedMailMessage.messageId)
-		.get({criteria: inputSearch})
-		.then(function(result) {
-			$scope.$emit('selectResultData', result.payload.messages[0]);
-			$scope.$emit('selectMessage', result.payload.messages[0]);
-            },
-		function(err) {
-			$scope.$emit('technicalError', err);
-		});
+	    if (advanced) {
+		    messagesService
+			.one('advanced')
+			.one(message.formattedIndexedMailMessage.messageId)
+			.get({
+				criteria: inputSearch,
+				pageSize: $scope.pageSize,
+				page: $scope.page,
+				sortField: $scope.sortField,
+				sortOrder: $scope.sortOrder,
+				startDate: advanced.startDate,
+				endDate: advanced.endDate,
+				sender: advanced.sender,
+				recipient: advanced.recipient,
+				subject: advanced.subject,
+				body: advanced.body,
+				messageType: advanced.messageType,
+				attachment: advanced.attachment
+			})
+			.then(function(result) {
+				$scope.$emit('selectResultData', result.payload.messages[0]);
+				$scope.$emit('selectMessage', result.payload.messages[0]);
+		    },
+			function(err) {
+				$scope.$emit('technicalError', err);
+			});
+	    } else {
+		    messagesService
+			.one(message.formattedIndexedMailMessage.messageId)
+			.get({criteria: inputSearch})
+			.then(function(result) {
+				$scope.$emit('selectResultData', result.payload.messages[0]);
+				$scope.$emit('selectMessage', result.payload.messages[0]);
+		    },
+			function(err) {
+				$scope.$emit('technicalError', err);
+			});
+	    }
         }
     });
 
@@ -247,6 +275,7 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 
                 $scope.$emit('results', {
                     'matches': result.payload.matches,
+		    'advanced': args.advanced,
                     'resultEntries': $scope.msgs
                 });
             },
@@ -317,8 +346,10 @@ ironholdApp.controller('MessageSearchController', function ($http, $resource, $w
 			}
 
 			$scope.initialized();
+
 			    $scope.$emit('results', {
 			    'matches': result.payload.matches,
+			    'advanced': args.advanced,
 			    'resultEntries': $scope.msgs
 			    });
     };

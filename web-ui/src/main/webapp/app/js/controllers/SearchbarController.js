@@ -174,7 +174,6 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 
     $scope.searchKeyDown = function() {
 	if (!$scope.removeInstructions) {
-console.log('??????????');
 		$scope.removeInstructions = true;
 		$scope.$emit('removeInstructions');
 	}
@@ -199,7 +198,14 @@ console.log('??????????');
         if ($scope.activeTab === $scope.tabName) {
             $scope.reset();
             $scope.currentlySearching(false);
-            $scope.$emit('searchPreviewRequest', $scope.inputSearch);
+	
+	    if ($scope.tabName === 'discovery') {
+		$scope.$emit('requestAdvancedArguments', $scope.inputSearch);
+		$scope.searchPending = true;
+	    }
+	    else {
+	            $scope.$emit('searchPreviewRequest', $scope.inputSearch);
+	    }
         }
     };
 
