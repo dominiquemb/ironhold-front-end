@@ -49,13 +49,13 @@
 						<tr class="user-enabled">
 							<td>Can Login</td>
 							<td>
-								<input type="checkbox" name="enabled" data-ng-click="toggleRoleName($event, 'CAN_LOGIN', currentUser)" value="false"/>Enabled
+								<input type="checkbox" data-ng-checked="hasRoleName('CAN_LOGIN', currentUser)" name="enabled" data-ng-click="toggleRoleName($event, 'CAN_LOGIN', currentUser)" value="false"/>Enabled
 							</td>
 						</tr>
 						<tr class="user-administrator">
 							<td>Administrator</td>
 							<td>
-								<input type="checkbox" name="administrator" data-ng-click="toggleRoleName($event, 'SUPER_USER', currentUser)" value="false"/>Enabled
+								<input type="checkbox" name="administrator" data-ng-checked="hasRoleName('SUPER_USER', currentUser)" data-ng-click="toggleRoleName($event, 'SUPER_USER', currentUser)" value="false"/>Enabled
 							</td>
 						</tr>
 						<tr class="user-roles" data-ng-hide="hasRoleName('SUPER_USER', currentUser)">
