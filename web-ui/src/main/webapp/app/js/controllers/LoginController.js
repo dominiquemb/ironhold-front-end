@@ -15,6 +15,7 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 
     $scope.processClientKey = function(ck) {
 	if (ck.length) {
+/*
 		switch (ck) {
 			case 'glt':
 				$scope.clientKeyAutofilled = true;
@@ -22,6 +23,9 @@ ironholdApp.controller('LoginController', function ($http, $resource, $window, $
 			default: 
 				return '';
 		}
+*/
+		$scope.clientKeyAutofilled = true;
+		return ck;
 	}
     };
 
