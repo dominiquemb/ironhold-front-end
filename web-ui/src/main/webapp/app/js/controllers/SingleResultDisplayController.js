@@ -244,7 +244,7 @@ ironholdApp.controller('SingleResultDisplayController', function ($http, $resour
 		$scope.modeData[results.mode] = [];
 		$scope.modeData[results.mode] = results.payload;
 		$timeout.cancel($scope.modeLoadingTimeout);
-		$scope.subTabLoading[$scope.mode] = false;
+		$scope.subTabLoading[results.mode] = false;
 		$timeout(function() {
 					$('.msgview_bottom').height( $('.msgview_bottom').height() + 'px' );
 					$('.msgview_bottom .jspVerticalBar').css('visibility', 'visible');
