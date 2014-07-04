@@ -204,7 +204,9 @@ ironholdApp.controller('SearchbarController', function ($http, $resource, $windo
 		$scope.searchPending = true;
 	    }
 	    else {
-	            $scope.$emit('searchPreviewRequest', $scope.inputSearch);
+	            $scope.$emit('searchPreviewRequest', {
+			inputSearch: $scope.inputSearch
+		    });
 	    }
         }
     };
