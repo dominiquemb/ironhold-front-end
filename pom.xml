@@ -48,7 +48,7 @@
         <apache.shiro.version>1.2.2</apache.shiro.version>
         <apache.tika.version>1.4</apache.tika.version>
         <args4j.version>2.0.16</args4j.version>
-        <elasticsearch.version>1.2.1</elasticsearch.version>
+        <elasticsearch.version>6.8.17</elasticsearch.version>
         <elasticsearch.test.version>1.1.0</elasticsearch.test.version>
         <elasticsearch.spring.version>0.2.0</elasticsearch.spring.version>
         <jackson.version>1.9.11</jackson.version>
